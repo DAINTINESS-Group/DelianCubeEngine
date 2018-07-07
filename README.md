@@ -1,6 +1,7 @@
 # DelianCubeEngine
 
-##Description
+
+## Description
 This project implements a simple query engine that receives cube queries and returns the results in tsv files.
 
 
@@ -30,7 +31,7 @@ P. Vassiliadis extracted a relevant subset of v.0.0, and refactored/adapted it f
 * A. Todoris who added the RMI part
 * A. A. Xynogala-Karathanou who produced a refactored version of Cinecubes.
 
-###Delian Problem
+### Delian Problem
 The Delian Problem is the problem of accurately computing the [doubling of a cube's volume](https://en.wikipedia.org/wiki/Doubling_the_cube) (which of course entails computing the 3rd root of 2).
 Credits for solutions to the problem go to Menaechmus for a first solution, and also to Diocles, Nicomedes, Philo, Archytas  and Eratosthenes.
 
