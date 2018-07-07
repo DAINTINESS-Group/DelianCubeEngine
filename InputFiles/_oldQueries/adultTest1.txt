@@ -1,0 +1,6 @@
+CubeName:adult
+Name:CubeQuery_Selection2
+AggrFunc:Avg
+Measure:hours_per_week
+Gamma:education_dim.lvl2,work_dim.lvl1
+Sigma:education_dim.lvl3='Post-Secondary',work_dim.lvl2='With-Pay'

@@ -1,0 +1,5 @@
+Name:CubeQuery0
+AggrFunc:Avg
+Measure:hours_per_week
+Gamma:occupation_dim.lvl0 , education_dim.lvl2
+Sigma:occupation_dim.lvl1='Blue-collar',education_dim.lvl3='Post-Secondary'
