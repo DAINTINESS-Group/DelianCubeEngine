@@ -34,7 +34,7 @@ import mainengine.IMainEngine;
  * @author pvassil
  *
  */
-public class Client {
+public class NaiveJavaClient {
 
 	// Host or IP of Server
 	private static final String HOST = "localhost";
@@ -78,8 +78,17 @@ public class Client {
 				 "Cinecubes", "pkdd99", "orders");
 		File f4 = new File("InputFiles/cubeQueriesorder.ini");
 		service.answerCubeQueriesFromFile(f4);/**/
+		
+		
 		for(String s: fileLocations) {
 			System.out.println("Find the next result at " + s);
+			File remote = new File(s);
+			String[] array = s.split("/");
+			String localName = "NoName";
+			if (array.length > 0)
+				localName = array[array.length-1].trim();
+
+			ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
 		}
 		System.out.println("Execution of client is complete");
 	}

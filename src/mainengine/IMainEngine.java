@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author pvassil
  *
  */
-public interface IMainEngine extends Remote {
+public interface IMainEngine extends IServer {
 
 	/**
 	 * Use initializeConnection as the first step between a CLIENT and any implementation of the IMainEngine.

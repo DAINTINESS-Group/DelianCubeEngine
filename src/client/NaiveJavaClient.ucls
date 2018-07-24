@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.1.14" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+<class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="client.Client" project="DelianCubeEngine" file="/DelianCubeEngine/src/client/Client.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="153" width="113" x="142" y="32"/>    
+  <class id="1" language="java" name="client.NaiveJavaClient" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/client/NaiveJavaClient.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="153" width="114" x="279" y="180"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      

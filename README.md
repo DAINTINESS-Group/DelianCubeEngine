@@ -48,6 +48,7 @@ Refactorings & Corrections
 - [ ] Fix the fixme comments
 - [ ] Address the todo's
 - [ ] introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
+- [ ] Add a GUI client
 - [X] Cleanup the code from unused parts of v.0.0 (at least the known ones)
 
 Extension to an Intentional OLAP engine

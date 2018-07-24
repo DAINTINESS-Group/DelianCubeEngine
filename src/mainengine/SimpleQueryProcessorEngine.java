@@ -22,13 +22,22 @@ package mainengine;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 //import java.sql.ResultSet;
+
+import mainengine.rmiTransfer.RMIInputStream;
+import mainengine.rmiTransfer.RMIOutputStream;
+import mainengine.rmiTransfer.RMIInputStreamImpl;
+import mainengine.rmiTransfer.RMIOutputStreamImpl;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
@@ -245,5 +254,14 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		return fileName;
 	}//end method
 	
+	@Override
+	public OutputStream getOutputStream(File f) throws IOException {
+	    return new RMIOutputStream(new RMIOutputStreamImpl(new 
+	    FileOutputStream(f)));
+	}
+	@Override
+	public InputStream getInputStream(File f) throws IOException {
+	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
+	}
 	
 }//end class
