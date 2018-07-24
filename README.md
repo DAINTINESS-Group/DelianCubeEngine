@@ -25,8 +25,9 @@ For v.0.1, the usage is simple:
 
 ## Credits and History
 
-### v.0.1 [2018 June]
+### v.0.1 [2018 June and July]
 P. Vassiliadis extracted a relevant subset of v.0.0, and refactored/adapted it for the first v. of a simple query engine that simply answers cube queries
+A set of functionalities like RMI file transfer and a small GUI were added too.
 
 ### v.0.0 [2018 January]
 * Code for the Delian Cube Engine comes largely from  the Cinecubes project, implemented via the contributions of:
@@ -51,7 +52,8 @@ Refactorings & Corrections
 - [ ] Fix the fixme comments
 - [ ] Address the todo's
 - [ ] introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
-- [ ] Add a GUI client
+- [ ] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
+- [X] Add a GUI client
 - [X] Cleanup the code from unused parts of v.0.0 (at least the known ones)
 
 Extension to an Intentional OLAP engine
