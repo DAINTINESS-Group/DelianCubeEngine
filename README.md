@@ -18,7 +18,7 @@ For v.0.1, the usage is simple:
 1. Start your DBMS (MySQL) service, if not running
 2. Start the Server of the project
 3. Alternatives
-* Start the NaiveJavaClient of the project (results are in the OutputFiles folder)
+* Start the NaiveJavaClient of the project (query results are in the OutputFiles folder for the server and ClientCache for the client)
 * Start the MainApp client in the gui package. Its functionalities include launching queries from a stored file and loading tsv files. 
 * ... create a Client of your own
 
