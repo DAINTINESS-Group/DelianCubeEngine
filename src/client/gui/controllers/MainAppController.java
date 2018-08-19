@@ -1,9 +1,30 @@
+/*
+*    DelianCubeEngine. A simple cube query engine.
+*    Copyright (C) 2018  Panos Vassiliadis
+*
+*    This program is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Affero General Public License as published
+*    by the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Affero General Public License for more details.
+*
+*    You should have received a copy of the GNU Affero General Public License
+*    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*
+*/
+
 package client.gui.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import client.gui.utils.ExitController;
 import client.gui.utils.LauncherForViewControllerPairs;
@@ -14,6 +35,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import client.ClientRMITransferer;
+import client.gui.application.AbstractApplication;
 import client.gui.utils.CustomAlertDialog;
 
 public class MainAppController extends AbstractController {
@@ -23,7 +45,6 @@ public class MainAppController extends AbstractController {
 	public MainAppController() {
 		super();
 	}
-
 
 	
 	@FXML
@@ -72,7 +93,25 @@ public class MainAppController extends AbstractController {
 		}
 	}//end method
 
-	
+	@FXML
+	private void handlewNewTextEditor() {
+		TextEditorController controller = new TextEditorController();
+		VBox dwLayout = null;
+		int launchResult = -100;
+		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"TextEditor.fxml", controller, dwLayout);
+
+		//Just logging what happened.
+		String prevText = textLogger.getText();
+		if(launchResult <0 ) {
+			textLogger.setText(prevText + "\n" + "MISERABLE FAILURE for a new TextEditor!" + "\nResult was: " + launchResult + "\n");
+		}
+		else {
+			textLogger.setText(prevText + "\n" + "New TextEditor!" + "\n");			
+		}
+	}//end method
 
 	@FXML
 	private void runStoredQueries(){
@@ -85,6 +124,7 @@ public class MainAppController extends AbstractController {
 			return;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
+		//this.getApplication().getServer().getClass().getCanonicalName();
 		try {
 			resultFileLocations = serverEngine.answerCubeQueriesFromFile(fileName);
 		} catch (RemoteException e) {
@@ -141,6 +181,20 @@ public class MainAppController extends AbstractController {
 		
 		prevText = textLogger.getText();
 		textLogger.setText(prevText + "\n" + "Answering Queries From File completed" + "\n");	
+	}//end method
+	
+	public int handleRunQueryString() {
+		VBox dwLayout = null;
+		int launchResult = -100;
+
+		QueryEditorController queryEditorCtrl = new QueryEditorController(this.getApplication(), this, this.getScene(), this.getStage()); 		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"QueryEditor.fxml", queryEditorCtrl, dwLayout);
+		//queryEditorCtrl.doSth();
+
+		
+		return launchResult;
 	}
 	
 }//end class MAinAppController

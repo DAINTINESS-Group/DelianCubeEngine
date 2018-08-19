@@ -13,6 +13,7 @@
         <menus>
           <Menu id="menuWork" mnemonicParsing="false" text="Work">
             <items>
+              <MenuItem id="runQueryMI" fx:id="runQueryMI" mnemonicParsing="false" onAction="#handleRunQueryString" text="Run Query" />
               <MenuItem id="runStoredQMI" fx:id="runStoredQMI" mnemonicParsing="false" onAction="#runStoredQueries" text="Run Stored Queries" />
               <MenuItem id="closeMI" fx:id="closeMI" mnemonicParsing="false" onAction="#handleClose" text="Close" />
             </items>
@@ -20,6 +21,7 @@
           <Menu id="menuHelp" mnemonicParsing="false" text="Help">
             <items>
               <MenuItem id="newDataWindowMI" fx:id="newDataWindowMI" mnemonicParsing="false" onAction="#handlewNewDW" text="New Data Window" />
+              <MenuItem id="txtEditorMI" fx:id="txtEditorMI" mnemonicParsing="false" onAction="#handlewNewTextEditor" text="Text Editor" />
               <MenuItem id="aboutMI" fx:id="aboutMI" mnemonicParsing="false" onAction="#handleAbout" text="About" />
             </items>
           </Menu>

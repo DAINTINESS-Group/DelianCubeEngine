@@ -52,7 +52,7 @@ Refactorings & Corrections
 - [ ] Fix the fixme comments
 - [ ] Address the todo's
 - [ ] introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
-- [ ] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
+- [X] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
 - [X] Add a GUI client
 - [X] Cleanup the code from unused parts of v.0.0 (at least the known ones)
 
