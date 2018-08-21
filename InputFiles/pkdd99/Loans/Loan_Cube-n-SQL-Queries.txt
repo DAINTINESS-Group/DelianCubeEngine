@@ -19,11 +19,11 @@ Name: LoanQuery12_S1_CG-Dsjnt
 AggrFunc:Max
 Measure:amount
 Gamma:account_dim.lvl1, status_dim.lvl1
-Sigma:date_dim.lvl2 = '01-1998'
+Sigma:date_dim.lvl2 = '1998-01'
 
 select account.district_name, status.status, max(amount) as measure, count(*) as countOfDetailedCells
 from loan inner join account on loan.account_id = account.account_id inner join date on loan.date = date.SK_Day inner join status on loan.status = status.status
-where date.Month = '01-1998'
+where date.Month = '1998-01'
 group by  account.district_name, status.status
 order by measure ASC
 ;

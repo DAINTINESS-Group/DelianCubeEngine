@@ -49,12 +49,13 @@ Community
 - [ ] ToDo: Must complement this file with a section on how to contribute. Sorry!
 
 Refactorings & Corrections
-- [ ] Fix the fixme comments
 - [ ] Address the todo's
 - [ ] introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
+- [ ] refactor the GUI client, to kill cycles in the package diagram
 - [X] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
 - [X] Add a GUI client
 - [X] Cleanup the code from unused parts of v.0.0 (at least the known ones)
+- [X] Fix the fixme comments
 
 Extension to an Intentional OLAP engine
 - [ ] construct a session manager, registering submitted queries and adding highlights to them, in order to create dashboards

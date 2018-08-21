@@ -78,6 +78,9 @@ public class SimpleQueryProcessorEngineTest {
 		//fail("Not yet implemented"); 
 		// can try failures by modifying filenames and/or paths. Keep the getAbsolutePath() comments for failure tests
 		
+		boolean comparison01 = true;
+		boolean comparison02 = true;
+		boolean comparison03 = true;
 		
 		/**
 		 * Try some easy small queries first
@@ -89,19 +92,19 @@ public class SimpleQueryProcessorEngineTest {
 		
 		File fileProduced01 = new File("OutputFiles/CubeQueryLoan1.tab");
 		File fileReference01 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan1.tab");
-        boolean comparison01 = FileUtils.contentEquals(fileProduced01, fileReference01);
+        comparison01 = FileUtils.contentEquals(fileProduced01, fileReference01);
 		
 //        System.out.println("\n PRODUCED: "+ fileProduced1.getAbsolutePath());
 //        System.out.println("\n REFERENCE: "+ fileReference1.getAbsolutePath());
         
 		File fileProduced02 = new File("OutputFiles/CubeQueryLoan2.tab");
 		File fileReference02 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan2.tab");
-        boolean comparison02 = FileUtils.contentEquals(fileProduced02, fileReference02);
+        comparison02 = FileUtils.contentEquals(fileProduced02, fileReference02);
 
 		
 		File fileProduced03 = new File("OutputFiles/CubeQueryLoan3.tab");
 		File fileReference03 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan3.tab");
-        boolean comparison03 = FileUtils.contentEquals(fileProduced03, fileReference03);
+        comparison03 = FileUtils.contentEquals(fileProduced03, fileReference03);
         assertEquals((comparison01 && comparison02 && comparison03), true);
 
 

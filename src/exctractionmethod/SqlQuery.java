@@ -208,7 +208,8 @@ public class SqlQuery extends ExtractionMethod {
 	/**
 	 * Waiting to be used.
 	 * 
-	 * FIXME: fix dates in the pkdd99 database and THEN sort by groupers in toString()
+	 * 2018-08-21: Have fixed dates in the pkdd99 database (months are listed as YYY-MM now)
+	 * Can now: sort by groupers in toString()
 	 * @param order_type
 	 * @return
 	 */
