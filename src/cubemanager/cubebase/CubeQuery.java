@@ -125,8 +125,9 @@ public class CubeQuery extends Cube {
 	 * @since v.0.0 Cinecubes
 	 */
 	public String toString() {
-		String ret_value = "Name:" + this.name + "\nAggregate Function : "
-				+ AggregateFunction + "\n";
+		String ret_value = "QueryName: " + this.name + 
+				"\nBasicCube : " + this.referCube.getName() + 
+				"\nAggregate Function : " + AggregateFunction + "\n";
 		if (this.Msr.size() > 0 && this.Msr.get(0) != null
 				&& this.Msr.get(0).getAttribute() != null)
 			ret_value += "Measure : " + this.Msr.get(0).getAttribute().getName() + "\n";

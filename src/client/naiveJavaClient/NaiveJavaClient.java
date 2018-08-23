@@ -18,13 +18,15 @@
 */
 
 
-package client;
+package client.naiveJavaClient;
 
 import java.io.File;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
+import client.ClientRMITransferer;
+import client.gui.utils.FileInfoProvider;
 import mainengine.IMainEngine;
 /**
  * A simple client that 
@@ -89,6 +91,7 @@ public class NaiveJavaClient {
 				localName = array[array.length-1].trim();
 
 			ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
+			//TODO: add the download of the info files
 		}
 		System.out.println("Execution of client is complete");
 	}

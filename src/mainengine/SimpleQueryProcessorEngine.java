@@ -204,6 +204,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 				
 		//3b. print result to file
 		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
+		String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
 		
 		return outputLocation;
 	}
@@ -262,6 +263,44 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	@Override
 	public InputStream getInputStream(File f) throws IOException {
 	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
-	}
+	}//end method
+	
+	/**
+	 * Returns a String with the location of a file, XXX_info.txt, XXX being the query name, containing information for the query launched.
+	 * 
+	 * @param cubequery   the CubeQuery whose info is recorded 
+	 * @param outputFolder the folder to which the file is going to be stored
+	 * @return  the String with the location of the produced file
+	 */
+	public String printQueryInfo(CubeQuery cubequery, String outputFolder) {
+		//Result res = cubequery.getResult();
+		String fileName = outputFolder + cubequery.getName() + "_info.txt";
+		File file=new File(fileName);
+		FileOutputStream fileOutputStream=null;
+		PrintStream printStream=null;
+		try {
+			fileOutputStream=new FileOutputStream(file);
+			printStream=new PrintStream(fileOutputStream);
+			
+			//printStream.print(cubequery.getName()+"\n\n");
+			printStream.print(cubequery.toString()+"\n\n");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		
+		return fileName;
+	}//end method
 	
 }//end class

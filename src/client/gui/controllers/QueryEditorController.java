@@ -30,6 +30,7 @@ import client.ClientRMITransferer;
 import client.gui.application.AbstractApplication;
 import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.ExitController;
+import client.gui.utils.FileInfoProvider;
 import client.gui.utils.LauncherForViewControllerPairs;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -166,21 +167,28 @@ public class QueryEditorController extends AbstractController {
 			return -1;
 		}
 		else {
-			downloadResult(resultFileLocation, serverEngine);
-			result = displayResultInDataWindow(resultFileLocation);
+			String localFileLocation = downloadResult(resultFileLocation, serverEngine);
+			result = displayResultInDataWindow(localFileLocation);
+			
+			FileInfoProvider infoProvider = new FileInfoProvider(resultFileLocation);
+			String infoFileLocation = infoProvider.getNameForInfoFile(resultFileLocation);    //getInfoFileAbsoluteLocation();
+			System.out.println("Remote result file: " + resultFileLocation);
+			System.out.println("Remote _info_ file: " + infoFileLocation);
+
+			String localInfoFileLocation = downloadResult(infoFileLocation, serverEngine);
 		}
 		return result;
 	}//end method
 	
 	
-	public void downloadResult(String resultFileLocation,  IMainEngine serverEngine) {	
+	public String downloadResult(String resultFileLocation,  IMainEngine serverEngine) {	
 		File remote = new File(resultFileLocation);
 		String[] array = resultFileLocation.split("/");
-		String localName = "NoName";
+		String localName = "";
 		if (array.length > 0)
 			localName = array[array.length-1].trim();
 
-		localName = "ClientCache/" + localName;
+		localName = "ClientCache" + File.separator + localName;
 		File localFile = new File(localName);
 
 		try {
@@ -189,6 +197,7 @@ public class QueryEditorController extends AbstractController {
 			e.printStackTrace();
 		}
 		
+		return localName;
 	}//end method
 
 	

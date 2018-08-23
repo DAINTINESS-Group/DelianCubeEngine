@@ -21,8 +21,10 @@ package client.gui.controllers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -40,6 +42,7 @@ import javafx.util.Callback;
 
 import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.ExitController;
+import client.gui.utils.FileInfoProvider;
 
 public class DataWindowController extends AbstractController {
 	@FXML
@@ -101,20 +104,33 @@ System.out.println(file.getAbsolutePath());
 	@FXML
 	private void handleAbout() {
 		String contentText = null;
+		String infoContents = "";
+		
 		if(file == null) {
 			contentText = "Delian Cube Engine implements a simple query engine that receives cube queries and returns the results in tsv files.";
 		}
 		else {
-			contentText = "This data window opens a tsv file. \nFile : " + file;
+			contentText = "This data window opens a tab separated file. \nFile : " + file.getAbsolutePath() + "\n\n";
+			FileInfoProvider infoProvider  = new FileInfoProvider(file); 
+			String fullInfoLocation = infoProvider.getNameForInfoFile(file.getAbsolutePath());
+			//String infoLocation = infoProvider.getNameForInfoFile(file.getName());
+			//System.out.println(infoLocation);
+			if(infoProvider.getInfoFileExistence()) {
+				System.out.println("Opening info file: " + fullInfoLocation);
+				infoContents = infoProvider.getInfoContents(fullInfoLocation);
+				contentText = contentText + infoContents;
+			}
 		}
 		CustomAlertDialog a = new CustomAlertDialog("about", null, contentText, this.stage); 
 		a.show();
 		
 		String textLogged = "About clicked.";
 		logToTextLogger(textLogged);
+		logToTextLogger(infoContents);
 		
 	}
 
+	
 
 	
 	@FXML
