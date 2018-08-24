@@ -61,9 +61,10 @@ import result.Result;
  * 
  * Use {@link #answerCubeQueriesFromFile(File file)} to answer the queries contained in a file 
  */
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements IMainEngine {
 
+	private static final long serialVersionUID = 313553263459485366L;
 	private CubeManager cubeManager;
 	//private StoryMgr storMgr;
 	private ParserManager prsMng;
@@ -173,9 +174,12 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 * The main idea is:
 	 * (1) construct the query via <code>createCubeQueryFromString</code> of <code>CubeManager</code>, see {@link CubeManager}
 	 * (2) execute the query again via {@link CubeManager} and obtain a {@link Result}
-	 * (3b) produce a file in the directory <code>OutputFiles</code> with the name of the query
-	 * (3a) btw., the results are also output to the console
+	 * (3a) produce a file in the directory <code>OutputFiles</code> with the name of the query
+	 * (3x) btw., the results are also output to the console
 	 * 
+	 * @param queryRawString a String with the query
+	 * @return a String containing the location of output file at the server
+	 *  
 	 * @author pvassil
 	 * @since v.0.1
 	 * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
@@ -204,13 +208,73 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 				
 		//3b. print result to file
 		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
-		String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
+		//String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
 		
 		return outputLocation;
-	}
+	}//answerCubeQueryFromString
+
+
+	/** 
+	 * Gets the query from a string, executes it and produces the output of a query as a ResultFileMetadata object
+	 * <p>
+	 * The main idea is:
+	 * (1) construct the query via <code>createCubeQueryFromString</code> of <code>CubeManager</code>, see {@link CubeManager}
+	 * (2) execute the query again via {@link CubeManager} and obtain a {@link Result}
+	 * (3a) produce a queryName.tab file in the directory <code>OutputFiles</code> with the queryName being name of the query
+	 * (3b) produce an queryName_info.txt file that contains the query definition in the same folder
+	 * (3x) btw., the results are also output to the console
+	 * 
+	 * @param queryRawString a String with the query
+	 * @return a ResultFileMetadata containing info on the location of output files at the server
+	 * 
+	 * @author pvassil
+	 * @since v.0.2
+	 * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
+	 * @see cubemanager.CubeManager#executeQuery(CubeQuery)
+	 */
+	@Override
+	public ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException {
+		//Use a hashmap to get any useful data (like queryname) from the raw query string
+		HashMap<String, String> queryParams = new HashMap<String, String>();
+		
+		//1. parse query and produce a CubeQuery
+		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
+
+		//2. execute the query AND populate Result with a 2D string
+		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
+		Result res = cubeManager.executeQuery(currentCubQuery);
+				
+		//3a. print result to screen
+		String queryName = queryParams.get("QueryName");
+		
+		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
+		//res.printStringArrayTostream(System.out, res.getResultArray());
+		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
+		res.printCellsToStream(System.out);
+		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
+				
+		//3b. print result to file
+		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
+		
+		//------------------ UP TO HERE SAME WITH ABOVE -------------------
+		//TODO Ideally, I would refactor and just call the answerQFronString()!
+		//Problem is you do NOT have the CubeQuery and the Result
+		String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
+		
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
+		
+		resMetadata.setComponentResultFiles(null);
+		resMetadata.setComponentResultInfoFiles(null);
+		resMetadata.setLocalFolder("OutputFiles/");
+		resMetadata.setResultFile(outputLocation);
+		resMetadata.setResultInfoFile(outputInfoLocation);
+System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
+System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
+System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+		return resMetadata;
+	}//answerCubeQueryFromStringWithMetada
 	
-
-
+	
 	/**
 	 * Returns the location of a tab-separated file where the result of a query is stored.
 	 * <p>
@@ -274,7 +338,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 */
 	public String printQueryInfo(CubeQuery cubequery, String outputFolder) {
 		//Result res = cubequery.getResult();
-		String fileName = outputFolder + cubequery.getName() + "_info.txt";
+		String fileName = computeQueryInfoName(cubequery, outputFolder);
 		File file=new File(fileName);
 		FileOutputStream fileOutputStream=null;
 		PrintStream printStream=null;
@@ -302,5 +366,19 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		
 		return fileName;
 	}//end method
+
+
+	/**
+	 * Give an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
+	 * 
+	 * @param cubequery a CubeQuery whose info file name is requested
+	 * @param outputFolder  a String representing a target folder, if the form of "MyFolder/" where the output will be placed. Don't forget the "/"
+	 * @return the path of the _info.txt file of the query
+	 */
+	private String computeQueryInfoName(CubeQuery cubequery, String outputFolder) {
+		String fileName = outputFolder + cubequery.getName() + "_info.txt";
+		return fileName;
+	}
+
 	
 }//end class

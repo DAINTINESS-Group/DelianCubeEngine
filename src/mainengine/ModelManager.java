@@ -41,5 +41,5 @@ public class ModelManager {
 	}
 	private ArrayList<AbstractModel> modelsToLaunch;
 	private Result result;
-	private String namePrefix; 
+	//private String namePrefix; 
 }

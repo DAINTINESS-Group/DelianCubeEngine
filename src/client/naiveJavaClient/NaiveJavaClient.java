@@ -26,7 +26,6 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 import client.ClientRMITransferer;
-import client.gui.utils.FileInfoProvider;
 import mainengine.IMainEngine;
 /**
  * A simple client that 

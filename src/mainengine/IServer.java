@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.rmi.RemoteException;
+//import java.rmi.RemoteException;
 
 
 public interface IServer extends Remote {

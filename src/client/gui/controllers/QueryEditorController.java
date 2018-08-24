@@ -39,6 +39,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
+import mainengine.ResultFileMetadata;
 
 /**
  * @author pvassil
@@ -150,32 +151,56 @@ public class QueryEditorController extends AbstractController {
 	}
 
 	public int executeAndDisplayQuery(String queryString) {
-		String resultFileLocation = null;
+		String remoreResultFileLocation = null;
+		String remoteInfoFileLocation = null;
+		String remoteFolderName = null;
+		
+		String localFileLocation;
+		String localInfoFileLocation;
+		
 		int result;
+		ResultFileMetadata resMetadata = null;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
 		try {
-			resultFileLocation = serverEngine.answerCubeQueryFromString(queryString);
+			//USED TO GET DATA BY THE answerCubeQueryFromString
+			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
+			
+			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(queryString);
+			if(resMetadata != null) {
+				remoreResultFileLocation = resMetadata.getResultFile();
+				remoteInfoFileLocation = resMetadata.getResultInfoFile();
+				remoteFolderName = resMetadata.getLocalFolder();
+			
+				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
+				System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
+				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
+			}
+			else {
+				System.out.println("Remote METADATA: NULL" );
+				return -1;
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+
 		
-		
-		if(resultFileLocation.length() == 0) {	
+		if(remoreResultFileLocation.length() == 0) {	
 			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
 			a.show();
 			return -1;
 		}
 		else {
-			String localFileLocation = downloadResult(resultFileLocation, serverEngine);
+			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
 			result = displayResultInDataWindow(localFileLocation);
-			
-			FileInfoProvider infoProvider = new FileInfoProvider(resultFileLocation);
-			String infoFileLocation = infoProvider.getNameForInfoFile(resultFileLocation);    //getInfoFileAbsoluteLocation();
-			System.out.println("Remote result file: " + resultFileLocation);
-			System.out.println("Remote _info_ file: " + infoFileLocation);
+//			OLD WAY OF GETTING INFO FILE
+//			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
+//			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
+//			System.out.println("Remote result file: " + remoreResultFileLocation);
+//			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
 
-			String localInfoFileLocation = downloadResult(infoFileLocation, serverEngine);
+			localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
+	
 		}
 		return result;
 	}//end method

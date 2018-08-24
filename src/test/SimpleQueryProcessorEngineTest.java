@@ -28,7 +28,7 @@ package test;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+//import static org.junit.Assert.fail;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,6 +53,8 @@ public class SimpleQueryProcessorEngineTest {
 	private static IMainEngine testedQPEngine;
 	
 	/**
+	 * Setup before all: Initialize connection
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -187,6 +189,29 @@ public class SimpleQueryProcessorEngineTest {
 		
         assertEquals(comparison2 , true);/**/
         
-	}
+	}//end testanswerCubeQueryFromString
 
-}
+	/**
+	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueriesFromStringWithMetadata(String)}.
+	 * @throws IOException 
+	 */
+	@Test
+	public final void testanswerCubeQueryFromStringWithMetadata() throws IOException{
+
+		String testQueryString2 = 
+				"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan22_Copy" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,date_dim.lvl3" + " \n" +
+				"Sigma:account_dim.lvl2='south Moravia',status_dim.lvl0='Running Contract/OK'";
+
+		testedQPEngine.answerCubeQueryFromStringWithMetadata(testQueryString2);   /**/
+		
+		
+		File fileInfoProduced2 = new File("OutputFiles/CubeQueryLoan22_Copy_Info.txt");
+		File fileInfoReference2 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan22_Info.txt");
+        boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
+        assertEquals(comparison2 , true);/**/
+	}//end method testanswerCubeQueryFromStringWithMetadata
+}//end class

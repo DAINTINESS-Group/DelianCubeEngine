@@ -21,7 +21,7 @@
 package mainengine;
 
 import java.io.File;
-import java.rmi.Remote;
+//import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -71,7 +71,8 @@ public interface IMainEngine extends IServer {
  
 	 */
 	String answerCubeQueryFromString(String queryRawString) throws RemoteException;
-	
+	//String answerCubeQueryFromStringExtraInfo(String queryRawString) throws RemoteException;
+	ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	/**
 	 * This is the method to call for answering queries from a file. 

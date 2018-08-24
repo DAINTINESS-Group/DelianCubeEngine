@@ -8,7 +8,7 @@
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.InputStream;
+//import java.io.InputStream;
 import java.io.Serializable;
 
 public class RMIOutputStream extends OutputStream implements Serializable {
