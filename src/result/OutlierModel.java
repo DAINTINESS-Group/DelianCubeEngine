@@ -55,7 +55,7 @@ public class OutlierModel extends AbstractModel {
 	 * @see result.AbstractModel#compute()
 	 */
 	@Override
-	public int compute() {		
+	public int compute() {				
 		ArrayList<Cell> cells = this.result.getCells();
 		int resultSize = cells.size();
 		
@@ -73,6 +73,13 @@ public class OutlierModel extends AbstractModel {
 		//
 		//Math.util is supposed to have Grubb's test implemented
 		//giving out the top OUtlier https://en.wikipedia.org/wiki/Grubbs%27_test_for_outliers
+
+		
+		int i = 0;
+		for (Cell cell: cells) {
+			cellValues[i] = cell.toDouble();
+			i++;
+		}
 		processZScoreOutliers(cellValues, zScores, outliers, nonOutliers);
 
 		//Don't forget to feed the arrays of labels to the components
@@ -100,12 +107,15 @@ public class OutlierModel extends AbstractModel {
 		for( int i = 0; i < cellValues.length; i++) {
 			stats.addValue(cellValues[i]);
 		}
+System.out.println(stats.getValues().length);
 		double mean = stats.getMean();
 		double std = stats.getStandardDeviation();
+System.out.println("MEAN " + mean + " STDEV " + std);		
 		//		double median = stats.getPercentile(50);
 		//		double max = stats.getMax();
 		//		double min = stats.getMin();
 
+		//FIX Z-score is wrong!
 		for(int i = 0; i < zScores.length; i++) {
 			if (std != 0.0)
 				zScores[i] = (cellValues[i] - mean)/std;
@@ -152,6 +162,11 @@ public class OutlierModel extends AbstractModel {
 		}
 		
 		return output;
+	}//end method
+
+	@Override
+	public String getModelName() {
+		return "Z-Score_Outliers";
 	}//end method
 
 	private OutlierModelComponent zScoreComponent;

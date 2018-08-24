@@ -61,6 +61,9 @@ public class Server {
 		System.out.println("Server starting...");
 		startRegistry();
 		registerObject(IMainEngine.class.getSimpleName(), new SimpleQueryProcessorEngine());
+
+		//registerObject(Foo.class.getSimpleName(), new Foo());
+		
 		// Server has started, and is listening to the request from the clients
 		System.out.println("Server started!");
 		//Default stop after 1 hour, if not stopped explicitly

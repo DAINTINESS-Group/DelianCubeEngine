@@ -71,19 +71,40 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 //	private Options optMgr;
 //	private String msrname;
 	
-	
+	private CubeQuery currentCubeQuery;
+	private Result currentResult;
+	private String currentQueryName;
+
 /**
  * Simple constructor for the class
  * @throws RemoteException
  */
 	public SimpleQueryProcessorEngine() throws RemoteException {
 		super();
+		currentResult = null;
+		currentCubeQuery = null;
+		currentQueryName = null;
+		
 		//storMgr = new StoryMgr();
 		//optMgr = new Options();
 	}
 	
 	
-	/* (non-Javadoc)
+	@Override
+	public OutputStream getOutputStream(File f) throws IOException {
+	    return new RMIOutputStream(new RMIOutputStreamImpl(new 
+	    FileOutputStream(f)));
+	}
+	@Override
+	public InputStream getInputStream(File f) throws IOException {
+	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
+	}//end method
+	
+	
+	/* 
+	 * TODO: at some point, connections must be initialized at the beginning and NOT on a per query basis!!
+	 * 
+	 * (non-Javadoc)
 	 * @see mainengine.IMainEngine#initializeConnection(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -97,8 +118,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		cubeManager.setCubeQueryTranslator();
 		System.out.println("DONE WITH INIT");
 	}
-	
-	
+		
 	private void initializeCubeMgr(String lookupFolder) throws RemoteException {
 		cubeManager = new CubeManager(lookupFolder);
 	}
@@ -192,13 +212,16 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		
 		//1. parse query and produce a CubeQuery
 		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
-
+		this.currentCubeQuery = currentCubQuery;
+		
 		//2. execute the query AND populate Result with a 2D string
 		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
 		Result res = cubeManager.executeQuery(currentCubQuery);
-				
+		this.currentResult = res;
+		
 		//3a. print result to screen
 		String queryName = queryParams.get("QueryName");
+		this.currentQueryName = queryName;
 		
 		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
 		//res.printStringArrayTostream(System.out, res.getResultArray());
@@ -234,32 +257,31 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 */
 	@Override
 	public ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException {
-		//Use a hashmap to get any useful data (like queryname) from the raw query string
-		HashMap<String, String> queryParams = new HashMap<String, String>();
-		
-		//1. parse query and produce a CubeQuery
-		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
+//		//Use a hashmap to get any useful data (like queryname) from the raw query string
+//		HashMap<String, String> queryParams = new HashMap<String, String>();
+//		
+//		//1. parse query and produce a CubeQuery
+//		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
+//
+//		//2. execute the query AND populate Result with a 2D string
+//		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
+//		Result res = cubeManager.executeQuery(currentCubQuery);
+//				
+//		//3a. print result to screen
+//		String queryName = queryParams.get("QueryName");
+//		
+//		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
+//		//res.printStringArrayTostream(System.out, res.getResultArray());
+//		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
+//		res.printCellsToStream(System.out);
+//		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
+//				
+//		//3b. print result to file
+//		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
 
-		//2. execute the query AND populate Result with a 2D string
-		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
-		Result res = cubeManager.executeQuery(currentCubQuery);
-				
-		//3a. print result to screen
-		String queryName = queryParams.get("QueryName");
-		
-		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
-		//res.printStringArrayTostream(System.out, res.getResultArray());
-		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
-		res.printCellsToStream(System.out);
-		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-				
-		//3b. print result to file
-		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
-		
-		//------------------ UP TO HERE SAME WITH ABOVE -------------------
-		//TODO Ideally, I would refactor and just call the answerQFronString()!
-		//Problem is you do NOT have the CubeQuery and the Result
-		String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
+
+		String outputLocation = answerCubeQueryFromString(queryRawString);
+		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles/");
 		
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		
@@ -271,12 +293,50 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
 System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+
+
+		
 		return resMetadata;
 	}//answerCubeQueryFromStringWithMetada
 	
+	@Override
+	public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		ResultFileMetadata resMetadata = answerCubeQueryFromStringWithMetadata(queryRawString);
+		//postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
+		
+		//-------------------------------- invoke model generation -----------
+System.out.println("\n\nModel generation!\n");
+		ModelManager modelManager = new ModelManager(this.currentResult);
+		
+		String [] modelNames = {"Rank","Outlier"};
+		
+		//we will work with modelNames; if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
+		if(modelsToGenerate.length > 0) {
+			modelNames = modelsToGenerate.clone(); 
+		}
+System.out.println("\nModel selection of " + modelNames.length + " models");		
+		
+		//1. select the models to fire
+		modelManager.selectModelsToLaunch(modelNames);
+		//2. execute the selected models
+		int modelGenFlag = modelManager.executeModelConstruction(this.currentQueryName);
+		//3.TODO Populate resMetadata with the outcome of model generation
+		if (modelGenFlag == 0) { 			//all went OK
+			//probably will do it by passing the resMetadata to the model manager to populate the 2 fields.
+			;
+		}
+		//------------ END invoke model generation ------------
+		
+		
+		return null;
+	}//end method answerCubeQueryFromStringWithModels
+
+
 	
 	/**
-	 * Returns the location of a tab-separated file where the result of a query is stored.
+	 * Populates a tab-separated file where the result of a query is stored and ρeturns its location.
 	 * <p>
 	 * The goal of this method is to output a file containing the result of a query
 	 * The name of the file is the name of the query + extension tab 
@@ -319,18 +379,9 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return fileName;
 	}//end method
 	
-	@Override
-	public OutputStream getOutputStream(File f) throws IOException {
-	    return new RMIOutputStream(new RMIOutputStreamImpl(new 
-	    FileOutputStream(f)));
-	}
-	@Override
-	public InputStream getInputStream(File f) throws IOException {
-	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
-	}//end method
-	
+
 	/**
-	 * Returns a String with the location of a file, XXX_info.txt, XXX being the query name, containing information for the query launched.
+	 * Populates a file, XXX_info.txt, XXX being the query name, containing information for the query launched and returns its location.
 	 * 
 	 * @param cubequery   the CubeQuery whose info is recorded 
 	 * @param outputFolder the folder to which the file is going to be stored
@@ -367,9 +418,8 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return fileName;
 	}//end method
 
-
 	/**
-	 * Give an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
+	 * Given an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
 	 * 
 	 * @param cubequery a CubeQuery whose info file name is requested
 	 * @param outputFolder  a String representing a target folder, if the form of "MyFolder/" where the output will be placed. Don't forget the "/"
@@ -378,7 +428,9 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	private String computeQueryInfoName(CubeQuery cubequery, String outputFolder) {
 		String fileName = outputFolder + cubequery.getName() + "_info.txt";
 		return fileName;
-	}
+	}//end method
 
+
+	
 	
 }//end class

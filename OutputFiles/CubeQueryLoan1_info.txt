@@ -1,7 +1,0 @@
-QueryName: CubeQueryLoan1
-BasicCube : loan_cube
-Aggregate Function : Avg
-Measure : amount
-Gamma Expression: account_dim.lvl2 , date_dim.lvl2
-Sigma Expression: account_dim.lvl1='Benesov'
-

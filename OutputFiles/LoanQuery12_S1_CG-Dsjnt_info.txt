@@ -1,7 +1,0 @@
-QueryName: LoanQuery12_S1_CG-Dsjnt
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.lvl1 , status_dim.lvl1
-Sigma Expression: date_dim.lvl2 = '1998-01'
-

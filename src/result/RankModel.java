@@ -58,6 +58,7 @@ public class RankModel extends AbstractModel {
 	 */
 	@Override
 	public int compute() {
+		
 		ArrayList<Cell> cells = this.result.getCells();
 		int resultSize = cells.size();
 		
@@ -92,7 +93,7 @@ public class RankModel extends AbstractModel {
 			if (cellRanks[i] == resultSize)
 				cellMax[i] = 1;
 		}
-		
+				
 		//adding the arrays to the respective components...
 		maxComponent.setRankLabel(cellMax);
 		minComponent.setRankLabel(cellMin);
@@ -126,6 +127,11 @@ public class RankModel extends AbstractModel {
 		}
 		
 		return output;
+	}//end method
+	
+	@Override
+	public String getModelName() {
+		return "Ranks";
 	}//end method
 	
 	private RankModelComponent rankComponent;

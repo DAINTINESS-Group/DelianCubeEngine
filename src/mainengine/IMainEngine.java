@@ -64,24 +64,53 @@ public interface IMainEngine extends IServer {
 	 * 
 	 * TODO: test with less/more groupers + with alternative selection atoms
 	 * 
-	 * @param queryRawString The query definition
+	 * @param queryRawString	A String with the query definition
 	 * @return the path of the result file
 	 * @throws RemoteException
 	 * 
- 
 	 */
 	String answerCubeQueryFromString(String queryRawString) throws RemoteException;
-	//String answerCubeQueryFromStringExtraInfo(String queryRawString) throws RemoteException;
-	ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException;
+
 	
 	/**
-	 * This is the method to call for answering queries from a file. 
+	 * This is the method to call for answering several queries from a single file.
+	 *  
 	 * Inside the file, queries are separated by a '@'
 	 * 
 	 * @param file	The PATH of the filename containing the queries
+	 * @return	An ArrayList of Strings with the names of the files containing the results of the queries.
 	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
 	 */
 	ArrayList<String> answerCubeQueriesFromFile(File file) throws RemoteException;
+	
+	
+	/**
+	 * Answers a query as prescribed in a String and returns (a) a file with the results of the query and (b) an info file with metadata
+	 * 
+	 * See the answerCubeQueryFromString
+	 * 
+	 * @param queryRawString	A String with the query definition
+	 * @return	A ResultFileMetadata object containing the respective String values on the location of the two produced files and their parent folder 
+	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
+	 */
+	ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException;
+
+	
+	
+	/**
+	 * Answers a query as prescribed in a String and returns a file with the results of the query and a set of models produced over the result of the query 
+	 * 
+	 * See the answerCubeQueryFromString
+	 * 
+	 * @param queryRawString	A String with the query definition
+	 * @param modelsToGenerate	An array of Strings with the model names to generate; if empty, a list of default models are applied
+	 * @return	A ResultFileMetadata object containing the respective String values on the location of the produced files and their parent folder 
+	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
+	 */
+	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
 	
 	
 	

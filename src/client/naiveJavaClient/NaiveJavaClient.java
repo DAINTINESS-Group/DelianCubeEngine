@@ -26,6 +26,7 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 import client.ClientRMITransferer;
+import mainengine.Foo;
 import mainengine.IMainEngine;
 /**
  * A simple client that 
@@ -90,9 +91,17 @@ public class NaiveJavaClient {
 				localName = array[array.length-1].trim();
 
 			ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
-			//TODO: add the download of the info files
+			
 		}
 		System.out.println("Execution of client is complete");
+	
+//		Foo fooService = (Foo) registry.lookup(Foo.class.getSimpleName());
+//		if(fooService == null) {
+//			System.out.println("Unable to commence server, exiting");
+//			System.exit(-100);
+//		}
+//		fooService.foo();
+	
 	}
 
 }

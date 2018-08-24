@@ -18,6 +18,9 @@
 */
 package result;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 
 /**
@@ -46,6 +49,7 @@ public abstract class AbstractModel {
 	 * @return 0 if all is OK, a negative value if there are problems
 	 */
 	public abstract int compute();
+	public abstract String getModelName();
 	public abstract String[][] printAs2DStringArray();
 	
 	protected Result result;
@@ -67,4 +71,50 @@ public abstract class AbstractModel {
 	public AbstractModelComponent getComponentByName(String componentName) {
 		return components.get(componentName);
 	}
-}
+	
+	public int getNumComponents() {
+		return components.size();		
+//		int total = components.values().stream().mapToInt(List::size).sum(); 	//get it by the VALUES part of the hashmap
+	}
+	
+	public int printComponentsToFile(String fileName) {
+		String delim = "\t";
+
+		String[][] array = this.printAs2DStringArray();
+		int numRows = array.length;
+		int numCols = array[0].length;
+
+		if(numCols != this.getNumComponents()) {
+			return -1;
+		}
+
+		File file=new File(fileName);
+		PrintStream printStream=null;
+		try {
+			printStream=new PrintStream(new FileOutputStream(file));
+			for (int i =0; i<numRows;i++) {
+				String line = array[i][0];
+				for (int j = 1; j < numCols; j++) {
+					line = line + delim + array[i][j];
+				}
+				printStream.println(line);
+			}//end for i
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}finally {
+			try {
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+
+		return 0;
+	}
+	
+	
+}//end class
