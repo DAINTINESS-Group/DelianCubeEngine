@@ -103,16 +103,32 @@ public class NaiveJavaClient {
 		/* ******************* now for the models **************/
 	
 		String queryForModels11 =		"CubeName:loan" + " \n" +
-				"Name: CubeQueryLoan11_Copy" + " \n" +
+				"Name: CubeQueryLoan11_Prague" + " \n" +
 				"AggrFunc:Sum" + " \n" +
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl1,date_dim.lvl2" + " \n" +
 				"Sigma:account_dim.lvl2='Prague'";
-		String [] modelsToGenerate = {"Rank","Outlier"};
-		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate);
+		String queryName11 = "CubeQueryLoan11_Prague";
+		
+		
+		String queryForModels12 =		"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan12_Sum1998" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,status_dim.lvl1" + " \n" +
+				"Sigma:date_dim.lvl2 = '1998-01'";
+		String queryName12 = "CubeQueryLoan12_Sum1998";
+		
+		
+		String queryFired = queryForModels12;
+		String queryName = queryName12;
+		//String [] modelsToGenerate = {"Rank","Outlier"};
+		String [] modelsToGenerate = {"Outlier"};
+		//String [] modelsToGenerate = {};
+		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryFired, modelsToGenerate);
 		
 
-		String queryName = "CubeQueryLoan11_Copy";
+		
 		String remoteFolder = resMetadata.getLocalFolder();
 		String remoteResultsFile = resMetadata.getResultFile();
 		String remoteInfoFile = resMetadata.getResultInfoFile();
@@ -125,7 +141,7 @@ public class NaiveJavaClient {
 		File remoteRes = new File(remoteResultsFile);
 		ClientRMITransferer.download(service, remoteRes, new File( localFolder + queryName + ".tab"));
 		File remoteIRes = new File(remoteInfoFile);
-		ClientRMITransferer.download(service, remoteIRes, new File(localFolder + queryName + "_info.tab"));
+		ClientRMITransferer.download(service, remoteIRes, new File(localFolder + queryName + "_Info.txt"));
 		
 		if(models.size() > 0) {	
 			for(String model: models){
@@ -135,7 +151,7 @@ public class NaiveJavaClient {
 				if (array.length > 0)
 					localName = array[array.length-1].trim();
 				File remote = new File(model);
-				ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
+				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localName));
 			}//end for
 		}//end if
 		

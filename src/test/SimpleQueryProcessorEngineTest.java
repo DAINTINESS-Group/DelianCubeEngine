@@ -122,6 +122,9 @@ public class SimpleQueryProcessorEngineTest {
 		File fileReference11 = new File("src/test/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv");
         boolean comparison11 = FileUtils.contentEquals(fileProduced11, fileReference11);
         assertEquals(comparison11, true);
+        //Can fail because at lines 16, 17, the two districts have exactly the same aggr. measure
+        //So sometimes the output has Bruntal first and sometimes it has Brenov first :P
+        //diff OutputFiles/LoanQuery11_S1_CG-Prtl.tab src/test/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv
         
         File fileProduced12 = new File("OutputFiles/LoanQuery12_S1_CG-Dsjnt.tab");
 		File fileReference12 = new File("src/test/OutputFiles/pkdd99/Reference_LoanQuery12_S1_CG-Dsjnt.tsv");
@@ -142,8 +145,7 @@ public class SimpleQueryProcessorEngineTest {
 		File fileReference31 = new File("src/test/OutputFiles/pkdd99/Reference_LoanQuery31_S3_CG-Prtl.tsv");
 		boolean comparison31 = FileUtils.contentEquals(fileProduced31, fileReference31);
         assertEquals(comparison31, true);
-        
-        
+		
 	} //end testAnswerCubeQueriesFromFile
 
 	
@@ -214,4 +216,99 @@ public class SimpleQueryProcessorEngineTest {
         boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
         assertEquals(comparison2 , true);/**/
 	}//end method testanswerCubeQueryFromStringWithMetadata
+
+
+	/**
+	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueryFromStringWithModels(String, String [])}.
+	 * @throws IOException 
+	 */
+	@Test
+	public final void testanswerCubeQueryFromStringWithModels() throws IOException {
+		String queryForModels11 =		"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan11_Prague" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl2='Prague'";
+		String [] modelsToGenerate11 = {"Rank","Outlier"};	
+		
+		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate11);
+		
+		File fileProduced_11_1 = new File("OutputFiles/CubeQueryLoan11_Prague.tab");
+		File fileReference_11_1 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague.tab");
+        boolean comparison_11_1 = FileUtils.contentEquals(fileProduced_11_1, fileReference_11_1);
+        assertEquals(comparison_11_1 , true);
+
+        File fileProduced_11_2 = new File("OutputFiles/CubeQueryLoan11_Prague_Info.txt");
+		File fileReference_11_2 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Info.txt");
+        boolean comparison_11_2 = FileUtils.contentEquals(fileProduced_11_2, fileReference_11_2);
+        assertEquals(comparison_11_2 , true);
+
+        File fileProduced_11_31 = new File("OutputFiles/CubeQueryLoan11_Prague_Ranks.tab");
+		File fileReference_11_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Ranks.tab");
+        boolean comparison_11_31 = FileUtils.contentEquals(fileProduced_11_31, fileReference_11_31);
+        assertEquals(comparison_11_31 , true);
+        
+        File fileProduced_11_32 = new File("OutputFiles/CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
+		File fileReference_11_32 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
+        boolean comparison_11_32 = FileUtils.contentEquals(fileProduced_11_32, fileReference_11_32);
+        assertEquals(comparison_11_32 , true);
+        
+        /* *********** Now, a SINGLE model ********** */
+		String queryForModels12 =		"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan12_Sum1998" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,status_dim.lvl1" + " \n" +
+				"Sigma:date_dim.lvl2 = '1998-01'";
+		String [] modelsToGenerate12 = {"Outlier"};	
+
+		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12, modelsToGenerate12);
+
+		File fileProduced_12_1 = new File("OutputFiles/CubeQueryLoan12_Sum1998.tab");
+		File fileReference_12_1 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998.tab");
+        boolean comparison_12_1 = FileUtils.contentEquals(fileProduced_12_1, fileReference_12_1);
+        assertEquals(comparison_12_1 , true);
+
+        File fileProduced_12_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Info.txt");
+		File fileReference_12_2 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Info.txt");
+        boolean comparison_12_2 = FileUtils.contentEquals(fileProduced_12_2, fileReference_12_2);
+        assertEquals(comparison_12_2 , true);
+
+        File fileProduced_12_32 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
+		File fileReference_12_32 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
+        boolean comparison_12_32 = FileUtils.contentEquals(fileProduced_12_32, fileReference_12_32);
+        assertEquals(comparison_12_32 , true);
+
+        /* *********** Now, NO model => Generate ranks and outliers ********** */
+		String queryForModels12_2 =		"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan12_Sum1998_2" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,status_dim.lvl1" + " \n" +
+				"Sigma:date_dim.lvl2 = '1998-02'";
+		String [] modelsToGenerate12_2 = {};	
+
+		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12_2, modelsToGenerate12_2);
+		File fileProduced_12_1_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2.tab");
+		File fileReference_12_1_2 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2.tab");
+        boolean comparison_12_1_2 = FileUtils.contentEquals(fileProduced_12_1_2, fileReference_12_1_2);
+        assertEquals(comparison_12_1_2 , true);
+
+        File fileProduced_12_2_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Info.txt");
+		File fileReference_12_2_2 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Info.txt");
+        boolean comparison_12_2_2 = FileUtils.contentEquals(fileProduced_12_2_2, fileReference_12_2_2);
+        assertEquals(comparison_12_2_2 , true);
+
+        File fileProduced_12_2_31 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Ranks.tab");
+		File fileReference_12_2_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Ranks.tab");
+        boolean comparison_12_2_31 = FileUtils.contentEquals(fileProduced_12_2_31, fileReference_12_2_31);
+        assertEquals(comparison_12_2_31 , true);
+        
+        File fileProduced_12_2_32 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
+		File fileReference_12_2_32 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
+        boolean comparison_12_2_32 = FileUtils.contentEquals(fileProduced_12_2_32, fileReference_12_2_32);
+        assertEquals(comparison_12_2_32 , true);
+	}//end testanswerCubeQueryFromStringWithModels
+
 }//end class
