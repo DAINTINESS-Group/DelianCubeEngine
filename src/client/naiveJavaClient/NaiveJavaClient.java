@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import client.ClientRMITransferer;
 import mainengine.Foo;
 import mainengine.IMainEngine;
+import mainengine.ResultFileMetadata;
 /**
  * A simple client that 
  * (a) locates an RMI server in the HOST at PORT
@@ -69,6 +70,10 @@ public class NaiveJavaClient {
 				"Cinecubes", "pkdd99", "loan");
 		System.out.println("Completed connection initialization");
 
+		//CleanUp client Cache
+		File resultFolder = new File("ClientCache");
+		deleteAllFilesOfFolder(resultFolder);
+		
 		//Run queries
 		//File f2 = new File("InputFiles/cubeQueriesloan.ini");
 		File f2 = new File("InputFiles/loanQueries.txt");
@@ -85,23 +90,77 @@ public class NaiveJavaClient {
 		for(String s: fileLocations) {
 			System.out.println("Find the next result at " + s);
 			File remote = new File(s);
-			String[] array = s.split("/");
+			String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
+			String[] array = s.split(sep);
 			String localName = "NoName";
 			if (array.length > 0)
 				localName = array[array.length-1].trim();
 
-			ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
+			ClientRMITransferer.download(service, remote, new File("ClientCache" + File.separator + localName));
 			
 		}
-		System.out.println("Execution of client is complete");
+		
+		/* ******************* now for the models **************/
 	
-//		Foo fooService = (Foo) registry.lookup(Foo.class.getSimpleName());
-//		if(fooService == null) {
-//			System.out.println("Unable to commence server, exiting");
-//			System.exit(-100);
-//		}
-//		fooService.foo();
-	
-	}
+		String queryForModels11 =		"CubeName:loan" + " \n" +
+				"Name: CubeQueryLoan11_Copy" + " \n" +
+				"AggrFunc:Sum" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl1,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl2='Prague'";
+		String [] modelsToGenerate = {"Rank","Outlier"};
+		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate);
+		
 
-}
+		String queryName = "CubeQueryLoan11_Copy";
+		String remoteFolder = resMetadata.getLocalFolder();
+		String remoteResultsFile = resMetadata.getResultFile();
+		String remoteInfoFile = resMetadata.getResultInfoFile();
+		ArrayList<String> models = resMetadata.getComponentResultFiles();
+		ArrayList<String> modelInfos = resMetadata.getComponentResultInfoFiles();
+		
+		System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile + "\nCOMP\t" + models.get(0));
+		
+		String localFolder = "ClientCache" + File.separator;
+		File remoteRes = new File(remoteResultsFile);
+		ClientRMITransferer.download(service, remoteRes, new File( localFolder + queryName + ".tab"));
+		File remoteIRes = new File(remoteInfoFile);
+		ClientRMITransferer.download(service, remoteIRes, new File(localFolder + queryName + "_info.tab"));
+		
+		if(models.size() > 0) {	
+			for(String model: models){
+				String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
+				String [] array = model.split(sep);
+				String localName = "NoName";
+				if (array.length > 0)
+					localName = array[array.length-1].trim();
+				File remote = new File(model);
+				ClientRMITransferer.download(service, remote, new File("ClientCache/" + localName));
+			}//end for
+		}//end if
+		
+		
+		System.out.println("Execution of client is complete");
+	}//end main
+
+	public static int deleteAllFilesOfFolder(File dir) {
+		if(!dir.isDirectory())
+			return -1;
+		int i = 0;
+		for(File file: dir.listFiles()) { 
+		    if (!file.isDirectory()) {
+		        file.delete();
+		        i++;
+		    }
+		}
+		return i;
+	}//end method
+	
+}//end class
+
+//Foo fooService = (Foo) registry.lookup(Foo.class.getSimpleName());
+//if(fooService == null) {
+//	System.out.println("Unable to commence server, exiting");
+//	System.exit(-100);
+//}
+//fooService.foo();

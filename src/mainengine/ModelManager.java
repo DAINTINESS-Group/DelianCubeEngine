@@ -10,6 +10,8 @@ public class ModelManager {
 	public ModelManager(Result res) {
 		result = res;
 		modelsToLaunch = new ArrayList<AbstractModel>();
+		modelComponentFileNames = new ArrayList<String>();
+		modelInfoFileNames = new ArrayList<String>();
 	}//end constructor
 	
 	/**
@@ -53,18 +55,42 @@ public class ModelManager {
 				return -1;
 			}
 			System.out.println(model.getModelName());
+
+			//1.execute the model
 			int modelExecution =  model.compute();
 			
 			if(modelExecution==0) {
-				String outputFolder = "OutputFiles";
-				String resultFileName = outputFolder + File.separator + namePrefix + "_" + model.getModelName() + ".tab";
+				//2a. output results to a file 
+				String outputFolder = "OutputFiles"+ File.separator;
+				String resultFileName = outputFolder + namePrefix + "_" + model.getModelName() + ".tab";
 				model.printComponentsToFile(resultFileName);
+				//2b. add the file with the results to the list of file results
+				modelComponentFileNames.add(resultFileName);
+				
+				//3a. construct the info string for the entire model
+				//TODO: make each model produce an info string once (i.e., within) compute() was launched
+				//3b. add info files to the list
+				//TODO: add info files to the list
+				
 			}//end if
 		}// end for
 		return 0;
 	}// end executeModelConstruction
 	
+	/**
+	 * Returns an updated ResultFileMetadata object that contains the names of the files of the execution of the selected models
+	 * 
+	 * @param resMetadata a ResultFileMetadata object to be populated with the names of the files of the execution of the selected models
+	 * @return the size of the arraylist that was added to the object
+	 */
+	public int addComponentsToResultMetadata(ResultFileMetadata resMetadata) {
+		resMetadata.setComponentResultFiles(modelComponentFileNames);
+		return modelComponentFileNames.size();
+	}//end addComponentsToResultMetadata
+	
 	private ArrayList<AbstractModel> modelsToLaunch;
 	private Result result;
 	private String namePrefix; 
+	private ArrayList<String> modelComponentFileNames;
+	private ArrayList<String> modelInfoFileNames;
 }

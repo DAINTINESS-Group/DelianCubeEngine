@@ -230,9 +230,9 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
 				
 		//3b. print result to file
-		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
+		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles" + File.separator);
 		//String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
-		
+		//System.out.println("SQP produces: " + outputLocation);		
 		return outputLocation;
 	}//answerCubeQueryFromString
 
@@ -281,13 +281,13 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 
 
 		String outputLocation = answerCubeQueryFromString(queryRawString);
-		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles/");
+		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
 		
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		
 		resMetadata.setComponentResultFiles(null);
 		resMetadata.setComponentResultInfoFiles(null);
-		resMetadata.setLocalFolder("OutputFiles/");
+		resMetadata.setLocalFolder("OutputFiles" + File.separator);
 		resMetadata.setResultFile(outputLocation);
 		resMetadata.setResultInfoFile(outputInfoLocation);
 System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
@@ -302,35 +302,49 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	@Override
 	public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate)
 			throws RemoteException {
-		// TODO Auto-generated method stub
+		
+		int numOfModelsGenerated = 0;
+		int numOfModelsRequested = 0;
+		
+		//0. answer the query and get its result and info files
 		ResultFileMetadata resMetadata = answerCubeQueryFromStringWithMetadata(queryRawString);
-		//postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
-		
-		//-------------------------------- invoke model generation -----------
-System.out.println("\n\nModel generation!\n");
-		ModelManager modelManager = new ModelManager(this.currentResult);
-		
+		/* 
+		 * postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
+		*/
+
+		/* 
+		 * 1. Choosing which models to fire. 
+		 *    We will work with the modelNames variable; 
+		 *    if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
+		*/
 		String [] modelNames = {"Rank","Outlier"};
-		
-		//we will work with modelNames; if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
 		if(modelsToGenerate.length > 0) {
 			modelNames = modelsToGenerate.clone(); 
 		}
-System.out.println("\nModel selection of " + modelNames.length + " models");		
-		
-		//1. select the models to fire
+		numOfModelsRequested = modelNames.length;
+		System.out.println("\nModel selection of " + numOfModelsRequested + " models");		
+
+
+		//2. select the models to fire
+		ModelManager modelManager = new ModelManager(this.currentResult);
 		modelManager.selectModelsToLaunch(modelNames);
-		//2. execute the selected models
+		//3. execute the selected models
 		int modelGenFlag = modelManager.executeModelConstruction(this.currentQueryName);
-		//3.TODO Populate resMetadata with the outcome of model generation
+		//4.Populate resMetadata with the outcome of model generation
 		if (modelGenFlag == 0) { 			//all went OK
-			//probably will do it by passing the resMetadata to the model manager to populate the 2 fields.
-			;
-		}
-		//------------ END invoke model generation ------------
+			numOfModelsGenerated = modelManager.addComponentsToResultMetadata(resMetadata);
+			
+			//TODO Populate resMetadata with the info files
+			
+			if(numOfModelsGenerated != numOfModelsRequested) {
+				System.out.println("\nModel generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
+				System.exit(-1);
+			}
+			
+		}//end if modelGenFlag
+
 		
-		
-		return null;
+		return resMetadata;
 	}//end method answerCubeQueryFromStringWithModels
 
 

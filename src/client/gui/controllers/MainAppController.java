@@ -145,7 +145,7 @@ public class MainAppController extends AbstractController {
 				if (array.length > 0)
 					localName = array[array.length-1].trim();
 
-				localName = "ClientCache/" + localName;
+				localName = "ClientCache" + File.separator + localName;
 				File localFile = new File(localName);
 
 				try {

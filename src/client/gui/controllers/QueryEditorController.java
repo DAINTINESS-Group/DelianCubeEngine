@@ -181,6 +181,7 @@ public class QueryEditorController extends AbstractController {
 				return -1;
 			}
 		} catch (RemoteException e) {
+			System.out.println("Cannot execute query answering!");
 			e.printStackTrace();
 		}
 
@@ -208,7 +209,9 @@ public class QueryEditorController extends AbstractController {
 	
 	public String downloadResult(String resultFileLocation,  IMainEngine serverEngine) {	
 		File remote = new File(resultFileLocation);
-		String[] array = resultFileLocation.split("/");
+		String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
+		
+		String[] array = resultFileLocation.split(sep);
 		String localName = "";
 		if (array.length > 0)
 			localName = array[array.length-1].trim();
