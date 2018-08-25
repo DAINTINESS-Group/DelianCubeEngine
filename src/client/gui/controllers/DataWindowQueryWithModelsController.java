@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -37,53 +38,71 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.ExitController;
 import client.gui.utils.FileInfoProvider;
+import client.gui.utils.LauncherForViewControllerPairs;
 
-public class DataWindowController extends AbstractController {
+public class DataWindowQueryWithModelsController extends AbstractController {
 	@FXML
 	private TableView<ObservableList<StringProperty>> dataTable;
 	
 	@FXML
 	private TextArea textLogger;
 	
-	private File file = null;
-
+	private File resultsFile = null;
+	private File resultsInfoFile = null;
+	
+	//private String localFolder = "";
+	private String localResultsFile = "";
+	private String localInfoFile = "";
+	private ArrayList<String> localModelFiles = new ArrayList<String>(); 
+	private ArrayList<String> localInfoModelFiles = new ArrayList<String>(); 
 	
 	
-	public DataWindowController() {
+	public DataWindowQueryWithModelsController() {
 		super();
+		localModelFiles = new ArrayList<String>();
+		localInfoModelFiles = new ArrayList<String>();
 	}
 
-	public DataWindowController(String aFileName) {
+	public DataWindowQueryWithModelsController(String aResultsFile, String aResultInfoFile, ArrayList<String> theLocalModelFiles, ArrayList<String> theLocalInfoModelFiles) {
 		super();
 		dataTable = new TableView<ObservableList<StringProperty>>();
 		textLogger = new TextArea();
 		
-		this.file = new File(aFileName);
+		localResultsFile = aResultsFile;
+		localInfoFile = aResultInfoFile;
+		localModelFiles = theLocalModelFiles;
+		localInfoModelFiles = theLocalInfoModelFiles;
+		
+		this.resultsFile = new File(localResultsFile);
+		this.resultsInfoFile = new File(localInfoFile);
 	}
 	
-	public void autoloadFile() {
-		//String textLogged = "File Opened:" + aFileName;
-		
-		if(file == null)
+	public void autoloadFile() {		
+		if(resultsFile == null)
 			return;
 		try {
-			System.out.println(file.getAbsolutePath());		
-			DataWindowController.readTSVandPopulateTableView(dataTable, file,true);
+			System.out.println("OPEN RESULT FILE FOR DWQ&M : " + resultsFile.getAbsolutePath());		
+			DataWindowQueryWithModelsController.readTSVandPopulateTableView(dataTable, resultsFile,true);
 		} catch (IOException eio) {
 			eio.printStackTrace();
 		}
 
-
-		//logToTextLogger(textLogged);	
+		if(resultsInfoFile == null)
+			return;
+		else {
+			FileInfoProvider infoProvider  = new FileInfoProvider(resultsFile);
+			String infoContents = infoProvider.getInfoContents(localInfoFile);
+			logToTextLogger(infoContents);
+		}
 		
-	}
-	
+	}//end autoloadFile
 	
 	private void logToTextLogger(String textLogged) {
 		String prevText = textLogger.getText();
@@ -95,53 +114,82 @@ public class DataWindowController extends AbstractController {
 		ExitController x = new client.gui.utils.ExitController(this.stage);
     	x.exit();
 	}
-
-	@FXML
-	private void handleAbout() {
-		String contentText = null;
-		String infoContents = "";
-		
-		if(file == null) {
-			contentText = "Delian Cube Engine implements a simple query engine that receives cube queries and returns the results in tsv files.";
-		}
-		else {
-			contentText = "This data window opens a tab separated file. \nFile : " + file.getAbsolutePath() + "\n\n";
-			FileInfoProvider infoProvider  = new FileInfoProvider(file); 
-			String fullInfoLocation = infoProvider.getNameForInfoFile(file.getAbsolutePath());
-			//String infoLocation = infoProvider.getNameForInfoFile(file.getName());
-			//System.out.println(infoLocation);
-			if(infoProvider.getInfoFileExistence()) {
-				System.out.println("Opening info file: " + fullInfoLocation);
-				infoContents = infoProvider.getInfoContents(fullInfoLocation);
-				contentText = contentText + infoContents;
-			}
-		}
-		CustomAlertDialog a = new CustomAlertDialog("about", null, contentText, this.stage); 
-		a.show();
-		
-		String textLogged = "About clicked.";
-		logToTextLogger(textLogged);
-		logToTextLogger(infoContents);
-		
-	}
-
+	
 	@FXML
 	private void handleDWLoad() {
 		FileChooser fileChooser = new FileChooser();
-		file = fileChooser.showOpenDialog(this.stage);
-		if(file == null)
+		resultsFile = fileChooser.showOpenDialog(this.stage);
+		if(resultsFile == null)
 			return;
 		try {
-			DataWindowController.readTSVandPopulateTableView(dataTable, file,true);
+			DataWindowQueryWithModelsController.readTSVandPopulateTableView(dataTable, resultsFile,true);
 		} catch (IOException eio) {
 			eio.printStackTrace();
 		}
 
-		String textLogged = "File Opened:" + file;
+		String textLogged = "File Opened:" + resultsFile;
 		logToTextLogger(textLogged);
 	}
 
+	@FXML
+	private void handleInfo() {
+		String infoContents = "No Info Available for the current Data Windows";
 		
+		if(resultsInfoFile != null){
+			FileInfoProvider infoProvider  = new FileInfoProvider(resultsFile);
+			infoContents = infoProvider.getInfoContents(localInfoFile);
+		}//end if
+
+		CustomAlertDialog a = new CustomAlertDialog("Info", null, infoContents, this.stage); 
+		a.show();
+	}//end handleInfo
+	
+	@FXML
+	private void handleAbout() {
+		String contentText = "This window presents the result of a query. The Models menu allows you to see the models that have automatically been computed for it.";
+		CustomAlertDialog a = new CustomAlertDialog("about", null, contentText, this.stage); 
+		a.show();
+		
+		String textLogged = "About clicked.";
+		logToTextLogger(textLogged);		
+	}//end handleAbout
+
+	@FXML
+	private void handleModels() {
+		if((localModelFiles == null) || (localModelFiles.size() == 0)) {
+			CustomAlertDialog a = new CustomAlertDialog("No models available", null, "There are no models available for these data", this.stage); 
+			a.show();
+			return;
+		}//end if
+		else {
+			System.out.println("Attempting to fire models");
+			for(String nextModelFile: localModelFiles) {
+				VBox dwLayout = null;
+				int launchResult = -100;
+
+				//TODO: Launch launcher in a new Stage at a new position + set its title !
+				//Now, and not only for models, all windows open at the same place, one on top of the other, and without any title.
+				LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+				//ATTN: if we update how we show models in the future, i.e., NOT with Data Windows
+				//these two lines must be maintained with the new FXML file + the new controller
+				DataWindowController controller = new DataWindowController(nextModelFile);
+				launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+						"DataWindow.fxml", controller, dwLayout);
+				controller.autoloadFile();
+				
+				//Just logging what happened.
+				String prevText = textLogger.getText();
+				if(launchResult <0 ) {
+					textLogger.setText(prevText + "\n" + "Failed to open a Data Window for Model " + nextModelFile + "\n");
+				}
+				else {
+					textLogger.setText(prevText + "\n" + "Opened a Data Window for Model " + nextModelFile + "\n");			
+				}
+				
+			}//end for
+		}//end else
+	}//end handleModels
+	
 	/**
 	 * Reads a tab delimited file and populates a TableView
 	 * <p>

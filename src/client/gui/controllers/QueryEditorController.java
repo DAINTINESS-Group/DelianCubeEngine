@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import client.ClientRMITransferer;
 import client.gui.application.AbstractApplication;
@@ -135,6 +136,21 @@ public class QueryEditorController extends AbstractController {
 	}//end method
 
 	@FXML
+	public int handleHelp() {
+		RunQueryHelpController controller = new RunQueryHelpController();
+		VBox dwLayout = null;
+		int launchResult = -100;
+		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"HelpWindow.fxml", controller, dwLayout);
+		controller.setup();
+		
+		return launchResult;
+
+	}//end handle help method
+	
+	@FXML
 	public int handleRunQuery() {
 		String queryString = null;
 		int result = -100;
@@ -146,11 +162,12 @@ public class QueryEditorController extends AbstractController {
 			a.show();
 			return -100;
 		}
-		result = executeAndDisplayQuery(queryString);
+		result = executeAndDisplaySimpleQuery(queryString);
 		return result;
 	}
+	
 
-	public int executeAndDisplayQuery(String queryString) {
+	public int executeAndDisplaySimpleQuery(String queryString) {
 		String remoreResultFileLocation = null;
 		String remoteInfoFileLocation = null;
 		String remoteFolderName = null;
@@ -206,6 +223,141 @@ public class QueryEditorController extends AbstractController {
 		return result;
 	}//end method
 	
+
+	/**
+	 * Given a downloaded file via the RMI Client, it displays it via a DataWindow
+	 * <p>
+	 * @param resultFileLocation The name of the file containing the results of the query
+	 * @return 0 if all OK, negative otherwise
+	 */
+	private int displayResultInDataWindow(String resultFileLocation) {
+		DataWindowController controller = new DataWindowController(resultFileLocation);
+		VBox dwLayout = null;
+		int launchResult = -100;
+		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"DataWindow.fxml", controller, dwLayout);
+		controller.autoloadFile();
+		
+		return launchResult;
+	}//end method displayResultInDataWindow
+
+	
+	
+	@FXML
+	public int handleRunQueryWithModels() {
+		String queryString = null;
+		int result = -100;
+		
+		queryString = textArea.getText();
+		
+		if(queryString.length() == 0) {
+			CustomAlertDialog a = new CustomAlertDialog("Empty query", null, "Your query string is empty", this.stage); 
+			a.show();
+			return -100;
+		}
+		result = executeAndDisplayeQueryWithModels(queryString);
+		return result;
+	}//end handleRunQueryWithModels
+	
+
+	public int executeAndDisplayeQueryWithModels(String queryString) {
+		int result = -100;
+		
+		String remoteFolder = null;
+		String remoteResultsFile = null;
+		String remoteInfoFile = null;
+		ArrayList<String> models = null;
+		ArrayList<String> modelInfos = null;
+		
+		String localFolder = "ClientCache" + File.separator;
+		String localResultsFile = "";
+		String localInfoFile = "";
+		ArrayList<String> localModelFiles = new ArrayList<String>(); 
+		ArrayList<String> localInfoModelFiles = new ArrayList<String>(); 
+		
+		ResultFileMetadata resMetadata = null;
+		
+		IMainEngine serverEngine = this.getApplication().getServer();
+		
+		try {
+		
+			String [] modelsToGenerate = {"Rank", "Outlier"};
+			resMetadata = serverEngine.answerCubeQueryFromStringWithModels(queryString, modelsToGenerate);
+
+			if(resMetadata != null) {
+				remoteFolder = resMetadata.getLocalFolder();
+				remoteResultsFile = resMetadata.getResultFile();
+				remoteInfoFile = resMetadata.getResultInfoFile();
+				models = resMetadata.getComponentResultFiles();
+				modelInfos = resMetadata.getComponentResultInfoFiles();
+				
+				System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile + "\nCOMP\t" + models.get(0));
+
+			}
+			else {
+				System.out.println("Remote METADATA: NULL" );
+				return -1;
+			}
+		} catch (RemoteException e) {
+			System.out.println("Cannot execute query answering!");
+			e.printStackTrace();
+		}
+		
+		if(remoteResultsFile.length() == 0) {	
+			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
+			a.show();
+			return -1;
+		}
+		else {
+			
+			localResultsFile = downloadResult(remoteResultsFile, serverEngine);
+			localInfoFile = downloadResult(remoteInfoFile, serverEngine);
+			
+			if(models.size() > 0) {	
+				for(String model: models){
+					String currentModelFile = downloadResult(model, serverEngine);
+					localModelFiles.add(currentModelFile);
+				}//end for
+			}//end if
+			
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//TODO: download Info files too
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+			result = displayResultInDataWindowQM(localResultsFile, localInfoFile, localModelFiles, null);
+		} //end else
+		
+		
+		return 0;
+	}//end method
+	
+	/**
+	 * Given a query that generated query results, query info, models and model info files, it displays it in a DWWithModels
+	 * <p>
+	 * @param aResultsFile 	A string with the name of the file containing the results of the query
+	 * @param aResultInfoFile  A string with the name of the info file for the query results 
+	 * @param theLocalModelFiles An ArrayList of Strings with the names of the files with the models of the query results 
+	 * @param theLocalInfoModelFiles An ArrayList of Strings with the names of the info files for the models of the query results
+	 * @return 0 if all OK, negative otherwise
+	 */
+	private int displayResultInDataWindowQM(String aResultsFile, String aResultInfoFile, ArrayList<String> theLocalModelFiles, ArrayList<String> theLocalInfoModelFiles) {
+		DataWindowQueryWithModelsController controller = //new DataWindowQueryWithModelsController(resultFileLocation);
+				new DataWindowQueryWithModelsController(aResultsFile, aResultInfoFile, theLocalModelFiles, theLocalInfoModelFiles);
+		VBox dwLayout = null;
+		int launchResult = -100;
+		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"DataWindowQueryWithModels.fxml", controller, dwLayout);
+		controller.autoloadFile();
+		
+		return launchResult;
+	}//end method displayResultInDataWindow
+	
+	
+
 	
 	public String downloadResult(String resultFileLocation,  IMainEngine serverEngine) {	
 		File remote = new File(resultFileLocation);
@@ -227,46 +379,5 @@ public class QueryEditorController extends AbstractController {
 		
 		return localName;
 	}//end method
-
-	
-	/**
-	 * Given a downloaded file via the RMI Client, it displays it via a DataWindow
-	 * <p>
-	 * @param resultFileLocation The name of the file containing the results of the query
-	 * @return 0 if all OK, negative otherwise
-	 */
-	private int displayResultInDataWindow(String resultFileLocation) {
-		DataWindowController controller = new DataWindowController(resultFileLocation);
-		VBox dwLayout = null;
-		int launchResult = -100;
-		
-		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
-		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"DataWindow.fxml", controller, dwLayout);
-		controller.autoloadFile();
-		
-		return launchResult;
-	}//end method
-
-	
-	
-	
-	
-	@FXML
-	public int handleHelp() {
-		RunQueryHelpController controller = new RunQueryHelpController();
-		VBox dwLayout = null;
-		int launchResult = -100;
-		
-		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
-		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"HelpWindow.fxml", controller, dwLayout);
-		controller.setup();
-		
-		return launchResult;
-
-	}//end handle help method
-	
-	
 	
 }//end class

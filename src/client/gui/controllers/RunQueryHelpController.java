@@ -31,7 +31,7 @@ public class RunQueryHelpController extends AbstractController {
 		commentsTextArea.appendText("AggrFunc:Max\n");
 		commentsTextArea.appendText("Measure:amount\n");
 		commentsTextArea.appendText("Gamma:account_dim.lvl1, status_dim.lvl1\n");
-		commentsTextArea.appendText("Sigma:date_dim.lvl2 = '01-1998'\n");
+		commentsTextArea.appendText("Sigma:date_dim.lvl2 = '1998-01'\n");
 		commentsTextArea.appendText("\n");
 		commentsTextArea.appendText("CubeName:loan\n");
 		commentsTextArea.appendText("Name: LoanQuery21\n");
