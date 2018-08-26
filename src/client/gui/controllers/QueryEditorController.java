@@ -283,7 +283,7 @@ public class QueryEditorController extends AbstractController {
 		
 		try {
 		
-			String [] modelsToGenerate = {"Rank", "Outlier", "KMeansApache"};
+			String [] modelsToGenerate = {"Rank", "Outlier", "KMeansApache", "KPIMedianBased"};
 			resMetadata = serverEngine.answerCubeQueryFromStringWithModels(queryString, modelsToGenerate);
 
 			if(resMetadata != null) {

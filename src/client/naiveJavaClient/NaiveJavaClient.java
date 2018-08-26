@@ -120,9 +120,9 @@ public class NaiveJavaClient {
 		String queryName12 = "CubeQueryLoan12_Sum1998";
 		
 		
-		String queryFired = queryForModels11;
-		String queryName = queryName11;
-		String [] modelsToGenerate = {"Rank","Outlier", "KMeansApache"};
+		String queryFired = queryForModels12;
+		String queryName = queryName12;
+		String [] modelsToGenerate = {"Rank","Outlier", "KMeansApache", "KPIMedianBased"};
 		//String [] modelsToGenerate = {"Outlier"};
 		//String [] modelsToGenerate = {};
 		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryFired, modelsToGenerate);

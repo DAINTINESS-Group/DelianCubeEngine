@@ -30,7 +30,8 @@ public class ModelFactory {
 			case "Rank":	return new RankModel(aResult); //break;
 			case "Outlier":	return new OutlierModel(aResult); //break;
 			case "KMeansApache":	return new KmeansApache(aResult); //break;
-			default:		return null; //break;
+			case "KPIMedianBased":	return new KPIMedianBasedModel(aResult); //break;
+			default:	System.out.println("MODEL FACTORY: Missed the generation of: " + modelType);	return null; //break;
 		}
 	}
 }//end class

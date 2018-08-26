@@ -28,7 +28,7 @@ import org.apache.commons.math3.stat.ranking.TiesStrategy;
 
 /**
  * The class to hold ranking information. Originally designed to hold
- * a btimap for cells with the min and max values and an array with the rankings of the cells
+ * a bitmap for cells with the min and max values and an array with the rankings of the cells
  * with respect to their measure
  *  
  * @author pvassil

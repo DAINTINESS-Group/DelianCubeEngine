@@ -115,7 +115,6 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 		//		double max = stats.getMax();
 		//		double min = stats.getMin();
 
-		//FIX Z-score is wrong!
 		for(int i = 0; i < zScores.length; i++) {
 			if (std != 0.0)
 				zScores[i] = (cellValues[i] - mean)/std;

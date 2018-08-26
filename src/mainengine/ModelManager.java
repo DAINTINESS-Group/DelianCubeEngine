@@ -30,7 +30,8 @@ public class ModelManager {
 				case "Rank":	modelsToLaunch.add(modelFactory.generateModel("Rank", result)); break;
 				case "Outlier":	modelsToLaunch.add(modelFactory.generateModel("Outlier", result)); break;
 				case "KMeansApache":	modelsToLaunch.add(modelFactory.generateModel("KMeansApache", result)); break;
-				default: break;
+				case "KPIMedianBased":	modelsToLaunch.add(modelFactory.generateModel("KPIMedianBased", result)); break;
+				default: System.out.println("MODEL MANAGER: Missed the generation of: " + modelNames[i]); break;
 			}//end switch
 		}
 		
