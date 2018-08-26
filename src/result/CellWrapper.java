@@ -16,21 +16,33 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-
 package result;
 
-public class ModelFactory {
+import org.apache.commons.math3.ml.clustering.Clusterable;
 
-	public ModelFactory() {
-		;
-	}
+/**
+ * This class supports k-Means by Apache which requires that the values fed to it implement the Clusterable interface
+ * 
+ *  Practically this means that the getPoint() method is implemented.
+ *  
+ * @author pvassil
+ *
+ */
+public class CellWrapper implements Clusterable {
+		    private double[] points;
+		    private Cell cell;
 
-	public AbstractModel generateModel(String modelType, Result aResult) {
-		switch(modelType) {
-			case "Rank":	return new RankModel(aResult); //break;
-			case "Outlier":	return new OutlierModel(aResult); //break;
-			case "KMeansApache":	return new KmeansApache(aResult); //break;
-			default:		return null; //break;
-		}
-	}
-}//end class
+		    public CellWrapper(Cell aCell) {
+		        this.cell = aCell;
+		        this.points = new double [1];
+		        this.points[0] = this.cell.toDouble().doubleValue();
+		    }
+
+		    public Cell getCell() {
+		        return cell;
+		    }
+
+		    public double[] getPoint() {
+		        return points;
+		    }
+}

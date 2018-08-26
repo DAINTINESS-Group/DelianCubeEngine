@@ -29,6 +29,7 @@ public class ModelManager {
 			switch(modelNames[i]) {
 				case "Rank":	modelsToLaunch.add(modelFactory.generateModel("Rank", result)); break;
 				case "Outlier":	modelsToLaunch.add(modelFactory.generateModel("Outlier", result)); break;
+				case "KMeansApache":	modelsToLaunch.add(modelFactory.generateModel("KMeansApache", result)); break;
 				default: break;
 			}//end switch
 		}
@@ -54,7 +55,7 @@ public class ModelManager {
 				System.out.println("NULL?");
 				return -1;
 			}
-			System.out.println(model.getModelName());
+			System.out.println("\n\n" + model.getModelName());
 
 			//1.execute the model
 			int modelExecution =  model.compute();

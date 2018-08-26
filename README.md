@@ -52,14 +52,15 @@ Refactorings & Corrections
 - [ ] Address the todo's inside the src
 - [ ] Introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
 - [ ] Refactor the GUI client, to kill cycles in the package diagram
-- [ ] Redefine how client communicates with server: a list of files is produced, not just a single tab file with the data
+- [ ] Refactor the result package to add a hierarchy of packages for modules (abstract, general-purpose, KPIs, clusterings, ...)
+- [ ] Refactor how clients communicate with server and server init. Connections should be parsed at server startup and sessions handled by an intermediate class between Server and SQP (probably a sessionManager or a QueryManager, caching sessions, queries and their results, etc) 
+- [X] Redefine how client communicates with server: a list of files is produced, not just a single tab file with the data
 - [X] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
 - [X] Add a GUI client
 - [X] Cleanup the code from unused parts of v.0.0 (at least the known ones)
 - [X] Fix the fixme comments
 
 Extension to an Intentional OLAP engine
-- [ ] Construct a session manager, registering submitted queries and adding models highlights to them, in order to create dashboards
 - [ ] Add support to all the apache commons math parts that pertain to the computation of simple models
 - [ ] (maybe) Link to spark mllib via principled interfacing to add more model extraction methods
 

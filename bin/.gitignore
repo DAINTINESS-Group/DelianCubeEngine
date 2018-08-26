@@ -1,7 +1,4 @@
-/client/
-/cubemanager/
-/exctractionmethod/
-/mainengine/
-/parsermgr/
 /result/
+/mainengine/
+/client/
 /test/
