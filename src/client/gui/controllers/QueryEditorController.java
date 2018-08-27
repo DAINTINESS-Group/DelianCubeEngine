@@ -305,6 +305,9 @@ public class QueryEditorController extends AbstractController {
 			e.printStackTrace();
 		}
 		
+		if(remoteResultsFile != null)
+			System.out.println("OOOOOOOOOOOOOOOOOOOOOOO " + remoteResultsFile);
+		
 		if(remoteResultsFile.length() == 0) {	
 			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
 			a.show();

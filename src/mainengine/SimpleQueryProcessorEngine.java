@@ -312,19 +312,30 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		 * postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
 		*/
 
-		/* 
-		 * 1. Choosing which models to fire. 
-		 *    We will work with the modelNames variable; 
-		 *    if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
-		*/
-		String [] modelNames = {"Rank","Outlier"};
-		if(modelsToGenerate.length > 0) {
-			modelNames = modelsToGenerate.clone(); 
+// Used to work fine. Replace so that we can introduce model selection explicitly via a dedicated class
+//		/* 
+//		 * 1. Choosing which models to fire. 
+//		 *    We will work with the modelNames variable; 
+//		 *    if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
+//		*/
+//		String [] modelNames = {"Rank","Outlier"};
+//		if(modelsToGenerate.length > 0) {
+//			modelNames = modelsToGenerate.clone(); 
+//		}
+//		numOfModelsRequested = modelNames.length;
+//		System.out.println("\nModel selection of " + numOfModelsRequested + " models");		
+
+		if((modelsToGenerate == null) ||(modelsToGenerate.length == 0)) {
+			numOfModelsRequested = 0;
 		}
-		numOfModelsRequested = modelNames.length;
-		System.out.println("\nModel selection of " + numOfModelsRequested + " models");		
+		else 
+			numOfModelsRequested = modelsToGenerate.length;
+		
+		String [] modelNames;
+		ModelSelector modelSelector = new ModelSelector(currentQueryName);
+		modelNames = modelSelector.decideModelsToExecute(currentQueryName, modelsToGenerate);
 
-
+		
 		//2. select the models to fire
 		ModelManager modelManager = new ModelManager(this.currentResult);
 		modelManager.selectModelsToLaunch(modelNames);
@@ -333,11 +344,11 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		//4.Populate resMetadata with the outcome of model generation
 		if (modelGenFlag == 0) { 			//all went OK
 			numOfModelsGenerated = modelManager.addComponentsToResultMetadata(resMetadata);
-			
-			//TODO Populate resMetadata with the info files
-			
-			if(numOfModelsGenerated != numOfModelsRequested) {
+						
+
+			if( (numOfModelsRequested > 0) &&(numOfModelsGenerated < numOfModelsRequested)) {
 				System.out.println("\nModel generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
+				System.out.println("Shutting down server\n");
 				System.exit(-1);
 			}
 			

@@ -14,7 +14,7 @@ This project implements a simple query engine that receives cube queries and ret
 
 
 ## Usage
-For v.0.1, the usage is simple:
+For v.0.1 and v.0.2, the usage is simple:
 1. Start your DBMS (MySQL) service, if not running
 2. Start the Server of the project
 3. Alternatives
@@ -24,6 +24,9 @@ For v.0.1, the usage is simple:
 
 
 ## Credits and History
+
+### v.0.2 [2018 August]
+P. Vassiliadis extended the engine with the generation of models for queries. Expansion of the GUI, the testing and refactorings also took place 
 
 ### v.0.1 [2018 June and July]
 P. Vassiliadis extracted a relevant subset of v.0.0, and refactored/adapted it for the first v. of a simple query engine that simply answers cube queries
@@ -61,8 +64,8 @@ Refactorings & Corrections
 - [X] Fix the fixme comments
 
 Extension to an Intentional OLAP engine
-- [ ] Add support to all the apache commons math parts that pertain to the computation of simple models
-- [ ] (maybe) Link to spark mllib via principled interfacing to add more model extraction methods
+- [ ] Add support to more apache commons math parts that pertain to the computation of simple models
+- [ ] (maybe) Link to weka / spark mllib / ... via principled interfacing to add more model extraction methods
 
 
 

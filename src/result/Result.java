@@ -88,7 +88,7 @@ public class Result {
 	
 	/**
 	 * Returns a 2D array of strings with the results of a CubeQuery.
-	 * The first line contains the header.
+	 * The first 2 lines contain the header.
 	 * 
 	 * @return a 2d array of strings, holding the result of a CubeQuery
 	 */

@@ -230,7 +230,7 @@ public class SimpleQueryProcessorEngineTest {
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl1,date_dim.lvl2" + " \n" +
 				"Sigma:account_dim.lvl2='Prague'";
-		String [] modelsToGenerate11 = {"Rank"};	
+		String [] modelsToGenerate11 = {"Outlier"};	
 		
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate11);
 		
@@ -261,7 +261,7 @@ public class SimpleQueryProcessorEngineTest {
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl1,status_dim.lvl1" + " \n" +
 				"Sigma:date_dim.lvl2 = '1998-01'";
-		String [] modelsToGenerate12 = {"Outlier","Outlier", "KMeansApache", "KPIMedianBased"};	
+		String [] modelsToGenerate12 = {"Rank","Outlier", "KMeansApache", "KPIMedianBased"};	
 
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12, modelsToGenerate12);
 
@@ -285,13 +285,14 @@ public class SimpleQueryProcessorEngineTest {
         boolean comparison_12_32 = FileUtils.contentEquals(fileProduced_12_32, fileReference_12_32);
         assertEquals(comparison_12_32 , true);
 
-        File fileProduced_12_33 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KMeansApache.tab");
-		File fileReference_12_33 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KMeansApache.tab");
-        boolean comparison_12_33 = FileUtils.contentEquals(fileProduced_12_33, fileReference_12_33);
-        assertEquals(comparison_12_33 , true);
-        //The clusters are all right. Still, it can fail because of the following issue: 
-        //the reference clustering assigns Cluster 2 to the (single) last value and Cluster 3 to the values in the middle of the list
-        //The produced clustering might change the order and assign the (single) last value to Cluster 3 instead and the rest to Cluster 2
+//        File fileProduced_12_33 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KMeansApache.tab");
+//		File fileReference_12_33 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KMeansApache.tab");
+//        boolean comparison_12_33 = FileUtils.contentEquals(fileProduced_12_33, fileReference_12_33);
+//        assertEquals(comparison_12_33 , true);
+//        //First of all this is K-means => it can possibly deviate between executions, although after so many iterations this originally seemed improbable...
+//        //Second, even if the clusters are all right, the test can still fail because of the following issue: 
+//        //the reference clustering assigns Cluster 2 to the (single) last value and Cluster 3 to the values in the middle of the list
+//        //The produced clustering might change the order and assign the (single) last value to Cluster 3 instead and the rest to Cluster 2
         
         File fileProduced_12_34 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
 		File fileReference_12_34 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
