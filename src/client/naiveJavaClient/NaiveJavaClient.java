@@ -147,12 +147,23 @@ public class NaiveJavaClient {
 			for(String model: models){
 				String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
 				String [] array = model.split(sep);
-				String localName = "NoName";
+				String localModelName = "NoName";
 				if (array.length > 0)
-					localName = array[array.length-1].trim();
+					localModelName = array[array.length-1].trim();
 				File remote = new File(model);
-				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localName));
+				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localModelName));
 			}//end for
+			for(String modelInfo: modelInfos){
+				String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
+				String [] array = modelInfo.split(sep);
+				String localModelName = "NoName";
+				if (array.length > 0)
+					localModelName = array[array.length-1].trim();
+				File remote = new File(modelInfo);
+				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localModelName));
+			}//end for
+
+		
 		}//end if
 		
 		
@@ -164,7 +175,7 @@ public class NaiveJavaClient {
 			return -1;
 		int i = 0;
 		for(File file: dir.listFiles()) { 
-		    if (!file.isDirectory()) {
+		    if (!file.isDirectory() && !file.getName().equals("README.txt")) {
 		        file.delete();
 		        i++;
 		    }

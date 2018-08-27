@@ -230,7 +230,7 @@ public class SimpleQueryProcessorEngineTest {
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl1,date_dim.lvl2" + " \n" +
 				"Sigma:account_dim.lvl2='Prague'";
-		String [] modelsToGenerate11 = {"Rank","Outlier"};	
+		String [] modelsToGenerate11 = {"Rank"};	
 		
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate11);
 		
@@ -244,24 +244,24 @@ public class SimpleQueryProcessorEngineTest {
         boolean comparison_11_2 = FileUtils.contentEquals(fileProduced_11_2, fileReference_11_2);
         assertEquals(comparison_11_2 , true);
 
-        File fileProduced_11_31 = new File("OutputFiles/CubeQueryLoan11_Prague_Ranks.tab");
-		File fileReference_11_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Ranks.tab");
-        boolean comparison_11_31 = FileUtils.contentEquals(fileProduced_11_31, fileReference_11_31);
-        assertEquals(comparison_11_31 , true);
+//        File fileProduced_11_31 = new File("OutputFiles/CubeQueryLoan11_Prague_Ranks.tab");
+//		File fileReference_11_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Ranks.tab");
+//        boolean comparison_11_31 = FileUtils.contentEquals(fileProduced_11_31, fileReference_11_31);
+//        assertEquals(comparison_11_31 , true);
         
         File fileProduced_11_32 = new File("OutputFiles/CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
 		File fileReference_11_32 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
         boolean comparison_11_32 = FileUtils.contentEquals(fileProduced_11_32, fileReference_11_32);
         assertEquals(comparison_11_32 , true);
         
-        /* *********** Now, a SINGLE model ********** */
+        /* *********** Now, a Loaded model generation ********** */
 		String queryForModels12 =		"CubeName:loan" + " \n" +
 				"Name: CubeQueryLoan12_Sum1998" + " \n" +
 				"AggrFunc:Sum" + " \n" +
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl1,status_dim.lvl1" + " \n" +
 				"Sigma:date_dim.lvl2 = '1998-01'";
-		String [] modelsToGenerate12 = {"Outlier"};	
+		String [] modelsToGenerate12 = {"Outlier","Outlier", "KMeansApache", "KPIMedianBased"};	
 
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12, modelsToGenerate12);
 
@@ -275,11 +275,29 @@ public class SimpleQueryProcessorEngineTest {
         boolean comparison_12_2 = FileUtils.contentEquals(fileProduced_12_2, fileReference_12_2);
         assertEquals(comparison_12_2 , true);
 
+        File fileProduced_12_31 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Ranks.tab");
+		File fileReference_12_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Ranks.tab");
+        boolean comparison_12_31 = FileUtils.contentEquals(fileProduced_12_31, fileReference_12_31);
+        assertEquals(comparison_12_31, true);
+        
         File fileProduced_12_32 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
 		File fileReference_12_32 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
         boolean comparison_12_32 = FileUtils.contentEquals(fileProduced_12_32, fileReference_12_32);
         assertEquals(comparison_12_32 , true);
 
+        File fileProduced_12_33 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KMeansApache.tab");
+		File fileReference_12_33 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KMeansApache.tab");
+        boolean comparison_12_33 = FileUtils.contentEquals(fileProduced_12_33, fileReference_12_33);
+        assertEquals(comparison_12_33 , true);
+        //The clusters are all right. Still, it can fail because of the following issue: 
+        //the reference clustering assigns Cluster 2 to the (single) last value and Cluster 3 to the values in the middle of the list
+        //The produced clustering might change the order and assign the (single) last value to Cluster 3 instead and the rest to Cluster 2
+        
+        File fileProduced_12_34 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
+		File fileReference_12_34 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
+        boolean comparison_12_34 = FileUtils.contentEquals(fileProduced_12_34, fileReference_12_34);
+        assertEquals(comparison_12_34 , true);
+        
         /* *********** Now, NO model => Generate ranks and outliers ********** */
 		String queryForModels12_2 =		"CubeName:loan" + " \n" +
 				"Name: CubeQueryLoan12_Sum1998_2" + " \n" +

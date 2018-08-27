@@ -52,7 +52,7 @@ public class KPIMedianBasedModel extends AbstractModel {
 	/** 
 	 *	Assigns each cell with a label based on a set of rules. 
 	 * 
-	 * The actuall computationtakes place in the applyKPIrules method
+	 * The actual computation takes place in the applyKPIrules method
 	 * 
 	 * @see result.AbstractModel#compute()
 	 */
@@ -102,7 +102,7 @@ public class KPIMedianBasedModel extends AbstractModel {
 		for(i = 0; i < cellValues.length; i++) {
 			stats.addValue(cellValues[i]);
 		}
-		double median = stats.getPercentile(50);
+		this.median = stats.getPercentile(50);
 		System.out.println("MEDIAN " + median);
 		
 		for(i = 0; i < cellValues.length; i++) {
@@ -157,7 +157,17 @@ public class KPIMedianBasedModel extends AbstractModel {
 		return output;
 	}//end print2D
 	
-
+	@Override
+	public String getInfoContent() {
+		String result = this.getModelName() + "\n-------------------------\n\n"
+				+ "We run a simple KPI computation. THe rules are that a cell is (a) low if the measure value is below half of the median value, (b) high if higher than 1.5 of the median, or (c) OK otherwise\n"
+				+ "The median is: " + median + "\n"
+				+ "Each column of the result pertains to another class of the result set, with each row referring to the respective cell of the query result";
+		
+		return result;
+	}//end method getInfoContent()
+	
+	private double median = 0.0;
 	private KPIMedianBasedModelComponent lowComponent = null;
 	private KPIMedianBasedModelComponent okComponent = null;
 	private KPIMedianBasedModelComponent highComponent = null;

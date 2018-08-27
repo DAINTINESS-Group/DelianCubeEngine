@@ -70,9 +70,11 @@ public class ModelManager {
 				modelComponentFileNames.add(resultFileName);
 				
 				//3a. construct the info string for the entire model
-				//TODO: make each model produce an info string once (i.e., within) compute() was launched
+
+				String resultInfoFileName = outputFolder + namePrefix + "_" + model.getModelName() + "_info.txt";
+				model.printInfoToInfoFile(resultInfoFileName);
 				//3b. add info files to the list
-				//TODO: add info files to the list
+				modelInfoFileNames.add(resultInfoFileName);
 				
 			}//end if
 		}// end for
@@ -87,6 +89,7 @@ public class ModelManager {
 	 */
 	public int addComponentsToResultMetadata(ResultFileMetadata resMetadata) {
 		resMetadata.setComponentResultFiles(modelComponentFileNames);
+		resMetadata.setComponentResultInfoFiles(modelInfoFileNames);
 		return modelComponentFileNames.size();
 	}//end addComponentsToResultMetadata
 	

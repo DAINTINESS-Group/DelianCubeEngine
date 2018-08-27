@@ -134,6 +134,16 @@ public class RankModel extends AbstractModel {
 		return "Ranks";
 	}//end method
 	
+	@Override
+	public String getInfoContent() {
+		String result = this.getModelName() + "\n-------------------------\n\n"
+				+ "We run a simple ranking computation. We compute the rank of each cell based on its measure value, and provide a bitmap for the max and min values\n"  
+				+ "Each column of the result pertains to another component of the result set, with each row referring to the respective cell of the query result";
+		
+		return result;
+	}//end method getInfoContent()
+	
+	
 	private RankModelComponent rankComponent;
 	private RankModelComponent maxComponent;
 	private RankModelComponent minComponent;

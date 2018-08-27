@@ -70,8 +70,10 @@ public class DataWindowController extends AbstractController {
 	public void autoloadFile() {
 		//String textLogged = "File Opened:" + aFileName;
 		
-		if(file == null)
+		if(file == null) {
+			textLogger.setText("New Data Window!");
 			return;
+		}
 		try {
 			System.out.println(file.getAbsolutePath());		
 			DataWindowController.readTSVandPopulateTableView(dataTable, file,true);
@@ -79,7 +81,16 @@ public class DataWindowController extends AbstractController {
 			eio.printStackTrace();
 		}
 
+		String contentText = "This data window opens a tab separated file. \nFile : " + file.getAbsolutePath() + "\n\n";
+		FileInfoProvider infoProvider  = new FileInfoProvider(file); 
+		String fullInfoLocation = infoProvider.getNameForInfoFile(file.getAbsolutePath());
 
+		if(infoProvider.getInfoFileExistence()) {
+			System.out.println("Opening info file: " + fullInfoLocation);
+			String infoContents = infoProvider.getInfoContents(fullInfoLocation);
+			contentText = contentText + infoContents;
+		}
+		textLogger.setText(contentText);
 		//logToTextLogger(textLogged);	
 		
 	}
@@ -119,9 +130,9 @@ public class DataWindowController extends AbstractController {
 		CustomAlertDialog a = new CustomAlertDialog("about", null, contentText, this.stage); 
 		a.show();
 		
-		String textLogged = "About clicked.";
-		logToTextLogger(textLogged);
-		logToTextLogger(infoContents);
+		//String textLogged = "About clicked.";
+		//logToTextLogger(textLogged);
+		//logToTextLogger(infoContents);
 		
 	}
 
@@ -139,6 +150,17 @@ public class DataWindowController extends AbstractController {
 
 		String textLogged = "File Opened:" + file;
 		logToTextLogger(textLogged);
+		
+		String infoContents = "";
+		//load info file, if exists
+		FileInfoProvider infoProvider  = new FileInfoProvider(file); 
+		String fullInfoLocation = infoProvider.getNameForInfoFile(file.getAbsolutePath());
+		if(infoProvider.getInfoFileExistence()) {
+			//System.out.println("Opening info file: " + fullInfoLocation);
+			infoContents = infoProvider.getInfoContents(fullInfoLocation);
+		}
+		//textLogger.setText(contentText);
+		logToTextLogger(infoContents);	
 	}
 
 		

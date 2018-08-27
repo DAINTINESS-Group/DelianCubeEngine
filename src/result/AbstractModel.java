@@ -51,6 +51,7 @@ public abstract class AbstractModel {
 	public abstract int compute();
 	public abstract String getModelName();
 	public abstract String[][] printAs2DStringArray();
+	public abstract String getInfoContent();
 	
 	protected Result result;
 	protected HashMap<String, AbstractModelComponent> components;
@@ -114,7 +115,31 @@ public abstract class AbstractModel {
 		}//end finally
 
 		return 0;
-	}
+	}//end method printContentsToFile
 	
+	public String printInfoToInfoFile(String fileName) {
+		File file=new File(fileName);
+		FileOutputStream fileOutputStream=null;
+		PrintStream printStream=null;
+		try {
+			printStream=new PrintStream(new FileOutputStream(file));
+			printStream.print(getInfoContent()+"\n\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		
+		return fileName;
+	}//end method
 	
 }//end class

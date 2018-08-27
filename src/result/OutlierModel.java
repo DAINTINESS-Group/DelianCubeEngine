@@ -168,6 +168,16 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 		return "Z-Score_Outliers";
 	}//end method
 
+	@Override
+	public String getInfoContent() {
+		String result = this.getModelName() + "\n-------------------------\n\n"
+				+ "We run a simple outlier detection. We compute the zScore of each measure value, and assign to (a) the outlier class, if the absolute zscore is above "+ ABS_ZSCORE_OUTLIER_THRESHOLD + " or (b) non-outlier, otherwise\n"  
+				+ "Each column of the result pertains to another class of the result set, with each row referring to the respective cell of the query result";
+		
+		return result;
+	}//end method getInfoContent()
+	
+	
 	private OutlierModelComponent zScoreComponent;
 	private OutlierModelComponent zScoreOutlierComponent;
 	private OutlierModelComponent zScoreNonOutlierComponent;

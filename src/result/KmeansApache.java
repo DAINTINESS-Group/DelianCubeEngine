@@ -159,9 +159,21 @@ public class KmeansApache extends AbstractModel {
 		return membershipMatrixLabels;
 	}//end print as 2DString
 
+	@Override
+	public String getInfoContent() {
+		String result = this.getModelName() + "\n-------------------------\n\n"
+				+ "We run K-Means provided by Apache Commons Math for the results of the query.\n"  
+				+ "We have created " + NUM_CLUSTERS + " clusters for " + clustersOfCells.length + " cells.\n"
+				+ "Each column of the result pertains to another cluster of the result set, with each row referring to the respective cell of the query result";
+		
+		return result;
+	}//end method getInfoContent()
+	
 	private String [] [] membershipMatrixLabels;
 	private int [] []  membershipMatrix;
 	private int [] clustersOfCells;
 	private static int NUM_CLUSTERS = 3;
 	private static int NUM_ITERATIONS = 10000;
+	
+
 }//end class

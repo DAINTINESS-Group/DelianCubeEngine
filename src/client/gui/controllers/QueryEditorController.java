@@ -320,12 +320,12 @@ public class QueryEditorController extends AbstractController {
 					String currentModelFile = downloadResult(model, serverEngine);
 					localModelFiles.add(currentModelFile);
 				}//end for
+				for(String modelInfo: modelInfos){
+					String currentModelInfoFile = downloadResult(modelInfo, serverEngine);
+					localInfoModelFiles.add(currentModelInfoFile);
+				}//end for
 			}//end if
 			
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			//TODO: download Info files too
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 			result = displayResultInDataWindowQM(localResultsFile, localInfoFile, localModelFiles, null);
 		} //end else
 		

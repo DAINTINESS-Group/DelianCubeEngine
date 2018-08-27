@@ -49,10 +49,10 @@ public class FileInfoProvider {
 		String [] queryNameParts = fileName.split(Pattern.quote("."));
 		String queryName = queryNameParts[0];
 
-		result = queryName + "_info";
+		result = queryName;
 		for(int i=1; i< queryNameParts.length-1; i++)
 			result = result + "." + queryNameParts[i];
-		result = result + ".txt";
+		result = result + "_info" + ".txt";
 		
 		return result;
 	}//end method
