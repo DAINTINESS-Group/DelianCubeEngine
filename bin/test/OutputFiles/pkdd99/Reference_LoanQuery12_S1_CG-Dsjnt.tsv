@@ -1,19 +1,18 @@
-district_name	status	measure	countOfDetailedCells	
-Chomutov	Running Contract/OK	22104	1	
-Olomouc	Running Contract/OK	23412	1	
-Liberec	Running Contract/OK	31260	1	
-Pardubice	Running Contract/OK	35856	1	
-Teplice	Running Contract/OK	42384	1	
-Breclav	Running Contract/OK	61320	1	
-Kutna Hora	Running Contract/OK	64224	1	
-Usti nad Labem	Running Contract/OK	123300	1	
-Prachatice	Running Contract/OK	125472	1	
-Domazlice	Running Contract/OK	136368	1	
-Brno - venkov	Running Contract/OK	143676	1	
-Pelhrimov	Running Contract/OK	152160	1	
-Frydek - Mistek	Running Contract/OK	170448	2	
-Blansko	Running Contract/OK	176328	1	
-Karvina	Running Contract/OK	267600	1	
-Prachatice	Running Contract/Client in Debt	407952	1	
-Beroun	Running Contract/OK	504000	1	
-Hl.m. Praha	Running Contract/OK	566640	5	
+district_name	All	measure	countOfDetailedCells	
+Chomutov	ALL	22104	1	
+Olomouc	ALL	23412	1	
+Liberec	ALL	31260	1	
+Pardubice	ALL	35856	1	
+Teplice	ALL	42384	1	
+Breclav	ALL	61320	1	
+Kutna Hora	ALL	64224	1	
+Usti nad Labem	ALL	123300	1	
+Domazlice	ALL	136368	1	
+Brno - venkov	ALL	143676	1	
+Pelhrimov	ALL	152160	1	
+Frydek - Mistek	ALL	170448	2	
+Blansko	ALL	176328	1	
+Karvina	ALL	267600	1	
+Prachatice	ALL	407952	2	
+Beroun	ALL	504000	1	
+Hl.m. Praha	ALL	566640	5	
