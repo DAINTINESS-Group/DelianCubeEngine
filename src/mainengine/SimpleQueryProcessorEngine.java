@@ -21,6 +21,8 @@
 package mainengine;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.Duration;
+import java.time.Instant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -210,6 +212,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		//Use a hashmap to get any useful data (like queryname) from the raw query string
 		HashMap<String, String> queryParams = new HashMap<String, String>();
 		
+		Instant t0 = Instant.now();
 		//1. parse query and produce a CubeQuery
 		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
 		this.currentCubeQuery = currentCubQuery;
@@ -219,20 +222,37 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		Result res = cubeManager.executeQuery(currentCubQuery);
 		this.currentResult = res;
 		
+		Instant tExecuted = Instant.now();
+		long durationExecution = Duration.between(t0, tExecuted).toMillis();
+
 		//3a. print result to screen
 		String queryName = queryParams.get("QueryName");
 		this.currentQueryName = queryName;
 		
-		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
-		//res.printStringArrayTostream(System.out, res.getResultArray());
-		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
-		res.printCellsToStream(System.out);
-		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
 				
 		//3b. print result to file
 		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles" + File.separator);
 		//String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
 		//System.out.println("SQP produces: " + outputLocation);		
+
+		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
+		//res.printStringArrayTostream(System.out, res.getResultArray());
+		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
+
+		//TODO SUPER MUST: devise a nice way to handle the output to console when in development mode
+		res.printCellsToStream(System.out);
+		
+		Instant tOutputed = Instant.now();
+		
+		
+		long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
+		long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
+		
+		System.out.println("\n\n@TIMER\tQuery\t" + queryName + "\tQuery Execution:\t" + durationExecution
+				+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
+		
+		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
+
 		return outputLocation;
 	}//answerCubeQueryFromString
 
@@ -347,8 +367,8 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 						
 
 			if( (numOfModelsRequested > 0) &&(numOfModelsGenerated < numOfModelsRequested)) {
-				System.out.println("\nModel generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
-				System.out.println("Shutting down server\n");
+				System.err.println("\nSIMPLEQUERYPROCESSORENGINE # answerCubeQueryFromStringWithModels\nModel generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
+				System.err.println("Shutting down server\n");
 				System.exit(-1);
 			}
 			

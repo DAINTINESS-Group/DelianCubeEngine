@@ -70,7 +70,7 @@ public class CubeBase {
 			}
 			scanner.close();
 		} catch (FileNotFoundException e1) {
-			System.out.println("Unable to work correctly with dbc.ini for the setup of the Cubebase");
+			System.err.println("Unable to work correctly with dbc.ini for the setup of the Cubebase");
 			e1.printStackTrace();
 		}
 	}
@@ -150,8 +150,7 @@ public class CubeBase {
 		for (String item : dimensionlst) {
 			int tmp = findDimensionIdByName(item);
 			if (tmp == -1) {
-				System.err
-						.println("Error with Dimension At Cube construction!");
+				System.err.println("Error with Dimension At Cube construction!");
 				System.exit(1);
 			}
 			last_cube.addDimension(this.dimensions.get(tmp));

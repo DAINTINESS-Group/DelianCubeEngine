@@ -47,7 +47,7 @@ public class CubeManager {
 	public ICubeQueryTranslator setCubeQueryTranslator() {
 		ICubeQueryTranslator result = cubeQueryTranslatorFactory.createCubeQueryTranslator("SQL"); 
 		if (result == null) {
-			System.out.println("CubeQueryTranslator generation failed. Exiting.");
+			System.err.println("CubeQueryTranslator generation failed. Exiting.");
 			System.exit(-1);
 		}
 		cubeQueryTranslator = result;
@@ -190,7 +190,7 @@ public class CubeManager {
 
 		Result finalResult = CBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
 		if (finalResult == null) {
-			System.out.println("Exiting due to failure to populate the result");
+			System.err.println("Exiting due to failure to populate the result");
 			System.exit(-100);
 			
 		}
@@ -201,7 +201,7 @@ public class CubeManager {
 //		
 //		//3. Populate Result with the ResultSet's data via ExtractionMethod method calls
 //		if (res.createResultArray(resultSet) == false) {
-//			System.out.println("Exiting due to failure to populate the result");
+//			System.err.println("Exiting due to failure to populate the result");
 //			System.exit(-100);
 //		}
 //		else
@@ -222,7 +222,7 @@ public class CubeManager {
 	 */
 	public String produceExtractionMethod(CubeQuery cubeQuery) {
 		if (this.cubeQueryTranslator == null) {
-			System.out.println("Unable to locate a logical to physical translator. Exiting.");
+			System.err.println("Unable to locate a logical to physical translator. Exiting.");
 			System.exit(-1);
 		}		
 		return cubeQueryTranslator.produceExtractionMethod(cubeQuery);

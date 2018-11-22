@@ -3,6 +3,8 @@ package mainengine;
 import result.*;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class ModelManager {
@@ -32,7 +34,7 @@ public class ModelManager {
 				case "KMeansApache":	modelsToLaunch.add(modelFactory.generateModel("KMeansApache", result)); break;
 				case "KPIMedianBased":	modelsToLaunch.add(modelFactory.generateModel("KPIMedianBased", result)); break;
 				case "loan_KPIdemo_SouthBoh_YR_Status":	modelsToLaunch.add(modelFactory.generateModel("loan_KPIdemo_SouthBoh_YR_Status", result)); break;
-				default: System.out.println("MODEL MANAGER: Missed the generation of: " + modelNames[i]); break;
+				default: System.err.println("MODEL MANAGER # selectModelsToLaunch: Missed the generation of: " + modelNames[i]); break;
 			}//end switch
 		}
 		
@@ -48,19 +50,23 @@ public class ModelManager {
 	public int executeModelConstruction(String queryName) {
 		namePrefix = queryName;
 		if(modelsToLaunch.size() == 0) {
-			System.out.println("No models selected for generation for the query " + queryName);
+			System.err.println("MODEL MANAGER # executeModelConstruction: No models selected for generation for the query " + queryName);
 			return -1;
 		}
 	
 		for(AbstractModel model: modelsToLaunch) {
 			if (model == null) {
-				System.out.println("NULL?");
+				System.err.println("MODEL MANAGER # executeModelConstruction: model in modelsToLaunch is NULL?");
 				return -1;
 			}
 			System.out.println("\n\n" + model.getModelName());
 
+			Instant t0 = Instant.now();
 			//1.execute the model
 			int modelExecution =  model.compute();
+			Instant tExecuted = Instant.now();
+			
+			long durationExecution = Duration.between(t0, tExecuted).toMillis();
 			
 			if(modelExecution==0) {
 				//2a. output results to a file 
@@ -76,8 +82,15 @@ public class ModelManager {
 				model.printInfoToInfoFile(resultInfoFileName);
 				//3b. add info files to the list
 				modelInfoFileNames.add(resultInfoFileName);
-				
 			}//end if
+			
+			Instant tOutputed = Instant.now();
+			long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
+			long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
+			
+			System.out.println("\n\n@TIMER\tModel\t" + model.getModelName() + "\tModel Execution:\t" + durationExecution
+					+ "\tModel Output:\t" + durationExecToOutput + "\tModel Total:\t" + durationExecTotal);
+			System.out.println("-------------------------------------------------");
 		}// end for
 		return 0;
 	}// end executeModelConstruction

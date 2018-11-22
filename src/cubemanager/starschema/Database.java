@@ -87,7 +87,7 @@ public class Database {
 				e.printStackTrace();
 			}
 		} catch (ClassNotFoundException e) {
-			System.out.println("Where is your MySQL JDBC Driver?");
+			System.err.println("Where is your MySQL JDBC Driver?");
 			e.printStackTrace();
 			return;
 		}
@@ -95,11 +95,11 @@ public class Database {
 			setConnection(DriverManager.getConnection(ConnectionString,
 					Username, Password));
 		} catch (SQLException ex) {
-			System.out.println(ConnectionString);
-			System.out.println("Connection Failed! Check output console");
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("LocalState: " + ex.getLocalizedMessage());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			System.err.println(ConnectionString);
+			System.err.println("Connection Failed! Check output console");
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("LocalState: " + ex.getLocalizedMessage());
+			System.err.println("VendorError: " + ex.getErrorCode());
 		}
 	}
 
@@ -120,6 +120,7 @@ public class Database {
 		}
 	}
 
+	//Not apparently used?
 	public void PrintTableList() {
 		for (Table item : this.Tbl) {
 			System.out.println(item. getTableName());

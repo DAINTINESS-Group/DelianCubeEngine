@@ -32,7 +32,7 @@ public class ModelFactory {
 			case "KMeansApache":	return new KmeansApache(aResult); //break;
 			case "KPIMedianBased":	return new KPIMedianBasedModel(aResult); //break;
 			case "loan_KPIdemo_SouthBoh_YR_Status":	return new KPIModel_SouthBoh_YR_Status(aResult); //break;
-			default:	System.out.println("MODEL FACTORY: Missed the generation of: " + modelType);	return null; //break;
+			default:	System.err.println("MODEL FACTORY: Missed the generation of: " + modelType);	return null; //break;
 		}
 	}
 }//end class

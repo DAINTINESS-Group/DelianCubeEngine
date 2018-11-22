@@ -29,7 +29,7 @@ public class ModelSelector {
 		String [] workingModelNames = null;
 		String [] finalModelNames = null;
 
-		System.out.println("\nRequest of " + modelsOriginallyRequested.length + " models by " + queryName);
+		System.out.println("\nMODELSELECTOR # decideModelsToExecute:\nRequest of " + modelsOriginallyRequested.length + " models by " + queryName);
 
 		/* 
 		 *    if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
@@ -49,13 +49,13 @@ public class ModelSelector {
 		querySpecificModelNames = lookupKPIsOfQuery(queryName);
 		if(querySpecificModelNames != null) {
 			finalModelNamesTry = Stream.concat(Arrays.stream(workingModelNames), Arrays.stream(querySpecificModelNames)).toArray(String[]::new);
-			System.out.println("QUERY SPECIFIC MODELS: " + finalModelNamesTry.toString());
+			System.out.println("\\nMODELSELECTOR # decideModelsToExecute:\nQUERY SPECIFIC MODELS: " + finalModelNamesTry.toString());
 			finalModelNames = finalModelNamesTry.clone();  
 		}
 		else {
-			//		System.out.println("\nAUX Model array of " + workingModelNames.length + " models");
+			//		System.err.println("\nMODELSELECTOR # decideModelsToExecute:\nAUX Model array of " + workingModelNames.length + " models");
 			finalModelNames = workingModelNames.clone();
-			//		System.out.println("\nModel selection of " + finalModelNames.length + " models");
+			//		System.err.println("\nMODELSELECTOR # decideModelsToExecute:\nModel selection of " + finalModelNames.length + " models");
 		}
 
 		

@@ -17,7 +17,7 @@ public class CubeQueryTranslatorFactory {
 						break;
 		}
 		if(result == null) {
-			System.out.println("Did not manage to create a translator for the given physical DB type. Exiting");
+			System.err.println("Did not manage to create a translator for the given physical DB type. Exiting");
 			System.exit(-1);
 		}
 		return result;

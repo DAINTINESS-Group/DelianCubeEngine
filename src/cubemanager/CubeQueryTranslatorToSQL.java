@@ -23,7 +23,8 @@ import exctractionmethod.ExtractionMethod;
 public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 
 	public CubeQueryTranslatorToSQL() {
-		System.out.println("Created CubeQueryTranslatorToSQL");
+		//System.out.println("Created CubeQueryTranslatorToSQL");
+		;
 	}
 	
 	/* (non-Javadoc)

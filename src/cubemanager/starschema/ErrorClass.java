@@ -28,8 +28,8 @@ public class ErrorClass {
 
 	
 	public void printErrorMessage(String Msg){
-		System.out.println("Message:"+Msg);
-		System.out.println("======================================");
+		System.err.println("Message:"+Msg);
+		System.err.println("======================================");
 	}
 
 }

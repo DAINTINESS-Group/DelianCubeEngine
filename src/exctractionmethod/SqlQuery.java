@@ -172,6 +172,7 @@ public class SqlQuery extends ExtractionMethod {
 		this.resultSet = resultSet;
 	}
 
+	
 	public void printQuery(){
 		System.out.println(toString());
 	}
