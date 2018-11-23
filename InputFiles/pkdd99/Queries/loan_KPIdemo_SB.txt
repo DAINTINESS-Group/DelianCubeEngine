@@ -2,5 +2,5 @@ CubeName:loan
 Name: loan_KPIdemo_SouthBoh_YR_Status
 AggrFunc:Sum
 Measure:amount 
-Gamma:date_dim.lvl3,status_dim.lvl10
+Gamma:date_dim.lvl3,status_dim.lvl0
 Sigma:account_dim.lvl2 = 'south Bohemia'

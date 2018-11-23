@@ -76,7 +76,7 @@ public class NaiveJavaClient {
 		
 		//Run queries
 		//File f2 = new File("InputFiles/cubeQueriesloan.ini");
-		File f2 = new File("InputFiles/loanQueries.txt");
+		File f2 = new File("InputFiles/pkdd99/Queries/loanQueries.txt");
 		//File f2 = new File("InputFiles/try.txt");
 		ArrayList<String> fileLocations = service.answerCubeQueriesFromFile(f2);
 		

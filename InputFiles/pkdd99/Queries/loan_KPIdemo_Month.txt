@@ -2,5 +2,5 @@ CubeName:loan
 Name: loan_KPIdemo_Month
 AggrFunc:Sum
 Measure:amount 
-Gamma:account_dim.lvl2,status_dim.lvl10
+Gamma:account_dim.lvl2,status_dim.lvl0
 Sigma:date_dim.lvl2 = '1998-01'
