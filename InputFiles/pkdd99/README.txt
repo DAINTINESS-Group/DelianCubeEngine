@@ -13,11 +13,8 @@ Fact tables: loan, orders
 (or update the client.java to work with your own users)
 
 
-3. Load the data by importing the data in any of the two following ways:
-a) The folder PerTable_DataDump contains csv files with the data for all tables.
-b) The folder PerTable_Schema contains INSERT INTO ...sql statements for all  tables. 
-First load the *dimdata.sql for the dimension tables and then the *factdata.sql for the fact tables
-
+3. Load the data by importing the data.
+     The folder PerTable_DataDump contains csv files with the data for all tables.
 
 4. To work with the dataset, one needs to define a connection, hierarchies and cubes.
 Given in the directory, ready for use: 
@@ -27,4 +24,4 @@ For the cube Orders: orders.ini
 
 Extras
 -----------
-The fullWorkingBackup.zip contains the entire contents of the folder.
+-
