@@ -53,6 +53,8 @@ import parsermgr.ParserManager;
 //import storymgr.FinResult;
 //import storymgr.StoryMgr;
 import result.Result;
+import setup.ModeOfWork;
+import setup.ModeOfWork.WorkMode;
 
 
 /**
@@ -225,7 +227,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		Instant tExecuted = Instant.now();
 		long durationExecution = Duration.between(t0, tExecuted).toMillis();
 
-		//3a. print result to screen
+		//3a. print result to file and screen
 		String queryName = queryParams.get("QueryName");
 		this.currentQueryName = queryName;
 		
@@ -240,8 +242,9 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
 
 		//TODO SUPER MUST: devise a nice way to handle the output to console when in development mode
-		res.printCellsToStream(System.out);
-		
+		if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
+			res.printCellsToStream(System.out);
+		}
 		Instant tOutputed = Instant.now();
 		
 		

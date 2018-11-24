@@ -25,6 +25,9 @@ import java.util.List;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
+import setup.ModeOfWork;
+import setup.ModeOfWork.WorkMode;
+
 /**
  * This is the class that represents the production of a KMeans clustering of the results of a query, based on their measure values.
  * 
@@ -105,16 +108,21 @@ public class KmeansApache extends AbstractModel {
 		for (int i=0; i<clusterResults.size(); i++) {
 			//decide cluster name, new a component and add it to the components of the model 
 			String currentClusterName = "Cluster " + i;
-		    System.out.println(currentClusterName);
-		    
+			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_MODEL)) {
+				System.out.println(currentClusterName);
+			}
 		    KMeansApacheComponent currentComponent = new KMeansApacheComponent(currentClusterName, callerModel);
 		    callerModel.components.put(currentClusterName, currentComponent);
 		    
 		    for (CellWrapper cellWrapper : clusterResults.get(i).getPoints()) {
 		    	cellClusters.put(cellWrapper.getCell().toDouble(), i);
-		        System.out.println(cellWrapper.getCell().toDouble());
+				if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_MODEL)) {
+					System.out.println(cellWrapper.getCell().toDouble());
+				}
 		    }
-		    System.out.println();
+			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_MODEL)) {
+				System.out.println();
+			}
 		}
 		
 		int size = clusterInput.size();
@@ -123,7 +131,9 @@ public class KmeansApache extends AbstractModel {
 			Double lookupValue = clusterInput.get(i).getCell().toDouble();
 			Integer clusterId = cellClusters.get(lookupValue);
 			clustersOfCells[i] = clusterId.intValue();
-			System.out.println(lookupValue + " at " + clustersOfCells[i]);
+			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_MODEL)) {
+				System.out.println(lookupValue + " at " + clustersOfCells[i]);
+			}
 		}
 		
 		return clustersOfCells;
