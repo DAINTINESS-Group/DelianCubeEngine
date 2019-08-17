@@ -66,8 +66,8 @@ public class Server {
 		
 		// Server has started, and is listening to the request from the clients
 		System.out.println("Server started!");
-		//Default stop after 1 hour, if not stopped explicitly
-		TimeUnit.SECONDS.sleep(3600);
+		//Default stop after 2 hour, if not stopped explicitly
+		TimeUnit.SECONDS.sleep(7200);
 		stopServer();
 	}
 }

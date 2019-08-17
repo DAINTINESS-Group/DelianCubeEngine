@@ -1,0 +1,6 @@
+SK_Status;Status;All
+1;Contract Finished/Loan not Payed;ALL
+2;Contract Finished/No Problems;ALL
+3;Running Contract/Client in Debt;ALL
+4;Running Contract/OK;ALL
+0;Other status;ALL

@@ -1,0 +1,34 @@
+CubeName:loan
+Name: LoanQuery101_S1_CG-Disjoint
+AggrFunc:Sum
+Measure:amount
+Gamma:account_dim.lvl2,date_dim.lvl3
+Sigma: date_dim.lvl4 = 'ALL'
+@
+CubeName:loan
+Name: LoanQuery102_S1_CG-Disjoint
+AggrFunc:Sum
+Measure:amount
+Gamma:account_dim.lvl2,date_dim.lvl3
+Sigma:status_dim.lvl1='Running Contract/OK'
+@
+CubeName:loan
+Name: LoanQuery103_S1_CG-Disjoint
+AggrFunc:Sum
+Measure:amount
+Gamma:account_dim.lvl1,date_dim.lvl3
+Sigma:status_dim.lvl1='Running Contract/OK'
+@
+CubeName:loan
+Name: LoanQuery104_S1_CG-Disjoint
+AggrFunc:Sum
+Measure:amount
+Gamma:account_dim.lvl2,date_dim.lvl2
+Sigma:status_dim.lvl1='Running Contract/OK'
+@
+CubeName:loan
+Name: LoanQuery105_S1_CG-Disjoint
+AggrFunc:Sum
+Measure:amount
+Gamma:account_dim.lvl2,date_dim.lvl2
+Sigma:account_dim.lvl2 = 'south Moravia'
