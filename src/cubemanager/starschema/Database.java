@@ -23,6 +23,7 @@ package cubemanager.starschema;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -67,7 +68,7 @@ public class Database {
 
 	public Database() {
 		setConnectionString("jdbc:mysql://localhost:3306/adult_no_dublic");
-		DBMS = "com.mysql.jdbc.Driver";
+		DBMS = "com.mysql.cj.jdbc.Driver";//"com.mysql.jdbc.Driver";
 		Tbl = new ArrayList<Table>();
 	}
 
@@ -243,7 +244,10 @@ public class Database {
 	public ResultSet executeSql(String query) {
 		ResultSet res = null;
 		try {
-			Statement createdStatement = connect.createStatement();
+			PreparedStatement createdStatement = connect.prepareStatement(query,
+                    ResultSet.TYPE_SCROLL_SENSITIVE, 
+                ResultSet.CONCUR_UPDATABLE);
+			//Statement createdStatement = connect.createStatement();
 			res = createdStatement.executeQuery(query);
 
 		} catch (SQLException e) {
