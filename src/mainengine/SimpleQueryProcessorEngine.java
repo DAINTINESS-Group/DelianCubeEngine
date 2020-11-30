@@ -78,6 +78,8 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private CubeQuery currentCubeQuery;
 	private Result currentResult;
 	private String currentQueryName;
+	
+	private NLTranslator translator = new NLTranslator();
 
 /**
  * Simple constructor for the class
@@ -215,8 +217,19 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		HashMap<String, String> queryParams = new HashMap<String, String>();
 		
 		Instant t0 = Instant.now();
+		
+		
+		QueryForm query = translator.analyzeNLQuery(queryRawString);
+		String analysedString = query.cubeName +
+								query.queryName +
+								query.aggregateFunction +
+								query.measure +
+								query.gamma +
+								query.sigma;
+
+		
 		//1. parse query and produce a CubeQuery
-		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
+		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(analysedString, queryParams); 
 		this.currentCubeQuery = currentCubQuery;
 		
 		//2. execute the query AND populate Result with a 2D string
@@ -384,7 +397,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
 	
 	/**
-	 * Populates a tab-separated file where the result of a query is stored and ρeturns its location.
+	 * Populates a tab-separated file where the result of a query is stored and Ο�eturns its location.
 	 * <p>
 	 * The goal of this method is to output a file containing the result of a query
 	 * The name of the file is the name of the query + extension tab 
