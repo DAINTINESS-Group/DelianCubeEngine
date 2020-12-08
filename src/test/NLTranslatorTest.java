@@ -2,8 +2,9 @@ package test;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import mainengine.NLTranslator;
-import mainengine.QueryForm;
+
+import mainengine.nlq.NLTranslator;
+import mainengine.nlq.QueryForm;
 
 public class NLTranslatorTest {
 

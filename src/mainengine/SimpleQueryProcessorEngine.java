@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 //import java.sql.ResultSet;
 
+import mainengine.nlq.NLTranslator;
+import mainengine.nlq.QueryForm;
 import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
@@ -220,12 +222,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		
 		
 		QueryForm query = translator.analyzeNLQuery(queryRawString);
-		String analysedString = query.cubeName +
-								query.queryName +
-								query.aggregateFunction +
-								query.measure +
-								query.gamma +
-								query.sigma;
+		String analysedString = query.toString();
 
 		
 		//1. parse query and produce a CubeQuery

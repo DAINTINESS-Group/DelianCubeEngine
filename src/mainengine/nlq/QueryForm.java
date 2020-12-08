@@ -1,4 +1,4 @@
-package mainengine;
+package mainengine.nlq;
 
 public class QueryForm {
 	
@@ -74,4 +74,15 @@ public class QueryForm {
 	public String getSigma() {
 		return sigma;
 	}
-}
+	
+	public String toString() {
+		String analysedString = this.cubeName + " " +
+				this.queryName +  " " +
+				this.aggregateFunction +  " " +
+				this.measure + " " +
+				this.gamma + " " +
+				this.sigma;
+		return analysedString;
+	}//end toString()
+	
+}//end class

@@ -1,4 +1,4 @@
-package mainengine;
+package mainengine.nlq;
 
 import java.util.ArrayList;
 
