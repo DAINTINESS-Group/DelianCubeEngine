@@ -166,7 +166,6 @@ public class QueryEditorController extends AbstractController {
 		return result;
 	}
 	
-
 	public int executeAndDisplaySimpleQuery(String queryString) {
 		String remoreResultFileLocation = null;
 		String remoteInfoFileLocation = null;
@@ -222,6 +221,81 @@ public class QueryEditorController extends AbstractController {
 		}
 		return result;
 	}//end method
+	
+	@FXML
+	public int handleRunNLQuery() {
+		String queryString = null;
+		int result = -100;
+		
+		queryString = textArea.getText();
+		
+		if(queryString.length() == 0) {
+			CustomAlertDialog a = new CustomAlertDialog("Empty query", null, "Your query string is empty", this.stage); 
+			a.show();
+			return -100;
+		}
+		result = executeAndDisplaySimpleNLQuery(queryString);
+		return result;
+	}
+	
+	public int executeAndDisplaySimpleNLQuery(String queryString) {
+		String remoreResultFileLocation = null;
+		String remoteInfoFileLocation = null;
+		String remoteFolderName = null;
+		
+		String localFileLocation;
+		String localInfoFileLocation;
+		
+		int result;
+		ResultFileMetadata resMetadata = null;
+		
+		IMainEngine serverEngine = this.getApplication().getServer();
+		try {
+			//USED TO GET DATA BY THE answerCubeQueryFromNLString
+			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
+			
+			resMetadata = serverEngine.answerCubeQueryFromNLStringWithMetadata(queryString);
+			if(resMetadata != null) {
+				remoreResultFileLocation = resMetadata.getResultFile();
+				remoteInfoFileLocation = resMetadata.getResultInfoFile();
+				remoteFolderName = resMetadata.getLocalFolder();
+			
+				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
+				System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
+				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
+			}
+			else {
+				System.out.println("Remote METADATA: NULL" );
+				return -1;
+			}
+		} catch (RemoteException e) {
+			System.out.println("Cannot execute query answering!");
+			e.printStackTrace();
+		}
+
+		
+		if(remoreResultFileLocation.length() == 0) {	
+			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
+			a.show();
+			return -1;
+		}
+		else {
+			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
+			result = displayResultInDataWindow(localFileLocation);
+//			OLD WAY OF GETTING INFO FILE
+//			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
+//			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
+//			System.out.println("Remote result file: " + remoreResultFileLocation);
+//			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
+
+			localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
+	
+		}
+		return result;
+	}//end method
+	
+
+	
 	
 
 	/**

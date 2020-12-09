@@ -70,6 +70,10 @@ public interface IMainEngine extends IServer {
 	 * 
 	 */
 	String answerCubeQueryFromString(String queryRawString) throws RemoteException;
+	
+	
+	
+
 
 	
 	/**
@@ -111,6 +115,34 @@ public interface IMainEngine extends IServer {
 	 * @see answerCubeQueryFromString
 	 */
 	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
+	
+	
+	
+	
+	/**
+	 * Answers a natural language query as prescribed in a String
+	 * 
+	 * An example of the the query form is as it follows:
+	 * <p>
+	 * Show me the avg of loan amount per account_dim.lvl1,date_dim.lvl2 for account_dim.lvl2='north Moravia' as LoanQuery11_S1_CG-Prtl
+	 * <p>
+	 * @param queryRawString A String with the query
+	 * @return the path of the result file
+	 * @throws RemoteException
+	 */
+	String answerCubeQueryFromNLString(String queryRawString) throws RemoteException;
+
+	/**
+	 * Answers a natural language query as prescribed in a String and returns (a) a file with the results of the query and (b) an info file with metadata
+	 * 
+	 * See the answerCubeQueryFromString
+	 * 
+	 * @param queryRawString	A String with the query definition
+	 * @return	A ResultFileMetadata object containing the respective String values on the location of the two produced files and their parent folder 
+	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
+	 */
+	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	
 	

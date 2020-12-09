@@ -25,11 +25,11 @@ public class NLTranslator {
 	
 	public QueryForm analyzeNLQuery(String NLQuery){
 
-		
+		clear();
 		tokens = splitIntoTokens(NLQuery);
 		
 		cubeName = tokens.get(5);
-		queryName =findQueryName(NLQuery);
+		queryName = findQueryName(NLQuery);
 		aggrFunc = tokens.get(3);
 		measure = tokens.get(6);
 		gamma = findGamma(NLQuery);
@@ -37,18 +37,22 @@ public class NLTranslator {
 
 
 		
-		QueryForm query = new QueryForm();
-		query.setCubeName("CubeName:" + cubeName + "\n");
-		query.setQueryName("Name:" + queryName + "\n");
-		query.setAggregateFunction("AggrFunc:" + aggrFunc + "\n");
-		query.setMeasure("Measure:" + measure + "\n");
-		query.setGamma("Gamma:" + gamma + "\n");
-		query.setSigma("Sigma:" + sigma);
+		QueryForm query = new QueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
+
 		
-		System.out.println(query.getCubeName()+query.getQueryName()+query.getAggregateFunction()+query.getMeasure()+query.getGamma()+query.getSigma());
+		//System.out.println(query.getCubeName()+query.getQueryName()+query.getAggregateFunction()+query.getMeasure()+query.getGamma()+query.getSigma());
 		
 		return query;
 		
+	}
+	
+	private void clear() {
+		this.cubeName = "";
+		this.queryName = "";
+		this.aggrFunc = "";
+		this.measure = "";
+		this.gamma = "";
+		this.sigma = "";
 	}
 	
 	
@@ -76,7 +80,7 @@ public class NLTranslator {
 			}
 		}
 		return sigma;
-	}
+	}//end findSigma()
 	
 	private String findGamma(String NLQuery) {
 		String[] splitIntoTokens = NLQuery.split("\\s+");
@@ -93,8 +97,7 @@ public class NLTranslator {
 			}
 		}
 		return gamma;
-		
-	}
+	}//end findGamma()
 	
 	private String findQueryName(String NLQuery) {
 		String[] splitIntoTokens = NLQuery.split("\\s+");
@@ -105,6 +108,6 @@ public class NLTranslator {
 		}
 		return queryName;
 		
-	}
+	}//end findQueryName()
 	
-}
+}//end class

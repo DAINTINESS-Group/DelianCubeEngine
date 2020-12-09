@@ -27,30 +27,9 @@ public class QueryForm {
 		this.sigma = sigma;
 	}
 	
-	public void setCubeName(String cubeName) {
-		this.cubeName = cubeName;
-	}
-	
-	public void setQueryName(String queryName) {
-		this.queryName = queryName;
-	}
-	
-	public void setAggregateFunction(String aggregateFunction) {
-		this.aggregateFunction = aggregateFunction;
-	}
-	
-	public void setMeasure (String measure) {
-		this.measure = measure;
-	}
-	
-	public void setGamma(String gamma) {
-		this.gamma = gamma;
-	}
-	
-	public void setSigma(String sigma) {
-		this.sigma = sigma;
-	}
-	
+	//TODO
+	//tests
+	//na ftiaksw NLStringFromFile ston simplequeryprocessor
 	public String getCubeName() {
 		return cubeName;
 	}
@@ -76,11 +55,11 @@ public class QueryForm {
 	}
 	
 	public String toString() {
-		String analysedString = this.cubeName + " " +
-				this.queryName +  " " +
-				this.aggregateFunction +  " " +
-				this.measure + " " +
-				this.gamma + " " +
+		String analysedString = this.cubeName + "\n" +
+				this.queryName + "\n" +
+				this.aggregateFunction + "\n" +
+				this.measure + "\n" +
+				this.gamma + "\n" +
 				this.sigma;
 		return analysedString;
 	}//end toString()
