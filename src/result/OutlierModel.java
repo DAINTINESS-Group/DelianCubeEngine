@@ -145,7 +145,7 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 		
 		ArrayList<String> zScoreLabels = zScoreComponent.getCellLabelsAsStrings();
 		ArrayList<String> zScoreOutlierLabels = zScoreOutlierComponent.getCellLabelsAsStrings();
-		ArrayList<String> zScoreΝonOutlierLabels = zScoreNonOutlierComponent.getCellLabelsAsStrings();
+		ArrayList<String> zScoreNonOutlierLabels = zScoreNonOutlierComponent.getCellLabelsAsStrings();
 		
 		int numRows = zScoreLabels.size()+1;
 		int numCols = 3;
@@ -157,7 +157,7 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 		for(int i = 1; i < numRows; i++) {
 			output[i][0] = zScoreLabels.get(i-1);
 			output[i][1] = zScoreOutlierLabels.get(i-1);
-			output[i][2] = zScoreΝonOutlierLabels.get(i-1);
+			output[i][2] = zScoreNonOutlierLabels.get(i-1);
 		}
 		
 		return output;

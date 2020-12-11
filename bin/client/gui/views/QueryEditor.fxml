@@ -21,6 +21,7 @@
           <Menu mnemonicParsing="false" text="Run">
             <items>
                 <MenuItem id="runMI" fx:id="runMI" mnemonicParsing="false" onAction="#handleRunQuery" text="Run Query" />
+                <MenuItem id="runNLMI" fx:id="runNLMI" mnemonicParsing="false" onAction="#handleRunNLQuery" text="Run NL Query" />
                 <MenuItem id="runQnMMI" fx:id="runQnMMI" mnemonicParsing="false"  onAction="#handleRunQueryWithModels"  text="Run Q &amp; M" />
             </items>
           </Menu>

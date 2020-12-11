@@ -26,7 +26,7 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 import client.ClientRMITransferer;
-import mainengine.Foo;
+//import mainengine.Foo;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
 /**
