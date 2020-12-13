@@ -267,60 +267,17 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
-		//Use a hashmap to get any useful data (like queryname) from the raw query string
-		HashMap<String, String> queryParams = new HashMap<String, String>();
-		
-		Instant t0 = Instant.now();
-		
-		
+
 		//1. parse and analyse natural language query and produce a CubeQuery
 		QueryForm query = translator.analyzeNLQuery(queryRawString);
+		
+		//TODO elegxos gia kako query
 		String analysedString = query.toString();
 		System.out.println(analysedString);
-
-		
-		
-		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(analysedString, queryParams); 
-		this.currentCubeQuery = currentCubQuery;
-		
-		//2. execute the query AND populate Result with a 2D string
-		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
-		Result res = cubeManager.executeQuery(currentCubQuery);
-		this.currentResult = res;
-		
-		Instant tExecuted = Instant.now();
-		long durationExecution = Duration.between(t0, tExecuted).toMillis();
-
-		//3a. print result to file and screen
-		String queryName = queryParams.get("QueryName");
-		this.currentQueryName = queryName;
-		
-				
-		//3b. print result to file
-		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles" + File.separator);
-		//String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
-		//System.out.println("SQP produces: " + outputLocation);		
-
-		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
-		//res.printStringArrayTostream(System.out, res.getResultArray());
-		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
-
-		//TODO SUPER MUST: devise a nice way to handle the output to console when in development mode
-		if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
-			res.printCellsToStream(System.out);
-		}
-		Instant tOutputed = Instant.now();
-		
-		
-		long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
-		long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-		
-		System.out.println("\n\n@TIMER\tQuery\t" + queryName + "\tQuery Execution:\t" + durationExecution
-				+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
-		
-		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-
+		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
+		String outputLocation = answerCubeQueryFromString(analysedString);
 		return outputLocation;
+		
 	}//answerCubeQueryFromNLString
 
 
@@ -386,30 +343,9 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return resMetadata;
 	}//answerCubeQueryFromStringWithMetada
 	
+	
 	@Override
 	public ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException {
-//		//Use a hashmap to get any useful data (like queryname) from the raw query string
-//		HashMap<String, String> queryParams = new HashMap<String, String>();
-//		
-//		//1. parse query and produce a CubeQuery
-//		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
-//
-//		//2. execute the query AND populate Result with a 2D string
-//		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
-//		Result res = cubeManager.executeQuery(currentCubQuery);
-//				
-//		//3a. print result to screen
-//		String queryName = queryParams.get("QueryName");
-//		
-//		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
-//		//res.printStringArrayTostream(System.out, res.getResultArray());
-//		//System.out.println("------- Done with printString, go for printCells  --------------------------"+"\n");
-//		res.printCellsToStream(System.out);
-//		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-//				
-//		//3b. print result to file
-//		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles/");
-
 
 		String outputLocation = answerCubeQueryFromNLString(queryRawString);
 		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);

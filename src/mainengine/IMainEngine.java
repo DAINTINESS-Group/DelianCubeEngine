@@ -131,16 +131,17 @@ public interface IMainEngine extends IServer {
 	 * @throws RemoteException
 	 */
 	String answerCubeQueryFromNLString(String queryRawString) throws RemoteException;
+	
 
 	/**
 	 * Answers a natural language query as prescribed in a String and returns (a) a file with the results of the query and (b) an info file with metadata
 	 * 
-	 * See the answerCubeQueryFromString
+	 * See the answerCubeQueryFromNLString
 	 * 
 	 * @param queryRawString	A String with the query definition
 	 * @return	A ResultFileMetadata object containing the respective String values on the location of the two produced files and their parent folder 
 	 * @throws RemoteException
-	 * @see answerCubeQueryFromString
+	 * @see answerCubeQueryFromNLString
 	 */
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	

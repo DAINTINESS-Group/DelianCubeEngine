@@ -2,8 +2,8 @@ CubeName:loan
 Name: LoanQuery11_S1_CG-Prtl
 AggrFunc:Avg
 Measure:amount
-Gamma:account_dim.lvl1,date_dim.lvl2
-Sigma:account_dim.lvl2='north Moravia'
+Gamma:account_dim.district_name,date_dim.month
+Sigma:account_dim.region='north Moravia'
 
 select account.district_name, date.Month, avg(amount) as measure,COUNT(*) as countOfDetailedCells
 from loan inner join account on loan.account_id = account.account_id inner join date on loan.date = date.SK_Day
@@ -18,8 +18,8 @@ CubeName:loan
 Name: LoanQuery12_S1_CG-Dsjnt
 AggrFunc:Max
 Measure:amount
-Gamma:account_dim.lvl1, status_dim.lvl2
-Sigma:date_dim.lvl2 = '1998-01'
+Gamma:account_dim.district_name, status_dim.status
+Sigma:date_dim.month = '1998-01'
 
 select account.district_name, status.status, max(amount) as measure, count(*) as countOfDetailedCells
 from loan inner join account on loan.account_id = account.account_id inner join date on loan.date = date.SK_Day inner join status on loan.status_id = status.SK_status
@@ -34,8 +34,8 @@ CubeName:loan
 Name: LoanQuery21_S2_CG-Cmmn
 AggrFunc:Min
 Measure:amount
-Gamma:account_dim.lvl1,date_dim.lvl2
-Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'
+Gamma:account_dim.district_name,date_dim.month
+Sigma:account_dim.region='Prague', date_dim.year = '1998'
 
 
 select account.district_name, date.Month, min(amount) as measure, count(*) as countOfDetailedCells
@@ -51,8 +51,8 @@ CubeName:loan
 Name: LoanQuery22_S2_CG-Prtl
 AggrFunc:Sum
 Measure:amount
-Gamma:account_dim.lvl1,date_dim.lvl3
-Sigma:account_dim.lvl2='south Moravia',status_dim.lvl1='Running Contract/OK'
+Gamma:account_dim.district_name,date_dim.year
+Sigma:account_dim.region='south Moravia',status_dim.status='Running Contract/OK'
 
 
 select account.district_name, date.Year, sum(amount) as measure, count(*) as countOfDetailedCells
@@ -67,8 +67,8 @@ CubeName:loan
 Name: LoanQuery31_S3_CG-Prtl
 AggrFunc:Sum
 Measure:amount
-Gamma:account_dim.lvl1,date_dim.lvl3
-Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl1='Contract Finished/No Problems', date_dim.lvl3 = '1996'
+Gamma:account_dim.district_name,date_dim.year
+Sigma:account_dim.region='west Bohemia',status_dim.status='Contract Finished/No Problems', date_dim.year = '1996'
 
 select account.district_name, date.Year, sum(amount) as measure, count(*) as countOfDetailedCells
 from loan inner join account on loan.account_id = account.account_id inner join date on loan.date = date.SK_Day inner join status on loan.status_id = status.SK_status

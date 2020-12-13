@@ -2,7 +2,7 @@ package mainengine.nlq;
 
 import java.util.ArrayList;
 
-public class NLTranslator {
+public class NLTranslator implements ITranslator {
 	private ArrayList<String> tokens;
 	private String cubeName;
 	private String queryName;
