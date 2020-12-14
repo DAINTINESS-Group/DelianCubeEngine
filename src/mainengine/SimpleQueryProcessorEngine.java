@@ -265,6 +265,22 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		return outputLocation;
 	}//answerCubeQueryFromString
 	
+	
+	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
+	 * executes the query and produces the output of the query.
+	 * 
+	 * The idea is:
+	 * 1. Parse and analyze the natural language query via <code>analyzeNLQuery</code> of <code>NLTranslator</code>, see {@link NLTranslator}.
+	 * 2. Produces a <code>QueryForm</code> object which contains the cube query in its fields, see {@link QueryForm}.
+	 * 3. Creates a String with the cube query in order to call <code>answerCubeQueryFromString</code> with this String as a parameter.
+	 * 4. Returns the results in a file with the name of the query and outputs them to the console.
+	 * 
+	 * @param queryRawString a String with the natural language query
+	 * @return a String containing the location of output file at the server
+	 * @author DimosGkitsakis
+	 * 
+	 * 
+	 */
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
 
@@ -343,7 +359,15 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return resMetadata;
 	}//answerCubeQueryFromStringWithMetada
 	
-	
+	/**
+	 * Same idea as the {@link #answerCubeQueryFromStringWithMetadata(String)}, but for a natural language query instead of cube query.
+	 * Result produced via {@link #answerCubeQueryFromNLString(String)} instead of {@link #answerCubeQueryFromString(String)}.
+	 * 
+	 * @param queryRawString a String with the natural language query
+	 * @return a ResultFileMetadata containing info on the location of output files at the server
+	 * 
+	 * 
+	 */
 	@Override
 	public ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException {
 

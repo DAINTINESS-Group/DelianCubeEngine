@@ -1,5 +1,17 @@
 package mainengine.nlq;
 
+/**
+ * Objects of this class are used for the natural language query to cube query transformation.
+ * The fields of the QueryForm class contain the cube query components as String.
+ * 
+ * 
+ * @author DimosGkitsakis
+ * 
+ * 
+ * 
+ *
+ */
+
 public class QueryForm {
 	
 	protected String cubeName;

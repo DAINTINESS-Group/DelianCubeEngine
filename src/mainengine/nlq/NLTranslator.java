@@ -2,6 +2,16 @@ package mainengine.nlq;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used for the transformation from natural language queries to cube queries.
+ * 
+ * @author DimosGkitsakis
+ * 
+ * 
+ * 
+ *
+ */
+
 public class NLTranslator implements ITranslator {
 	private ArrayList<String> tokens;
 	private String cubeName;
@@ -22,6 +32,19 @@ public class NLTranslator implements ITranslator {
 		sigma = "";
 	
 	}
+	
+	/**
+	 * This method is used for the parsing of the natural language query and the transformation of it to cube query.
+	 * The main idea is:
+	 * 
+	 * 1. Splits the natural language query into tokens
+	 * 2. Finds every component of the equivalent cube query.
+	 * 
+	 * @param NLQuery A String with the natural language query
+	 * @return A QueryForm object which contains the cube query in its fields {@link QueryForm}
+	 * @author DimosGkitsakis
+	 * 
+	 */
 	
 	public QueryForm analyzeNLQuery(String NLQuery){
 
