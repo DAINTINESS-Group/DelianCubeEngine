@@ -25,6 +25,9 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import cubemanager.CubeManager;
+import mainengine.nlq.NLQProcessingResultsReturnedToClient;
+
 /**
  * @author pvassil
  *
@@ -146,7 +149,8 @@ public interface IMainEngine extends IServer {
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	
-	
+	NLQProcessingResultsReturnedToClient prepareCubeQuery(String queryString) throws RemoteException;
+
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.
 	 * This is an old-to-be-removed method, from Cinecubes, that turns on/off audio and MS word generation

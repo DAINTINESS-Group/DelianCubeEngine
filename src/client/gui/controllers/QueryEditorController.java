@@ -41,6 +41,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
+import mainengine.nlq.NLQProcessor;
+import mainengine.nlq.NLQProcessingResultsReturnedToClient;
 
 /**
  * @author pvassil
@@ -249,11 +251,22 @@ public class QueryEditorController extends AbstractController {
 		int result;
 		ResultFileMetadata resMetadata = null;
 		
+		
 		IMainEngine serverEngine = this.getApplication().getServer();
 		try {
-			//USED TO GET DATA BY THE answerCubeQueryFromNLString
-			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
+
+			//TODO CALL THE NEW METHOD FOR QUERY CHECKING
+			//otan vgazw thn klhsh ths prepareCubeQuery apo ta sxolia, exw errors. Need fix, dont know what is wrong.
+			//BackEnd to results exei not null pedia kanonika. Ta prints ston SQPEngine douleuoun.
+			/*
+			NLQProcessingResultsReturnedToClient results = serverEngine.prepareCubeQuery(queryString);
 			
+			if (results.foundError) {
+				CustomAlertDialog error = new CustomAlertDialog("Error:" + results.errorCode, null, results.details, this.stage);
+				error.show();
+				return -100;
+			}
+			*/
 			resMetadata = serverEngine.answerCubeQueryFromNLStringWithMetadata(queryString);
 			if(resMetadata != null) {
 				remoreResultFileLocation = resMetadata.getResultFile();

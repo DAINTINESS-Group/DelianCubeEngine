@@ -33,9 +33,12 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 //import java.sql.ResultSet;
 
+import mainengine.nlq.NLQProcessingResultsReturnedToClient;
+import mainengine.nlq.NLQProcessor;
 import mainengine.nlq.NLTranslator;
 import mainengine.nlq.QueryForm;
 import mainengine.rmiTransfer.RMIInputStream;
@@ -44,7 +47,9 @@ import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 
 import cubemanager.CubeManager;
+import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.BasicStoredCube;
 //import exctractionmethod.SqlQuery;
 /*
 import filecreation.FileMgr;
@@ -82,6 +87,8 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private String currentQueryName;
 	
 	private NLTranslator translator = new NLTranslator();
+	private NLQProcessor nlqProcessor;
+	private ArrayList<ArrayList<String>> levels = new ArrayList<ArrayList<String>>();
 
 /**
  * Simple constructor for the class
@@ -153,6 +160,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 							prsMng.name_creation, prsMng.sqltable,
 							prsMng.originallvllst, prsMng.customlvllst,
 							prsMng.dimensionlst);
+					levels.add(prsMng.hierachylst);
 				} else if (prsMng.mode == 1) {
 					this.cubeManager.InsertionCube(prsMng.name_creation,
 							prsMng.sqltable, prsMng.dimensionlst,
@@ -546,6 +554,69 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		String fileName = outputFolder + cubequery.getName() + "_info.txt";
 		return fileName;
 	}//end method
+	
+	
+	@Override
+	public NLQProcessingResultsReturnedToClient prepareCubeQuery(String queryString) throws RemoteException {
+		// TODO Auto-generated method stub
+		//1.Bring data for CubeName
+		ArrayList<String> cubeNames = new ArrayList<String>();
+		//CubeBase cBase = cubeManager.getCubeBase();
+		//List<BasicStoredCube> cubes = cBase.getBasicStoredCube();
+		/*
+		for (int i=0; i<cubes.size(); i++) {
+			cubeNames.add(cubes.get(i).getName());
+		}*/
+
+		cubeNames.add(this.prsMng.name_creation);
+		System.out.println(cubeNames);
+		//2.Create data for AggrFunc
+		ArrayList<String> aggrFunctions = new ArrayList<String>();
+		aggrFunctions.add("max");
+		aggrFunctions.add("min");
+		aggrFunctions.add("count");
+		aggrFunctions.add("avg");
+		aggrFunctions.add("sum");
+		System.out.println(aggrFunctions);
+		
+		//3.Bring data for Measure
+		ArrayList<String> measures = new ArrayList<String>();
+		measures= this.prsMng.measurefields;
+		System.out.println(measures);
+		
+		
+		//4.Bring data for Dimensions
+		ArrayList <String> dimensions = new ArrayList<String>();
+		System.out.println(this.prsMng.dimensionlst);
+		dimensions = this.prsMng.dimensionlst;
+		
+		//5.Bring data for levels
+		System.out.println(this.prsMng.originallvllst);
+		System.out.println(this.prsMng.customlvllst);
+		System.out.println(this.prsMng.hierachylst);
+		System.out.println(this.levels);
+		ArrayList <ArrayList<String>> dimLevels = new ArrayList <ArrayList<String>>();
+		dimLevels = levels;
+
+		
+		
+		//CubeBase
+		nlqProcessor = new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, dimLevels);
+		//System.out.println(nlqProcessor.getCubeNames());
+		
+		
+
+		NLQProcessingResultsReturnedToClient results = nlqProcessor.prepareCubeQuery(queryString);
+		System.out.println(results.hashKey);
+		System.out.println(results.foundError);
+		System.out.println(results.errorCode);
+		System.out.println(results.details);
+
+		//return new NLQProcessingResultsReturnedToClient(results.hashKey, results.foundError, results.errorCode, results.details);
+		return results;
+		
+		//String cubeQuery = nlqProcessor.getQuery(results.hashKey);
+	}
 
 
 	
