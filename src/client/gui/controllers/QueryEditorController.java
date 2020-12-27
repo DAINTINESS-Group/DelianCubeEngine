@@ -247,26 +247,43 @@ public class QueryEditorController extends AbstractController {
 		
 		String localFileLocation;
 		String localInfoFileLocation;
-		
 		int result;
 		ResultFileMetadata resMetadata = null;
+		
+		ResultFileMetadata errors = null;
+		String localErrorFileLocation;
+		String contents;
+		NLQProcessingResultsReturnedToClient results;
 		
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
 		try {
-
-			//TODO CALL THE NEW METHOD FOR QUERY CHECKING
-			//otan vgazw thn klhsh ths prepareCubeQuery apo ta sxolia, exw errors. Need fix, dont know what is wrong.
-			//BackEnd to results exei not null pedia kanonika. Ta prints ston SQPEngine douleuoun.
-			/*
-			NLQProcessingResultsReturnedToClient results = serverEngine.prepareCubeQuery(queryString);
 			
+			errors = serverEngine.prepareCubeQuery(queryString);
+			if (errors != null){
+				String remoteErrorFileLocation = errors.getErrorCheckingFile();
+				System.out.println("Remote error checking file:" + remoteErrorFileLocation);
+				if(remoteErrorFileLocation.length() == 0) {	
+					CustomAlertDialog a = new CustomAlertDialog("Error", null, "No error checking results found", this.stage); 
+					a.show();
+					return -1;
+				}else {
+					localErrorFileLocation = downloadResult(remoteErrorFileLocation, serverEngine);
+					contents = getContents(localErrorFileLocation);
+				}
+			
+			}else {
+				System.out.println("Remote Error METADATA: NULL");
+				return -1;
+			}
+			
+			results = produceNLQPResultsObject(contents);
 			if (results.foundError) {
 				CustomAlertDialog error = new CustomAlertDialog("Error:" + results.errorCode, null, results.details, this.stage);
 				error.show();
 				return -100;
 			}
-			*/
+			
 			resMetadata = serverEngine.answerCubeQueryFromNLStringWithMetadata(queryString);
 			if(resMetadata != null) {
 				remoreResultFileLocation = resMetadata.getResultFile();
@@ -307,8 +324,40 @@ public class QueryEditorController extends AbstractController {
 		return result;
 	}//end method
 	
+	private String getContents(String fileName) {
+		String contents = "";
+		File file = new File(fileName);
+		if(file.exists() && !file.isDirectory()) { 
+			BufferedReader reader = null;
+			try {
+			    reader = new BufferedReader(new FileReader(file));
 
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			        contents = contents + line + "\n";
+			    }
+
+			} catch (IOException e) {
+			    e.printStackTrace();
+			} finally {
+			    try {
+			        reader.close();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}//end finally
+		}//end master if
+		return contents;
+	}//end method
 	
+	private NLQProcessingResultsReturnedToClient produceNLQPResultsObject(String contents) {
+		String[] contentsArray = contents.split(";\n");
+		
+		boolean foundError = Boolean.parseBoolean(contentsArray[1]);
+		NLQProcessingResultsReturnedToClient errorResults = new NLQProcessingResultsReturnedToClient(contentsArray[0],
+																									foundError, contentsArray[2],contentsArray[3]); 
+		return errorResults;
+	}
 	
 
 	/**

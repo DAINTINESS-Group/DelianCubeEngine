@@ -50,6 +50,13 @@ public class ResultFileMetadata implements Serializable{
 		this.localFolder = localFolder;
 	}
 
+	public String getErrorCheckingFile() {
+		return errorCheckingFile;
+	}
+	
+	public void setErrorCheckingFile(String errorCheckingFile) {
+		this.errorCheckingFile = errorCheckingFile;
+	}
 	
 	private void writeObject(ObjectOutputStream oos) throws IOException {
 		oos.writeObject(resultFile);   
@@ -57,6 +64,7 @@ public class ResultFileMetadata implements Serializable{
 		oos.writeObject(componentResultFiles);
 		oos.writeObject(componentResultInfoFiles);
 		oos.writeObject(localFolder);
+		oos.writeObject(errorCheckingFile);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +74,7 @@ public class ResultFileMetadata implements Serializable{
 		componentResultFiles = (ArrayList<String>) ois.readObject();
 		componentResultInfoFiles = (ArrayList<String>) ois.readObject();
 		localFolder = (String) ois.readObject();
+		errorCheckingFile = (String) ois.readObject();
 	}
 	
 	private String resultFile;
@@ -73,4 +82,5 @@ public class ResultFileMetadata implements Serializable{
 	private ArrayList<String> componentResultFiles;
 	private ArrayList<String> componentResultInfoFiles;
 	private String localFolder;
+	private String errorCheckingFile;
 } //end class

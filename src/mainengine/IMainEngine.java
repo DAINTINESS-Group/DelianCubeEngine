@@ -149,7 +149,7 @@ public interface IMainEngine extends IServer {
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	
-	NLQProcessingResultsReturnedToClient prepareCubeQuery(String queryString) throws RemoteException;
+	ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException;
 
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.

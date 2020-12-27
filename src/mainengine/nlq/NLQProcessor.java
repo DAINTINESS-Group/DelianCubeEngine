@@ -27,11 +27,10 @@ public class NLQProcessor  {
 	private ArrayList<String> aggrFunctions;
 	private ArrayList<String> measures;
 	private ArrayList<String> dimensions;
-	private ArrayList<ArrayList<String>> levels;
+	private HashMap<String, ArrayList<String>> levels;
 	
 	public NLQProcessor(ArrayList<String> cubeNames,  ArrayList<String> aggrFunctions, ArrayList<String> measures,
-						ArrayList<String> dimensions, ArrayList<ArrayList<String>> levels) {
-		//incomingQueries = new HashMap<String, String>();
+						ArrayList<String> dimensions, HashMap<String, ArrayList<String>> levels) {
 		this.cubeNames = cubeNames;
 		this.aggrFunctions = aggrFunctions;
 		this.measures = measures;
@@ -40,11 +39,7 @@ public class NLQProcessor  {
 	}
 	
 
-	
-	//TODO edw tha ginei to preprocessing twn nlqueries.
-	//errors. ask how to bring hierarchies etc here
-
-
+	//TODO: Prepei na ginei o elegxos gia ta dimensions kai ta levels
 	public NLQProcessingResultsReturnedToClient prepareCubeQuery(String NLQuery) {
 		translator = new NLTranslator();
 		
@@ -54,16 +49,13 @@ public class NLQProcessor  {
 		
 		//2. Save it to the hashmap
 		saveCubeQuery(query.queryName, cubeQuery);
-		//System.out.println(incomingQueries);
 		
-		//3. Check for errors
-		
+		//3. Check for errors		
 		fillErrorHashMap();
 		String errorCode = errorChecking(query);
-		//System.out.println(errorCode);
 
 		if (errorCode.equals("No Error Found")) {
-			return new NLQProcessingResultsReturnedToClient(query.queryName, false, "", "");
+			return new NLQProcessingResultsReturnedToClient(query.queryName, false, null, null);
 		}else {
 			return new NLQProcessingResultsReturnedToClient(query.queryName, true, errorCode, errorDetails.get(errorCode));
 		}
@@ -73,29 +65,28 @@ public class NLQProcessor  {
 	
 	private void saveCubeQuery(String queryName, String cubeQuery) {
 		incomingQueries.put(queryName, cubeQuery);
-		//System.out.println(incomingQueries);	
 	}
 	
 	private void fillErrorHashMap() {
 		errorDetails.put("Cube Name Error", "Cube Name Error found. The given cube name was not recognized. "
 				+ "Please check again. \n "
-				+ "The query should look like 'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
 		errorDetails.put("Aggregate Function Error", "Aggregate Function Error found. The given aggragate function was not recognized. "
 				+ "Please check again. \n "
-				+ "The query should look like 'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
 		errorDetails.put("Measure Error", "Measure Name Error found. The given measure name was not recognized. "
 				+ "Please check again. \n "
-				+ "The query should look like 'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
 		errorDetails.put("Dimension Name Error", "Dimension Name Error found. The given dimension name was not recognized. "
 				+ "Please check again. \n "
-				+ "The query should look like 'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
 		errorDetails.put("Level Name Error", "Level Name Error found. The given level name was not recognized. "
 				+ "Please check again. \n "
-				+ "The query should look like 'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Show me the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
 	}
 	
@@ -104,12 +95,9 @@ public class NLQProcessor  {
 		String aggrFunc = query.aggregateFunction.split(":")[1];
 		String measure = query.cubeName.split(":")[1] + "." + query.measure.split(":")[1];
 		
-		//System.out.println(cubeName);
-		//System.out.println(cubeNames);
-		//System.out.println(aggrFunc);
-		//System.out.println(measure);
+
 		if(!(cubeNames.contains(cubeName))) {
-			return "Cube Error Name";
+			return "Cube Name Error";
 		}else if(!(aggrFunctions.contains(aggrFunc))) {
 			return "Aggregate Function Error";
 		}else if (!(measures.contains(measure))){

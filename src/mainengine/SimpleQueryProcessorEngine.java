@@ -49,6 +49,9 @@ import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
+import cubemanager.cubebase.Hierarchy;
+import cubemanager.cubebase.Level;
 import cubemanager.cubebase.BasicStoredCube;
 //import exctractionmethod.SqlQuery;
 /*
@@ -88,7 +91,6 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	
 	private NLTranslator translator = new NLTranslator();
 	private NLQProcessor nlqProcessor;
-	private ArrayList<ArrayList<String>> levels = new ArrayList<ArrayList<String>>();
 
 /**
  * Simple constructor for the class
@@ -160,7 +162,6 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 							prsMng.name_creation, prsMng.sqltable,
 							prsMng.originallvllst, prsMng.customlvllst,
 							prsMng.dimensionlst);
-					levels.add(prsMng.hierachylst);
 				} else if (prsMng.mode == 1) {
 					this.cubeManager.InsertionCube(prsMng.name_creation,
 							prsMng.sqltable, prsMng.dimensionlst,
@@ -557,8 +558,25 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	
 	
 	@Override
-	public NLQProcessingResultsReturnedToClient prepareCubeQuery(String queryString) throws RemoteException {
+	public ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException {
 		// TODO Auto-generated method stub
+		
+		nlqProcessor = produceNLQProcessorObject();
+		NLQProcessingResultsReturnedToClient results = nlqProcessor.prepareCubeQuery(queryString);
+		//System.out.println(results.hashKey);
+		//System.out.println(results.foundError);
+		//System.out.println(results.errorCode);
+		//System.out.println(results.details);
+		
+		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
+		resMetadata.setErrorCheckingFile(errorCheckingInfoOutput);
+		
+	
+		return resMetadata;		
+	}
+	
+	private NLQProcessor produceNLQProcessorObject() {
 		//1.Bring data for CubeName
 		ArrayList<String> cubeNames = new ArrayList<String>();
 		//CubeBase cBase = cubeManager.getCubeBase();
@@ -567,9 +585,8 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		for (int i=0; i<cubes.size(); i++) {
 			cubeNames.add(cubes.get(i).getName());
 		}*/
-
 		cubeNames.add(this.prsMng.name_creation);
-		System.out.println(cubeNames);
+		
 		//2.Create data for AggrFunc
 		ArrayList<String> aggrFunctions = new ArrayList<String>();
 		aggrFunctions.add("max");
@@ -577,47 +594,63 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		aggrFunctions.add("count");
 		aggrFunctions.add("avg");
 		aggrFunctions.add("sum");
-		System.out.println(aggrFunctions);
 		
 		//3.Bring data for Measure
 		ArrayList<String> measures = new ArrayList<String>();
-		measures= this.prsMng.measurefields;
-		System.out.println(measures);
-		
+		measures= this.prsMng.measurefields;		
 		
 		//4.Bring data for Dimensions
 		ArrayList <String> dimensions = new ArrayList<String>();
-		System.out.println(this.prsMng.dimensionlst);
 		dimensions = this.prsMng.dimensionlst;
 		
 		//5.Bring data for levels
-		System.out.println(this.prsMng.originallvllst);
-		System.out.println(this.prsMng.customlvllst);
-		System.out.println(this.prsMng.hierachylst);
-		System.out.println(this.levels);
-		ArrayList <ArrayList<String>> dimLevels = new ArrayList <ArrayList<String>>();
-		dimLevels = levels;
-
+		List<Dimension> dimensionsList = this.cubeManager.getDimensions();
+		HashMap<String, ArrayList<String>> levels = new HashMap<String, ArrayList<String>>();
+		ArrayList<String> tmpLvls = null; 
+		for (int i=0;i < dimensionsList.size();i ++) {
+			Dimension dim = dimensionsList.get(i);
+			for(int j=0; j<dim.getHier().size(); j++) {
+				List<Level> l = dim.getHier().get(j).getLevels();
+				tmpLvls = new ArrayList<String>();
+				for (int k=0; k<l.size(); k++) {
+					tmpLvls.add(l.get(k).getName());
+				}
+				levels.put(dimensionsList.get(i).getName(), tmpLvls);
+			}						
+		}
 		
-		
-		//CubeBase
-		nlqProcessor = new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, dimLevels);
-		//System.out.println(nlqProcessor.getCubeNames());
-		
-		
-
-		NLQProcessingResultsReturnedToClient results = nlqProcessor.prepareCubeQuery(queryString);
-		System.out.println(results.hashKey);
-		System.out.println(results.foundError);
-		System.out.println(results.errorCode);
-		System.out.println(results.details);
-
-		//return new NLQProcessingResultsReturnedToClient(results.hashKey, results.foundError, results.errorCode, results.details);
-		return results;
-		
-		//String cubeQuery = nlqProcessor.getQuery(results.hashKey);
+		return new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, levels);
 	}
-
+	
+	private String printErrorCheckingResultsToFile(NLQProcessingResultsReturnedToClient results, String filePath) {
+		String fileName = filePath;
+		File file=new File(fileName);
+		FileOutputStream fileOutputStream=null;
+		PrintStream printStream=null;
+		try {
+			fileOutputStream=new FileOutputStream(file);
+			printStream=new PrintStream(fileOutputStream);
+			printStream.print(results.hashKey+";\n");
+			printStream.print(results.foundError+";\n");
+			printStream.print(results.errorCode+";\n");
+			printStream.print(results.details);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		return fileName;
+	}
 
 	
 	
