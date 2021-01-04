@@ -24,6 +24,7 @@ import java.io.File;
 //import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author pvassil
@@ -44,7 +45,28 @@ public interface IMainEngine extends IServer {
 	void initializeConnection(String schemaName, String login, String passwd,
 			 String inputFolder, String cubeName) throws RemoteException;
 
-
+	/**
+	 * Has same functionality as initializeConnection and also initializes the only Interestingness Manager object
+	 * Used only by the Interestingness Client.
+	 * 
+	 * See the initializeConnection
+	 * 
+	 * @param schemaName  	  The name of the database 
+	 * @param login  		  The user login
+	 * @param passwd  		  The user passwd
+	 * @param inputFolder	  The folder where the cube description lies (includes a dbc.ini for the connection and cubde descriptions too)
+	 * @param historyFolder   Path to the History folder
+	 * @param expValuesFolder Path to the Expected Values folder
+	 * @param expLabelsFolder Path to the Expected Labels folder
+	 * @param k               The kth neighbor
+	 * @param cubeName        The name of the cube + the name of the file where the cube is described = <cubename>.ini
+	 * @throws RemoteException
+	 * @see initializeConnection
+	 */
+	void initializeConnectionWithIntrMng(String schemaName, String login,String passwd, String inputFolder,String historyFolder, 
+			  String expValuesFolder, String expLabelsFolder,int k, String cubeName) throws RemoteException;
+	
+	
 	/**
 	 * Answers a query as prescribed in a String
 	 * 
@@ -145,6 +167,17 @@ public interface IMainEngine extends IServer {
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	
+	/**
+	 * Answers a query as prescribed in a String and computes the chosen measures 
+	 * 
+	 * See the answerCubeQueryFromString
+	 * @param queryString A String with the query
+	 * @param measures    A List with the chosen measures
+	 * @return A String Array with the results of all the measures
+	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
+	 */
+    String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures) throws RemoteException;
 	
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.
@@ -155,5 +188,7 @@ public interface IMainEngine extends IServer {
 	 * @throws RemoteException
 	 */
 //	void optionsChoice(boolean audio, boolean word)throws RemoteException;
+	
+	
 
 }

@@ -80,6 +80,14 @@ public class CubeQuery extends Cube {
 	public ArrayList<String[]> getGammaExpressions() {
 		return GammaExpressions;
 	}
+	/**
+	 * Used to calculate detailed area of query
+	 * @param gammaExpressions
+	 * @see InputManager
+	 */
+	public void setGammaExpressions(ArrayList<String[]> gammaExpressions) {
+		this.GammaExpressions = gammaExpressions;
+	}
 
 	public ArrayList<String[]> getSigmaExpressions() {
 		return SigmaExpressions;

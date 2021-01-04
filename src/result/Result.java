@@ -73,6 +73,20 @@ public class Result {
 		columnLabels = new ArrayList<String>();
 
 	}
+	/**
+	 * This constructor is used to create Result objects from History/Results files
+	 * @param resultArray
+	 * @param cells
+	 * @param columnNames
+	 * @param columnLabels
+	 * @see InputManager
+	 */
+	public Result(String[][] resultArray, ArrayList<Cell> cells, ArrayList<String> columnNames, ArrayList<String> columnLabels) {
+		this.resultArray = resultArray;
+		this.cells = cells;
+		this.columnNames = columnNames;
+		this.columnLabels = columnLabels;
+	}
 	
 	/**
 	 * Returns the the cells of the result.

@@ -31,10 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 //import java.sql.ResultSet;
+import java.util.stream.Collectors;
 
 import mainengine.nlq.NLTranslator;
 import mainengine.nlq.QueryForm;
@@ -45,6 +50,7 @@ import mainengine.rmiTransfer.RMIOutputStreamImpl;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
+import interestingnessengine.InterestingnessManager;
 //import exctractionmethod.SqlQuery;
 /*
 import filecreation.FileMgr;
@@ -82,7 +88,9 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private String currentQueryName;
 	
 	private NLTranslator translator = new NLTranslator();
-
+	
+	private InterestingnessManager interestMng;
+	private int historyCounter = 0;
 /**
  * Simple constructor for the class
  * @throws RemoteException
@@ -130,6 +138,24 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private void initializeCubeMgr(String lookupFolder) throws RemoteException {
 		cubeManager = new CubeManager(lookupFolder);
 	}
+	
+	public void initializeConnectionWithIntrMng(String schemaName, String login, String passwd, String inputFolder, String historyFolder,
+			String expValuesFolder, String expLabelsFolder, int k, String cubeName) throws RemoteException {
+		initializeCubeMgr(inputFolder);
+		cubeManager.CreateCubeBase(schemaName, login, passwd);
+		constructDimension(inputFolder, cubeName);
+		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, k);
+		cubeManager.setCubeQueryTranslator();
+		System.out.println("DONE WITH INIT");
+		
+	}
+	private void initializeInterestMgr(String historyFolder, String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+		if(historyFolder.equals("") && expValuesFolder.equals("") && expLabelsFolder.equals("")) {
+			interestMng = new InterestingnessManager(cubeManager, k);
+		}else {
+			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, cubeManager, k);
+		}
+	}
 
 	private void constructDimension(String inputlookup, String cubeName)
 			throws RemoteException {
@@ -163,7 +189,9 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		}
 	}
 
-//	public void optionsChoice(boolean audio, boolean word)
+
+
+	//	public void optionsChoice(boolean audio, boolean word)
 //			throws RemoteException {
 //		optMgr.setAudio(audio);
 //		optMgr.setWord(word);
@@ -261,9 +289,29 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 				+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
 		
 		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-
+		
 		return outputLocation;
 	}//answerCubeQueryFromString
+	
+	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
+			throws RemoteException {
+		// answer query
+		
+		answerCubeQueryFromString(queryString); 
+		this.interestMng.updateState(currentCubeQuery, currentResult);
+		double result;
+		String[] results = new String[measures.size()];
+		
+		for(int i = 0; i < measures.size(); i++) {
+			//compute each measure
+			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
+			results[i] = Double.toString(result);
+		}
+		
+		saveQueryHistory(queryString,currentResult);
+		
+		return results;
+	}
 	
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
@@ -586,6 +634,92 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		String fileName = outputFolder + cubequery.getName() + "_info.txt";
 		return fileName;
 	}//end method
+
+	/**
+	 * Populates a file qX.txt in History/Queries, X being an augmenting number, containing the raw query string
+	 * and a file qX.tab in History/Results, containing the results of Xth query.
+	 * @param queryString  A String with the query
+	 * @param queryResult  The {@link Result} of the query
+	 */
+	private void saveQueryHistory(String queryString, Result queryResult) {
+		
+		try {
+			List<String> filesInFolder = Files.walk(Paths.get("History/Queries"))
+			        .filter(Files::isRegularFile)
+			        .map(Path::toString)
+			        .collect(Collectors.toList());
+			if(filesInFolder.size() > 0) {
+				historyCounter = Integer.parseInt(String.valueOf(filesInFolder.get(0).charAt(17)));
+			}
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		historyCounter += 1;
+		FileOutputStream fileOutputStream=null;
+		PrintStream printStream=null;
+		
+		String queryFileName = "History/Queries/q" + historyCounter + ".txt";
+		File queryFile=new File(queryFileName);
+		
+		try {
+			fileOutputStream=new FileOutputStream(queryFile);
+			printStream=new PrintStream(fileOutputStream);
+			
+			printStream.print(queryString+"\n\n");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		
+		fileOutputStream = null;
+		printStream = null;
+		String resultFileName = "History/Results/q" + historyCounter + ".tab";
+		File resultFile=new File(resultFileName);
+		
+		try {
+			fileOutputStream=new FileOutputStream(resultFile);
+			printStream=new PrintStream(fileOutputStream);
+			
+			queryResult.printCellsToStream(printStream);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		
+	}
+
+
+	
+
+
+	
+
+
+	
 
 
 	
