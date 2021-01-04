@@ -10,7 +10,7 @@ public class NLTranslatorTest {
 
 	@Test
 	public void testFirstQuery() {
-		compareForTest("Show me the avg of loan amount per account_dim.district_name,date_dim.month for account_dim.region='north Moravia' as LoanQuery11_S1_CG-Prtl",
+		compareForTest("Describe the avg of loan amount per account_dim.district_name,date_dim.month for account_dim.region='north Moravia' as LoanQuery11_S1_CG-Prtl",
 				  "CubeName:loan\n"
 				+ "Name:LoanQuery11_S1_CG-Prtl\n"
 				+ "AggrFunc:avg\n"
@@ -21,7 +21,7 @@ public class NLTranslatorTest {
 	
 	@Test
 	public void testSecondQuery() {
-		compareForTest("Show me the max of loan amount per account_dim.district_name, status_dim.status for date_dim.month = '1998-01' as LoanQuery12_S1_CG-Dsjnt",
+		compareForTest("Descibe the max of loan amount per account_dim.district_name, status_dim.status for date_dim.month = '1998-01' as LoanQuery12_S1_CG-Dsjnt",
 				  "CubeName:loan\n"
 				+ "Name:LoanQuery12_S1_CG-Dsjnt\n"
 				+ "AggrFunc:max\n"
@@ -32,7 +32,7 @@ public class NLTranslatorTest {
 	
 	@Test
 	public void testThirdQuery() {
-		compareForTest("Show me the min of loan amount per account_dim.district_name,date_dim.month for account_dim.region='Prague', date_dim.year = '1998' as LoanQuery21_S2_CG-Cmmn",
+		compareForTest("Describe the min of loan amount per account_dim.district_name,date_dim.month for account_dim.region='Prague', date_dim.year = '1998' as LoanQuery21_S2_CG-Cmmn",
 				  "CubeName:loan\n"
 				+ "Name:LoanQuery21_S2_CG-Cmmn\n"
 				+ "AggrFunc:min\n"
@@ -43,7 +43,7 @@ public class NLTranslatorTest {
 	
 	@Test
 	public void testFourthQuery() {
-		compareForTest("Show me the sum of loan amount per account_dim.district_name,date_dim.year for account_dim.region='south Moravia',status_dim.status='Running Contract/OK' as LoanQuery22_S2_CG-Prtl",
+		compareForTest("Describe the sum of loan amount per account_dim.district_name,date_dim.year for account_dim.region='south Moravia',status_dim.status='Running Contract/OK' as LoanQuery22_S2_CG-Prtl",
 				  "CubeName:loan\n"
 				+ "Name:LoanQuery22_S2_CG-Prtl\n"
 				+ "AggrFunc:sum\n"
@@ -54,7 +54,7 @@ public class NLTranslatorTest {
 	
 	@Test
 	public void testFifthQuery() {
-		compareForTest("Show me the sum of loan amount per account_dim.district_name,date_dim.year for account_dim.region='west Bohemia',status_dim.status='Contract Finished/No Problems', date_dim.year = '1996' as LoanQuery31_S3_CG-Prtl",
+		compareForTest("Describe the sum of loan amount per account_dim.district_name,date_dim.year for account_dim.region='west Bohemia',status_dim.status='Contract Finished/No Problems', date_dim.year = '1996' as LoanQuery31_S3_CG-Prtl",
 				  "CubeName:loan\n"
 				+ "Name:LoanQuery31_S3_CG-Prtl\n"
 				+ "AggrFunc:sum\n"
@@ -65,7 +65,7 @@ public class NLTranslatorTest {
 	
 	public void compareForTest(String queryToBeTested, String exportedString) {
 		NLTranslator translator = new NLTranslator();
-		QueryForm query = translator.analyzeNLQuery(queryToBeTested);
+		QueryForm query = translator.produceNLQuery(queryToBeTested);
 		
 		String analysedString = query.getCubeName() +
 				query.getQueryName() +

@@ -127,7 +127,7 @@ public interface IMainEngine extends IServer {
 	 * 
 	 * An example of the the query form is as it follows:
 	 * <p>
-	 * Show me the avg of loan amount per account_dim.lvl1,date_dim.lvl2 for account_dim.lvl2='north Moravia' as LoanQuery11_S1_CG-Prtl
+	 * Describe the avg of loan amount per account_dim.lvl1,date_dim.lvl2 for account_dim.lvl2='north Moravia' as LoanQuery11_S1_CG-Prtl
 	 * <p>
 	 * @param queryRawString A String with the query
 	 * @return the path of the result file
@@ -144,11 +144,19 @@ public interface IMainEngine extends IServer {
 	 * @param queryRawString	A String with the query definition
 	 * @return	A ResultFileMetadata object containing the respective String values on the location of the two produced files and their parent folder 
 	 * @throws RemoteException
-	 * @see answerCubeQueryFromNLString
+	 * @see {@link #answerCubeQueryFromNLString(String)}
 	 */
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
-	
+	/**
+	 * Gets the natural language query from a string, passes it to a NLQProcessor object, which parses it and produces error messages if any errors where found.
+	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
+	 *
+	 *@param queryString A String with the natural language query given by the user.
+	 *@return a ResultFileMetadata object containing info on the location of the error checking file at the server
+	 *@throws RemoteException
+	 *@author DimosGkitsakis
+	 */
 	ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException;
 
 	/**

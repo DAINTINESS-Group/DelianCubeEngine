@@ -1,12 +1,18 @@
 package mainengine.nlq;
 
+/**
+ * This class is used to return error details produced by {@link mainengine.nlq.NLQProcessor}
+ * 
+ * @author DimosGkitsakis 
+ *
+ */
+
 public class NLQProcessingResultsReturnedToClient {
 	
-	//TODO ask if it is ok to have public attributes
-	public String hashKey;
-	public boolean foundError;
-	public String errorCode;
-	public String details;
+	private String hashKey;
+	private boolean foundError;
+	private String errorCode;
+	private String details;
 	
 	public NLQProcessingResultsReturnedToClient(String hashKey, boolean foundError, String errorCode, String details) {
 		this.hashKey = hashKey;
@@ -14,6 +20,23 @@ public class NLQProcessingResultsReturnedToClient {
 		this.errorCode = errorCode;
 		this.details = details;
 	}
+	
+	public String getHashKey() {
+		return hashKey;
+	}
+	
+	public boolean getFoundError() {
+		return foundError;
+	}
+	
+	public String getErrorCode() {
+		return errorCode;
+	}
+	
+	public String getDetails() {
+		return details;
+	}
+	
 
 
 }

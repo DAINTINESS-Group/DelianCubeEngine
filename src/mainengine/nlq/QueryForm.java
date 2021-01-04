@@ -7,9 +7,6 @@ package mainengine.nlq;
  * 
  * @author DimosGkitsakis
  * 
- * 
- * 
- *
  */
 
 public class QueryForm {
@@ -39,12 +36,6 @@ public class QueryForm {
 		this.sigma = sigma;
 	}
 	
-	//TODO
-	//tests
-	//na ftiaksw NLStringFromFile ston simplequeryprocessor
-	//interface sto package nlq
-	//meiwsh tou nlstring ston processor
-	//kako query
 	public String getCubeName() {
 		return cubeName;
 	}

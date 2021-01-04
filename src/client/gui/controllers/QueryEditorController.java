@@ -278,8 +278,8 @@ public class QueryEditorController extends AbstractController {
 			}
 			
 			results = produceNLQPResultsObject(contents);
-			if (results.foundError) {
-				CustomAlertDialog error = new CustomAlertDialog("Error:" + results.errorCode, null, results.details, this.stage);
+			if (results.getFoundError()) {
+				CustomAlertDialog error = new CustomAlertDialog("Error: " + results.getErrorCode(), null, results.getDetails(), this.stage);
 				error.show();
 				return -100;
 			}

@@ -89,8 +89,14 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private Result currentResult;
 	private String currentQueryName;
 	
-	private NLTranslator translator = new NLTranslator();
+	private NLTranslator translator;
 	private NLQProcessor nlqProcessor;
+	private ArrayList<String> cubeNames;
+	private ArrayList<String> aggrFunctions;
+	private ArrayList<String> measures;
+	private ArrayList <String> dimensions;
+	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
+	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
 
 /**
  * Simple constructor for the class
@@ -133,6 +139,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		cubeManager.CreateCubeBase(schemaName, login, passwd);
 		constructDimension(inputFolder, cubeName);
 		cubeManager.setCubeQueryTranslator();
+		fillQueryLists();
 		System.out.println("DONE WITH INIT");
 	}
 		
@@ -172,6 +179,63 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		}
 	}
 
+	private void fillQueryLists() {
+		//1.Bring data for CubeName
+		cubeNames = new ArrayList<String>();
+		//CubeBase cBase = cubeManager.getCubeBase();
+		//List<BasicStoredCube> cubes = cBase.getBasicStoredCube();
+		/*
+		for (int i=0; i<cubes.size(); i++) {
+			cubeNames.add(cubes.get(i).getName());
+		}*/
+		cubeNames.add(this.prsMng.name_creation);
+		
+		//2.Create data for AggrFunc
+		aggrFunctions = new ArrayList<String>();
+		aggrFunctions.add("max");
+		aggrFunctions.add("min");
+		aggrFunctions.add("count");
+		aggrFunctions.add("avg");
+		aggrFunctions.add("sum");
+		
+		//3.Bring data for Measure
+		measures = new ArrayList<String>();
+		measures= this.prsMng.measurefields;
+		
+		//4.Bring data for Dimensions
+		dimensions = new ArrayList<String>();
+		dimensions = this.prsMng.dimensionlst;
+		
+		//5.Bring data for levels
+		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
+		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
+		List<Dimension> dimensionsList = this.cubeManager.getDimensions();
+		ArrayList<String> tmpLvls = null; 
+		ArrayList<String> tmpDim = null;
+		for (int i=0;i < dimensionsList.size();i ++) {
+			Dimension dim = dimensionsList.get(i);
+			for(int j=0; j<dim.getHier().size(); j++) {
+				List<Level> l = dim.getHier().get(j).getLevels();
+				tmpLvls = new ArrayList<String>();
+				for (int k=0; k<l.size(); k++) {
+					tmpLvls.add(l.get(k).getName());
+					String tmpLevelKey = l.get(k).getName();
+					//TODO na ginei elegxos oti leitourgei an uparxoun idia lvl names. h pkdd99_star den exei idia lvl names, den to checkara.
+					if(levelsToDimensionsHashmap.containsKey(tmpLevelKey)) {
+						tmpDim = levelsToDimensionsHashmap.get(tmpLevelKey);
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}else {
+						tmpDim = new ArrayList<String>();
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}
+				}
+				dimensionsToLevelsHashmap.put(dimensionsList.get(i).getName(), tmpLvls);
+			}
+		}
+		
+	}
 //	public void optionsChoice(boolean audio, boolean word)
 //			throws RemoteException {
 //		optMgr.setAudio(audio);
@@ -288,15 +352,13 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 * @return a String containing the location of output file at the server
 	 * @author DimosGkitsakis
 	 * 
-	 * 
 	 */
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
-
+		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 		//1. parse and analyse natural language query and produce a CubeQuery
 		QueryForm query = translator.analyzeNLQuery(queryRawString);
 		
-		//TODO elegxos gia kako query
 		String analysedString = query.toString();
 		System.out.println(analysedString);
 		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
@@ -370,6 +432,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	
 	/**
 	 * Same idea as the {@link #answerCubeQueryFromStringWithMetadata(String)}, but for a natural language query instead of cube query.
+	 * Gets the natural language query from a string, executes it and produces the output of a query as a ResultFileMetadata object.
 	 * Result produced via {@link #answerCubeQueryFromNLString(String)} instead of {@link #answerCubeQueryFromString(String)}.
 	 * 
 	 * @param queryRawString a String with the natural language query
@@ -557,69 +620,29 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	}//end method
 	
 	
+	/**
+	 * Gets the natural language query from a string, passes it to a NLQProcessor object, which parses it and produces error messages if any errors where found.
+	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
+	 *
+	 *@author DimosGkitsakis
+	 *@param queryString A String with the natural language query given by the user.
+	 *@return a ResultFileMetadata object containing info on the location of the error checking file at the server
+	 */
 	@Override
 	public ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException {
-		// TODO Auto-generated method stub
 		
 		nlqProcessor = produceNLQProcessorObject();
 		NLQProcessingResultsReturnedToClient results = nlqProcessor.prepareCubeQuery(queryString);
-		//System.out.println(results.hashKey);
-		//System.out.println(results.foundError);
-		//System.out.println(results.errorCode);
-		//System.out.println(results.details);
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
+		
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		resMetadata.setErrorCheckingFile(errorCheckingInfoOutput);
-		
-	
 		return resMetadata;		
 	}
-	
+
 	private NLQProcessor produceNLQProcessorObject() {
-		//1.Bring data for CubeName
-		ArrayList<String> cubeNames = new ArrayList<String>();
-		//CubeBase cBase = cubeManager.getCubeBase();
-		//List<BasicStoredCube> cubes = cBase.getBasicStoredCube();
-		/*
-		for (int i=0; i<cubes.size(); i++) {
-			cubeNames.add(cubes.get(i).getName());
-		}*/
-		cubeNames.add(this.prsMng.name_creation);
-		
-		//2.Create data for AggrFunc
-		ArrayList<String> aggrFunctions = new ArrayList<String>();
-		aggrFunctions.add("max");
-		aggrFunctions.add("min");
-		aggrFunctions.add("count");
-		aggrFunctions.add("avg");
-		aggrFunctions.add("sum");
-		
-		//3.Bring data for Measure
-		ArrayList<String> measures = new ArrayList<String>();
-		measures= this.prsMng.measurefields;		
-		
-		//4.Bring data for Dimensions
-		ArrayList <String> dimensions = new ArrayList<String>();
-		dimensions = this.prsMng.dimensionlst;
-		
-		//5.Bring data for levels
-		List<Dimension> dimensionsList = this.cubeManager.getDimensions();
-		HashMap<String, ArrayList<String>> levels = new HashMap<String, ArrayList<String>>();
-		ArrayList<String> tmpLvls = null; 
-		for (int i=0;i < dimensionsList.size();i ++) {
-			Dimension dim = dimensionsList.get(i);
-			for(int j=0; j<dim.getHier().size(); j++) {
-				List<Level> l = dim.getHier().get(j).getLevels();
-				tmpLvls = new ArrayList<String>();
-				for (int k=0; k<l.size(); k++) {
-					tmpLvls.add(l.get(k).getName());
-				}
-				levels.put(dimensionsList.get(i).getName(), tmpLvls);
-			}						
-		}
-		
-		return new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, levels);
+		return new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 	}
 	
 	private String printErrorCheckingResultsToFile(NLQProcessingResultsReturnedToClient results, String filePath) {
@@ -630,10 +653,10 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		try {
 			fileOutputStream=new FileOutputStream(file);
 			printStream=new PrintStream(fileOutputStream);
-			printStream.print(results.hashKey+";\n");
-			printStream.print(results.foundError+";\n");
-			printStream.print(results.errorCode+";\n");
-			printStream.print(results.details);
+			printStream.print(results.getHashKey() +";\n");
+			printStream.print(results.getFoundError() +";\n");
+			printStream.print(results.getErrorCode() + ";\n");
+			printStream.print(results.getDetails());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
