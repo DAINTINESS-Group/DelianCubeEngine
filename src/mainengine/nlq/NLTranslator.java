@@ -80,17 +80,18 @@ public class NLTranslator implements ITranslator {
 		//1. find the cube query components from the nlquery given as parameter
 		findQueryComponents(NLQuery);
 		
-
-		//TODO: ftiakse ta sigma
-		//gia to sigma prepei na paraksw 3ades
-		
 		//2. parse gamma and sigma to produce proper cube query gamma and sigma
 		ArrayList<String> gammaArrayList = parseGamma(gamma);
 		if(gammaArrayList.get(0).equals("Null")) {
 			gamma = gammaArrayList.get(1);
 			
 		}
-		parseSigma(sigma);
+		
+		ArrayList<String> sigmaArrayList = parseSigma(sigma);
+		if(sigmaArrayList.get(0).equals("Null")) {
+			sigma = sigmaArrayList.get(1);
+		}
+
 		
 		
 		//3. produce QueryForm object
@@ -122,12 +123,13 @@ public class NLTranslator implements ITranslator {
 	/**
 	 * This method analyzes the group by component (gamma component) of a natural language query.
 	 * The main idea is:
-	 * 1. Find if gamma is in dimension.level form or just level form
-	 * 2. Find if the given dimensions and/or levels truly exist.
-	 * 3. Return proper message if any errors found, plus the final form of the gamma component of the query
+	 * 1. Split the gamma component in tokens
+	 * 2. Find if gamma is in dimension.level form or just level form
+	 * 3. Find if the given dimensions and/or levels truly exist.
+	 * 4. Return proper message if any errors found, plus the final form of the gamma component of the query
 	 * 
 	 * 
-	 * @param gamma A String with the gamma field of the natural language query.
+	 * @param gamma A String with the gamma component of the natural language query.
 	 * @return An ArrayList of Strings with information about the parse gamma process.
 	 * Its' first element is a String with the error code if any found or "Null" if none errors found.
 	 * Its' second element is a String with a null String if any error is found or with the final gamma form if no error is found. 
@@ -141,6 +143,8 @@ public class NLTranslator implements ITranslator {
 		ArrayList<String> arrayListToBeReturned = new ArrayList<String>();
 		ArrayList<String> tmp;
 		String[] checkIfDimensionIsGiven;
+		
+		//1. Split in Tokens
 		String[] gammaTokens = gamma.split("\\s+and\\s+");
 
 		
@@ -148,7 +152,7 @@ public class NLTranslator implements ITranslator {
 			gammaTokens[i] = gammaTokens[i].split("\\s+")[0];			
 			checkIfDimensionIsGiven = gammaTokens[i].split("\\.");
 			
-			//1. Check for dimension.lvl query form 
+			//2. Check for dimension.lvl query form 
 			if(checkIfDimensionIsGiven.length > 1) {				
 				if(dimensionsToLevelsHashmap.containsKey(checkIfDimensionIsGiven[0])) {
 					if(levelsToDimensionsHashmap.containsKey(checkIfDimensionIsGiven[1])) {
@@ -165,7 +169,7 @@ public class NLTranslator implements ITranslator {
 				}
 			}
 			
-			//2. Check for just level query form
+			//3. Check for just level query form
 			if(levelsToDimensionsHashmap.containsKey(gammaTokens[i])){
 				tmp = new ArrayList<String>();
 				tmp = levelsToDimensionsHashmap.get(gammaTokens[i]);
@@ -183,6 +187,8 @@ public class NLTranslator implements ITranslator {
 				return arrayListToBeReturned;
 			}
 		}
+		
+		//4. Form the final gamma to be returned
 		finalGamma = gammaTokens[0];
 		for(int i =1; i<gammaTokens.length; i++) {
 			finalGamma += "," + gammaTokens[i];
@@ -194,10 +200,116 @@ public class NLTranslator implements ITranslator {
 		
 	}
 	
-	
-	
-	private void parseSigma(String sigma) {
+
+	/**
+	 * This method analyzes the selection component (sigma component) of a natural language query.
+	 * The main idea is:
+	 * 1. Split the values in '...' so they remain intact throughout the process and save them to an ArrayList.
+	 * 2. Split the rest sigma to produce another ArrayList with the levels.
+	 * 3. Check if every level has a value to be equaled in the query.
+	 * 4. Find if sigma is in dimension.level form or just level form
+	 * 5. Find if the given dimensions and/or levels truly exist.
+	 * 6. If in just level form, find if the given levels are referred to more than 1 dimension.
+	 * 7. Return proper message if any errors found, plus the final form of the sigma component of the query.
+	 * 
+	 * @param sigma A String with the sigma component of the natural language query.
+	 * @return An ArrayList of Strings with information about the parse sigma process.
+	 * Its' first element is a String with the error code if any found or "Null" if none errors found.
+	 * Its' second element is a String with a null String if any error is found or with the final sigma form if no error is found.
+	 * 
+	 * @author DimosGkitsakis
+	 */
+	public ArrayList<String> parseSigma(String sigma) {
+		ArrayList<String> levels = new ArrayList<String>();
+		ArrayList<String> values = new ArrayList<String>();
+		String finalSigma = null;
+		ArrayList<String> arrayListToBeReturned = new ArrayList<String>();
 		
+		//1. Split values so they dont get splitted
+		String[] splitValues = sigma.split("\\'");
+		for(int i=1; i<splitValues.length; i+=2) {
+			String v = "'" + splitValues[i] + "'";
+			values.add(v);
+		}
+		
+		sigma = "";
+		for(int i=0; i<splitValues.length; i+=2) {
+			sigma += splitValues[i];	
+		}
+		
+		//2. Split the rest sigma to produce 2 arraylists, one with levels and one with values
+		String[] splitSigma = sigma.split("\\s+and\\s+");
+		for(int i=0; i<splitSigma.length; i++) {
+			String level = null;
+			//TODO: important: we need to check that there is a second '
+			//problem if ' is in the value
+			String[] tmp = splitSigma[i].split("\\s+");
+			level = tmp[0];
+			levels.add(level);
+		}
+		
+		//3. Check if the sizes of the 2 arraylists are equal
+		if(levels.size() > values.size()) {
+			arrayListToBeReturned.add("Sigma Field Error: More levels than values");
+			arrayListToBeReturned.add(finalSigma);
+			return arrayListToBeReturned;
+		}else if(levels.size() < values.size()) {
+			arrayListToBeReturned.add("Sigma Field Error: More values than levels");
+			arrayListToBeReturned.add(finalSigma);
+			return arrayListToBeReturned;
+		}
+		
+		
+		for(int i=0; i<levels.size(); i++) {
+			String[] checkIfDimensionIsGiven = levels.get(i).split("\\.");
+			
+			//4. Check for dimension.lvl query form
+			if(checkIfDimensionIsGiven.length > 1) {
+				if(dimensionsToLevelsHashmap.containsKey(checkIfDimensionIsGiven[0])) {
+					if(levelsToDimensionsHashmap.containsKey(checkIfDimensionIsGiven[1])) {
+						continue;
+					}else {
+						arrayListToBeReturned.add("Sigma Field Error: Level Name Not Found");
+						arrayListToBeReturned.add(finalSigma);
+						return arrayListToBeReturned;
+					}
+					
+				}else {
+					arrayListToBeReturned.add("Sigma Field Error: Dimension Name Not Found");
+					arrayListToBeReturned.add(finalSigma);
+					return arrayListToBeReturned;
+				}
+			}
+			
+			//5. Check for just level query form
+			if(levelsToDimensionsHashmap.containsKey(levels.get(i))) {
+				ArrayList<String> tmpDim = new ArrayList<String>();
+				tmpDim = levelsToDimensionsHashmap.get(levels.get(i));
+				//6. If size = 1 just 1 dimension for this level, everything ok
+				if(tmpDim.size() == 1) {
+					String finalLevelForm = tmpDim.get(0) + "." + levels.get(i);
+					levels.set(i, finalLevelForm);
+				}else {
+					arrayListToBeReturned.add("Sigma Field Error: Many Same Level Names"); //TODO: needs to be tested with many same lvl names
+					arrayListToBeReturned.add(finalSigma);
+					return arrayListToBeReturned;
+				}
+			}else {
+				arrayListToBeReturned.add("Sigma Field Error: Level Name Not Found");
+				arrayListToBeReturned.add(finalSigma);
+				return arrayListToBeReturned;
+			}
+		
+		}
+		//7. Produce final sigma to be returned
+		finalSigma = levels.get(0) + "=" + values.get(0);
+		for(int i=1; i<levels.size(); i++) {
+			finalSigma += "," + levels.get(i) + "=" + values.get(i);
+		}
+		
+		arrayListToBeReturned.add("Null");
+		arrayListToBeReturned.add(finalSigma);
+		return arrayListToBeReturned;
 	}
 	
 

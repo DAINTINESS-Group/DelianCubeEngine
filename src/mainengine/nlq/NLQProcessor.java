@@ -95,20 +95,48 @@ public class NLQProcessor  {
 		errorDetails.put("Measure Error", "Measure Name Error found. The given measure name was not recognized. "
 				+ "Please check again. \n "
 				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
-			
+
+		//gamma errors
 		errorDetails.put("Gamma Field Error: Level Name Not Found", "Gamma Field: One or more of the dimension level names given were not found. "
 				+ "Please check again. \n "
-				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the groupers should be split by 'and' ");
 		
 		errorDetails.put("Gamma Field Error: Dimension Name Not Found", "Gamma Field: One or more of the dimension names given were not found. "
 				+ "Please check again. \n "
-				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the groupers should be split by 'and' ");
 		
 		errorDetails.put("Gamma Field Error: Many Same Level Names", "Gamma Field: More than 1 dimensions with the same level were found. "
 				+ "Please check again. \n "
-				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
-		
-		
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the groupers should be split by 'and' ");
+
+		//sigma errors
+		errorDetails.put("Sigma Field Error: More levels than values", "Sigma Field: More levels than the equivalent given values were found. "
+				+ "Please check again. \n "
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the sigma selections should be split by 'and' ");
+
+		errorDetails.put("Sigma Field Error: More values than levels", "Sigma Field: More values than the equivalent given levels were found. "
+				+ "Please check again. \n "
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the sigma selections should be split by 'and' ");
+
+		errorDetails.put("Sigma Field Error: Level Name Not Found", "Sigma Field: One or more of the dimension level names given were not found. "
+				+ "Please check again. \n "
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the sigma selections should be split by 'and' ");
+
+		errorDetails.put("Sigma Field Error: Dimension Name Not Found", "Sigma Field: One or more of the dimension names given were not found. "
+				+ "Please check again. \n "
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the sigma selections should be split by 'and' ");
+
+		errorDetails.put("Sigma Field Error: Many Same Level Names", "Sigma Field: More than 1 dimensions with the same level were found. "
+				+ "Please check again. \n "
+				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' "
+				+ "and the sigma selections should be split by 'and' ");
 	}
 	
 	private String errorChecking(QueryForm query, NLTranslator translator) {
@@ -120,6 +148,10 @@ public class NLQProcessor  {
 		ArrayList<String> gammaErrorHandling = new ArrayList<String>();
 		gammaErrorHandling = translator.parseGamma(gamma);
 		
+		String sigma = query.sigma.split(":")[1];
+		ArrayList<String> sigmaErrorHandling = new ArrayList<String>();
+		sigmaErrorHandling = translator.parseSigma(sigma);
+		
 
 		if(!(cubeNames.contains(cubeName))) {
 			return "Cube Name Error";
@@ -129,6 +161,8 @@ public class NLQProcessor  {
 			return "Measure Error";
 		}else if (!(gammaErrorHandling.get(0).equals("Null"))) {
 			return gammaErrorHandling.get(0);
+		}else if (!(sigmaErrorHandling.get(0).equals("Null"))) {
+			return sigmaErrorHandling.get(0);
 		}
 		
 		return "No Error Found";
