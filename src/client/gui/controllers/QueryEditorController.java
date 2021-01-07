@@ -41,8 +41,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
-import mainengine.nlq.NLQProcessor;
-import mainengine.nlq.NLQProcessingResultsReturnedToClient;
+import mainengine.nlq.NLQValidator;
+import mainengine.nlq.NLQValidationResults;
 
 /**
  * @author pvassil
@@ -253,7 +253,7 @@ public class QueryEditorController extends AbstractController {
 		ResultFileMetadata errors = null;
 		String localErrorFileLocation;
 		String contents;
-		NLQProcessingResultsReturnedToClient results;
+		NLQValidationResults results;
 		
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
@@ -350,11 +350,11 @@ public class QueryEditorController extends AbstractController {
 		return contents;
 	}//end method
 	
-	private NLQProcessingResultsReturnedToClient produceNLQPResultsObject(String contents) {
+	private NLQValidationResults produceNLQPResultsObject(String contents) {
 		String[] contentsArray = contents.split(";\n");
 		
 		boolean foundError = Boolean.parseBoolean(contentsArray[1]);
-		NLQProcessingResultsReturnedToClient errorResults = new NLQProcessingResultsReturnedToClient(contentsArray[0],
+		NLQValidationResults errorResults = new NLQValidationResults(contentsArray[0],
 																									foundError, contentsArray[2],contentsArray[3]); 
 		return errorResults;
 	}

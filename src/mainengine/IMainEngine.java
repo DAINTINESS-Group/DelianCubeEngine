@@ -26,7 +26,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import cubemanager.CubeManager;
-import mainengine.nlq.NLQProcessingResultsReturnedToClient;
+import mainengine.nlq.NLQValidationResults;
 
 /**
  * @author pvassil
@@ -149,7 +149,7 @@ public interface IMainEngine extends IServer {
 	ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException;
 	
 	/**
-	 * Gets the natural language query from a string, passes it to a NLQProcessor object, which parses it and produces error messages if any errors where found.
+	 * Gets the natural language query from a string, passes it to a NLQValidator object, which parses it and produces error messages if any errors where found.
 	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
 	 *
 	 *@param queryString A String with the natural language query given by the user.

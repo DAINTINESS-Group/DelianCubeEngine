@@ -1,20 +1,20 @@
 package mainengine.nlq;
 
 /**
- * This class is used to return error details produced by {@link mainengine.nlq.NLQProcessor}
+ * This class is used to return error details produced by {@link mainengine.nlq.NLQValidator}
  * 
  * @author DimosGkitsakis 
  *
  */
 
-public class NLQProcessingResultsReturnedToClient {
+public class NLQValidationResults {
 	
 	private String hashKey;
 	private boolean foundError;
 	private String errorCode;
 	private String details;
 	
-	public NLQProcessingResultsReturnedToClient(String hashKey, boolean foundError, String errorCode, String details) {
+	public NLQValidationResults(String hashKey, boolean foundError, String errorCode, String details) {
 		this.hashKey = hashKey;
 		this.foundError = foundError;
 		this.errorCode = errorCode;

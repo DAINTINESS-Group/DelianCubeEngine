@@ -1,18 +1,9 @@
 package mainengine.nlq;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.BeforeClass;
 
-import cubemanager.CubeManager;
-import mainengine.IMainEngine;
-import mainengine.SimpleQueryProcessorEngine;
-import mainengine.nlq.NLTranslator;
-import mainengine.nlq.QueryForm;
 
 /**
  * This class is used for the error checking of natural language queries.
@@ -21,7 +12,7 @@ import mainengine.nlq.QueryForm;
  *
  */
 
-public class NLQProcessor  {
+public class NLQValidator  {
 	
 	
 	private NLTranslator translator;
@@ -35,7 +26,7 @@ public class NLQProcessor  {
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
 	
-	public NLQProcessor(ArrayList<String> cubeNames,  ArrayList<String> aggrFunctions, ArrayList<String> measures,
+	public NLQValidator(ArrayList<String> cubeNames,  ArrayList<String> aggrFunctions, ArrayList<String> measures,
 						ArrayList<String> dimensions, HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap, 
 						HashMap<String, ArrayList<String>> levelsToDimensionsHashmap) {
 		this.cubeNames = cubeNames;
@@ -52,11 +43,11 @@ public class NLQProcessor  {
 	 * It takes as an input the natural language query, analyzes it and produces a set of errors if any found.
 	 * 
 	 * @param NLQuery A String with the natural language query
-	 * @return A NLQProcessingResultsReturnedToClient object which contains information about the error checking process, which are used for
+	 * @return A NLQValidationResults object which contains information about the error checking process, which are used for
 	 * the production of error messages to be presented to the end-user in the front-end.
 	 * @author DimosGkitsakis
 	 */
-	public NLQProcessingResultsReturnedToClient prepareCubeQuery(String NLQuery) {
+	public NLQValidationResults prepareCubeQuery(String NLQuery) {
 		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 		
 		//1. Produce cube query string
@@ -71,9 +62,9 @@ public class NLQProcessor  {
 		String errorCode = errorChecking(query, translator);
 
 		if (errorCode.equals("No Error Found")) {
-			return new NLQProcessingResultsReturnedToClient(query.queryName, false, null, null);
+			return new NLQValidationResults(query.queryName, false, null, null);
 		}else {
-			return new NLQProcessingResultsReturnedToClient(query.queryName, true, errorCode, errorDetails.get(errorCode));
+			return new NLQValidationResults(query.queryName, true, errorCode, errorDetails.get(errorCode));
 		}
 		
 	}

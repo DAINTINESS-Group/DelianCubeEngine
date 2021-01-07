@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Scanner;
 //import java.sql.ResultSet;
 
-import mainengine.nlq.NLQProcessingResultsReturnedToClient;
-import mainengine.nlq.NLQProcessor;
+import mainengine.nlq.NLQValidationResults;
+import mainengine.nlq.NLQValidator;
 import mainengine.nlq.NLTranslator;
 import mainengine.nlq.QueryForm;
 import mainengine.rmiTransfer.RMIInputStream;
@@ -90,7 +90,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private String currentQueryName;
 	
 	private NLTranslator translator;
-	private NLQProcessor nlqProcessor;
+	private NLQValidator nlqProcessor;
 	private ArrayList<String> cubeNames;
 	private ArrayList<String> aggrFunctions;
 	private ArrayList<String> measures;
@@ -621,7 +621,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	
 	
 	/**
-	 * Gets the natural language query from a string, passes it to a NLQProcessor object, which parses it and produces error messages if any errors where found.
+	 * Gets the natural language query from a string, passes it to a NLQValidator object, which parses it and produces error messages if any errors where found.
 	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
 	 *
 	 *@author DimosGkitsakis
@@ -632,7 +632,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	public ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException {
 		
 		nlqProcessor = produceNLQProcessorObject();
-		NLQProcessingResultsReturnedToClient results = nlqProcessor.prepareCubeQuery(queryString);
+		NLQValidationResults results = nlqProcessor.prepareCubeQuery(queryString);
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
 		
@@ -641,11 +641,11 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return resMetadata;		
 	}
 
-	private NLQProcessor produceNLQProcessorObject() {
-		return new NLQProcessor(cubeNames, aggrFunctions, measures, dimensions, dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+	private NLQValidator produceNLQProcessorObject() {
+		return new NLQValidator(cubeNames, aggrFunctions, measures, dimensions, dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 	}
 	
-	private String printErrorCheckingResultsToFile(NLQProcessingResultsReturnedToClient results, String filePath) {
+	private String printErrorCheckingResultsToFile(NLQValidationResults results, String filePath) {
 		String fileName = filePath;
 		File file=new File(fileName);
 		FileOutputStream fileOutputStream=null;
