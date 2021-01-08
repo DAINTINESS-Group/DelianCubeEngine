@@ -293,25 +293,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		return outputLocation;
 	}//answerCubeQueryFromString
 	
-	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
-			throws RemoteException {
-		// answer query
-		
-		answerCubeQueryFromString(queryString); 
-		this.interestMng.updateState(currentCubeQuery, currentResult);
-		double result;
-		String[] results = new String[measures.size()];
-		
-		for(int i = 0; i < measures.size(); i++) {
-			//compute each measure
-			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
-			results[i] = Double.toString(result);
-		}
-		
-		saveQueryHistory(queryString,currentResult);
-		
-		return results;
-	}
+
 	
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
@@ -642,16 +624,15 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	 * @param queryResult  The {@link Result} of the query
 	 */
 	private void saveQueryHistory(String queryString, Result queryResult) {
-		
 		try {
 			List<String> filesInFolder = Files.walk(Paths.get("History/Queries"))
-			        .filter(Files::isRegularFile)
-			        .map(Path::toString)
-			        .collect(Collectors.toList());
+					.filter(Files::isRegularFile)
+					.map(Path::toString)
+					.collect(Collectors.toList());
 			if(filesInFolder.size() > 0) {
 				historyCounter = Integer.parseInt(String.valueOf(filesInFolder.get(0).charAt(17)));
 			}
-			
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -659,16 +640,16 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		historyCounter += 1;
 		FileOutputStream fileOutputStream=null;
 		PrintStream printStream=null;
-		
+
 		String queryFileName = "History/Queries/q" + historyCounter + ".txt";
 		File queryFile=new File(queryFileName);
-		
+
 		try {
 			fileOutputStream=new FileOutputStream(queryFile);
 			printStream=new PrintStream(fileOutputStream);
-			
+
 			printStream.print(queryString+"\n\n");
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -683,18 +664,18 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 				e.printStackTrace();
 			}//end finally try
 		}//end finally
-		
+
 		fileOutputStream = null;
 		printStream = null;
 		String resultFileName = "History/Results/q" + historyCounter + ".tab";
 		File resultFile=new File(resultFileName);
-		
+
 		try {
 			fileOutputStream=new FileOutputStream(resultFile);
 			printStream=new PrintStream(fileOutputStream);
-			
+
 			queryResult.printCellsToStream(printStream);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -709,19 +690,26 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 				e.printStackTrace();
 			}//end finally try
 		}//end finally
-		
-	}
+	}//end saveQueryHistory
 
 
-	
+	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
+			throws RemoteException {
+		// answer query
 
+		answerCubeQueryFromString(queryString); 
+		this.interestMng.updateState(currentCubeQuery, currentResult);
+		double result;
+		String[] results = new String[measures.size()];
 
-	
+		for(int i = 0; i < measures.size(); i++) {
+			//compute each measure
+			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
+			results[i] = Double.toString(result);
+		}
 
+		saveQueryHistory(queryString,currentResult);
 
-	
-
-
-	
-	
+		return results;
+	}//end answerCubeQueryWithInterestMeasures
 }//end class
