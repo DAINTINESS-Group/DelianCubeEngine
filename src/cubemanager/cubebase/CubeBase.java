@@ -129,7 +129,11 @@ public class CubeBase {
 	public Dimension getLastInsertedDimension() {
 		return dimensions.get(dimensions.size() - 1);
 	}
-
+	
+	public List<Dimension> getDimensions() {
+		return dimensions;
+	}
+	
 	public void addCube(String name_creation) {
 		BasicCubes.add(new BasicStoredCube(name_creation));
 

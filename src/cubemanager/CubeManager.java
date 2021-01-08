@@ -24,7 +24,9 @@ import java.rmi.RemoteException;
 //import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
@@ -62,6 +64,11 @@ public class CubeManager {
 	public CubeBase getCubeBase(){
 		return CBase;
 	}
+	
+	public List<Dimension> getDimensions(){
+		return CBase.getDimensions();
+	}
+	
 	public void InsertionDimensionLvl(String dimensionName,
 			String dimensionTbl, ArrayList<String> fld_Name,
 			ArrayList<String> customFld_Name, ArrayList<String> hierachylst) {

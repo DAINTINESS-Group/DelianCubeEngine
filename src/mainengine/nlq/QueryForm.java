@@ -1,5 +1,14 @@
 package mainengine.nlq;
 
+/**
+ * Objects of this class are used for the natural language query to cube query transformation.
+ * The fields of the QueryForm class contain the cube query components as String.
+ * 
+ * 
+ * @author DimosGkitsakis
+ * 
+ */
+
 public class QueryForm {
 	
 	protected String cubeName;
@@ -27,9 +36,6 @@ public class QueryForm {
 		this.sigma = sigma;
 	}
 	
-	//TODO
-	//tests
-	//na ftiaksw NLStringFromFile ston simplequeryprocessor
 	public String getCubeName() {
 		return cubeName;
 	}

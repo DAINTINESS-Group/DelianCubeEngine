@@ -41,6 +41,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
+import mainengine.nlq.NLQValidator;
+import mainengine.nlq.NLQValidationResults;
 
 /**
  * @author pvassil
@@ -245,14 +247,42 @@ public class QueryEditorController extends AbstractController {
 		
 		String localFileLocation;
 		String localInfoFileLocation;
-		
 		int result;
 		ResultFileMetadata resMetadata = null;
 		
+		ResultFileMetadata errors = null;
+		String localErrorFileLocation;
+		String contents;
+		NLQValidationResults results;
+		
+		
 		IMainEngine serverEngine = this.getApplication().getServer();
 		try {
-			//USED TO GET DATA BY THE answerCubeQueryFromNLString
-			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
+			
+			errors = serverEngine.prepareCubeQuery(queryString);
+			if (errors != null){
+				String remoteErrorFileLocation = errors.getErrorCheckingFile();
+				System.out.println("Remote error checking file:" + remoteErrorFileLocation);
+				if(remoteErrorFileLocation.length() == 0) {	
+					CustomAlertDialog a = new CustomAlertDialog("Error", null, "No error checking results found", this.stage); 
+					a.show();
+					return -1;
+				}else {
+					localErrorFileLocation = downloadResult(remoteErrorFileLocation, serverEngine);
+					contents = getContents(localErrorFileLocation);
+				}
+			
+			}else {
+				System.out.println("Remote Error METADATA: NULL");
+				return -1;
+			}
+			
+			results = produceNLQPResultsObject(contents);
+			if (results.getFoundError()) {
+				CustomAlertDialog error = new CustomAlertDialog(results.getErrorCode(), null, results.getDetails(), this.stage);
+				error.show();
+				return -100;
+			}
 			
 			resMetadata = serverEngine.answerCubeQueryFromNLStringWithMetadata(queryString);
 			if(resMetadata != null) {
@@ -294,8 +324,40 @@ public class QueryEditorController extends AbstractController {
 		return result;
 	}//end method
 	
+	private String getContents(String fileName) {
+		String contents = "";
+		File file = new File(fileName);
+		if(file.exists() && !file.isDirectory()) { 
+			BufferedReader reader = null;
+			try {
+			    reader = new BufferedReader(new FileReader(file));
 
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			        contents = contents + line + "\n";
+			    }
+
+			} catch (IOException e) {
+			    e.printStackTrace();
+			} finally {
+			    try {
+			        reader.close();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}//end finally
+		}//end master if
+		return contents;
+	}//end method
 	
+	private NLQValidationResults produceNLQPResultsObject(String contents) {
+		String[] contentsArray = contents.split(";\n");
+		
+		boolean foundError = Boolean.parseBoolean(contentsArray[1]);
+		NLQValidationResults errorResults = new NLQValidationResults(contentsArray[0],
+																									foundError, contentsArray[2],contentsArray[3]); 
+		return errorResults;
+	}
 	
 
 	/**

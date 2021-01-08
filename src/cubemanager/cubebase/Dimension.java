@@ -68,6 +68,10 @@ public class Dimension{
     public ArrayList<Hierarchy> getHier() {
             return hierachy;
     }
+    
+    public String getName() {
+    	return name;
+    }
 
     public void setHier(ArrayList<Hierarchy> hier) {
     	hierachy = hier;
