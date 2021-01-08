@@ -1,4 +1,4 @@
-package interestingnessengine.test;
+package test.interestingness;
 
 import static org.junit.Assert.*;
 
@@ -16,8 +16,8 @@ import org.junit.Test;
 
 import mainengine.SimpleQueryProcessorEngine;
 
-public class RelevanceWithDAITest {
-
+public class ValuePeculiarityTest {
+	
 	private static SimpleQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -35,12 +35,12 @@ public class RelevanceWithDAITest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		clearOldHistory();
+
 		queryEngine = new SimpleQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","History", "", "", -1,"loan");
-		measures.add("Relevance with DAI");
-		
+				"Cinecubes", "pkdd99","History", "", "", 1,"loan");
+		measures.add("Value Peculiarity");
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
@@ -63,8 +63,16 @@ public class RelevanceWithDAITest {
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
+		assertEquals("0.0", answer[0]);
+		
+		String[] newAnswer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures);
-		assertEquals("0.21428571428571427", answer[0]);	
+		assertEquals("0.7857142857142857", newAnswer[0]);
 	}
 
 }

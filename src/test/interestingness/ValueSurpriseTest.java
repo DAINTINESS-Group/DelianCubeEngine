@@ -1,4 +1,4 @@
-package interestingnessengine.test;
+package test.interestingness;
 
 import static org.junit.Assert.*;
 
