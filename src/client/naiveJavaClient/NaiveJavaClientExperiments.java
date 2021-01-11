@@ -66,8 +66,8 @@ public class NaiveJavaClientExperiments {
 		service.answerCubeQueriesFromFile(f);/**/
 				
 		// Cube LOAN and queries
-		service.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "loan");
+		service.initializeConnection("pkdd99", "CinecubesUser",
+				"Cinecubes", "pkdd99", "loan");
 		System.out.println("Completed connection initialization");
 
 		//CleanUp client Cache
@@ -84,7 +84,7 @@ public class NaiveJavaClientExperiments {
 				"Measure:amount " + " \n" +
 				"Gamma:account_dim.lvl2,date_dim.lvl3 " + " \n" +
 				"Sigma: account_dim.lvl3 = 'ALL'",
-
+/*TODO: auta ta queries den leitourgoun
 				"CubeName:loan " + " \n" +
 				"Name: LoanQuery102_S1_CG-Disjoint " + " \n" +
 				"AggrFunc:Sum " + " \n" +
@@ -105,7 +105,7 @@ public class NaiveJavaClientExperiments {
 				"Measure:amount " + " \n" +
 				"Gamma:account_dim.lvl2,date_dim.lvl2 " + " \n" +
 				"Sigma:status_dim.lvl1='Running Contract/OK'" ,
-
+*/
 				"CubeName:loan " + " \n" +
 				"Name: LoanQuery105_S1_CG-Disjoint " + " \n" +
 				"AggrFunc:Sum " + " \n" +
@@ -114,8 +114,8 @@ public class NaiveJavaClientExperiments {
 				"Sigma:account_dim.lvl2 = 'south Moravia'"
 			};
 	
-		String queryNames[] = {"LoanQuery101_S1_CG-Disjoint", "LoanQuery102_S1_CG-Disjoint", 
-				"LoanQuery103_S1_CG-Disjoint", "LoanQuery104_S1_CG-Disjoint", "LoanQuery105_S1_CG-Disjoint"};
+		String queryNames[] = {"LoanQuery101_S1_CG-Disjoint", /*"LoanQuery102_S1_CG-Disjoint", 
+				"LoanQuery103_S1_CG-Disjoint", "LoanQuery104_S1_CG-Disjoint",*/ "LoanQuery105_S1_CG-Disjoint"};
 		
 		/*String queryForModels12 =		"CubeName:loan" + " \n" +
 				"Name: CubeQueryLoan12_Sum1998" + " \n" +

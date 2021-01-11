@@ -43,9 +43,7 @@ import java.util.stream.Collectors;
 
 
 import mainengine.nlq.NLQValidationResults;
-import mainengine.nlq.NLQValidator;
 import mainengine.nlq.NLTranslator;
-import mainengine.nlq.QueryForm;
 import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
@@ -99,14 +97,12 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private String currentQueryName;
 	
 	private NLTranslator translator;
-	private NLQValidator nlqProcessor;
 	private ArrayList<String> cubeNames;
 	private ArrayList<String> aggrFunctions;
 	private ArrayList<String> measures;
 	private ArrayList <String> dimensions;
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
-
 
 	
 	
@@ -377,8 +373,8 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 * 
 	 * The idea is:
 	 * 1. Parse and analyze the natural language query via <code>analyzeNLQuery</code> of <code>NLTranslator</code>, see {@link NLTranslator}.
-	 * 2. Produces a <code>QueryForm</code> object which contains the cube query in its fields, see {@link QueryForm}.
-	 * 3. Creates a String with the cube query in order to call <code>answerCubeQueryFromString</code> with this String as a parameter.
+	 * 2. Produces a String with the cube query.
+	 * 3. Calls <code>answerCubeQueryFromString</code> with this String as a parameter.
 	 * 4. Returns the results in a file with the name of the query and outputs them to the console.
 	 * 
 	 * @param queryRawString a String with the natural language query
@@ -388,11 +384,10 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	 */
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
-		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 		//1. parse and analyse natural language query and produce a CubeQuery
-		QueryForm query = translator.analyzeNLQuery(queryRawString);
+		String analysedString = this.translator.analyzeNLQuery(queryRawString);
 		
-		String analysedString = query.toString();
+		//String analysedString = query.toString();
 		System.out.println(analysedString);
 		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
 		String outputLocation = answerCubeQueryFromString(analysedString);
@@ -654,7 +649,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	
 	
 	/**
-	 * Gets the natural language query from a string, passes it to a NLQValidator object, which parses it and produces error messages if any errors where found.
+	 * Gets the natural language query from a string, passes it to a NLTranslator object, which parses it and produces error messages if any errors where found.
 	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
 	 *
 	 *@author DimosGkitsakis
@@ -664,8 +659,8 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	@Override
 	public ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException {
 		
-		nlqProcessor = produceNLQProcessorObject();
-		NLQValidationResults results = nlqProcessor.prepareCubeQuery(queryString);
+		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, queryString);
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
 		
@@ -674,9 +669,6 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return resMetadata;		
 	}
 
-	private NLQValidator produceNLQProcessorObject() {
-		return new NLQValidator(cubeNames, aggrFunctions, measures, dimensions, dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
-	}
 	
 	private String printErrorCheckingResultsToFile(NLQValidationResults results, String filePath) {
 		String fileName = filePath;

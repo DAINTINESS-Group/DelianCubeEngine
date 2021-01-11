@@ -15,56 +15,50 @@ import java.util.HashMap;
 public class NLQValidator  {
 	
 	
-	private NLTranslator translator;
 	public HashMap<String, String> incomingQueries = new HashMap<String, String>();
 	public HashMap<String, String> errorDetails = new HashMap<String, String>();
 
 	private ArrayList<String> cubeNames;
 	private ArrayList<String> aggrFunctions;
 	private ArrayList<String> measures;
-	private ArrayList<String> dimensions;
-	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
-	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
+
 	
-	public NLQValidator(ArrayList<String> cubeNames,  ArrayList<String> aggrFunctions, ArrayList<String> measures,
-						ArrayList<String> dimensions, HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap, 
-						HashMap<String, ArrayList<String>> levelsToDimensionsHashmap) {
+	public NLQValidator(ArrayList<String> cubeNames,  ArrayList<String> aggrFunctions, ArrayList<String> measures) {
 		this.cubeNames = cubeNames;
 		this.aggrFunctions = aggrFunctions;
 		this.measures = measures;
-		this.dimensions = dimensions;
-		this.dimensionsToLevelsHashmap = dimensionsToLevelsHashmap;
-		this.levelsToDimensionsHashmap = levelsToDimensionsHashmap;
 	}
 	
 	
 	/**
 	 * This method is responsible for the pre-processing of the natural language query.
-	 * It takes as an input the natural language query, analyzes it and produces a set of errors if any found.
+	 * It takes as an input the natural language query in its cube query form, analyzes it and produces a set of errors if any found.
 	 * 
-	 * @param NLQuery A String with the natural language query
+	 * @param cubeQuery A QueryForm object with the cube query in its fields.
+	 * @param gammaErrorHandling An ArrayList of Strings with information about the gamma component of the cube query.
+	 * @param sigmaErrorHandling An ArrayList of Strings with information about the sigma component of the cube query.
 	 * @return A NLQValidationResults object which contains information about the error checking process, which are used for
 	 * the production of error messages to be presented to the end-user in the front-end.
 	 * @author DimosGkitsakis
 	 */
-	public NLQValidationResults prepareCubeQuery(String NLQuery) {
-		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+	public NLQValidationResults prepareCubeQuery(QueryForm cubeQuery, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
 		
 		//1. Produce cube query string
-		QueryForm query = translator.produceNLQuery(NLQuery);
-		String cubeQuery = query.toString();
+		String cubeQueryString = cubeQuery.toString();
+		String queryName = cubeQuery.queryName;
+		
 		
 		//2. Save it to the hashmap
-		saveCubeQuery(query.queryName, cubeQuery);
+		saveCubeQuery(queryName, cubeQueryString);
 		
 		//3. Check for errors		
 		fillErrorHashMap();
-		String errorCode = errorChecking(query, translator);
+		String errorCode = errorChecking(cubeQuery, gammaErrorHandling, sigmaErrorHandling);
 
 		if (errorCode.equals("No Error Found")) {
-			return new NLQValidationResults(query.queryName, false, null, null);
+			return new NLQValidationResults(cubeQuery.queryName, false, null, null);
 		}else {
-			return new NLQValidationResults(query.queryName, true, errorCode, errorDetails.get(errorCode));
+			return new NLQValidationResults(cubeQuery.queryName, true, errorCode, errorDetails.get(errorCode));
 		}
 		
 	}
@@ -130,18 +124,10 @@ public class NLQValidator  {
 				+ "and the sigma selections should be split by 'and' ");
 	}
 	
-	private String errorChecking(QueryForm query, NLTranslator translator) {
+	private String errorChecking(QueryForm query, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
 		String cubeName = query.cubeName.split(":")[1] + "_cube";
 		String aggrFunc = query.aggregateFunction.split(":")[1];
 		String measure = query.cubeName.split(":")[1] + "." + query.measure.split(":")[1];
-		
-		String gamma = query.gamma.split(":")[1];
-		ArrayList<String> gammaErrorHandling = new ArrayList<String>();
-		gammaErrorHandling = translator.parseGamma(gamma);
-		
-		String sigma = query.sigma.split(":")[1];
-		ArrayList<String> sigmaErrorHandling = new ArrayList<String>();
-		sigmaErrorHandling = translator.parseSigma(sigma);
 		
 
 		if(!(cubeNames.contains(cubeName))) {

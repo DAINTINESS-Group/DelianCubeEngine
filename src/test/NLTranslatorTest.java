@@ -65,7 +65,7 @@ public class NLTranslatorTest {
 	
 	public void compareForTest(String queryToBeTested, String exportedString) {
 		NLTranslator translator = new NLTranslator();
-		QueryForm query = translator.produceNLQuery(queryToBeTested);
+		QueryForm query = translator.produceCubeQuery(queryToBeTested);
 		
 		String analysedString = query.getCubeName() +
 				query.getQueryName() +

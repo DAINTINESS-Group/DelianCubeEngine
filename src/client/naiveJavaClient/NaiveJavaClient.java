@@ -66,8 +66,8 @@ public class NaiveJavaClient {
 		service.answerCubeQueriesFromFile(f);/**/
 				
 		// Cube LOAN and queries
-		service.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "loan");
+		service.initializeConnection("pkdd99", "CinecubesUser",
+				"Cinecubes", "pkdd99", "loan");
 		System.out.println("Completed connection initialization");
 
 		//CleanUp client Cache
