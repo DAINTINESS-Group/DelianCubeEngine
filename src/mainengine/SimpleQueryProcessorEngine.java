@@ -368,6 +368,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	}//answerCubeQueryFromString
 	
 	
+	
 	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
 	 * executes the query and produces the output of the query.
 	 * 
@@ -385,7 +386,12 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
 		//1. parse and analyse natural language query and produce a CubeQuery
+		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+		Instant t0 = Instant.now();
 		String analysedString = this.translator.analyzeNLQuery(queryRawString);
+		Instant tF = Instant.now();
+		long duration = Duration.between(t0, tF).toMillis();
+		System.out.println("NLQuery Analysis Time:" + duration + " ms");
 		
 		//String analysedString = query.toString();
 		System.out.println(analysedString);

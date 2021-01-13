@@ -54,6 +54,7 @@ public class NLTranslator implements ITranslator {
 	 * @author DimosGkitsakis
 	 */
 	public QueryForm produceCubeQuery(String NLQuery) {
+
 		findQueryComponents(NLQuery);
 		QueryForm query = new QueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
 
@@ -93,8 +94,6 @@ public class NLTranslator implements ITranslator {
 			sigma = sigmaArrayList.get(1);
 		}
 
-		
-		
 		//3. produce QueryForm object
 		QueryForm query = new QueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
 
@@ -102,7 +101,7 @@ public class NLTranslator implements ITranslator {
 		//System.out.println(query.getCubeName()+query.getQueryName()+query.getAggregateFunction()+query.getMeasure()+query.getGamma()+query.getSigma());
 		
 		//4. return the String
-		String cubeQuery = query.toString();
+		String cubeQuery = query.toString();		
 		return cubeQuery;
 		
 	}

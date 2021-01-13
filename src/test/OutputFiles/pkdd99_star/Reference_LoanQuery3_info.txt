@@ -1,0 +1,7 @@
+QueryName: LoanQuery3
+BasicCube : loan_cube
+Aggregate Function : min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.month
+Sigma Expression: account_dim.region='Prague' AND date_dim.year='1998'
+
