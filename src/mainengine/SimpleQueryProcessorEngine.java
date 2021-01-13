@@ -387,11 +387,11 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
 		//1. parse and analyse natural language query and produce a CubeQuery
 		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
-		Instant t0 = Instant.now();
+		long t0 = System.nanoTime();
 		String analysedString = this.translator.analyzeNLQuery(queryRawString);
-		Instant tF = Instant.now();
-		long duration = Duration.between(t0, tF).toMillis();
-		System.out.println("NLQuery Analysis Time:" + duration + " ms");
+		long tF = System.nanoTime();
+		long duration = tF - t0;
+		System.out.println("NLQuery Analysis Time:" + duration + " nanoseconds");
 		
 		//String analysedString = query.toString();
 		System.out.println(analysedString);
