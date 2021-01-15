@@ -14,16 +14,20 @@ This project implements a simple query engine that receives cube queries and ret
 
 
 ## Usage
-For v.0.1 and v.0.2, the usage is simple:
+For v.0.1 - v.0.3, the usage is simple:
 1. Start your DBMS (MySQL) service, if not running
 2. Start the Server of the project
 3. Alternatives
 * Start the NaiveJavaClient of the project (query results are in the OutputFiles folder for the server and ClientCache for the client)
 * Start the MainApp client in the gui package. Its functionalities include launching queries from a stored file and loading tsv files. 
-* ... create a Client of your own
+* ... create a Client of your own (already having clients to work with interestingness and natural language queries)
 
 
 ## Credits and History
+
+### v.0.3 [2021 January]
+* D. Gkitsakis added the first v. of the natural language querying package (also: tests & clients) to allow the querying via natural language
+* E. Mouselli added the first v. of the interestingness package (also: tests & clients) to assess query interestingness
 
 ### v.0.2 [2018 August]
 P. Vassiliadis extended the engine with the generation of models for queries. Expansion of the GUI, the testing and refactorings also took place 
@@ -52,6 +56,8 @@ Community
 - [ ] ToDo: Must complement this file with a section on how to contribute. Sorry!
 
 Refactorings & Corrections
+- [ ] Expand natural language querying with more elegant solutions
+- [ ] Expand interestingness assessment with syntactic checks
 - [ ] Address the todo's inside the src
 - [ ] Introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
 - [ ] Refactor the GUI client, to kill cycles in the package diagram

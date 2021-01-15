@@ -655,18 +655,20 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	
 	
 	/**
+	 * Validates a natural language Query String and returns a ResultFileMetadata object with the result.
+	 * 
 	 * Gets the natural language query from a string, passes it to a NLTranslator object, which parses it and produces error messages if any errors where found.
 	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
 	 *
 	 *@author DimosGkitsakis
-	 *@param queryString A String with the natural language query given by the user.
+	 *@param naturalLanguageQueryString A String with the natural language query given by the user.
 	 *@return a ResultFileMetadata object containing info on the location of the error checking file at the server
 	 */
 	@Override
-	public ResultFileMetadata prepareCubeQuery(String queryString) throws RemoteException {
+	public ResultFileMetadata prepareCubeQuery(String naturalLanguageQueryString) throws RemoteException {
 		
 		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
-		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, queryString);
+		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, naturalLanguageQueryString);
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
 		
