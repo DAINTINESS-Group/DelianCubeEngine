@@ -13,7 +13,7 @@ public class DirectNovelty implements IInterestingnessMeasureWithHistory {
 	 * @return 0 if the same {@link CubeQuery} has been asked before, 1 otherwise.
 	 * @author eiriniMouselli
 	 */
-	public double compute(IHistoryInput inputManager) {
+	public double computeMeasure(IHistoryInput inputManager) {
 		
 		for(CubeQuery q: inputManager.getQueryHistory()) {
 			if(q.toString().equals(inputManager.getCurrentQuery().toString())) {

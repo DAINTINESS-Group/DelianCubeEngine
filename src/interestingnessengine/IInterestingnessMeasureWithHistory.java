@@ -8,5 +8,5 @@ public interface IInterestingnessMeasureWithHistory {
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the double value of the measurement
 	 */
-	public double compute(IHistoryInput inputManager);
+	public double computeMeasure(IHistoryInput inputManager);
 }

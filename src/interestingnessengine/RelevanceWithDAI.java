@@ -19,7 +19,7 @@ public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the relevance value
 	 */
-	public double compute(IHistoryInput inputManager) {
+	public double computeMeasure(IHistoryInput inputManager) {
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
 		

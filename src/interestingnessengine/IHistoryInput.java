@@ -10,9 +10,11 @@ import cubemanager.cubebase.CubeQuery;
  * @author eiriniMouselli
  *
  */
-public interface IHistoryInput extends IInput {
+public interface IHistoryInput {
 
-	/**
+	/** 
+	 * Parses the user's query history results
+	 * <p>
 	 * Goes through every file in given folder and for each file creates a {@link Result} object 
 	 * with the {@link Cell}s contained in the file and populates the appropriate list.
 	 * @param filePath The path to the file containing previous queries' results
@@ -28,6 +30,8 @@ public interface IHistoryInput extends IInput {
 	 */
 	public ArrayList<Result> getQueryHistoryResults();
 	/**
+	 * Parses the user's query history 
+	 * <p>
 	 * Goes through every file in given folder and for each file creates a {@link CubeQuery} object from 
 	 * the raw query string contained in the file.
 	 * @param folderPath The path to the folder containing previous queries
@@ -52,4 +56,39 @@ public interface IHistoryInput extends IInput {
 	 * @param k The desired value of the kth neighbor. >= 1
 	 */
 	public void setKthNeighbor(int k);
+	/**
+	 * Updates the value of the current {@link CubeQuery}.
+	 * @param current The latest query
+	 */
+	public void setCurrentQuery(CubeQuery current);
+	/**
+	 * @return the current {@link CubeQuery}.
+	 */
+	public CubeQuery getCurrentQuery();
+	/**
+	 * Updates the value of the current {@link Result}.
+	 * @param result The latest query's result.
+	 */
+	public void setCurrentQueryResult(Result result);
+	/**
+	 * @return the current {@link CubeQuery}'s {@link Result}.
+	 */
+	public Result getCurrentQueryResult();
+	/**
+	 * Computes the user's Detailed Area of Interest 
+	 * <p>
+	 * For every old {@link CubeQuery} in the history list, computes its detailed area and adds all the cells, that
+	 * are not already in it, in the detailed area of interest.
+	 * @return the union of all the old queries' detailed areas
+	 */
+	public ArrayList<Cell> computeDetailedAreaOfInterest();
+	/**
+	 * Computes the detailed cube for the query passed
+	 * <p>
+	 * Creates a copy of the given {@link CubeQuery}, sets all the Gamma Expressions to "lvl.0" and 
+	 * executes the new {@link CubeQuery}.
+	 * @param query The query for which to compute the detailed area
+	 * @return the detailed area of the given query
+	 */
+	public ArrayList<Cell> computeDetailedQueryCube(CubeQuery query);
 }

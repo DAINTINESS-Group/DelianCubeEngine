@@ -10,5 +10,5 @@ public interface IInterestingnessMeasureWithExpectedValues {
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the double value of the measurement
 	 */
-	public double compute(IExpectedValuesInput inputManager);
+	public double computeMeasure(IExpectedValuesInput inputManager);
 }
