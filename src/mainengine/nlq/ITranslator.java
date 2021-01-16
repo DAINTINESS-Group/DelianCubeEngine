@@ -3,6 +3,13 @@ package mainengine.nlq;
 import java.util.ArrayList;
 
 /** 
+ * An interface used for the natural language query translation.
+ * 
+ * 1. First prepareCubeQuery is called which prepares the cube query by checking the natural language query for any errors.
+ * 2. produceCubeQueryForm is called in prepareCubeQuery to help the process of error checking. Also used in testing.
+ * 3. produceCubeQueryString is called last to produce the final equivalent cube query.
+ * 
+ * 
  * @author DimosGkitsakis
  *
  */
@@ -23,16 +30,16 @@ public interface ITranslator {
 	
 	
 	/**
-	 * Produces a QueryForm object  from a natural language query, with the cube query components in its fields.
+	 * Produces a CubeQueryForm object  from a natural language query, with the cube query components in its fields.
 	 * 
-	 * An IproduceCubeQuery() invocation produces the equivalent Query Form object (modeling all the components of a query as strings)
+	 * An IproduceCubeQuery() invocation produces the equivalent Cube Query Form object (modeling all the components of a query as strings)
 	 * without analyzing the gamma and sigma components for errors.
 	 * 
 	 * @param NLQuery A String with the natural language query.
-	 * @return A QueryForm object with the cube query in its components.
+	 * @return A CubeQueryForm object with the cube query in its components.
 	 * @author DimosGkitsakis
 	 */
-	QueryForm produceCubeQuery(String NLQuery);
+	CubeQueryForm produceCubeQuery(String NLQuery);
 	
 	
 	/**
@@ -42,7 +49,7 @@ public interface ITranslator {
 	 * @return	A String with the cube query.
 	 * @author DimosGkitsakis
 	 */
-	String analyzeNLQuery(String NLQuery);
+	String produceCubeQueryString(String NLQuery);
  
 	
 }

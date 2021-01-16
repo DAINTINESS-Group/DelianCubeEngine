@@ -41,9 +41,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-
+import mainengine.nlq.ITranslator;
+import mainengine.nlq.ITranslatorFactory;
 import mainengine.nlq.NLQValidationResults;
-import mainengine.nlq.NLTranslator;
 import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
@@ -96,7 +96,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	private Result currentResult;
 	private String currentQueryName;
 	
-	private NLTranslator translator;
+	private ITranslatorFactory translatorFactory;
 	private ArrayList<String> cubeNames;
 	private ArrayList<String> aggrFunctions;
 	private ArrayList<String> measures;
@@ -386,9 +386,9 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
 		//1. parse and analyse natural language query and produce a CubeQuery
-		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+		ITranslator translator = getNLTranslator();
 		long t0 = System.nanoTime();
-		String analysedString = this.translator.analyzeNLQuery(queryRawString);
+		String analysedString = translator.produceCubeQueryString(queryRawString);
 		long tF = System.nanoTime();
 		long duration = tF - t0;
 		System.out.println("NLQuery Analysis Time:" + duration + " nanoseconds");
@@ -666,8 +666,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	 */
 	@Override
 	public ResultFileMetadata prepareCubeQuery(String naturalLanguageQueryString) throws RemoteException {
-		
-		translator = new NLTranslator(dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+		ITranslator translator = getNLTranslator();
 		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, naturalLanguageQueryString);
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
@@ -677,6 +676,11 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return resMetadata;		
 	}
 
+	private ITranslator getNLTranslator() {
+		translatorFactory = new ITranslatorFactory();
+		ITranslator translator = translatorFactory.getITranslator("NLTranslator", dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
+		return translator;
+	}
 	
 	private String printErrorCheckingResultsToFile(NLQValidationResults results, String filePath) {
 		String fileName = filePath;

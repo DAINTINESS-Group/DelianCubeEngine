@@ -9,7 +9,7 @@ package mainengine.nlq;
  * 
  */
 
-public class QueryForm {
+public class CubeQueryForm {
 	
 	protected String cubeName;
 	protected String queryName;
@@ -18,7 +18,7 @@ public class QueryForm {
 	protected String gamma;
 	protected String sigma;
 	
-	public QueryForm() {
+	public CubeQueryForm() {
 		cubeName = "";
 		queryName = "";
 		aggregateFunction = "";
@@ -27,7 +27,7 @@ public class QueryForm {
 		sigma = "";
 	}
 	
-	public QueryForm(String cubeName, String queryName, String aggregateFunction, String measure, String gamma, String sigma) {
+	public CubeQueryForm(String cubeName, String queryName, String aggregateFunction, String measure, String gamma, String sigma) {
 		this.cubeName = cubeName;
 		this.queryName = queryName;
 		this.aggregateFunction = aggregateFunction;

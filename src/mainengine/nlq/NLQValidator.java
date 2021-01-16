@@ -41,7 +41,7 @@ public class NLQValidator  {
 	 * the production of error messages to be presented to the end-user in the front-end.
 	 * @author DimosGkitsakis
 	 */
-	public NLQValidationResults prepareCubeQuery(QueryForm cubeQuery, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
+	public NLQValidationResults prepareCubeQuery(CubeQueryForm cubeQuery, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
 		
 		//1. Produce cube query string
 		String cubeQueryString = cubeQuery.toString();
@@ -124,7 +124,7 @@ public class NLQValidator  {
 				+ "and the sigma selections should be split by 'and' ");
 	}
 	
-	private String errorChecking(QueryForm query, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
+	private String errorChecking(CubeQueryForm query, ArrayList<String> gammaErrorHandling, ArrayList<String> sigmaErrorHandling) {
 		String cubeName = query.cubeName.split(":")[1] + "_cube";
 		String aggrFunc = query.aggregateFunction.split(":")[1];
 		String measure = query.cubeName.split(":")[1] + "." + query.measure.split(":")[1];

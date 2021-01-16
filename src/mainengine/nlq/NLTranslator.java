@@ -45,6 +45,30 @@ public class NLTranslator implements ITranslator {
 	
 	}
 	
+	/**
+	 * Creates a NLQValidator object and gives it the cubeNames, aggregate functions,
+	 * measure names and the results of {@link #parseGamma(String)} and {@link #parseSigma(String)},
+	 * in order to produce a set of messages if any errors are found.
+	 * 
+	 * @author DimosGkitsakis
+	 */
+	public NLQValidationResults prepareCubeQuery(ArrayList<String> cubeNames, ArrayList<String> aggrFunctions, 
+												ArrayList<String> measures, String queryString) {
+		
+		NLQValidator validator = new NLQValidator(cubeNames, aggrFunctions, measures);
+		CubeQueryForm query = produceCubeQuery(queryString);
+		
+		String gamma = query.gamma.split(":")[1];
+		ArrayList<String> gammaErrorHandling = new ArrayList<String>();
+		gammaErrorHandling = parseGamma(gamma);
+		
+		String sigma = query.sigma.split(":")[1];
+		ArrayList<String> sigmaErrorHandling = new ArrayList<String>();
+		sigmaErrorHandling = parseSigma(sigma);
+		
+		NLQValidationResults results = validator.prepareCubeQuery(query, gammaErrorHandling, sigmaErrorHandling);
+		return results;
+	}
 	
 	/**
 	 * Produces an object with the cube query components in its fields from a natural language query.
@@ -53,10 +77,10 @@ public class NLTranslator implements ITranslator {
 	 * @return A QueryForm object with the cube query components
 	 * @author DimosGkitsakis
 	 */
-	public QueryForm produceCubeQuery(String NLQuery) {
+	public CubeQueryForm produceCubeQuery(String NLQuery) {
 
 		findQueryComponents(NLQuery);
-		QueryForm query = new QueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
+		CubeQueryForm query = new CubeQueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
 
 		return query;
 	}
@@ -77,7 +101,7 @@ public class NLTranslator implements ITranslator {
 	 * 
 	 */
 	
-	public String analyzeNLQuery(String NLQuery){
+	public String produceCubeQueryString(String NLQuery){
 		
 		//1. find the cube query components from the nlquery given as parameter
 		findQueryComponents(NLQuery);
@@ -95,7 +119,7 @@ public class NLTranslator implements ITranslator {
 		}
 
 		//3. produce QueryForm object
-		QueryForm query = new QueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
+		CubeQueryForm query = new CubeQueryForm("CubeName:" + cubeName, "Name:" + queryName, "AggrFunc:" + aggrFunc, "Measure:" + measure, "Gamma:" + gamma, "Sigma:" + sigma);
 
 		
 		//System.out.println(query.getCubeName()+query.getQueryName()+query.getAggregateFunction()+query.getMeasure()+query.getGamma()+query.getSigma());
@@ -105,34 +129,6 @@ public class NLTranslator implements ITranslator {
 		return cubeQuery;
 		
 	}
-	
-	
-	
-	/**
-	 * Creates a NLQValidator object and gives it the cubeNames, aggregate functions,
-	 * measure names and the results of {@link #parseGamma(String)} and {@link #parseSigma(String)},
-	 * in order to produce a set of messages if any errors are found.
-	 * 
-	 * @author DimosGkitsakis
-	 */
-	public NLQValidationResults prepareCubeQuery(ArrayList<String> cubeNames, ArrayList<String> aggrFunctions, 
-												ArrayList<String> measures, String queryString) {
-		
-		NLQValidator validator = new NLQValidator(cubeNames, aggrFunctions, measures);
-		QueryForm query = produceCubeQuery(queryString);
-		
-		String gamma = query.gamma.split(":")[1];
-		ArrayList<String> gammaErrorHandling = new ArrayList<String>();
-		gammaErrorHandling = parseGamma(gamma);
-		
-		String sigma = query.sigma.split(":")[1];
-		ArrayList<String> sigmaErrorHandling = new ArrayList<String>();
-		sigmaErrorHandling = parseSigma(sigma);
-		
-		NLQValidationResults results = validator.prepareCubeQuery(query, gammaErrorHandling, sigmaErrorHandling);
-		return results;
-	}
-	
 	
 	private void findQueryComponents(String NLQuery) {
 		clear();

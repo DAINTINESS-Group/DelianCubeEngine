@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import mainengine.nlq.NLTranslator;
-import mainengine.nlq.QueryForm;
+import mainengine.nlq.CubeQueryForm;
 
 public class NLTranslatorTest {
 
@@ -65,7 +65,7 @@ public class NLTranslatorTest {
 	
 	public void compareForTest(String queryToBeTested, String exportedString) {
 		NLTranslator translator = new NLTranslator();
-		QueryForm query = translator.produceCubeQuery(queryToBeTested);
+		CubeQueryForm query = translator.produceCubeQuery(queryToBeTested);
 		
 		String analysedString = query.getCubeName() +
 				query.getQueryName() +
