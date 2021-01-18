@@ -2,7 +2,9 @@ package test.nlqueries;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -10,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import mainengine.nlq.NLTranslator;
 import mainengine.IMainEngine;
+import mainengine.ResultFileMetadata;
 import mainengine.SimpleQueryProcessorEngine;
 
 
@@ -75,46 +78,44 @@ public class SimplifiedNLQueriesTest {
 		String testQueryString ="Describe the avg of loan amount per district_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.answerCubeQueryFromNLStringWithMetadata(testQueryString);   /**/
 		
-		File fileInfoProduced = new File("OutputFiles/LoanQuery1_info.txt");
-		File fileInfoReference = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_info.txt");
-        boolean comparison = FileUtils.contentEquals(fileInfoProduced, fileInfoReference);
-        assertEquals(comparison , true);/**/
+		String producedContents = getContents("OutputFiles/LoanQuery1_info.txt");
+		String referenceContents = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_info.txt");
+		assertEquals(producedContents, referenceContents);
         
         
+		
 		String testQueryString2 ="Describe the max of loan amount per district_name and status for month is '1998-01' as LoanQuery2"; 
 		testedQPEngine.answerCubeQueryFromNLStringWithMetadata(testQueryString2);   /**/
 		
-		File fileInfoProduced2 = new File("OutputFiles/LoanQuery2_info.txt");
-		File fileInfoReference2 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery2_info.txt");
-        boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
-        assertEquals(comparison2 , true);/**/
+		String producedContents2 = getContents("OutputFiles/LoanQuery2_info.txt");
+		String referenceContents2 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery2_info.txt");
+		assertEquals(producedContents2, referenceContents2);
         
+		
         
         String testQueryString3 ="Describe the min of loan amount per district_name and month for region is 'Prague' and year is '1998' as LoanQuery3"; 
 		testedQPEngine.answerCubeQueryFromNLStringWithMetadata(testQueryString3);   /**/	
 		
-		File fileInfoProduced3 = new File("OutputFiles/LoanQuery3_info.txt");
-		File fileInfoReference3 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery3_info.txt");
-        boolean comparison3 = FileUtils.contentEquals(fileInfoProduced3, fileInfoReference3);
-        assertEquals(comparison3 , true);/**/
+		String producedContents3 = getContents("OutputFiles/LoanQuery3_info.txt");
+		String referenceContents3 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery3_info.txt");
+		assertEquals(producedContents3, referenceContents3);
 		
 		
 		String testQueryString4 ="Describe the sum of loan amount per district_name and year for region is 'south Moravia' and status is 'Running Contract/OK' as LoanQuery4"; 
 		testedQPEngine.answerCubeQueryFromNLStringWithMetadata(testQueryString4);   /**/	
 		
-		File fileInfoProduced4 = new File("OutputFiles/LoanQuery4_info.txt");
-		File fileInfoReference4 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery4_info.txt");
-        boolean comparison4 = FileUtils.contentEquals(fileInfoProduced4, fileInfoReference4);
-        assertEquals(comparison4 , true);/**/
+		String producedContents4 = getContents("OutputFiles/LoanQuery4_info.txt");
+		String referenceContents4 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery4_info.txt");
+		assertEquals(producedContents4, referenceContents4);	
+		
 		
 		
 		String testQueryString5 ="Describe the sum of loan amount per district_name and year for region is 'west Bohemia' and status is 'Contract Finished/No Problems' and year is '1996' as LoanQuery5"; 
 		testedQPEngine.answerCubeQueryFromNLStringWithMetadata(testQueryString5);   /**/	
 		
-		File fileInfoProduced5 = new File("OutputFiles/LoanQuery5_info.txt");
-		File fileInfoReference5 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery5_info.txt");
-        boolean comparison5 = FileUtils.contentEquals(fileInfoProduced5, fileInfoReference5);
-        assertEquals(comparison5 , true);/**/
+		String producedContents5 = getContents("OutputFiles/LoanQuery5_info.txt");
+		String referenceContents5 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery5_info.txt");
+		assertEquals(producedContents5, referenceContents5);
         
 	}//end method testanswerCubeQueryFromStringWithMetadata
 	
@@ -130,59 +131,82 @@ public class SimplifiedNLQueriesTest {
 		String testQueryString ="Describe the avg of loan amount per district_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.prepareCubeQuery(testQueryString);   /**/
 		
-		File fileInfoProduced = new File("OutputFiles/ErrorChecking.txt");
-		File fileInfoReference = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_ErrorChecking.txt");
-        boolean comparison = FileUtils.contentEquals(fileInfoProduced, fileInfoReference);
-        assertEquals(comparison , true);/**/
+		String producedContents = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_ErrorChecking.txt");
+		assertEquals(producedContents, referenceContents);	
+		
         
         //Error: Wrong cube name
 		String testQueryString2 ="Describe the avg of lon amount per district_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.prepareCubeQuery(testQueryString2);   /**/
 		
-		File fileInfoProduced2 = new File("OutputFiles/ErrorChecking.txt");
-		File fileInfoReference2 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongCubeName.txt");
-        boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
-        assertEquals(comparison2 , true);/**/
-        
+		String producedContents2 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents2 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongCubeName.txt");
+		assertEquals(producedContents2, referenceContents2);
+		
         
         //Error: Wrong agreggate function
         String testQueryString3 ="Describe the avgg of loan amount per district_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.prepareCubeQuery(testQueryString3);   /**/	
 		
-		File fileInfoProduced3 = new File("OutputFiles/ErrorChecking.txt");
-		File fileInfoReference3 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongAggrFunc.txt");
-        boolean comparison3 = FileUtils.contentEquals(fileInfoProduced3, fileInfoReference3);
-        assertEquals(comparison3 , true);/**/
+		String producedContents3 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents3 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongAggrFunc.txt");
+		assertEquals(producedContents3, referenceContents3);
+		
 		
 		//Error: Wrong measure name
 		String testQueryString4 ="Describe the avg of loan amountt per district_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.prepareCubeQuery(testQueryString4);   /**/	
 		
-		File fileInfoProduced4 = new File("OutputFiles/ErrorChecking.txt");
-		File fileInfoReference4 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongMeasureName.txt");
-        boolean comparison4 = FileUtils.contentEquals(fileInfoProduced4, fileInfoReference4);
-        assertEquals(comparison4 , true);/**/
+		String producedContents4 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents4 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongMeasureName.txt");
+		assertEquals(producedContents4, referenceContents4);
+		
 		
 		//Error: Wrong gamma
 		String testQueryString5 ="Describe the avg of loan amount per districtt_name and month for region is 'north Moravia' as LoanQuery1"; 
 		testedQPEngine.prepareCubeQuery(testQueryString5);   /**/	
 		
-		File fileInfoProduced5 = new File("OutputFiles/ErrorChecking.txt");
-		File fileInfoReference5 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongGamma.txt");
-        boolean comparison5 = FileUtils.contentEquals(fileInfoProduced5, fileInfoReference5);
-        assertEquals(comparison5 , true);/**/
+		String producedContents5 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents5 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongGamma.txt");
+		assertEquals(producedContents5, referenceContents5);
+		
         
         //Error: Wrong sigma
         String testQueryString6 ="Describe the avg of loan amount per district_name and month for rregion is 'north Moravia' as LoanQuery1"; 
       	testedQPEngine.prepareCubeQuery(testQueryString6);   /**/	
-      		
-      	File fileInfoProduced6 = new File("OutputFiles/ErrorChecking.txt");
-  		File fileInfoReference6 = new File("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongSigma.txt");
-        boolean comparison6 = FileUtils.contentEquals(fileInfoProduced6, fileInfoReference6);
-        assertEquals(comparison6 , true);/**/
+      	
+      	String producedContents6 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents6 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongSigma.txt");
+		assertEquals(producedContents6, referenceContents6);
+
 	}//end method testanswerCubeQueryFromStringWithMetadata
 
-	
+	private String getContents(String fileName) {
+		String contents = "";
+		File file = new File(fileName);
+		if(file.exists() && !file.isDirectory()) { 
+			BufferedReader reader = null;
+			try {
+			    reader = new BufferedReader(new FileReader(file));
+
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			        contents = contents + line + "\n";
+			    }
+
+			} catch (IOException e) {
+			    e.printStackTrace();
+			} finally {
+			    try {
+			        reader.close();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}//end finally
+		}//end master if
+		return contents;
+	}//end method
 //Some nlqueries
 /*
 "Describe the avg of loan amount per district_name and month for region is 'north Moravia' as LoanQuery11_S1_CG-Prtl"
