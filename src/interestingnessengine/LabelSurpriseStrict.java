@@ -14,7 +14,7 @@ public class LabelSurpriseStrict implements IInterestingnessMeasureWithExpectedV
 	 * @param inputManager The current {@link InputManager} object
 	 * @return 0 if all the cells have the expected label and 1 if at least one has a different label
 	 */
-	public double compute(IExpectedValuesInput inputManager) {
+	public double computeMeasure(IExpectedValuesInput inputManager) {
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for(Cell expectedC: inputManager.getExpectedLabels()) {
 				if(c.getDimensionMembers().equals(expectedC.getDimensionMembers())) {

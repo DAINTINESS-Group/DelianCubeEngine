@@ -7,6 +7,7 @@ import result.Result;
 /**
  * 
  * @author eiriniMouselli
+ * This Interface is no longer used.
  *
  */
 public interface IInput {

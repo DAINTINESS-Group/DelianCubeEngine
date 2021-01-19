@@ -25,7 +25,7 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the peculiarity value
 	 */
-	public double compute(IHistoryInput inputManager) {
+	public double computeMeasure(IHistoryInput inputManager) {
 		TreeSet<Cell> union = new TreeSet<Cell>(new CellComp());
 		ArrayList<Cell> intersection = new ArrayList<Cell>();
 		

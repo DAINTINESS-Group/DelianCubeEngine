@@ -18,7 +18,7 @@ public class ValueSurprise implements IInterestingnessMeasureWithExpectedValues{
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the value surprise value
 	 */
-	public double compute(IExpectedValuesInput inputManager) {
+	public double computeMeasure(IExpectedValuesInput inputManager) {
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for(Cell expectedC: inputManager.getExpectedValues()) {
 				if(c.getDimensionMembers().equals(expectedC.getDimensionMembers())) {

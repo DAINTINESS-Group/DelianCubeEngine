@@ -49,6 +49,8 @@ public class InterestingnessManager {
 		this.hMeauseFactory = new InterestingnessMeasureHFactory();
 	}
 	/**
+	 * Updates {@link InterestingnessManager} state
+	 * <p>
 	 * Saves previous {@link CubeQuery} string and {@link Result} in history and updates current {@link CubeQuery} 
 	 * and current {@link Result}
 	 * @param currentQuery  The current {@link CubeQuery} 
@@ -77,10 +79,10 @@ public class InterestingnessManager {
 		
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
-			result = this.hMeasure.compute(inputManager);
+			result = this.hMeasure.computeMeasure(inputManager);
 		}else {
 			this.evMeasure = this.evMeasureFactory.createInterestingnessMeasureWithExpectedValues(chosenMeasure);
-			result = this.evMeasure.compute(inputManager);
+			result = this.evMeasure.computeMeasure(inputManager);
 		}
 		return result;
 	}

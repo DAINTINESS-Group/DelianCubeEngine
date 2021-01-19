@@ -16,7 +16,7 @@ public class LabelSurprise implements IInterestingnessMeasureWithExpectedValues{
 	 * @param inputManager The current {@link InputManager} object
 	 * @return the label surprise value or -1 if the expected labels were not found
 	 */
-	public double compute(IExpectedValuesInput inputManager) {
+	public double computeMeasure(IExpectedValuesInput inputManager) {
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for(Cell expectedC: inputManager.getExpectedLabels()) {
 				if(c.getDimensionMembers().equals(expectedC.getDimensionMembers())) {
