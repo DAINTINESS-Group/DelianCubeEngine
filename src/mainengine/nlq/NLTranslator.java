@@ -105,6 +105,13 @@ public class NLTranslator implements ITranslator {
 		
 		//1. find the cube query components from the nlquery given as parameter
 		findQueryComponents(NLQuery);
+		if(aggrFunc.equals("maximum")) {
+			aggrFunc = "max";
+		}else if(aggrFunc.equals("minimum")) {
+			aggrFunc = "min";
+		}else if(aggrFunc.equals("average")) {
+			aggrFunc = "avg";
+		}
 		
 		//2. parse gamma and sigma to produce proper cube query gamma and sigma
 		ArrayList<String> gammaArrayList = parseGamma(gamma);
