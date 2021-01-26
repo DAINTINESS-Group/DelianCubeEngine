@@ -22,11 +22,11 @@ public class IndirectNoveltyTest {
 	private static List<String> measures = new ArrayList<String>();
 	
 	static void clearOldHistory() throws IOException {
-		Files.walk(Paths.get("History/Queries"))
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
         .filter(Files::isRegularFile)
         .map(Path::toFile)
         .forEach(File::delete);
-		Files.walk(Paths.get("History/Results"))
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Results"))
         .filter(Files::isRegularFile)
         .map(Path::toFile)
         .forEach(File::delete);
@@ -37,8 +37,8 @@ public class IndirectNoveltyTest {
 		queryEngine = new SimpleQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","History", "", "", -1,"loan");
-		measures.add("Direct Novelty");
+				"Cinecubes", "pkdd99","InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1,"loan");
+		//measures.add("Direct Novelty");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 

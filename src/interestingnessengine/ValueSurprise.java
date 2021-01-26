@@ -1,5 +1,12 @@
 package interestingnessengine;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.Instant;
+
 import result.Cell;
 /**
  * 
@@ -19,6 +26,8 @@ public class ValueSurprise implements IInterestingnessMeasureWithExpectedValues{
 	 * @return the value surprise value
 	 */
 	public double computeMeasure(IExpectedValuesInput inputManager) {
+		Instant start = Instant.now();
+		
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for(Cell expectedC: inputManager.getExpectedValues()) {
 				if(c.getDimensionMembers().equals(expectedC.getDimensionMembers())) {
@@ -40,6 +49,18 @@ public class ValueSurprise implements IInterestingnessMeasureWithExpectedValues{
 			}
 			
 		}
+
+		Instant end = Instant.now();
+		
+		long durationComparison = Duration.between(start, end).toMillis();
+		
+		try {
+			String outputTxt = "\n\nValue Surprise \n"+
+	    			"\tQuery Comparison:\t" + durationComparison+ " ms\n";
+		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+		}catch (IOException e) {}
+				
 		if(counter != 0) {
 			cubeSurprise = sum / counter;
 		}else {

@@ -74,9 +74,7 @@ public class InterestingnessManager {
 	 */
 	public double computeMeasure(String chosenMeasure, CubeQuery currentQuery, Result currentResult) {
 		double result;
-		
-		
-		
+				
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
 			result = this.hMeasure.computeMeasure(inputManager);
