@@ -223,9 +223,12 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		//2.Create data for AggrFunc
 		aggrFunctions = new ArrayList<String>();
 		aggrFunctions.add("max");
+		aggrFunctions.add("maximum");
 		aggrFunctions.add("min");
+		aggrFunctions.add("minimum");
 		aggrFunctions.add("count");
 		aggrFunctions.add("avg");
+		aggrFunctions.add("average");
 		aggrFunctions.add("sum");
 		
 		//3.Bring data for Measure
