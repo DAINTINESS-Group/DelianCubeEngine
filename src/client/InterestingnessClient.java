@@ -31,7 +31,7 @@ public class InterestingnessClient {
 					
 		// Cube LOAN and queries
 		service.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","History", "ExpectedValues/predictions1", "ExpectedValues/predictions1" ,1,"loan");
+				"Cinecubes", "pkdd99","InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions1", "InputFiles/UserProfile/ExpectedValues/predictions1" ,1,"loan");
 		System.out.println("Completed connection initialization");
 		
 		//create history to be able to compute every measure
@@ -86,7 +86,7 @@ public class InterestingnessClient {
 				"AggrFunc:Sum\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures );
+				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3='1996'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers3.length; i++) {
 			System.out.println(measures.get(i) + ":    " + answers3[i]);

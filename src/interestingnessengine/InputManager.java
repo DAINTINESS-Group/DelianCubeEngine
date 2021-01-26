@@ -74,8 +74,14 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 			setKthNeighbor(k);
 		}
 	}
-
-	public void parseExpectedValues(String filePath) {
+	/**
+	 * Parses the user's expected values. 
+	 * <p>
+	 * Goes through the given file, creates the {@link Cell}s with the expected values it contains 
+	 * and populates the appropriate list.
+	 * @param filePath The path to the file containing the user's value predictions
+	 */
+	private int parseExpectedValues(String filePath) {
 		
 		try {
 			fis = new FileInputStream(filePath);
@@ -102,14 +108,22 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		
 		if(valuePredictions.size() == 0) {
 			System.out.println("No value predictions found.");
+			return 0;
 		}
+		return valuePredictions.size();
 	}
 
 	public ArrayList<Cell> getExpectedValues() {
 		return valuePredictions;
 	}
-
-	public void parseExpectedLabels(String filePath) {
+	/**
+	 * Parses the user's expected labels. 
+	 * <p>
+	 * Goes through the given file, creates the {@link Cell}s with the expected labels it contains 
+	 * and populates the appropriate list.
+	 * @param filePath The path to the file containing the user's label predictions
+	 */
+	private int parseExpectedLabels(String filePath) {
 		try {
 			fis = new FileInputStream(filePath);
 			sc = new Scanner(fis);
@@ -134,14 +148,22 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		
 		if(labelPredictions.size() == 0) {
 			System.out.println("No label predictions found.");
+			return 0;
 		}
+		return labelPredictions.size();
 	}
 		
 	public ArrayList<Cell> getExpectedLabels() {
 		return labelPredictions;
 	}
-
-	public void parseQueryHistoryResults(String folderPath) {
+	/** 
+	 * Parses the user's query history results
+	 * <p>
+	 * Goes through every file in given folder and for each file creates a {@link Result} object 
+	 * with the {@link Cell}s contained in the file and populates the appropriate list.
+	 * @param filePath The path to the file containing previous queries' results
+	 */
+	private int parseQueryHistoryResults(String folderPath) {
 		try {
 			List<String> filesInFolder = Files.walk(Paths.get(folderPath))
 			        .filter(Files::isRegularFile)
@@ -156,61 +178,73 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 			Cell nextCell;
 			int rows, columns;
 			for(String file: filesInFolder) {
-				try {
-					fis = new FileInputStream(file);
-					sc = new Scanner(fis);
-					valuesList = new ArrayList<String[]>();
-					columnNames = new ArrayList<String>();
-					columnLabels = new ArrayList<String>();
-					cells = new ArrayList<Cell>();
-					nextCell = null;
-					
-					columnNames =  new ArrayList<String>(Arrays.asList(sc.nextLine().split("\t")));
-					
-					while(sc.hasNextLine()){ 
-						String[] values = sc.nextLine().split("\t");
-						valuesList.add(values);
-						nextCell = new Cell(values);
+				if(!file.equals("History/Results/.gitignore")) {
+					try {
+						fis = new FileInputStream(file);
+						sc = new Scanner(fis);
+						valuesList = new ArrayList<String[]>();
+						columnNames = new ArrayList<String>();
+						columnLabels = new ArrayList<String>();
+						cells = new ArrayList<Cell>();
+						nextCell = null;
 						
-						if(nextCell != null) {
-							cells.add(nextCell);
+						columnNames =  new ArrayList<String>(Arrays.asList(sc.nextLine().split("\t")));
+						
+						while(sc.hasNextLine()){ 
+							String[] values = sc.nextLine().split("\t");
+							valuesList.add(values);
+							nextCell = new Cell(values);
+							
+							if(nextCell != null) {
+								cells.add(nextCell);
+							}
+						} 
+						rows = valuesList.size();
+						columns = columnNames.size();
+						String[][] resultArray = new String[rows + 2][columns];
+						
+						for(int k = 0; k < columns; k++) {
+							resultArray[0][k] = columnNames.get(k);
 						}
-					} 
-					rows = valuesList.size();
-					columns = columnNames.size();
-					String[][] resultArray = new String[rows + 2][columns];
-					
-					for(int k = 0; k < columns; k++) {
-						resultArray[0][k] = columnNames.get(k);
-					}
-					
-					for(int i = 2; i < rows; i++) {
-						for(int j = 0; j < columns; j++) {
-							resultArray[i][j] = valuesList.get(i-2)[j];
+						
+						for(int i = 2; i < rows; i++) {
+							for(int j = 0; j < columns; j++) {
+								resultArray[i][j] = valuesList.get(i-2)[j];
+							}
 						}
+						newResult = new Result(resultArray, cells, columnNames, columnLabels);
+						historyResults.add(newResult);
+						sc.close();  
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
 					}
-					newResult = new Result(resultArray, cells, columnNames, columnLabels);
-					historyResults.add(newResult);
-					sc.close();  
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
 				}
+				
 			}	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return historyResults.size();
 		
 	}
-
-	public void updateQueryHistoryResults(Result latestResult) {
-		historyResults.add(latestResult);		
+	
+	public int updateQueryHistoryResults(Result latestResult) {
+		historyResults.add(latestResult);	
+		return historyResults.size();
 	}
 
 	public ArrayList<Result> getQueryHistoryResults() {
 		return historyResults;
 	}
-
-	public void parseQueryHistory(String folderPath) throws RemoteException {
+	/**
+	 * Parses the user's query history 
+	 * <p>
+	 * Goes through every file in given folder and for each file creates a {@link CubeQuery} object from 
+	 * the raw query string contained in the file.
+	 * @param folderPath The path to the folder containing previous queries
+	 * @throws RemoteException
+	 */
+	private int parseQueryHistory(String folderPath) throws RemoteException {
 		HashMap<String, String> queryParams;
 		CubeQuery query;
 		try {
@@ -220,36 +254,40 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 			        .collect(Collectors.toList());
 			
 			for(String file: filesInFolder) {
-				String queryString = "";
-				queryParams = new HashMap<String, String>();
-				try {
-					fis = new FileInputStream(file);
-					sc = new Scanner(fis);
-					
-					while(sc.hasNextLine()){ 
-						queryString += sc.nextLine() + "\n";
+				if(!file.equals("History/Results/.gitignore")) {
+					String queryString = "";
+					queryParams = new HashMap<String, String>();
+					try {
+						fis = new FileInputStream(file);
+						sc = new Scanner(fis);
+						
+						while(sc.hasNextLine()){ 
+							queryString += sc.nextLine() + "\n";
+						}
+						query = cubeMng.createCubeQueryFromString(queryString, queryParams);
+						if(query != null) {
+							this.historyQueries.add(query);
+						}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
 					}
-					query = cubeMng.createCubeQueryFromString(queryString, queryParams);
-					if(query != null) {
-						this.historyQueries.add(query);
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
 				}
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
+		return historyQueries.size();
 	}
 
-	public void updateQueryHistory(CubeQuery latestQuery) {
+	public int updateQueryHistory(CubeQuery latestQuery) {
 		historyQueries.add(latestQuery);		
+		return historyQueries.size();
 	}
 
 	public ArrayList<CubeQuery> getQueryHistory() {
 		return historyQueries;
 	}
-
+	
 	public void setCurrentQuery(CubeQuery current) {
 		currentQuery = current;		
 	}
@@ -257,7 +295,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	public CubeQuery getCurrentQuery() {
 		return currentQuery;
 	}
-
+	
 	public void setCurrentQueryResult(Result result) {
 		currentResult = result;
 	}
@@ -287,7 +325,24 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		ArrayList<String[]> gammaExpr = detailedQuery.getGammaExpressions();
 		
 		for(int i=0; i < gammaExpr.size(); i++) {
-			gammaExpr.get(i)[1] = "lvl0";
+			char[] dest = new char[3];
+			gammaExpr.get(i)[1].getChars(0, 3, dest, 0);
+			
+			if(dest.toString().equals("lvl")){
+				gammaExpr.get(i)[1] = "lvl0";
+			}else {
+				if(gammaExpr.get(i)[0].equals("account_dim")) {
+					gammaExpr.get(i)[1] = "account_id";
+				}else if(gammaExpr.get(i)[0].equals("date_dim")) {
+					gammaExpr.get(i)[1] = "day";
+				}else if(gammaExpr.get(i)[0].equals("status_dim")) {
+					gammaExpr.get(i)[1] = "status";
+				}else {
+					System.out.println("Need to include " + gammaExpr.get(i)[0] + "in computeDetailedQueryCube" );
+				}
+				
+			}
+			
 		}
 		detailedQuery.setGammaExpressions(gammaExpr);
 		Result detailedResult = cubeMng.executeQuery(detailedQuery);
@@ -298,8 +353,11 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	public int getKthNeighbor() {
 		return kthNeighbor;
 	}
-
-	public void setKthNeighbor(int k) {
+	/**
+	 * Sets the value of the kth neighbor to be k.
+	 * @param k The desired value of the kth neighbor. >= 1
+	 */
+	private void setKthNeighbor(int k) {
 		kthNeighbor = k;		
 	}
 	

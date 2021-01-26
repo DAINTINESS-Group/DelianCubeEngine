@@ -74,6 +74,7 @@ import setup.ModeOfWork.WorkMode;
 import interestingnessengine.InterestingnessManager;
 
 
+
 /**
  * @author pvassil
  *
@@ -720,23 +721,40 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	 */
 	private void saveQueryHistory(String queryString, Result queryResult) {
 		try {
-			List<String> filesInFolder = Files.walk(Paths.get("History/Queries"))
+			List<String> filesInFolder = Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
 					.filter(Files::isRegularFile)
 					.map(Path::toString)
 					.collect(Collectors.toList());
 			if(filesInFolder.size() > 0) {
-				historyCounter = Integer.parseInt(String.valueOf(filesInFolder.get(0).charAt(17)));
+				int max = 0;
+				for(int i=0; i< filesInFolder.size(); i++) {
+	
+					if(String.valueOf(filesInFolder.get(i).charAt(66)).equals(".")) {
+						if(Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65))) > max){
+							max = Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)));
+						}
+					}else{
+						if(Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)) + String.valueOf(filesInFolder.get(i).charAt(66)))>max){
+							max = Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)) + String.valueOf(filesInFolder.get(i).charAt(66)));
+						}
+					}
+				}
+				
+				historyCounter = max;
+			}else {
+				historyCounter = 0;
 			}
-
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
-		historyCounter += 1;
+		this.historyCounter += 1;
 		FileOutputStream fileOutputStream=null;
 		PrintStream printStream=null;
 
-		String queryFileName = "History/Queries/q" + historyCounter + ".txt";
+		String queryFileName = "InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/q" + historyCounter + ".txt";
+		
 		File queryFile=new File(queryFileName);
 
 		try {
@@ -762,7 +780,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
 		fileOutputStream = null;
 		printStream = null;
-		String resultFileName = "History/Results/q" + historyCounter + ".tab";
+		String resultFileName = "InputFiles/ServerRegisteredInfo/Interestingness/History/Results/q" + historyCounter + ".tab";
 		File resultFile=new File(resultFileName);
 
 		try {
@@ -806,6 +824,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		saveQueryHistory(queryString,currentResult);
 
 		return results;
+
 	}//end answerCubeQueryWithInterestMeasures
 	
 }//end class

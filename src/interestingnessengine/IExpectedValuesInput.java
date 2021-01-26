@@ -12,25 +12,9 @@ import result.Result;
  */
 public interface IExpectedValuesInput {
 	/**
-	 * Parses the user's expected values. 
-	 * <p>
-	 * Goes through the given file, creates the {@link Cell}s with the expected values it contains 
-	 * and populates the appropriate list.
-	 * @param filePath The path to the file containing the user's value predictions
-	 */
-	public void parseExpectedValues(String filePath);
-	/**
 	 * @return a list containing the user's value predictions.
 	 */
 	public ArrayList<Cell> getExpectedValues();
-	/**
-	 * Parses the user's expected labels. 
-	 * <p>
-	 * Goes through the given file, creates the {@link Cell}s with the expected labels it contains 
-	 * and populates the appropriate list.
-	 * @param filePath The path to the file containing the user's label predictions
-	 */
-	public void parseExpectedLabels(String folderPath);
 	/**
 	 * @return a list containing the user's label predictions.
 	 */
@@ -71,4 +55,21 @@ public interface IExpectedValuesInput {
 	 */
 	public ArrayList<Cell> computeDetailedQueryCube(CubeQuery query);
 	
+	// --------------------- MADE PRIVATE IN INPUT MANAGER CLASS --------------------
+	/**
+	 * Parses the user's expected values. 
+	 * <p>
+	 * Goes through the given file, creates the {@link Cell}s with the expected values it contains 
+	 * and populates the appropriate list.
+	 * @param filePath The path to the file containing the user's value predictions
+	 */
+	//public int parseExpectedValues(String filePath);
+	/**
+	 * Parses the user's expected labels. 
+	 * <p>
+	 * Goes through the given file, creates the {@link Cell}s with the expected labels it contains 
+	 * and populates the appropriate list.
+	 * @param filePath The path to the file containing the user's label predictions
+	 */
+	//public int parseExpectedLabels(String folderPath);
 }
