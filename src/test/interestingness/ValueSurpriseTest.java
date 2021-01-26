@@ -20,7 +20,7 @@ public class ValueSurpriseTest {
 		queryEngine = new SimpleQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","", "ExpectedValues/predictions1", "", -1, "loan");
+				"Cinecubes", "pkdd99","", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1, "loan");
 		measures.add("Value Surprise");
 
 	}

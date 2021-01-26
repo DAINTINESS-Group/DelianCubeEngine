@@ -22,11 +22,11 @@ public class RelevanceWithDAITest {
 	private static List<String> measures = new ArrayList<String>();
 	
 	static void clearOldHistory() throws IOException {
-		Files.walk(Paths.get("History/Queries"))
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
         .filter(Files::isRegularFile)
         .map(Path::toFile)
         .forEach(File::delete);
-		Files.walk(Paths.get("History/Results"))
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Results"))
         .filter(Files::isRegularFile)
         .map(Path::toFile)
         .forEach(File::delete);
@@ -38,7 +38,7 @@ public class RelevanceWithDAITest {
 		queryEngine = new SimpleQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","History", "", "", -1,"loan");
+				"Cinecubes", "pkdd99","InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1,"loan");
 		measures.add("Relevance with DAI");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
