@@ -1,3 +1,4 @@
+
 package interestingnessengine;
 
 import java.util.ArrayList;
@@ -323,12 +324,16 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 
 		CubeQuery detailedQuery = new CubeQuery(query);
 		ArrayList<String[]> gammaExpr = detailedQuery.getGammaExpressions();
-		
+System.out.println("1" + gammaExpr.get(0)[0]);	
 		for(int i=0; i < gammaExpr.size(); i++) {
 			char[] dest = new char[3];
 			gammaExpr.get(i)[1].getChars(0, 3, dest, 0);
+			String destString = gammaExpr.get(i)[1].substring(0, 3);
 			
-			if(dest.toString().equals("lvl")){
+//System.out.print("2: ");System.out.println(dest);			
+System.out.print("9: ");System.out.println(destString);
+
+if(destString.equals("lvl")){
 				gammaExpr.get(i)[1] = "lvl0";
 			}else {
 				if(gammaExpr.get(i)[0].equals("account_dim")) {
@@ -342,7 +347,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 				}
 				
 			}
-			
+//System.out.print("3: ");System.out.println(dest.toString());			
 		}
 		detailedQuery.setGammaExpressions(gammaExpr);
 		Result detailedResult = cubeMng.executeQuery(detailedQuery);
