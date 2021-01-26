@@ -708,6 +708,26 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return fileName;
 	}
 
+	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
+			throws RemoteException {
+		// answer query
+
+		answerCubeQueryFromString(queryString); 
+		this.interestMng.updateState(currentCubeQuery, currentResult);
+		double result;
+		String[] results = new String[measures.size()];
+
+		for(int i = 0; i < measures.size(); i++) {
+			//compute each measure
+			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
+			results[i] = Double.toString(result);
+		}
+
+		saveQueryHistory(queryString,currentResult);
+
+		return results;
+	}//end answerCubeQueryWithInterestMeasures
+	
 	/**
 	 * Populates a file qX.txt in History/Queries, X being an augmenting number, containing the raw query string
 	 * and a file qX.tab in History/Results, containing the results of Xth query.
@@ -799,26 +819,5 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 			}//end finally try
 		}//end finally
 	}//end saveQueryHistory
-
-
-	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
-			throws RemoteException {
-		// answer query
-
-		answerCubeQueryFromString(queryString); 
-		this.interestMng.updateState(currentCubeQuery, currentResult);
-		double result;
-		String[] results = new String[measures.size()];
-
-		for(int i = 0; i < measures.size(); i++) {
-			//compute each measure
-			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
-			results[i] = Double.toString(result);
-		}
-
-		saveQueryHistory(queryString,currentResult);
-
-		return results;
-	}//end answerCubeQueryWithInterestMeasures
 	
 }//end class
