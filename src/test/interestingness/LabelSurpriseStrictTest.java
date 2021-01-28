@@ -2,6 +2,11 @@ package test.interestingness;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +21,19 @@ public class LabelSurpriseStrictTest {
 	private static SimpleQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
+	static void clearOldHistory() throws IOException {
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
+        .filter(Files::isRegularFile)
+        .map(Path::toFile)
+        .forEach(File::delete);
+		Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Results"))
+        .filter(Files::isRegularFile)
+        .map(Path::toFile)
+        .forEach(File::delete);
+	}
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		clearOldHistory();
 		queryEngine = new SimpleQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",

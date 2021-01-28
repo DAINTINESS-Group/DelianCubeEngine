@@ -9,8 +9,11 @@ import java.util.List;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
+import cubemanager.cubebase.Level;
 import result.Cell;
 import result.Result;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +39,8 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	private Result currentResult;
 	private int kthNeighbor;
 	private CubeManager cubeMng;
+	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
+	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
 	
 	/**
 	 * Constructor to be used when there is no history stored and no expected values/labels.
@@ -321,38 +326,49 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	}
 
 	public ArrayList<Cell> computeDetailedQueryCube(CubeQuery query) {
-
+		retrieveLevels();
+		
 		CubeQuery detailedQuery = new CubeQuery(query);
 		ArrayList<String[]> gammaExpr = detailedQuery.getGammaExpressions();
-System.out.println("1" + gammaExpr.get(0)[0]);	
+		
 		for(int i=0; i < gammaExpr.size(); i++) {
-			char[] dest = new char[3];
-			gammaExpr.get(i)[1].getChars(0, 3, dest, 0);
-			String destString = gammaExpr.get(i)[1].substring(0, 3);
-			
-//System.out.print("2: ");System.out.println(dest);			
-System.out.print("9: ");System.out.println(destString);
-
-if(destString.equals("lvl")){
-				gammaExpr.get(i)[1] = "lvl0";
-			}else {
-				if(gammaExpr.get(i)[0].equals("account_dim")) {
-					gammaExpr.get(i)[1] = "account_id";
-				}else if(gammaExpr.get(i)[0].equals("date_dim")) {
-					gammaExpr.get(i)[1] = "day";
-				}else if(gammaExpr.get(i)[0].equals("status_dim")) {
-					gammaExpr.get(i)[1] = "status";
-				}else {
-					System.out.println("Need to include " + gammaExpr.get(i)[0] + "in computeDetailedQueryCube" );
-				}
-				
-			}
-//System.out.print("3: ");System.out.println(dest.toString());			
+			String levelZero = dimensionsToLevelsHashmap.get(gammaExpr.get(i)[0]).get(0);
+			gammaExpr.get(i)[1] = levelZero;
 		}
+		
 		detailedQuery.setGammaExpressions(gammaExpr);
 		Result detailedResult = cubeMng.executeQuery(detailedQuery);
 		
 		return detailedResult.getCells();
+	}
+	
+	private void retrieveLevels() {
+		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
+		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
+		List<Dimension> dimensionsList = this.cubeMng.getDimensions();
+		ArrayList<String> tmpLvls = null; 
+		ArrayList<String> tmpDim = null;
+		for (int i=0;i < dimensionsList.size();i ++) {
+			Dimension dim = dimensionsList.get(i);
+			for(int j=0; j<dim.getHier().size(); j++) {
+				List<Level> l = dim.getHier().get(j).getLevels();
+				tmpLvls = new ArrayList<String>();
+				for (int k=0; k<l.size(); k++) {
+					tmpLvls.add(l.get(k).getName());
+					String tmpLevelKey = l.get(k).getName();
+					if(levelsToDimensionsHashmap.containsKey(tmpLevelKey)) {
+						tmpDim = levelsToDimensionsHashmap.get(tmpLevelKey);
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}else {
+						tmpDim = new ArrayList<String>();
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}
+				}
+				dimensionsToLevelsHashmap.put(dimensionsList.get(i).getName(), tmpLvls);
+			}
+		}
 	}
 
 	public int getKthNeighbor() {
