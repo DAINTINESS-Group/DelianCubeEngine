@@ -73,7 +73,7 @@ public class NLQValidator  {
 				+ "Please check again. \n "
 				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		
-		errorDetails.put("Aggregate Function Error", "Aggregate Function Error found. The given aggragate function was not recognized. "
+		errorDetails.put("Aggregate Function Error", "Aggregate Function Error found. The given aggregate function was not recognized. "
 				+ "Please check again. \n "
 				+ "The query should look like: \n'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' " );
 		

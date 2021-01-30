@@ -1,0 +1,6 @@
+Name:AdultNLQuery0;
+true;
+Gamma Field Error: Many Same Level Names;
+Gamma Field: More than 1 dimensions with the same level were found. Please check again. 
+ The query should look like: 
+'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' and the groupers should be split by 'and' 
