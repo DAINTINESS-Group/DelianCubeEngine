@@ -19,6 +19,7 @@ import mainengine.SimpleQueryProcessorEngine;
 public class SimplifiedNLQueriesTest {
 	
 	private static IMainEngine testedQPEngine;
+	private static IMainEngine testedQPEngine2;
 	NLTranslator translator = new NLTranslator();
 	
 	/**
@@ -32,6 +33,11 @@ public class SimplifiedNLQueriesTest {
 		
 		testedQPEngine.initializeConnection("pkdd99_star", "CinecubesUser",
 				"Cinecubes", "pkdd99_star", "loan");
+		
+		testedQPEngine2 = new SimpleQueryProcessorEngine(); 
+		
+		testedQPEngine2.initializeConnection("adult", "CinecubesUser",
+				"Cinecubes", "adult", "adult");
 				
 		//TODO: currently, the result goes to the DelianCubeEngine/OutputFiles, i.e., it is mixed with the output of the regular execution. can we isolate the output of the tests, within the test folder?
 		//TODO:  Basically needs to invoke the answerQueriesFromFile to get an OutputFolder parameter.
@@ -179,7 +185,26 @@ public class SimplifiedNLQueriesTest {
       	String producedContents6 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents6 = getContents("src/test/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongSigma.txt");
 		assertEquals(producedContents6, referenceContents6);
+		
+		
+		//Error: Many Same Levels
+		String testQueryString7 ="Describe the min of adult hours_per_week per lvl0 and lvl2 for lvl1 is 'Blue-collar' as AdultNLQuery0";
+		testedQPEngine2.prepareCubeQuery(testQueryString7);   /**/	
+      	
+      	String producedContents7 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents7 = getContents("src/test/OutputFiles/adult/Reference_AdultNLQuery0_SameLevelNames.txt");
+		assertEquals(producedContents7, referenceContents7);
 
+		
+		
+		//Correct Query for adult database
+		String testQueryString8 ="Describe the min of adult hours_per_week per occupation_dim.lvl0 and education_dim.lvl2 for occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery0";
+		testedQPEngine2.prepareCubeQuery(testQueryString8);   /**/	
+      	
+      	String producedContents8 = getContents("OutputFiles/ErrorChecking.txt");
+		String referenceContents8 = getContents("src/test/OutputFiles/adult/Reference_CorrectAdultNLQuery0.txt");
+		assertEquals(producedContents8, referenceContents8);
+		
 	}//end method testanswerCubeQueryFromStringWithMetadata
 
 	private String getContents(String fileName) {
