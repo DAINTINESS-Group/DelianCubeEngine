@@ -1,9 +1,13 @@
 package client;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
@@ -17,6 +21,31 @@ public class InterestingnessClientExperiments {
 		private static final String HOST = "localhost";
 		private static final int PORT = 2020;
 		private static Registry registry;
+		
+		static void clearOldHistory() throws IOException {
+			Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
+	        .filter(Files::isRegularFile)
+	        .map(Path::toFile)
+	        .forEach(File::delete);
+			Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Results"))
+	        .filter(Files::isRegularFile)
+	        .map(Path::toFile)
+	        .forEach(File::delete);
+		}
+		
+		static void createGitignoreFiles() {
+			try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/.gitignore", true);
+				    BufferedWriter bw = new BufferedWriter(fw);
+				    PrintWriter out = new PrintWriter(bw)){
+				    	out.println("");
+					} catch (IOException e) {}
+			
+			try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Results/.gitignore", true);
+				    BufferedWriter bw = new BufferedWriter(fw);
+				    PrintWriter out = new PrintWriter(bw)){
+				    	out.println("");
+					} catch (IOException e) {}
+		}
 
 		public static void main(String[] args) throws Exception {
 			// Search the registry in the specific Host, Port.
@@ -28,6 +57,9 @@ public class InterestingnessClientExperiments {
 				System.out.println("Unable to commence server, exiting");
 				System.exit(-100);
 			}
+			
+			//Clear history files
+			clearOldHistory();
 						
 			// Cube LOAN and queries
 			service.initializeConnectionWithIntrMng("pkdd99_star", "CinecubesUser",
@@ -135,5 +167,11 @@ public class InterestingnessClientExperiments {
 				System.out.println(measures.get(i) + ":    " + answers[i]);
 			}
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			
+			//Delete history files created
+			clearOldHistory();
+			//Create .gitignore files
+			createGitignoreFiles();
+			
 		}
 }
