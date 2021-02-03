@@ -395,7 +395,7 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		String analysedString = translator.produceCubeQueryString(queryRawString);
 		long tF = System.nanoTime();
 		long duration = tF - t0;
-		System.out.println("NLQuery Analysis Time:" + duration + " nanoseconds");
+		System.out.println("NLQuery Transformation Time: " + duration + " nanoseconds");
 		
 		//String analysedString = query.toString();
 		System.out.println(analysedString);
@@ -671,7 +671,12 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	@Override
 	public ResultFileMetadata prepareCubeQuery(String naturalLanguageQueryString) throws RemoteException {
 		ITranslator translator = getNLTranslator();
+		
+		long t0 = System.nanoTime();
 		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, naturalLanguageQueryString);
+		long tF = System.nanoTime();
+		long duration = tF - t0;
+		System.out.println("NLQuery Preprocessing Time: " + duration + " nanoseconds");
 		
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
 		
