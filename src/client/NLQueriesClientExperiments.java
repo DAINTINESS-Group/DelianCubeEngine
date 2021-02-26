@@ -38,24 +38,23 @@ public class NLQueriesClientExperiments {
 		File resultFolder = new File("ClientCache");
 		deleteAllFilesOfFolder(resultFolder);
 		
-		String nlqueriesForLoan[] = {"Describe the max of loan amount per district_name and status for month is '1998-01' as LoanQuery1",
-				"Describe the sum of loan amount per district_name and year for region is 'south Moravia' and status is 'Running Contract/OK' as LoanQuery2",
-				"Describe the sum of loan amount per district_name and year for region is 'north Moravia' and status is 'Running Contract/OK' and year is '1997' as LoanQuery3",
-				"Describe the sum of loan amount per district_name and year for district_name is 'Karlovy Vary' and region is 'west Bohemia' and status is 'Contract Finished/No Problems' and year is '1996' as LoanQuery4"
+		String nlqueriesForLoan[] = {"Describe the max of loan amount per account_dim.district_name and status_dim.status for date_dim.month is '1998-01' as LoanQuery1",
+				"Describe the sum of loan amount per account_dim.district_name and date_dim.year for account_dim.region is 'south Moravia' and status_dim.status is 'Running Contract/OK' as LoanQuery2",
+				"Describe the sum of loan amount per account_dim.district_name and date_dim.year for account_dim.region is 'north Moravia' and status_dim.status is 'Running Contract/OK' and date_dim.year is '1997' as LoanQuery3",
 		};
 		
-		String queryNamesForLoan[] = {"LoanQuery1", "LoanQuery2", "LoanQuery3", "LoanQuery4"};
+		String queryNamesForLoan[] = {"LoanQuery1", "LoanQuery2", "LoanQuery3"};
 		
-		String nlqueriesForOrders[] = {"Describe the avg of orders amount per region and reason for district_name is 'Benesov' as OrdersQuery1",
-				"Describe the avg of orders amount per district_name and reason for region is 'south Moravia' and reason is 'Leasing' as OrdersQuery2",
-				"Describe the avg of orders amount per region and reason for district_name is 'Sumperk' and region is 'north Moravia' and reason is 'Household Payment' as OrdersQuery3",
-				"Describe the avg of orders amount per district_name and reason for district_name is 'Sumperk' and region is 'north Moravia' and reason is 'Household Payment' and All_account is 'ALL' as OrdersQuery4"};
-		String queryNamesForOrders[] = {"OrdersQuery1", "OrdersQuery2", "OrdersQuery3", "OrdersQuery4"};
+		String nlqueriesForOrders[] = {"Describe the avg of orders amount per account_dim.region and reason_dim.reason for account_dim.district_name is 'Benesov' as OrdersQuery1",
+				"Describe the avg of orders amount per district_name and reason for account_dim.region is 'south Moravia' and reason_dim.reason is 'Leasing' as OrdersQuery2"
+		};
+		String queryNamesForOrders[] = {"OrdersQuery1", "OrdersQuery2"};
 		
 		String nlqueriesForAdult[] = {"Describe the min of adult hours_per_week per occupation_dim.lvl0 and education_dim.lvl2 for occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery1",
 				"Describe the avg of adult hours_per_week per occupation_dim.lvl0 and marital_dim.lvl0 for occupation_dim.lvl1 is 'Other' and marital_dim.lvl1 is 'Partner-absent' as AdultNLQuery2",
 				"Describe the avg of adult hours_per_week per education_dim.lvl2 and work_dim.lvl1 for education_dim.lvl3 is 'Post-Secondary' and work_dim.lvl2 is 'With-Pay' and age_dim.lvl3 is '37-56' as AdultNLQuery3",
-				"Describe the avg of adult hours_per_week per native_country_dim.lvl0 and work_dim.lvl1 for native_country_dim.lvl1 is 'USA' and education_dim.lvl3 is 'Post-Secondary' and work_dim.lvl2 is 'With-Pay' and occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery4"};
+				"Describe the avg of adult hours_per_week per native_country_dim.lvl0 and work_dim.lvl1 for native_country_dim.lvl1 is 'USA' and education_dim.lvl3 is 'Post-Secondary' and work_dim.lvl2 is 'With-Pay' and occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery4"
+		};
 		
 		String queryNamesForAdult[] = {"AdultNLQuery1", "AdultNLQuery2", "AdultNLQuery3", "AdultNLQuery4"};
 		
@@ -75,6 +74,7 @@ public class NLQueriesClientExperiments {
 			String queryName = queryNamesForLoan[i];
 			bringDataToTheClient(service, queryName, resMetadata);
 		}
+
 		
 		service.initializeConnection("pkdd99_star", "CinecubesUser",
 				"Cinecubes", "pkdd99_star", "orders");
@@ -112,6 +112,7 @@ public class NLQueriesClientExperiments {
 			String queryName = queryNamesForAdult[i];
 			bringDataToTheClient(service, queryName, resMetadata);
 		}
+		
 				
 	}
 	

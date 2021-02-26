@@ -56,15 +56,29 @@ public class NLTranslator implements ITranslator {
 												ArrayList<String> measures, String queryString) {
 		
 		NLQValidator validator = new NLQValidator(cubeNames, aggrFunctions, measures);
+		long t0 = System.nanoTime();
 		CubeQueryForm query = produceCubeQuery(queryString);
+		long tF = System.nanoTime();
+		long duration = tF - t0;
+		System.out.println("Components splitting time:" +duration + " nanoseconds");
+		
 		
 		String gamma = query.gamma.split(":")[1];
 		ArrayList<String> gammaErrorHandling = new ArrayList<String>();
+		t0 = System.nanoTime();
 		gammaErrorHandling = parseGamma(gamma);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Gamma time:" +duration + " nanoseconds");
+		
 		
 		String sigma = query.sigma.split(":")[1];
 		ArrayList<String> sigmaErrorHandling = new ArrayList<String>();
+		t0 = System.nanoTime();
 		sigmaErrorHandling = parseSigma(sigma);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Sigma time:" +duration + " nanoseconds");
 		
 		NLQValidationResults results = validator.prepareCubeQuery(query, gammaErrorHandling, sigmaErrorHandling);
 		return results;
@@ -104,7 +118,11 @@ public class NLTranslator implements ITranslator {
 	public String produceCubeQueryString(String NLQuery){
 		
 		//1. find the cube query components from the nlquery given as parameter
+		long t0 = System.nanoTime();
 		findQueryComponents(NLQuery);
+		long tF = System.nanoTime();
+		long duration = tF - t0;
+		System.out.println("Components splitting time:" +duration + " nanoseconds");
 		if(aggrFunc.equals("maximum")) {
 			aggrFunc = "max";
 		}else if(aggrFunc.equals("minimum")) {
@@ -114,13 +132,21 @@ public class NLTranslator implements ITranslator {
 		}
 		
 		//2. parse gamma and sigma to produce proper cube query gamma and sigma
+		t0 = System.nanoTime();
 		ArrayList<String> gammaArrayList = parseGamma(gamma);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Gamma time:" +duration + " nanoseconds");
 		if(gammaArrayList.get(0).equals("Null")) {
 			gamma = gammaArrayList.get(1);
 			
 		}
 		
+		t0 = System.nanoTime();
 		ArrayList<String> sigmaArrayList = parseSigma(sigma);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Sigma time:" +duration + " nanoseconds");
 		if(sigmaArrayList.get(0).equals("Null")) {
 			sigma = sigmaArrayList.get(1);
 		}

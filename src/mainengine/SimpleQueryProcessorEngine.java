@@ -400,7 +400,11 @@ public class SimpleQueryProcessorEngine extends UnicastRemoteObject implements I
 		//String analysedString = query.toString();
 		System.out.println(analysedString);
 		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
+		t0 = System.nanoTime();
 		String outputLocation = answerCubeQueryFromString(analysedString);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Query Execution Time " + duration + " nanoseconds");
 		return outputLocation;
 		
 	}//answerCubeQueryFromNLString
