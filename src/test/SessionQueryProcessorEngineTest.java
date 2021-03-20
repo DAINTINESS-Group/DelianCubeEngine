@@ -40,7 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.IMainEngine;
-import mainengine.SimpleQueryProcessorEngine;
+import mainengine.SessionQueryProcessorEngine;
 
 
 /**
@@ -48,7 +48,7 @@ import mainengine.SimpleQueryProcessorEngine;
  * Main test to be checked: AnswerCubeQueriesFromFile()
  *
  */
-public class SimpleQueryProcessorEngineTest {
+public class SessionQueryProcessorEngineTest {
 	
 	private static IMainEngine testedQPEngine;
 	
@@ -59,7 +59,7 @@ public class SimpleQueryProcessorEngineTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		testedQPEngine = new SimpleQueryProcessorEngine(); 
+		testedQPEngine = new SessionQueryProcessorEngine(); 
 		
 		testedQPEngine.initializeConnection("pkdd99", "CinecubesUser",
 				"Cinecubes", "pkdd99", "loan");

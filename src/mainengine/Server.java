@@ -27,7 +27,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
-import mainengine.SimpleQueryProcessorEngine;
+import mainengine.SessionQueryProcessorEngine;
 import mainengine.IMainEngine;
 
 public class Server {
@@ -60,7 +60,7 @@ public class Server {
 	public static void main(String[] args) throws Exception {
 		System.out.println("Server starting...");
 		startRegistry();
-		registerObject(IMainEngine.class.getSimpleName(), new SimpleQueryProcessorEngine());
+		registerObject(IMainEngine.class.getSimpleName(), new SessionQueryProcessorEngine());
 
 		//registerObject(Foo.class.getSimpleName(), new Foo());
 		
