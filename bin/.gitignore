@@ -1,3 +1,11 @@
-/mainengine/
-/test/
+/client/
 /cubemanager/
+/exctractionmethod/
+/interestingnessengine/
+/mainengine/
+/packageDiagram.png
+/parsermgr/
+/queryAnswering.png
+/result/
+/setup/
+/test/

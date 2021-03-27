@@ -213,6 +213,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}*/
 
 	private void fillQueryLists() {
+		prsMng = session.getPrsMng();
 		//1.Bring data for CubeName
 		cubeNames = new ArrayList<String>();
 		//CubeBase cBase = cubeManager.getCubeBase();
@@ -245,7 +246,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		//5.Bring data for levels
 		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
 		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
-		List<Dimension> dimensionsList = this.cubeManager.getDimensions();
+		List<Dimension> dimensionsList = session.getCubeManager().getDimensions();
 		ArrayList<String> tmpLvls = null; 
 		ArrayList<String> tmpDim = null;
 		for (int i=0;i < dimensionsList.size();i ++) {
@@ -329,6 +330,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		
 		Instant t0 = Instant.now();
 		
+		cubeManager = session.getCubeManager();
 		
 		//1. parse query and produce a CubeQuery
 		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams); 
