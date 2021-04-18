@@ -170,9 +170,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}
 	private void initializeInterestMgr(String historyFolder, String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
 		if(historyFolder.equals("") && expValuesFolder.equals("") && expLabelsFolder.equals("")) {
-			interestMng = new InterestingnessManager(cubeManager, k);
+			interestMng = new InterestingnessManager(session.getCubeManager(), k);
 		}else {
-			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, cubeManager, k);
+			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, session.getCubeManager(), k);
 		}
 	}
 
