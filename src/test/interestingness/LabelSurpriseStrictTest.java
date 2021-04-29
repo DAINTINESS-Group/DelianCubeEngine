@@ -17,11 +17,11 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mainengine.SimpleQueryProcessorEngine;
+import mainengine.SessionQueryProcessorEngine;
 
 public class LabelSurpriseStrictTest {
 
-	private static SimpleQueryProcessorEngine queryEngine;
+	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
 	static void clearOldHistory() throws IOException {
@@ -51,7 +51,7 @@ public class LabelSurpriseStrictTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		clearOldHistory();
-		queryEngine = new SimpleQueryProcessorEngine(); 
+		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
 				"Cinecubes", "pkdd99","", "", "InputFiles/UserProfile/ExpectedValues/predictions1", -1, "loan");

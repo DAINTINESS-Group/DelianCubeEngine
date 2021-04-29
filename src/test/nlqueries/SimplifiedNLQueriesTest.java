@@ -13,7 +13,7 @@ import org.junit.Test;
 import mainengine.nlq.NLTranslator;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
-import mainengine.SimpleQueryProcessorEngine;
+import mainengine.SessionQueryProcessorEngine;
 
 
 public class SimplifiedNLQueriesTest {
@@ -29,12 +29,12 @@ public class SimplifiedNLQueriesTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		testedQPEngine = new SimpleQueryProcessorEngine(); 
+		testedQPEngine = new SessionQueryProcessorEngine(); 
 		
 		testedQPEngine.initializeConnection("pkdd99_star", "CinecubesUser",
 				"Cinecubes", "pkdd99_star", "loan");
 		
-		testedQPEngine2 = new SimpleQueryProcessorEngine(); 
+		testedQPEngine2 = new SessionQueryProcessorEngine(); 
 		
 		testedQPEngine2.initializeConnection("adult", "CinecubesUser",
 				"Cinecubes", "adult", "adult");
