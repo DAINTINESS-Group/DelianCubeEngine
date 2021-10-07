@@ -1,0 +1,7 @@
+QueryName: LoanQuery2
+BasicCube : loan_cube
+Aggregate Function : max
+Measure : amount
+Gamma Expression: account_dim.district_name , status_dim.status
+Sigma Expression: date_dim.month='1998-01'
+
