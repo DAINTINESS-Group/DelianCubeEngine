@@ -3,6 +3,8 @@
   <groupId>com.DelianCubeEngine</groupId>
   <artifactId>DelianCubeEngine</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -13,7 +15,12 @@
         </excludes>
       </resource>
     </resources>
+    
+    
+    <!--  Plugins START HERE  -->
     <plugins>
+    
+    	<!--  More Information : https://maven.apache.org/plugins/maven-compiler-plugin/ -->
 		<plugin>
 		  <artifactId>maven-compiler-plugin</artifactId>
 		  <version>3.8.1</version>
@@ -35,24 +42,37 @@
 	    </plugin>
 
     </plugins>
+    <!--  Plugins END HERE  -->
+    
   </build>
+  
+  <!-- Dependencies START HERE -->
   <dependencies>
+  
+  	<!-- For updates check : https://mvnrepository.com/artifact/commons-io/commons-io -->
   	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
   		<version>2.6</version>
   	</dependency>
+  	
+  	<!-- For updates check : https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
   	<dependency>
   		<groupId>org.apache.commons</groupId>
   		<artifactId>commons-math3</artifactId>
   		<version>3.6.1</version>
   	</dependency>
+  	
+  	<!-- For updates check : https://mvnrepository.com/artifact/org.antlr/antlr-runtime -->
   	<dependency>
   		<groupId>org.antlr</groupId>
   		<artifactId>antlr</artifactId>
   		<version>3.4</version>
   		<scope>compile</scope>
   	</dependency>
+  	
+  	
+  	<!-- For updates check : https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
   	<dependency>
   		<groupId>mysql</groupId>
   		<artifactId>mysql-connector-java</artifactId>
@@ -67,6 +87,7 @@
     	<version>4.13</version>
 
 	</dependency>
+	
 
   	<dependency>
   		<groupId>org.openjfx</groupId>
@@ -81,4 +102,6 @@
    		<version>11.0.2</version>
 	</dependency>
   </dependencies>
+  <!-- Dependencies END HERE -->
+  
 </project>
