@@ -1,31 +1,31 @@
 Manifest-Version: 1.0
 Built-By: pvassil
 Build-Jdk: 14.0.2
-Class-Path: dependency-jars/commons-io-2.6.jar dependency-jars/commons-m
+Class-Path: dependency-jars/commons-io-2.7.jar dependency-jars/commons-m
  ath3-3.6.1.jar dependency-jars/antlr-3.4.jar dependency-jars/antlr-runt
  ime-3.4.jar dependency-jars/stringtemplate-3.2.1.jar dependency-jars/an
  tlr-2.7.7.jar dependency-jars/ST4-4.0.4.jar dependency-jars/mysql-conne
  ctor-java-8.0.22.jar dependency-jars/protobuf-java-3.11.4.jar dependenc
- y-jars/junit-4.13.jar dependency-jars/hamcrest-core-1.3.jar dependency-
- jars/javafx-controls-11.0.2.jar dependency-jars/javafx-controls-11.0.2-
- win.jar dependency-jars/javafx-graphics-11.0.2.jar dependency-jars/java
- fx-graphics-11.0.2-win.jar dependency-jars/javafx-base-11.0.2.jar depen
- dency-jars/javafx-base-11.0.2-win.jar dependency-jars/javafx-fxml-11.0.
- 2.jar dependency-jars/javafx-fxml-11.0.2-win.jar dependency-jars/jackso
- n-core-2.10.0.jar dependency-jars/jackson-annotations-2.10.0.jar depend
- ency-jars/jsr305-3.0.0.jar dependency-jars/log4j-1.2.17.jar dependency-
- jars/netty-all-4.1.51.Final.jar dependency-jars/jackson-databind-2.10.0
- .jar dependency-jars/hadoop-hdfs-3.2.0.jar dependency-jars/guava-11.0.2
- .jar dependency-jars/jetty-server-9.3.24.v20180605.jar dependency-jars/
- jetty-http-9.3.24.v20180605.jar dependency-jars/jetty-io-9.3.24.v201806
- 05.jar dependency-jars/jetty-util-9.3.24.v20180605.jar dependency-jars/
- jetty-util-ajax-9.3.24.v20180605.jar dependency-jars/jersey-core-1.19.j
- ar dependency-jars/jsr311-api-1.1.1.jar dependency-jars/jersey-server-1
- .19.jar dependency-jars/commons-cli-1.2.jar dependency-jars/commons-cod
- ec-1.11.jar dependency-jars/commons-logging-1.1.3.jar dependency-jars/c
- ommons-daemon-1.0.13.jar dependency-jars/javax.servlet-api-3.1.0.jar de
- pendency-jars/netty-3.10.5.Final.jar dependency-jars/htrace-core4-4.1.0
- -incubating.jar dependency-jars/leveldbjni-all-1.8.jar
+ y-jars/junit-4.13.1.jar dependency-jars/hamcrest-core-1.3.jar dependenc
+ y-jars/javafx-controls-11.0.2.jar dependency-jars/javafx-controls-11.0.
+ 2-win.jar dependency-jars/javafx-graphics-11.0.2.jar dependency-jars/ja
+ vafx-graphics-11.0.2-win.jar dependency-jars/javafx-base-11.0.2.jar dep
+ endency-jars/javafx-base-11.0.2-win.jar dependency-jars/javafx-fxml-11.
+ 0.2.jar dependency-jars/javafx-fxml-11.0.2-win.jar dependency-jars/jack
+ son-core-2.10.0.jar dependency-jars/jackson-annotations-2.10.0.jar depe
+ ndency-jars/jsr305-3.0.0.jar dependency-jars/log4j-1.2.17.jar dependenc
+ y-jars/netty-all-4.1.51.Final.jar dependency-jars/jackson-databind-2.10
+ .0.jar dependency-jars/hadoop-hdfs-3.2.0.jar dependency-jars/guava-11.0
+ .2.jar dependency-jars/jetty-server-9.3.24.v20180605.jar dependency-jar
+ s/jetty-http-9.3.24.v20180605.jar dependency-jars/jetty-io-9.3.24.v2018
+ 0605.jar dependency-jars/jetty-util-9.3.24.v20180605.jar dependency-jar
+ s/jetty-util-ajax-9.3.24.v20180605.jar dependency-jars/jersey-core-1.19
+ .jar dependency-jars/jsr311-api-1.1.1.jar dependency-jars/jersey-server
+ -1.19.jar dependency-jars/commons-cli-1.2.jar dependency-jars/commons-c
+ odec-1.11.jar dependency-jars/commons-logging-1.1.3.jar dependency-jars
+ /commons-daemon-1.0.13.jar dependency-jars/javax.servlet-api-3.1.0.jar 
+ dependency-jars/netty-3.10.5.Final.jar dependency-jars/htrace-core4-4.1
+ .0-incubating.jar dependency-jars/leveldbjni-all-1.8.jar
 Main-Class: com.DelianCubeEngine
 Build-Java: 14.0.2
 Build-Label: 0.0.1-SNAPSHOT
