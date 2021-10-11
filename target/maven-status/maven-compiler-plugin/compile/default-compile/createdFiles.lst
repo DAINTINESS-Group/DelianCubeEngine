@@ -91,6 +91,7 @@ parsermgr\ParserManager.class
 mainengine\rmiTransfer\RMIOutputStream.class
 test\nlqueries\NLTranslatorTest.class
 result\Result.class
+mainengine\Foo.class
 mainengine\nlq\NLQValidationResults.class
 client\gui\application\AbstractApplication.class
 interestingnessengine\LabelSurprise.class

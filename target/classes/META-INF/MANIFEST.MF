@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Built-By: dimos
+Built-By: pvassil
 Build-Jdk: 14.0.2
 Class-Path: dependency-jars/commons-io-2.6.jar dependency-jars/commons-m
  ath3-3.6.1.jar dependency-jars/antlr-3.4.jar dependency-jars/antlr-runt
@@ -29,7 +29,7 @@ Class-Path: dependency-jars/commons-io-2.6.jar dependency-jars/commons-m
 Main-Class: com.DelianCubeEngine
 Build-Java: 14.0.2
 Build-Label: 0.0.1-SNAPSHOT
-Build-Maven: Maven 3.6.3
+Build-Maven: Maven 3.8.1
 Build-OS: Windows 10
 Created-By: Maven Integration for Eclipse
 
