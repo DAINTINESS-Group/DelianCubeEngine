@@ -57,13 +57,14 @@ Community
 - [ ] ToDo: Must complement this file with a section on how to contribute. Sorry!
 
 Refactorings & Corrections
+- [ ] Refactor how clients communicate with server and server init. Connections should be parsed at server startup and sessions handled by an intermediate class between Server and SQP with history kept for each SQP launched (practically: each SQP is a dedicated server process)
+- [ ] Clear placeholder folder, per SQP, for the user's history
 - [ ] Expand natural language querying with more elegant solutions
 - [ ] Expand interestingness assessment with syntactic checks
 - [ ] Address the todo's inside the src
 - [ ] Introduce an intermediate abstraction level between cubebase and (relational) database, s.t., new DBMS types are pluggable
 - [ ] Refactor the GUI client, to kill cycles in the package diagram
 - [ ] Refactor the result package to add a hierarchy of packages for modules (abstract, general-purpose, KPIs, clusterings, ...)
-- [ ] Refactor how clients communicate with server and server init. Connections should be parsed at server startup and sessions handled by an intermediate class between Server and SQP (probably a sessionManager or a QueryManager, caching sessions, queries and their results, etc) 
 - [X] Redefine how client communicates with server: a list of files is produced, not just a single tab file with the data
 - [X] Add a "Run Single Query" part at the GUI client that opens sth like a text editor to write a single query and calls the QueryFromString at the server
 - [X] Add a GUI client
