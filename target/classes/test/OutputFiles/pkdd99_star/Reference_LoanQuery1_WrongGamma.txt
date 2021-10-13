@@ -1,6 +1,0 @@
-Name:LoanQuery1;
-true;
-Gamma Field Error: Level Name Not Found;
-Gamma Field: One or more of the dimension level names given were not found. Please check again. 
- The query should look like: 
-'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' and the groupers should be split by 'and' 

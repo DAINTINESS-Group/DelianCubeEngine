@@ -1,6 +1,0 @@
-Name:LoanQuery1;
-true;
-Aggregate Function Error;
-Aggregate Function Error found. The given aggregate function was not recognized. Please check again. 
- The query should look like: 
-'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' 

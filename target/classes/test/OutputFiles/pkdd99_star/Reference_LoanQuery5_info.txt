@@ -1,7 +1,0 @@
-QueryName: LoanQuery5
-BasicCube : loan_cube
-Aggregate Function : sum
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.year
-Sigma Expression: account_dim.region='west Bohemia' AND status_dim.status='Contract Finished/No Problems' AND date_dim.year='1996'
-

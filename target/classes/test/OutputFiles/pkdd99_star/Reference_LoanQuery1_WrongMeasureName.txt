@@ -1,6 +1,0 @@
-Name:LoanQuery1;
-true;
-Measure Error;
-Measure Name Error found. The given measure name was not recognized. Please check again. 
- The query should look like: 
-'Describe the *aggregate function* of *cube name* *measure name* per *grouper* for *selection* as *query name*' 
