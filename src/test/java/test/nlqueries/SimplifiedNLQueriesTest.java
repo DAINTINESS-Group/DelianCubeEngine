@@ -58,20 +58,20 @@ public class SimplifiedNLQueriesTest {
 		String path =testedQPEngine.answerCubeQueryFromNLString(testQuery1);   /**/
 		System.out.println(path);
 		
-		File fileProduced1 = new File("OutputFiles/LoanQuery1_FailTheTest.tab");
-		File fileReference1 = new File("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery2.tab");
-        boolean comparison1 = FileUtils.contentEquals(fileProduced1, fileReference1);
-		
+		String fileProduced1 = getContents("OutputFiles/LoanQuery1_FailTheTest.tab");
+		String fileReference1 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery2.tab");
+        //boolean comparison1 = FileUtils.contentEquals(fileProduced1, fileReference1);
+		boolean comparison1 = fileProduced1.equals(fileReference1);
         assertEquals(comparison1 , false);
         
         
         //GIVE RIGHT QUERY
 		String testQuery2 = "Describe the min of loan amount per district_name and month for region is 'Prague' and year is '1998' as LoanQuery1";
 		testedQPEngine.answerCubeQueryFromNLString(testQuery2);
-		File fileProduced2 = new File("OutputFiles/LoanQuery1.tab");
-		File fileReference2 = new File("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1.tab");
-        boolean comparison2 = FileUtils.contentEquals(fileProduced2, fileReference2);
-        assertEquals(comparison2 , true);
+		String fileProduced2 = getContents("OutputFiles/LoanQuery1.tab");
+		String fileReference2 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1.tab");
+        //boolean comparison2 = FileUtils.contentEquals(fileProduced2, fileReference2);
+        assertEquals(fileProduced2 , fileReference2);
 	}//end testanswerCubeQueryFromString
 	
 	

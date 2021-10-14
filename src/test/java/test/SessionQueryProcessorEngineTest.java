@@ -30,9 +30,12 @@ package test;
 import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+
 //import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -74,7 +77,6 @@ public class SessionQueryProcessorEngineTest {
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueriesFromFile(java.io.File)}.
 	 * @throws IOException 
 	 */
-	/*
 	@Test
 	public final void testAnswerCubeQueriesFromFile() throws IOException {
 		//fail("Not yet implemented"); 
@@ -83,34 +85,33 @@ public class SessionQueryProcessorEngineTest {
 		boolean comparison01 = true;
 		boolean comparison02 = true;
 		boolean comparison03 = true;
-	*/	
+		
 		/**
 		 * Try some easy small queries first
 		 */
-	/*
 		File f = new File("src/test/resources/InputFiles/pkdd99/_cubeQueriesloan.ini");
 		//System.out.println(f.getPath() + "\n"+ f.getAbsolutePath());
 		testedQPEngine.answerCubeQueriesFromFile(f);
 		
 		
-		File fileProduced01 = new File("OutputFiles/CubeQueryLoan1.tab");
-		File fileReference01 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan1.tab");
-        comparison01 = FileUtils.contentEquals(fileProduced01, fileReference01);
+		String fileProduced01 = getContents("OutputFiles/CubeQueryLoan1.tab");
+		String fileReference01 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan1.tab");
+        comparison01 = fileProduced01.equals(fileReference01);
 		
 //        System.out.println("\n PRODUCED: "+ fileProduced1.getAbsolutePath());
 //        System.out.println("\n REFERENCE: "+ fileReference1.getAbsolutePath());
         
-		File fileProduced02 = new File("OutputFiles/CubeQueryLoan2.tab");
-		File fileReference02 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2.tab");
-        comparison02 = FileUtils.contentEquals(fileProduced02, fileReference02);
+		String fileProduced02 = getContents("OutputFiles/CubeQueryLoan2.tab");
+		String fileReference02 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2.tab");
+        comparison02 = fileProduced02.equals(fileReference02);
 
 		
-		File fileProduced03 = new File("OutputFiles/CubeQueryLoan3.tab");
-		File fileReference03 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan3.tab");
-        comparison03 = FileUtils.contentEquals(fileProduced03, fileReference03);
-        assertEquals((comparison01 && comparison02 && comparison03), true);
+		String fileProduced03 = getContents("OutputFiles/CubeQueryLoan3.tab");
+		String fileReference03 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan3.tab");
+        comparison03 = fileProduced03.equals(fileReference03);
+        assertEquals((comparison01 && comparison02 && comparison03), true);/**/
 
-*/
+
         /**
          * Try some more principled querying. The names stand for
          * S<k>: k stands for how many atoms the sigma selection condition has
@@ -127,29 +128,30 @@ public class SessionQueryProcessorEngineTest {
         //Can fail because at lines 16, 17, the two districts have exactly the same aggr. measure
         //So sometimes the output has Bruntal first and sometimes it has Brenov first :P
         //diff OutputFiles/LoanQuery11_S1_CG-Prtl.tab src/test/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv
+     */
         
-        File fileProduced12 = new File("OutputFiles/LoanQuery12_S1_CG-Dsjnt.tab");
-		File fileReference12 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery12_S1_CG-Dsjnt.tsv");
-		boolean comparison12 = FileUtils.contentEquals(fileProduced12, fileReference12);
+        String fileProduced12 = getContents("OutputFiles/LoanQuery12_S1_CG-Dsjnt.tab");
+		String fileReference12 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery12_S1_CG-Dsjnt.tsv");
+		boolean comparison12 = fileProduced12.equals(fileReference12);
         assertEquals(comparison12, true);
         
-		File fileProduced21 = new File("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
-		File fileReference21 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
-		boolean comparison21 = FileUtils.contentEquals(fileProduced21, fileReference21);
+		String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
+		String fileReference21 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
+		boolean comparison21 = fileProduced21.equals(fileReference21);
         assertEquals(comparison21, true);
         
-		File fileProduced22 = new File("OutputFiles/LoanQuery22_S2_CG-Prtl.tab");
-		File fileReference22 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery22_S2_CG-Prtl.tsv");
-		boolean comparison22 = FileUtils.contentEquals(fileProduced22, fileReference22);
+		String fileProduced22 = getContents("OutputFiles/LoanQuery22_S2_CG-Prtl.tab");
+		String fileReference22 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery22_S2_CG-Prtl.tsv");
+		boolean comparison22 = fileProduced22.equals(fileReference22);
         assertEquals(comparison22, true);
         
-		File fileProduced31 = new File("OutputFiles/LoanQuery31_S3_CG-Prtl.tab");
-		File fileReference31 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery31_S3_CG-Prtl.tsv");
-		boolean comparison31 = FileUtils.contentEquals(fileProduced31, fileReference31);
+		String fileProduced31 = getContents("OutputFiles/LoanQuery31_S3_CG-Prtl.tab");
+		String fileReference31 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery31_S3_CG-Prtl.tsv");
+		boolean comparison31 = fileProduced31.equals(fileReference31);
         assertEquals(comparison31, true);
 		
-	} //end testAnswerCubeQueriesFromFile */
-
+	} //end testAnswerCubeQueriesFromFile
+	
 	
 	/**
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueryFromString(java.io.File)}.
@@ -213,10 +215,10 @@ public class SessionQueryProcessorEngineTest {
 		testedQPEngine.answerCubeQueryFromStringWithMetadata(testQueryString2);   /**/
 		
 		
-		File fileInfoProduced2 = new File("OutputFiles/CubeQueryLoan22_Copy_Info.txt");
-		File fileInfoReference2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan22_Info.txt");
-        boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
-        assertEquals(comparison2 , true);/**/
+		String fileInfoProduced2 = getContents("OutputFiles/CubeQueryLoan22_Copy_Info.txt");
+		String fileInfoReference2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan22_Info.txt");
+        //boolean comparison2 = FileUtils.contentEquals(fileInfoProduced2, fileInfoReference2);
+        assertEquals(fileInfoProduced2 , fileInfoReference2);/**/
 	}//end method testanswerCubeQueryFromStringWithMetadata
 
 
@@ -236,25 +238,25 @@ public class SessionQueryProcessorEngineTest {
 		
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels11, modelsToGenerate11);
 		
-		File fileProduced_11_1 = new File("OutputFiles/CubeQueryLoan11_Prague.tab");
-		File fileReference_11_1 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague.tab");
-        boolean comparison_11_1 = FileUtils.contentEquals(fileProduced_11_1, fileReference_11_1);
-        assertEquals(comparison_11_1 , true);
+		String fileProduced_11_1 = getContents("OutputFiles/CubeQueryLoan11_Prague.tab");
+		String fileReference_11_1 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague.tab");
+        //boolean comparison_11_1 = FileUtils.contentEquals(fileProduced_11_1, fileReference_11_1);
+        assertEquals(fileProduced_11_1 , fileReference_11_1);
 
-        File fileProduced_11_2 = new File("OutputFiles/CubeQueryLoan11_Prague_Info.txt");
-		File fileReference_11_2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Info.txt");
-        boolean comparison_11_2 = FileUtils.contentEquals(fileProduced_11_2, fileReference_11_2);
-        assertEquals(comparison_11_2 , true);
+        String fileProduced_11_2 = getContents("OutputFiles/CubeQueryLoan11_Prague_Info.txt");
+		String fileReference_11_2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Info.txt");
+        //boolean comparison_11_2 = FileUtils.contentEquals(fileProduced_11_2, fileReference_11_2);
+        assertEquals(fileProduced_11_2 , fileReference_11_2);
 
 //        File fileProduced_11_31 = new File("OutputFiles/CubeQueryLoan11_Prague_Ranks.tab");
 //		File fileReference_11_31 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Ranks.tab");
 //        boolean comparison_11_31 = FileUtils.contentEquals(fileProduced_11_31, fileReference_11_31);
 //        assertEquals(comparison_11_31 , true);
         
-        File fileProduced_11_32 = new File("OutputFiles/CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
-		File fileReference_11_32 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
-        boolean comparison_11_32 = FileUtils.contentEquals(fileProduced_11_32, fileReference_11_32);
-        assertEquals(comparison_11_32 , true);
+        String fileProduced_11_32 = getContents("OutputFiles/CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
+		String fileReference_11_32 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan11_Prague_Z-Score_Outliers.tab");
+        //boolean comparison_11_32 = FileUtils.contentEquals(fileProduced_11_32, fileReference_11_32);
+        assertEquals(fileProduced_11_32 , fileReference_11_32);
         
         /* *********** Now, a Loaded model generation ********** */
 		String queryForModels12 =		"CubeName:loan" + " \n" +
@@ -267,25 +269,25 @@ public class SessionQueryProcessorEngineTest {
 
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12, modelsToGenerate12);
 
-		File fileProduced_12_1 = new File("OutputFiles/CubeQueryLoan12_Sum1998.tab");
-		File fileReference_12_1 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998.tab");
-        boolean comparison_12_1 = FileUtils.contentEquals(fileProduced_12_1, fileReference_12_1);
-        assertEquals(comparison_12_1 , true);
+		String fileProduced_12_1 = getContents("OutputFiles/CubeQueryLoan12_Sum1998.tab");
+		String fileReference_12_1 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998.tab");
+        //boolean comparison_12_1 = FileUtils.contentEquals(fileProduced_12_1, fileReference_12_1);
+        assertEquals(fileProduced_12_1 , fileReference_12_1);
 
-        File fileProduced_12_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Info.txt");
-		File fileReference_12_2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Info.txt");
-        boolean comparison_12_2 = FileUtils.contentEquals(fileProduced_12_2, fileReference_12_2);
-        assertEquals(comparison_12_2 , true);
+        String fileProduced_12_2 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_Info.txt");
+		String fileReference_12_2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Info.txt");
+        //boolean comparison_12_2 = FileUtils.contentEquals(fileProduced_12_2, fileReference_12_2);
+        assertEquals(fileProduced_12_2 , fileReference_12_2);
 
-        File fileProduced_12_31 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Ranks.tab");
-		File fileReference_12_31 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Ranks.tab");
-        boolean comparison_12_31 = FileUtils.contentEquals(fileProduced_12_31, fileReference_12_31);
-        assertEquals(comparison_12_31, true);
+        String fileProduced_12_31 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_Ranks.tab");
+		String fileReference_12_31 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Ranks.tab");
+        //boolean comparison_12_31 = FileUtils.contentEquals(fileProduced_12_31, fileReference_12_31);
+        assertEquals(fileProduced_12_31, fileReference_12_31);
         
-        File fileProduced_12_32 = new File("OutputFiles/CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
-		File fileReference_12_32 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
-        boolean comparison_12_32 = FileUtils.contentEquals(fileProduced_12_32, fileReference_12_32);
-        assertEquals(comparison_12_32 , true);
+        String fileProduced_12_32 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
+		String fileReference_12_32 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_Z-Score_Outliers.tab");
+        //boolean comparison_12_32 = FileUtils.contentEquals(fileProduced_12_32, fileReference_12_32);
+        assertEquals(fileProduced_12_32 , fileReference_12_32);
 
 //        File fileProduced_12_33 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KMeansApache.tab");
 //		File fileReference_12_33 = new File("src/test/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KMeansApache.tab");
@@ -296,10 +298,10 @@ public class SessionQueryProcessorEngineTest {
 //        //the reference clustering assigns Cluster 2 to the (single) last value and Cluster 3 to the values in the middle of the list
 //        //The produced clustering might change the order and assign the (single) last value to Cluster 3 instead and the rest to Cluster 2
         
-        File fileProduced_12_34 = new File("OutputFiles/CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
-		File fileReference_12_34 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
-        boolean comparison_12_34 = FileUtils.contentEquals(fileProduced_12_34, fileReference_12_34);
-        assertEquals(comparison_12_34 , true);
+        String fileProduced_12_34 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
+		String fileReference_12_34 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_KPIMedianBasedModel.tab");
+        //boolean comparison_12_34 = FileUtils.contentEquals(fileProduced_12_34, fileReference_12_34);
+        assertEquals(fileProduced_12_34 , fileReference_12_34);
         
         /* *********** Now, NO model => Generate ranks and outliers ********** */
 		String queryForModels12_2 =		"CubeName:loan" + " \n" +
@@ -311,25 +313,51 @@ public class SessionQueryProcessorEngineTest {
 		String [] modelsToGenerate12_2 = {};	
 
 		testedQPEngine.answerCubeQueryFromStringWithModels(queryForModels12_2, modelsToGenerate12_2);
-		File fileProduced_12_1_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2.tab");
-		File fileReference_12_1_2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2.tab");
-        boolean comparison_12_1_2 = FileUtils.contentEquals(fileProduced_12_1_2, fileReference_12_1_2);
-        assertEquals(comparison_12_1_2 , true);
+		String fileProduced_12_1_2 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_2.tab");
+		String fileReference_12_1_2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2.tab");
+        //boolean comparison_12_1_2 = FileUtils.contentEquals(fileProduced_12_1_2, fileReference_12_1_2);
+        assertEquals(fileProduced_12_1_2 , fileReference_12_1_2);
 
-        File fileProduced_12_2_2 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Info.txt");
-		File fileReference_12_2_2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Info.txt");
-        boolean comparison_12_2_2 = FileUtils.contentEquals(fileProduced_12_2_2, fileReference_12_2_2);
-        assertEquals(comparison_12_2_2 , true);
+        String fileProduced_12_2_2 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_2_Info.txt");
+		String fileReference_12_2_2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Info.txt");
+        //boolean comparison_12_2_2 = FileUtils.contentEquals(fileProduced_12_2_2, fileReference_12_2_2);
+        assertEquals(fileProduced_12_2_2 , fileReference_12_2_2);
 
-        File fileProduced_12_2_31 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Ranks.tab");
-		File fileReference_12_2_31 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Ranks.tab");
-        boolean comparison_12_2_31 = FileUtils.contentEquals(fileProduced_12_2_31, fileReference_12_2_31);
-        assertEquals(comparison_12_2_31 , true);
+        String fileProduced_12_2_31 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_2_Ranks.tab");
+		String fileReference_12_2_31 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Ranks.tab");
+        //boolean comparison_12_2_31 = FileUtils.contentEquals(fileProduced_12_2_31, fileReference_12_2_31);
+        assertEquals(fileProduced_12_2_31 , fileReference_12_2_31);
         
-        File fileProduced_12_2_32 = new File("OutputFiles/CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
-		File fileReference_12_2_32 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
-        boolean comparison_12_2_32 = FileUtils.contentEquals(fileProduced_12_2_32, fileReference_12_2_32);
-        assertEquals(comparison_12_2_32 , true);
+        String fileProduced_12_2_32 = getContents("OutputFiles/CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
+		String fileReference_12_2_32 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
+        //boolean comparison_12_2_32 = FileUtils.contentEquals(fileProduced_12_2_32, fileReference_12_2_32);
+        assertEquals(fileProduced_12_2_32 , fileReference_12_2_32);
 	}//end testanswerCubeQueryFromStringWithModels
+	
+	private String getContents(String fileName) {
+		String contents = "";
+		File file = new File(fileName);
+		if(file.exists() && !file.isDirectory()) { 
+			BufferedReader reader = null;
+			try {
+			    reader = new BufferedReader(new FileReader(file));
 
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			        contents = contents + line + "\n";
+			    }
+
+			} catch (IOException e) {
+			    e.printStackTrace();
+			} finally {
+			    try {
+			        reader.close();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}//end finally
+		}//end master if
+		return contents;
+	}//end method
+	
 }//end class
