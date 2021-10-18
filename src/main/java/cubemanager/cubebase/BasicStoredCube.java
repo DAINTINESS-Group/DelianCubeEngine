@@ -20,7 +20,7 @@
 
 package cubemanager.cubebase;
 
-import cubemanager.starschema.FactTable;
+import cubemanager.relationalstarschema.FactTable;
 
 public class BasicStoredCube extends Cube {
     

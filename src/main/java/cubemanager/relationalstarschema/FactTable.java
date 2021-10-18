@@ -18,39 +18,27 @@
 */
 
 
-package cubemanager.cubebase;
+package cubemanager.relationalstarschema;
 
-import cubemanager.relationalstarschema.Attribute;
+import java.util.List;
 
-public class Measure{
-    /**
-	 * @uml.property  name="id"
-	 */
-    private Integer id;
-    /**
-	 * @uml.property  name="name"
-	 */
-    private String name;
-    /**
-	 * @uml.property  name="attr"
-	 * @uml.associationEnd  
-	 */
-    private Attribute attribute;
+public class FactTable extends Table {
     
-    public Attribute getAttribute() {
-    	return attribute;
-    }
+	/**
+	 * @uml.property  name="dimTable"
+	 */
+	private List<DimensionTable> DimTable;
     
-    public String getName() {
-    	return name;
-    }
+    public FactTable(String name) {
+		super(name);
+	}
     
-    public Measure( Integer id ,String name, Attribute attribute) {
-    	this.id = id;
-    	this.name = name;
-    	this.attribute = attribute;
-    }
-  
-    public Measure(){    	
-    }
+	public List<DimensionTable> getDimTable() {
+		return DimTable;
+	}
+	
+	public void setDimTable(List<DimensionTable> dimTable) {
+		DimTable = dimTable;
+	}
+
 }

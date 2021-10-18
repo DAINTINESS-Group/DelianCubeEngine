@@ -24,7 +24,7 @@ public class Session {
 	public String initialize(String schemaName, String login,
 			String passwd, String inputFolder, String cubeName) throws RemoteException {		
 		initializeCubeMgr(inputFolder);
-		cubeManager.CreateCubeBase(schemaName, login, passwd);
+		cubeManager.createCubeBase(schemaName, login, passwd);
 		constructDimension(inputFolder, cubeName);
 		cubeManager.setCubeQueryTranslator();
 		

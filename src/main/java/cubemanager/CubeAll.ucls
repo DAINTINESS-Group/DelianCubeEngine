@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.2.2" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+<class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
   realizations="true" associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
   <package id="1" language="java" name="cubemanager.cubebase" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/cubemanager/cubebase" binary="false" corner="BOTTOM_RIGHT">    
+    file="/DelianCubeEngine/src/main/java/cubemanager/cubebase" binary="false" corner="BOTTOM_RIGHT">    
     <position height="50" width="161" x="187" y="179"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
-  <package id="2" language="java" name="cubemanager.starschema" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/cubemanager/starschema" binary="false" corner="BOTTOM_RIGHT">    
+  <package id="2" language="java" name="cubemanager.relationalstarschema" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/cubemanager/relationalstarschema" binary="false" corner="BOTTOM_RIGHT">    
     <position height="50" width="174" x="187" y="269"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
-  <package id="3" language="java" name="cubemanager" project="DelianCubeEngine" file="/DelianCubeEngine/src/cubemanager" 
-    binary="false" corner="BOTTOM_RIGHT">    
+  <package id="3" language="java" name="cubemanager" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/cubemanager" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="262" y="107"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  

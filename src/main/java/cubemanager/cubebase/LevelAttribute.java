@@ -20,7 +20,7 @@
 
 package cubemanager.cubebase;
 
-import cubemanager.starschema.Attribute;
+import cubemanager.relationalstarschema.Attribute;
 
 public class LevelAttribute{
     

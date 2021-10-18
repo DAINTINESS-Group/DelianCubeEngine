@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import cubemanager.starschema.Database;
-import cubemanager.starschema.DimensionTable;
-import cubemanager.starschema.FactTable;
-import cubemanager.starschema.Table;
+import cubemanager.relationalstarschema.Database;
+import cubemanager.relationalstarschema.DimensionTable;
+import cubemanager.relationalstarschema.FactTable;
+import cubemanager.relationalstarschema.Table;
 //import exctractionmethod.ExtractionMethod;
 //import exctractionmethod.ExtractionMethodFactory;
 //import exctractionmethod.Result;
@@ -84,7 +84,7 @@ public class CubeBase {
 		DB.setUsername(username);
 		DB.setPassword(password);
 		DB.registerDatabase();
-		DB.GenerateTableList();
+		DB.generateTableList();
 
 	}
 

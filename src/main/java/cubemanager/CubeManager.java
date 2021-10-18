@@ -56,7 +56,7 @@ public class CubeManager {
 		return result;
 	}
 	
-	public void CreateCubeBase(String filename, String username,
+	public void createCubeBase(String filename, String username,
 			String password) {
 		CBase.registerCubeBase(filename, username, password);
 	}
