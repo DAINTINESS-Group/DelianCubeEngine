@@ -28,13 +28,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import connection.DataSourceDescription;
 import result.Cell;
 import result.Result;
 
 
-public class Database {
+public class Database extends DataSourceDescription{
 	/**
 	 * @uml.property  name="dBName"
 	 */
@@ -65,6 +67,9 @@ public class Database {
 	 * @uml.property  name="password"
 	 */
 	private String Password;
+	
+	private String inputFolder;
+	private String cubeName;
 
 	public Database() {
 		setConnectionString("jdbc:mysql://localhost:3306/adult_no_dublic");
@@ -121,7 +126,17 @@ public class Database {
 		}
 	}
 
-
+	@Override
+	public void registerCubeBase(HashMap<String, String> userInputList) {
+		DBName = userInputList.get("schemaName");
+		Username = userInputList.get("username");
+		Password = userInputList.get("password");
+		inputFolder = userInputList.get("inputFolder");
+		cubeName = userInputList.get("cubeName");
+		registerDatabase();
+		generateTableList();
+	}
+	
 	/**
 	 * @return
 	 * @uml.property  name="connectionString"
