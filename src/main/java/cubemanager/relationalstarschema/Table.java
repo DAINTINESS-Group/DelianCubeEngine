@@ -20,12 +20,20 @@
 
 package cubemanager.relationalstarschema;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import cubemanager.relationalstarschema.Attribute;
 
 public class Table {
    
@@ -51,6 +59,65 @@ public class Table {
     		
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+    }
+    
+    public void setAttribute(String filename, String path) {
+		BufferedReader brTest;
+		try {
+			brTest = new BufferedReader(new FileReader(path + "/" + filename + ".csv"));
+			try {
+			    String text;
+				text = brTest.readLine();
+			    String[] strArray = text.split(",");
+			    int maxType = "Type".length();
+			    int maxAttribute = "Attribute".length();
+			    for (int i = 0; i < strArray.length; i = i + 2) {
+					if (maxAttribute < strArray[i].length()) {
+						maxAttribute = strArray[i].length();
+					}
+					if (maxType < strArray[i+1].length()) {
+						maxType = strArray[i+1].length();
+					}
+			    }
+			    System.out.print("+");
+			    for (int i = 0; i < maxAttribute+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.print("+");
+			    for (int i = 0; i < maxType+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.println("+");
+			    String format = "| %"+ maxAttribute + "s | %-"+maxType+"s |\n";
+			    System.out.format(format, StringUtils.center("Attribute", maxAttribute), StringUtils.center("Type", maxType));
+			    System.out.print("+");
+			    for (int i = 0; i < maxAttribute+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.print("+");
+			    for (int i = 0; i < maxType+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.println("+");
+			    for (int i = 0; i < strArray.length; i = i + 2) {
+				    System.out.format(format, StringUtils.right(strArray[i], maxAttribute), StringUtils.left(strArray[i+1], maxType));
+			    	LstAttr.add(new Attribute(strArray[i], strArray[i+1]));
+			    }
+			    System.out.print("+");
+			    for (int i = 0; i < maxAttribute+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.print("+");
+			    for (int i = 0; i < maxType+2; i++) {
+			    	System.out.print("-");
+			    }
+			    System.out.println("+");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
 		}
     }
     
