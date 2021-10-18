@@ -42,7 +42,7 @@ public class CubeManager {
 	private CubeQueryTranslatorFactory cubeQueryTranslatorFactory;
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
-		CBase = new CubeBase(userInputList);
+		CBase = new CubeBase(typeOfConnection, userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
 	}
 

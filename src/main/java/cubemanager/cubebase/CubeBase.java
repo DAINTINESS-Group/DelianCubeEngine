@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import connection.DataSourceDescription;
+import connection.DataSourceFactory;
 import cubemanager.relationalstarschema.Database;
 import cubemanager.relationalstarschema.DimensionTable;
 import cubemanager.relationalstarschema.FactTable;
@@ -48,6 +49,7 @@ public class CubeBase {
 	private DataSourceDescription dataSourceDescription;
 	public List<Dimension> dimensions;
 	public List<BasicStoredCube> BasicCubes;
+	private DataSourceDescription connection;
  
 	public Database getDatabase(){
 		return DB;
@@ -58,7 +60,11 @@ public class CubeBase {
 	 *  
 	 * @param lookupFolder	The FOLDER where the input info for the project lies. Must be in the InputFiles folder.
 	 */
-	public CubeBase(HashMap<String, String> userInputList) {
+	public CubeBase(String typeOfConnection, HashMap<String, String> userInputList) {
+		DataSourceFactory dataSourceFactory = new DataSourceFactory();
+		connection = dataSourceFactory.createConnection(typeOfConnection, userInputList);
+		dimensions = new ArrayList<Dimension>();
+		BasicCubes = new ArrayList<BasicStoredCube>();
 		String lookupFolder = userInputList.get("inputFolder");
 		try {
 			String line;

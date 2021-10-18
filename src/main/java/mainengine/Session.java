@@ -32,6 +32,7 @@ public class Session {
 	}
 	
 	private void initializeCubeMgr(HashMap<String, String> userInputList) throws RemoteException {
+		//TODO: na douleuei me typeofconnection kai oxi hard coded rdbms
 		cubeManager = new CubeManager("RDBMS", userInputList);
 	}
 	
