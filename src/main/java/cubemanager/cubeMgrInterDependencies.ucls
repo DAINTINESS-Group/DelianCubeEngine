@@ -208,7 +208,7 @@
     <bendpoint x="481" y="111"/>    
     <bendpoint x="510" y="187"/>    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="28" name="BasicCubes">        
+      <attribute id="28" name="basicCubes">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="29" minimum="0" maximum="2147483647">        

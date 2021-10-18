@@ -109,6 +109,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private ArrayList <String> dimensions;
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
+	private HashMap<String, String> userInputList;
 
 	
 	
@@ -152,17 +153,21 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			String passwd, String inputFolder, String cubeName)
 			throws RemoteException {
 		//createDefaultFolders();
+		fillUserInputList(schemaName, login,
+				passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
-		sessionId = session.initialize(schemaName, login, passwd, inputFolder, cubeName);
+		sessionId = session.initialize(userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
-		fillQueryLists();
+		extractSchemaMetadata();
 		System.out.println("DONE WITH INIT");
 	}
 	
 	public void initializeConnectionWithIntrMng(String schemaName, String login, String passwd, String inputFolder, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, int k, String cubeName) throws RemoteException {
+		fillUserInputList(schemaName, login,
+				passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
-		sessionId = session.initialize(schemaName, login, passwd, inputFolder, cubeName);
+		sessionId = session.initialize(userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, k);
 		System.out.println("DONE WITH INIT");
@@ -211,8 +216,18 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			}
 		}
 	}*/
+	
+	private void fillUserInputList(String schemaName, String login,
+			String passwd, String inputFolder, String cubeName) {
+		userInputList = new HashMap<String, String>();
+		userInputList.put("username", login);
+		userInputList.put("password", passwd);
+		userInputList.put("schemaName", schemaName);
+		userInputList.put("cubeName", cubeName);
+		userInputList.put("inputFolder", inputFolder);
+	}
 
-	private void fillQueryLists() {
+	private void extractSchemaMetadata() {
 		prsMng = session.getPrsMng();
 		//1.Bring data for CubeName
 		cubeNames = new ArrayList<String>();

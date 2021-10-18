@@ -25,9 +25,11 @@ import java.io.FileReader;
 import java.sql.Connection;
 //import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import connection.DataSourceDescription;
 import cubemanager.relationalstarschema.Database;
 import cubemanager.relationalstarschema.DimensionTable;
 import cubemanager.relationalstarschema.FactTable;
@@ -43,6 +45,7 @@ public class CubeBase {
 	private String password;
 	private String name;
 	private Database DB;
+	private DataSourceDescription dataSourceDescription;
 	public List<Dimension> dimensions;
 	public List<BasicStoredCube> BasicCubes;
  
@@ -55,8 +58,8 @@ public class CubeBase {
 	 *  
 	 * @param lookupFolder	The FOLDER where the input info for the project lies. Must be in the InputFiles folder.
 	 */
-	public CubeBase(String lookupFolder) {
-
+	public CubeBase(HashMap<String, String> userInputList) {
+		String lookupFolder = userInputList.get("inputFolder");
 		try {
 			String line;
 			Scanner scanner = new Scanner(new FileReader("InputFiles/" + lookupFolder
@@ -75,14 +78,13 @@ public class CubeBase {
 		}
 	}
 
-	public void registerCubeBase(String filename, String username,
-			String password) {
-		name = filename;
-		this.username = username;
-		this.password = password;
+	public void registerCubeBase(HashMap<String, String> userInputList) {
+		name = userInputList.get("inputFolder");
+		this.username = userInputList.get("username");
+		this.password = userInputList.get("password");
 		DB.setDBName(name);
-		DB.setUsername(username);
-		DB.setPassword(password);
+		DB.setUsername(userInputList.get("username"));
+		DB.setPassword(userInputList.get("password"));
 		DB.registerDatabase();
 		DB.generateTableList();
 

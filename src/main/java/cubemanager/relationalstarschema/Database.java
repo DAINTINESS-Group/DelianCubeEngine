@@ -83,31 +83,6 @@ public class Database extends DataSourceDescription{
 		Tbl = new ArrayList<Table>();
 	}
 
-	public void registerDatabase() {
-		try {
-			try {
-				Class.forName(DBMS).newInstance();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			System.err.println("Where is your MySQL JDBC Driver?");
-			e.printStackTrace();
-			return;
-		}
-		try {
-			setConnection(DriverManager.getConnection(ConnectionString,
-					Username, Password));
-		} catch (SQLException ex) {
-			System.err.println(ConnectionString);
-			System.err.println("Connection Failed! Check output console");
-			System.err.println("SQLState: " + ex.getSQLState());
-			System.err.println("LocalState: " + ex.getLocalizedMessage());
-			System.err.println("VendorError: " + ex.getErrorCode());
-		}
-	}
 
 	public void generateTableList() {
 		try {
@@ -135,6 +110,32 @@ public class Database extends DataSourceDescription{
 		cubeName = userInputList.get("cubeName");
 		registerDatabase();
 		generateTableList();
+	}
+	
+	public void registerDatabase() {
+		try {
+			try {
+				Class.forName(DBMS).newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			System.err.println("Where is your MySQL JDBC Driver?");
+			e.printStackTrace();
+			return;
+		}
+		try {
+			setConnection(DriverManager.getConnection(ConnectionString,
+					Username, Password));
+		} catch (SQLException ex) {
+			System.err.println(ConnectionString);
+			System.err.println("Connection Failed! Check output console");
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("LocalState: " + ex.getLocalizedMessage());
+			System.err.println("VendorError: " + ex.getErrorCode());
+		}
 	}
 	
 	/**

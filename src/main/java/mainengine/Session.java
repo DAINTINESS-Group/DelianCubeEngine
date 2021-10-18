@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import cubemanager.CubeManager;
@@ -21,18 +22,17 @@ public class Session {
 		this.prsMng = prsMng;
 	}
 	
-	public String initialize(String schemaName, String login,
-			String passwd, String inputFolder, String cubeName) throws RemoteException {		
-		initializeCubeMgr(inputFolder);
-		cubeManager.createCubeBase(schemaName, login, passwd);
-		constructDimension(inputFolder, cubeName);
+	public String initialize(HashMap<String, String> userInputList) throws RemoteException {		
+		initializeCubeMgr(userInputList);
+		cubeManager.createCubeBase(userInputList);
+		constructDimension(userInputList.get("inputFolder"), userInputList.get("cubeName"));
 		cubeManager.setCubeQueryTranslator();
 		
 		return this.id;
 	}
 	
-	private void initializeCubeMgr(String lookupFolder) throws RemoteException {
-		cubeManager = new CubeManager(lookupFolder);
+	private void initializeCubeMgr(HashMap<String, String> userInputList) throws RemoteException {
+		cubeManager = new CubeManager("RDBMS", userInputList);
 	}
 	
 	private void constructDimension(String inputlookup, String cubeName)

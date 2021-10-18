@@ -41,8 +41,8 @@ public class CubeManager {
 	private ICubeQueryTranslator cubeQueryTranslator;
 	private CubeQueryTranslatorFactory cubeQueryTranslatorFactory;
 
-	public CubeManager(String lookupFolder) {
-		CBase = new CubeBase(lookupFolder);
+	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
+		CBase = new CubeBase(userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
 	}
 
@@ -56,9 +56,8 @@ public class CubeManager {
 		return result;
 	}
 	
-	public void createCubeBase(String filename, String username,
-			String password) {
-		CBase.registerCubeBase(filename, username, password);
+	public void createCubeBase(HashMap<String, String> userInputList) {
+		CBase.registerCubeBase(userInputList);
 	}
 	
 	public CubeBase getCubeBase(){
