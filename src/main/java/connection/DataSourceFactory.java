@@ -35,21 +35,20 @@ public class DataSourceFactory {
 		
 		if (typeOfConnection.equals("RDBMS")) {
 			// userInputList are the values pulled from GUI
+			String lookupFolder = userInputList.get("inputFolder");
 			try {
 				String line;
-				Scanner scanner = new Scanner(new FileReader(System.getProperty("user.dir") + "/InputFiles/" + userInputList.get("schemaName")
+				Scanner scanner = new Scanner(new FileReader("InputFiles/" + lookupFolder
 						+ "/dbc.ini"));
 				while (scanner.hasNextLine()) {
 					line = scanner.nextLine();
 					String results[] = line.split(";");
-					System.out.println("ok - " + results[1] + " : " + results[3]);
 					return new Database(results[1], results[3]);
 				}
 				scanner.close();
 			} catch (FileNotFoundException e1) {
 				System.err.println("Unable to work correctly with dbc.ini for the setup of the Cubebase");
 				e1.printStackTrace();
-				return null;
 			}
 		}
 		else if (typeOfConnection.equals("Spark")) {

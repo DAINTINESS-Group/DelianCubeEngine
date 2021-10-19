@@ -45,7 +45,7 @@ public class Database extends DataSourceDescription{
 	 * @uml.property  name="tbl"
 	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="CubeMgr.StarSchema.Table"
 	 */
-	private List<Table> Tbl;
+	//private List<Table> Tbl;
 
 	/**
 	 * @uml.property  name="connectionString"

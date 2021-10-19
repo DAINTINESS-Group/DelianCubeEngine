@@ -49,10 +49,9 @@ public class CubeBase {
 	private DataSourceDescription dataSourceDescription;
 	public List<Dimension> dimensions;
 	public List<BasicStoredCube> BasicCubes;
-	private DataSourceDescription connection;
  
-	public Database getDatabase(){
-		return DB;
+	public DataSourceDescription getDataSourceDescription(){
+		return dataSourceDescription;
 	}
 	/**
 	 * The method looks for the file dbc.ini inside the folder prescribed as the method's parameter.
@@ -62,9 +61,10 @@ public class CubeBase {
 	 */
 	public CubeBase(String typeOfConnection, HashMap<String, String> userInputList) {
 		DataSourceFactory dataSourceFactory = new DataSourceFactory();
-		connection = dataSourceFactory.createConnection(typeOfConnection, userInputList);
+		dataSourceDescription = dataSourceFactory.createConnection("RDBMS", userInputList);
 		dimensions = new ArrayList<Dimension>();
 		BasicCubes = new ArrayList<BasicStoredCube>();
+		/*
 		String lookupFolder = userInputList.get("inputFolder");
 		try {
 			String line;
@@ -81,10 +81,12 @@ public class CubeBase {
 		} catch (FileNotFoundException e1) {
 			System.err.println("Unable to work correctly with dbc.ini for the setup of the Cubebase");
 			e1.printStackTrace();
-		}
+		}*/
 	}
 
 	public void registerCubeBase(HashMap<String, String> userInputList) {
+		dataSourceDescription.registerCubeBase(userInputList);
+		/*
 		name = userInputList.get("inputFolder");
 		this.username = userInputList.get("username");
 		this.password = userInputList.get("password");
@@ -92,7 +94,7 @@ public class CubeBase {
 		DB.setUsername(userInputList.get("username"));
 		DB.setPassword(userInputList.get("password"));
 		DB.registerDatabase();
-		DB.generateTableList();
+		DB.generateTableList();*/
 
 	}
 
@@ -101,7 +103,7 @@ public class CubeBase {
 	}
 
 	public void addDimensionTbl(String dimensionTbl) {
-		Table tmp_tbl = DB.getDBTableInstance(dimensionTbl);
+		Table tmp_tbl = dataSourceDescription.getConnectionTableInstance(dimensionTbl);
 		DimensionTable dm = new DimensionTable(tmp_tbl. getTableName());
 		dm.addAllAttribute(tmp_tbl);
 		this.getLastInsertedDimension().setDimTbl(dm);
@@ -122,7 +124,7 @@ public class CubeBase {
 				LevelAttribute lvlattr = new LevelAttribute(tmp_str[1],
 						tmp_str[0]);
 				lvlattr.setLevel(lvl);
-				lvlattr.setAttribute(DB.getFieldOfSqlTable(tmp_str[0],
+				lvlattr.setAttribute(dataSourceDescription.getFieldOfSqlTable(tmp_str[0],
 						tmp_str[1]));
 
 				lvl.addLevelAttribute(lvlattr);
@@ -147,8 +149,9 @@ public class CubeBase {
 
 	}
 
+	//edw einai tothema
 	public void addSqlRelatedTbl(String sqltable) {
-		Table tmp_tbl = DB.getDBTableInstance(sqltable);
+		Table tmp_tbl = dataSourceDescription.getConnectionTableInstance(sqltable);
 		BasicStoredCube tmp = BasicCubes.get(BasicCubes.size() - 1);
 		FactTable fctbl = new FactTable(tmp_tbl. getTableName());
 		fctbl.addAllAttribute(tmp_tbl);
@@ -177,14 +180,11 @@ public class CubeBase {
 		int i = 0;
 		for (String item : measurelst) {
 			String[] tmp = measureRefField.get(i).split("\\.");
-			Measure msrToAdd = new Measure(i +1,item, this.DB.getFieldOfSqlTable(tmp[0], tmp[1]));
+			Measure msrToAdd = new Measure(i +1,item, this.dataSourceDescription.getFieldOfSqlTable(tmp[0], tmp[1]));
 			last_cube.Msr.add(msrToAdd);
 		}
 	}
 
-	public Connection getSqlConnection() {
-		return DB.getConnection();
-	}
 
 	private Integer findDimensionIdByName(String nameDimension) {
 		int ret_val = -1;
@@ -207,7 +207,7 @@ public class CubeBase {
 	}
 
 	public Result executeQueryToProduceResult(String queryString, Result result) {
-		return DB.executeQueryToProduceResult(queryString, result);
+		return dataSourceDescription.executeQueryToProduceResult(queryString, result);
 	}
 	
 //	/*
