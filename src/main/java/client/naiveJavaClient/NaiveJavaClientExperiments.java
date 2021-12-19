@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import client.ClientRMITransferer;
 import mainengine.IMainEngine;
@@ -66,8 +67,14 @@ public class NaiveJavaClientExperiments {
 		service.answerCubeQueriesFromFile(f);/**/
 				
 		// Cube LOAN and queries
-		service.initializeConnection("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99", "loan");
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99");
+		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Completed connection initialization");
 
 		//CleanUp client Cache

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -29,15 +30,27 @@ public class SimplifiedNLQueriesTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
 		testedQPEngine = new SessionQueryProcessorEngine(); 
 		
-		testedQPEngine.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "loan");
+		testedQPEngine.initializeConnection(typeOfConnection, userInputList);
 		
 		testedQPEngine2 = new SessionQueryProcessorEngine(); 
+
+		HashMap<String, String>userInputList2 = new HashMap<>();
+		userInputList2.put("schemaName", "adult");
+		userInputList2.put("username", "CinecubesUser");
+		userInputList2.put("password", "Cinecubes");
+		userInputList2.put("cubeName", "adult");
+		userInputList2.put("inputFolder", "adult");
 		
-		testedQPEngine2.initializeConnection("adult", "CinecubesUser",
-				"Cinecubes", "adult", "adult");
+		testedQPEngine2.initializeConnection(typeOfConnection, userInputList2);
 				
 		//TODO: currently, the result goes to the DelianCubeEngine/OutputFiles, i.e., it is mixed with the output of the regular execution. can we isolate the output of the tests, within the test folder?
 		//TODO:  Basically needs to invoke the answerQueriesFromFile to get an OutputFolder parameter.

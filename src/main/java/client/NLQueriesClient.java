@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
 
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
@@ -33,8 +34,14 @@ public class NLQueriesClient {
 			System.exit(-100);
 		}
 		
-		service.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "loan");
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
+		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Completed connection initialization");
 
 		//CleanUp client Cache

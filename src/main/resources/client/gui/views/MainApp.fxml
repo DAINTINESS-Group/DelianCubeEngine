@@ -11,6 +11,12 @@
    <children>
       <MenuBar id="menubar" fx:id="menubar" prefHeight="25.0" prefWidth="978.0">
         <menus>
+          <Menu id="menuConnect" mnemonicParsing="false" text="Connect">
+            <items>
+              <MenuItem id="RDBMSMI" fx:id="RDBMSMI" mnemonicParsing="false" onAction="#connectRDBMS" text="RDBMS" />
+              <MenuItem id="SparkMI" fx:id="SparkMI" mnemonicParsing="false" onAction="#connectSpark" text="Spark" />
+            </items>
+          </Menu>
           <Menu id="menuWork" mnemonicParsing="false" text="Work">
             <items>
               <MenuItem id="runQueryMI" fx:id="runQueryMI" mnemonicParsing="false" onAction="#handleRunQueryString" text="Run Query" />
