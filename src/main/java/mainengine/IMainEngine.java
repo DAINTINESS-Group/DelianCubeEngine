@@ -65,20 +65,33 @@ public interface IMainEngine extends IServer {
 	 * 
 	 * See the initializeConnection
 	 * 
-	 * @param schemaName  	  The name of the database 
-	 * @param login  		  The user login
-	 * @param passwd  		  The user passwd
-	 * @param inputFolder	  The folder where the cube description lies (includes a dbc.ini for the connection and cubde descriptions too)
+	 * @param typeOfConnection	Must be one of the below -options.
+	 * @param userInputList		Whatever the type connection is you will need the
+	 * 							required variables written below.
+	 * 
+	 * - RDBMS userInputList
+	 * @param schemaName  	The name of the database 
+	 * @param login  		The user login
+	 * @param passwd  		The user passwd
+	 * @param inputFolder	The folder where the cube description lies (includes a dbc.ini for the connection and cubde descriptions too)
+	 * @param cubeName		The name of the cube + the name of the file where the cube is described = <cubename>.ini
+	 * 
+	 * - Spark userInputList
+	 * @param schemaName	The name of the spark folder containing all...
+	 * @param inputFolder 	Same...
+	 * @param cubeName 		Same...
+	 * 
+	 * 
 	 * @param historyFolder   Path to the History folder
 	 * @param expValuesFolder Path to the Expected Values folder
 	 * @param expLabelsFolder Path to the Expected Labels folder
 	 * @param k               The kth neighbor
-	 * @param cubeName        The name of the cube + the name of the file where the cube is described = <cubename>.ini
+	 * 
 	 * @throws RemoteException
 	 * @see initializeConnection
 	 */
-	void initializeConnectionWithIntrMng(String schemaName, String login,String passwd, String inputFolder,String historyFolder, 
-			  String expValuesFolder, String expLabelsFolder,int k, String cubeName) throws RemoteException;
+	void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder, 
+			  String expValuesFolder, String expLabelsFolder,int k) throws RemoteException;
 	
 	
 	/**

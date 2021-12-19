@@ -155,18 +155,18 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		//fillUserInputList(schemaName, login,
 				//passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
-		sessionId = session.initialize(userInputList);
+		sessionId = session.initialize(typeOfConnection, userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		extractSchemaMetadata();
 		System.out.println("DONE WITH INIT");
 	}
 	
-	public void initializeConnectionWithIntrMng(String schemaName, String login, String passwd, String inputFolder, String historyFolder,
-			String expValuesFolder, String expLabelsFolder, int k, String cubeName) throws RemoteException {
-		fillUserInputList(schemaName, login,
-				passwd, inputFolder, cubeName);
+	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
+			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+		//fillUserInputList(schemaName, login,
+				//passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
-		sessionId = session.initialize(userInputList);
+		sessionId = session.initialize(typeOfConnection, userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, k);
 		System.out.println("DONE WITH INIT");

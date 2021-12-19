@@ -12,6 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import mainengine.IMainEngine;
@@ -62,8 +63,15 @@ public class InterestingnessClientExperiments {
 			clearOldHistory();
 						
 			// Cube LOAN and queries
-			service.initializeConnectionWithIntrMng("pkdd99_star", "CinecubesUser",
-					"Cinecubes", "pkdd99_star","InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions400", "InputFiles/UserProfile/ExpectedValues/predictions400" ,1,"loan");
+			String typeOfConnection = "RDBMS";
+			HashMap<String, String>userInputList = new HashMap<>();
+			userInputList.put("schemaName", "pkdd99_star");
+			userInputList.put("username", "CinecubesUser");
+			userInputList.put("password", "Cinecubes");
+			userInputList.put("cubeName", "loan");
+			userInputList.put("inputFolder", "pkdd99_star");
+			service.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
+					"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions400", "InputFiles/UserProfile/ExpectedValues/predictions400", 1);
 			System.out.println("Completed connection initialization");
 			
 			//#### Create experiment results file ####
