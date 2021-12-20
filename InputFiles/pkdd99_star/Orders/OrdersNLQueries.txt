@@ -1,7 +1,0 @@
-Describe the avg of orders amount per region and reason for district_name is 'Benesov' as OrdersQuery1
-@
-Describe the avg of orders amount per district_name and reason for region is 'south Moravia' and reason is 'Leasing' as OrdersQuery2
-@
-Describe the avg of orders amount per region and reason for district_name is 'Sumperk' and reason is 'Household Payment' and All_reason is 'ALL' as OrdersQuery3
-@
-Describe the avg of orders amount per region and reason for district_name is 'Sumperk' and reason is 'Household Payment' and All_account is 'ALL' and All_reason is 'ALL' as OrdersQuery4

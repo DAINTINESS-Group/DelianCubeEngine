@@ -1,0 +1,1 @@
+id,INT,age,INT,work_class,VARCHAR,education,VARCHAR,marital_status,VARCHAR,occupation,VARCHAR,race,VARCHAR,gender,VARCHAR,hours_per_week,INT,native_country,VARCHAR,salary,VARCHAR

@@ -1,0 +1,17 @@
+level0,level1,level2,level3,level4
+10th,Junior-Secondary,Secondary,Without-Post-Secondary,*
+11th,Senior-Secondary,Secondary,Without-Post-Secondary,*
+12th,Senior-Secondary,Secondary,Without-Post-Secondary,*
+1st-4th,1st-4th,Elementary,Without-Post-Secondary,*
+5th-6th,5th-6th,Elementary,Without-Post-Secondary,*
+7th-8th,7th-8th,Elementary,Without-Post-Secondary,*
+9th,Junior-Secondary,Secondary,Without-Post-Secondary,*
+Assoc-acdm,Assoc-acdm,Assoc,Post-Secondary,*
+Assoc-voc,Assoc-voc,Assoc,Post-Secondary,*
+Bachelors,Bachelors,University,Post-Secondary,*
+Doctorate,Doctorate,Post-grad,Post-Secondary,*
+HS-grad,Senior-Secondary,Secondary,Without-Post-Secondary,*
+Masters,Masters,Post-grad,Post-Secondary,*
+Preschool,Preschool,Preschool,Without-Post-Secondary,*
+Prof-school,Prof-school,University,Post-Secondary,*
+Some-college,Some-college,Some-college,Post-Secondary,*
