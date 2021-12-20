@@ -224,17 +224,17 @@ public class MainAppController extends AbstractController {
 	@FXML
 	private void connectSpark() {
 		this.typeOfConnection = "Spark";
-		System.out.println("im spark");
+		userInputList = new HashMap<>();
 		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99_star");
-		/*
 		try {
 			service.initializeConnection(typeOfConnection, userInputList);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Completed connection initialization");*/
+		System.out.println("Completed connection initialization");
+		
 	}
 	
 	

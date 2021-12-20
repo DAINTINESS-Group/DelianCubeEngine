@@ -61,7 +61,7 @@ public class CubeBase {
 	 */
 	public CubeBase(String typeOfConnection, HashMap<String, String> userInputList) {
 		DataSourceFactory dataSourceFactory = new DataSourceFactory();
-		dataSourceDescription = dataSourceFactory.createConnection("RDBMS", userInputList);
+		dataSourceDescription = dataSourceFactory.createConnection(typeOfConnection, userInputList);
 		dimensions = new ArrayList<Dimension>();
 		BasicCubes = new ArrayList<BasicStoredCube>();
 		/*

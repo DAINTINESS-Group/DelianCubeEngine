@@ -35,8 +35,10 @@ public class SparkDataset extends DataSourceDescription {
 
 	@Override
 	protected void generateTableList() {
-//		String path = PathFolder.getPathOfProject() + "InputFiles/" + inputFolder + "/" + cubeName;
-		String path = PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + inputFolder + File.separator + cubeName;
+		String path = "InputFiles/" + inputFolder + "/" + cubeName;
+//		String path = PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + inputFolder + File.separator + cubeName;
+
+		System.out.println(path);
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
 		

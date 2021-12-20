@@ -151,9 +151,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public void initializeConnection(String typeOfConnection, HashMap<String, String> userInputList)
 			throws RemoteException {
-		//createDefaultFolders();
-		//fillUserInputList(schemaName, login,
-				//passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
 		sessionId = session.initialize(typeOfConnection, userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
@@ -163,8 +160,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
-		//fillUserInputList(schemaName, login,
-				//passwd, inputFolder, cubeName);
 		session = new Session(cubeManager, prsMng);
 		sessionId = session.initialize(typeOfConnection, userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
@@ -216,15 +211,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}
 	}*/
 	
-	private void fillUserInputList(String schemaName, String login,
-			String passwd, String inputFolder, String cubeName) {
-		userInputList = new HashMap<String, String>();
-		userInputList.put("schemaName", schemaName);
-		userInputList.put("username", login);
-		userInputList.put("password", passwd);
-		userInputList.put("inputFolder", inputFolder);
-		userInputList.put("cubeName", cubeName);
-	}
 
 	private void extractSchemaMetadata() {
 		prsMng = session.getPrsMng();
