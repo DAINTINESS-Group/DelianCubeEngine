@@ -1,5 +1,6 @@
 package interestingnessengine;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import result.Result;
 import result.Cell;
@@ -91,4 +92,27 @@ public interface IHistoryInput {
 	 * @param k The desired value of the kth neighbor. >= 1
 	 */
 	//public void setKthNeighbor(int k);
+	
+	/* My methods start here ~Spiros */
+	/**
+	 * Computes the user's Detailed Area of Interest from all the previous queries 
+	 * <p>
+	 * For every old {@link CubeQuery} in the history list, computes its detailed area and adds all the cells, that
+	 * are not already in it, in the detailed area of interest.
+	 * @return the union of all the old queries' detailed areas
+	 */
+	public ArrayList<Cell> computeDetailedAreaOfInterestOfPreviousQueries();
+	
+	/**
+	 * Sets the user's goals for a specific query
+	 * @param folderPath The path to the folder containing the goals of the user
+	 * @throws RemoteException
+	 */
+	public void setQueryGoals(String filePath) throws RemoteException;
+
+	/**
+	 * @return the user's goals for a specific query
+	 */
+	public ArrayList<Cell> getQueryGoals();
+
 }

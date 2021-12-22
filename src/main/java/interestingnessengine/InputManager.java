@@ -42,6 +42,9 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
 	
+	private ArrayList<Cell> userGoalCells = new ArrayList<Cell>();
+
+	
 	/**
 	 * Constructor to be used when there is no history stored and no expected values/labels.
 	 * @param cubeMng The current {@link CubeManager} object
@@ -324,7 +327,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		
 		return new ArrayList<Cell>(detailedAreaOfInterest);
 	}
-
+	
 	public ArrayList<Cell> computeDetailedQueryCube(CubeQuery query) {
 		retrieveLevels();
 		
@@ -381,8 +384,66 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	private void setKthNeighbor(int k) {
 		kthNeighbor = k;		
 	}
+
+	/**
+	 *  My methods start here so that I don't mess up something in the old code 
+	 *  ~ Spiros
+	 * 
+	 */
 	
+	public ArrayList<Cell> computeDetailedAreaOfInterestOfPreviousQueries() {
+			
+			TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComp());
+			ArrayList<Cell> res;
+			for(int i = 0; i < historyQueries.size()-1; i++) {
+				res = computeDetailedQueryCube(historyQueries.get(i));
+				
+				for(int j = 0; j < res.size(); j++) {
+					detailedAreaOfInterest.add(res.get(j));
+				}
+			}
+			
+			return new ArrayList<Cell>(detailedAreaOfInterest);
+	}
+
+	public void setQueryGoals(String filePath) throws RemoteException {
+		try {
+			fis = new FileInputStream(filePath);
+			sc = new Scanner(fis);
+			Cell nextCell = null;
+			
+			//skip header row
+			sc.nextLine();
+			
+			while(sc.hasNextLine()){ 
+				String[] values = sc.nextLine().split("\t");
+				nextCell = new Cell(values);
+				
+				if(nextCell != null) {
+					userGoalCells.add(nextCell);
+				}
+			} 
+			
+			sc.close();  
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}       
+		
+		if(userGoalCells.size() == 0) {
+			System.out.println("User's goals were not specified.");
+		}
+		
+	}
+
+	public ArrayList<Cell> getQueryGoals() {
+		return userGoalCells;
+	}
 	
+	/**
+	 *  My methods end here
+	 *  ~ Spiros
+	 * 
+	 */
 }
 /**
  * 
@@ -399,6 +460,6 @@ class CellComp implements Comparator<Cell>{
 	 */
 	public int compare(Cell o1, Cell o2) {
 		return o1.getDimensionMembers().toString().compareTo(o2.getDimensionMembers().toString());	
-	}
+	}	
 	
 }
