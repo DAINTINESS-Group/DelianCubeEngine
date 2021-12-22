@@ -1,6 +1,9 @@
-package cubemanager.cubebase;
+package interestingnessengine;
 
 import java.util.List;
+
+import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
 
 public class FamilyBasedRelevance {
 	
