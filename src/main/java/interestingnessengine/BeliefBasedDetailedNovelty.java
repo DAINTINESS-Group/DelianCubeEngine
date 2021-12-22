@@ -1,56 +1,65 @@
 package interestingnessengine;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashMap;
 import result.Cell;
 
-public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithExpectedValues{
+public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
 
-	private ArrayList<Cell> detailedCurrentQueryCube;
+	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> knownCells;
-	private ArrayList<Float> probabilities;
+	private ArrayList<Cell> detailedAreaOfInterest;
+	private HashMap<Cell,Integer> beliefs;
 	private float threshold;
-
 	
-	/**
-	 * PV Comment: ti 'n' tot' wre?
-	 * Giati to len' "rd" kai giati pairnei mesa o,ti na'nai? oeo?
-	 */
-	private Random rd = new Random();
-
-	@Override
-	public double computeMeasure(IExpectedValuesInput inputManager) {
+	public double computeMeasure(IHistoryInput inputManager) {
 		
-		detailedCurrentQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
+		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
+		knownCells = new ArrayList<Cell>();
+		knownCells.addAll(detailedQueryCube);
 		
-		/**
-		 * PV Comm: similarly with PartialDet.., you have removals afterwards, but maybe here you don't care?
-		 * Maybe better to do the explicit copy to knownCells anyway?
-		 */
-		knownCells = detailedCurrentQueryCube;
+		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterestOfPreviousQueries();
 		
-		//assign probabilities (aka beliefs) to cells. This will probably be done by a file through inputManager later
-		for(int i = 0; i < detailedCurrentQueryCube.size(); i++) {
-			probabilities.add(rd.nextFloat());
-		}
+		assignBeliefs();
         
-		//set threshold
-		threshold = (float)0.5;
+		// set threshold (0,1 means that if the user has seen the cell in more than 10% of his queries, 
+		// then it's value is probably not novel to him because of his beliefes)
+		threshold = (float)0.1;
 		
-		/**
-		 * PV Comment: again, unknown cells is probably useless, as only it's size is needed,
-		 * which is size()-known.size(), but anyway, we can keep it
-		 */
 		ArrayList<Cell> unknownCells = new ArrayList<Cell>();
-		for(int i = 0; i < detailedCurrentQueryCube.size(); i++) {
-			if(probabilities.get(i)<threshold) {
-				unknownCells.add(detailedCurrentQueryCube.get(i));
-				knownCells.remove(i);
+
+		
+		int pastQuerySize = detailedAreaOfInterest.size();
+
+		for(int i = 0; i < detailedQueryCube.size(); i++) {
+			Cell c = detailedQueryCube.get(i);
+			if(beliefs.containsKey(c)) {
+				if((beliefs.get(c)/pastQuerySize)>threshold) {
+					unknownCells.add(c);
+					knownCells.remove(i);
+				}
 			}
 		}
-
 		return( unknownCells.size() / ( unknownCells.size() + knownCells.size() ));
 
+		
 	}
 
+	private void assignBeliefs() {
+		
+		// Assigning beliefs based on % of cell's appearance in previous searches
+		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
+		
+		for(int i = 0; i < detailedQueryCube.size(); i++) {
+			Cell c = detailedQueryCube.get(i);
+				if(beliefs.containsKey(c)) {
+					beliefs.replace(c, beliefs.get(c)+1);
+				}
+				else {
+					beliefs.put(c, 0);
+				}					
+		}
+		
+	}
+		
 }
