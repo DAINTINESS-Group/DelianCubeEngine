@@ -87,6 +87,10 @@ public class SparkSQPTest {
 		
 		String fileProduced03 = getContents("OutputFiles/CubeQueryLoan3.tab");
 		String fileReference03 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan3.tab");
+//		System.out.println("#################################################################################################");
+//		System.out.println(fileProduced03);
+//		System.out.println(fileReference03);
+//		System.out.println("#################################################################################################");
         comparison03 = fileProduced03.equals(fileReference03);
         assertEquals((comparison01 && comparison02 && comparison03), true);/**/
 
@@ -96,10 +100,10 @@ public class SparkSQPTest {
          * S<k>: k stands for how many atoms the sigma selection condition has
          * CG-<xxx>: whether the group-by dimensions and the sigma dimensions have a partial coverage, are common, or are disjoint  
          */ 
-	/*
+	
         File inputFile = new File("src/test/resources/InputFiles/pkdd99/_loanQueriesPrincipled.txt");
         testedQPEngine.answerCubeQueriesFromFile(inputFile);
-
+/*
 		File fileProduced11 = new File("OutputFiles/LoanQuery11_S1_CG-Prtl.tab");
 		File fileReference11 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv");
         boolean comparison11 = FileUtils.contentEquals(fileProduced11, fileReference11);
@@ -108,12 +112,12 @@ public class SparkSQPTest {
         //So sometimes the output has Bruntal first and sometimes it has Brenov first :P
         //diff OutputFiles/LoanQuery11_S1_CG-Prtl.tab src/test/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv
      
-        
+  */      
         String fileProduced12 = getContents("OutputFiles/LoanQuery12_S1_CG-Dsjnt.tab");
 		String fileReference12 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery12_S1_CG-Dsjnt.tsv");
 		boolean comparison12 = fileProduced12.equals(fileReference12);
         assertEquals(comparison12, true);
-        */
+        
 		String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
 		String fileReference21 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
 		boolean comparison21 = fileProduced21.equals(fileReference21);
