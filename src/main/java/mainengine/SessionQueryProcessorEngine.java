@@ -333,12 +333,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		cubeManager = session.getCubeManager();
 		
 		//1. parse query and produce a CubeQuery
-		CubeQuery currentCubQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams); 
-		this.currentCubeQuery = currentCubQuery;
+		CubeQuery currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams); 
+		this.currentCubeQuery = currentCubeQuery;
 		
 		//2. execute the query AND populate Result with a 2D string
 		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
-		Result res = cubeManager.executeQuery(currentCubQuery);
+		Result res = cubeManager.executeQuery(currentCubeQuery);
 		this.currentResult = res;
 		
 		Instant tExecuted = Instant.now();
@@ -350,7 +350,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		
 				
 		//3b. print result to file
-		String outputLocation = this.printToTabTextFile(currentCubQuery,  "OutputFiles" + File.separator);
+		String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
 		//String outputInfoLocation = this.printQueryInfo(currentCubQuery,  "OutputFiles/");
 		//System.out.println("SQP produces: " + outputLocation);		
 
@@ -373,7 +373,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		
 		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
 
-		queryHistoryMng.addQuery(currentCubQuery);
+		queryHistoryMng.addQuery(currentCubeQuery);
 		
 		return outputLocation;
 	}//answerCubeQueryFromString
