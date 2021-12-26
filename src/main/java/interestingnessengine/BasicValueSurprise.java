@@ -11,7 +11,9 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 	private double counter = 0;
 	
 	public double computeMeasure(IExpectedValuesInput inputManager) {
+		//giati den les for(Cell c: inputManager.getCurrentQueryResult().getCells()) ???
 		for (int i=0; i<inputManager.getCurrentQueryResult().getCells().size();) {
+			//mhpws prepei na ay3hseis to j?
 			for (int j=0; j<inputManager.getExpectedValues().size();) {
 				Cell c = inputManager.getCurrentQueryResult().getCells().get(i);
 				Cell expectedCell = inputManager.getExpectedValues().get(j);

@@ -34,6 +34,11 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 		
 	}
 	
+	/*
+	 * POY 3ERW TH SEIRA TVN DIMENSIONS, WSTE TA SIGNATURES NA BGAINOYN IDIA?
+	 * MHPWS MIA ME6ODOS ME INPUT A LIST OF DIMENSIONS AND CHECH VALUE-TO-VALUE PER DIMENSION?
+	 */
+	
 	public boolean testifCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
 		if(c1.toString().equals(c2.toString())) {
 			return true;

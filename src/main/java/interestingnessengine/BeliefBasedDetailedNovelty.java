@@ -12,12 +12,19 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	private HashMap<Cell,Integer> beliefs;
 	private float threshold;
 	
+	
+	/*
+	 * Constructor??? oeo?
+	 * πού τα ξέρει τα beliefs? oeo? Θα χρειαστεί κάποιος constructor, I guess?
+	 *	... ΜΗ ΓΡΑΦΕΙΣ ΚΑΤΕΒΑΤΑ ΧΩΡΙς ΝΑ ΤΕΣΤΑΡΕΙΣ ...
+	 */
+	
 	public double computeMeasure(IHistoryInput inputManager) {
 		
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
 		knownCells = new ArrayList<Cell>();
 		knownCells.addAll(detailedQueryCube);
-		
+
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterestOfPreviousQueries();
 		
 		assignBeliefs();
