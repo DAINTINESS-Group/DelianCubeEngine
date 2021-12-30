@@ -71,6 +71,8 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		this.cubeMng = cubeMng;
 		if(!expValuesFolder.equals("")) {
 			parseExpectedValues(expValuesFolder);
+			// Setting up query goals here for now. May have it's own folder/file/Variable in the future
+			setQueryGoals(expValuesFolder);
 		}
 		if(!expLabelsFolder.equals("")) {
 			parseExpectedLabels(expLabelsFolder);
@@ -406,6 +408,18 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 			return new ArrayList<Cell>(detailedAreaOfInterest);
 	}
 
+	public ArrayList<Cell> getAllCellsVisited() {
+		ArrayList<Cell> cells = new ArrayList <Cell>();
+		
+		for (CubeQuery q: historyQueries) {
+			for (Cell c: computeDetailedQueryCube(q)) {
+				cells.add(c);
+			}
+		}
+		
+		return cells;
+	}
+	
 	public void setQueryGoals(String filePath) throws RemoteException {
 		try {
 			fis = new FileInputStream(filePath);

@@ -16,6 +16,8 @@ public class InterestingnessMeasureEVFactory {
 								break;
 		case "Value Surprise" : measure = new ValueSurprise();
 								break;
+		case "Basic Value Surprise" : measure = new BasicValueSurprise();
+								break;
 		}
 		if(measure == null) {
 			System.err.println("Did not manage to create the desired measure. Exiting");

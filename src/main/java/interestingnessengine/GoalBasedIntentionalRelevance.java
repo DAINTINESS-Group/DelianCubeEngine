@@ -3,6 +3,7 @@ package interestingnessengine;
 import java.util.ArrayList;
 
 import result.Cell;
+import result.Result;
 
 public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWithHistory{
 
@@ -13,11 +14,16 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 	
 	public double computeMeasure(IHistoryInput inputManager) {
 		
+		coveredAreaOfInterest = new ArrayList<Cell>();
+		Result res = inputManager.getCurrentQueryResult();
+		detailedQueryCube = new ArrayList<Cell>();
+		for(Cell c: res.getCells()) {
+			detailedQueryCube.add(c);
+		}
+
 		novelAreaOfInterest = new ArrayList<Cell>();
 		novelAreaOfInterest.addAll(detailedQueryCube);
-		coveredAreaOfInterest = new ArrayList<Cell>();
-		
-		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
+
 		userGoals = inputManager.getQueryGoals();
 		for (int i=0; i<detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
@@ -30,7 +36,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 			}
 		}
 		
-		return coveredAreaOfInterest.size()/(coveredAreaOfInterest.size() + novelAreaOfInterest.size());
+		return (double) coveredAreaOfInterest.size() / (double) (coveredAreaOfInterest.size() + (double) novelAreaOfInterest.size());
 
 	}
 	

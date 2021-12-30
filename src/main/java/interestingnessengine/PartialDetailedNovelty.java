@@ -13,30 +13,37 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 	public double computeMeasure(IHistoryInput inputManager) {
 		
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
-		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterestOfPreviousQueries();
-		
+		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
+
 		novelAreaOfInterest = new ArrayList<Cell>();
-		novelAreaOfInterest.addAll(detailedAreaOfInterest);
-		        
+		novelAreaOfInterest.addAll(detailedQueryCube);
+		
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
 			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
 				if(testifCellsHaveEqualSignatures(c.getDimensionMembers(),detailedAreaOfInterest.get(j).getDimensionMembers())) {
-					novelAreaOfInterest.remove(detailedAreaOfInterest.get(j));
+					removeSpecificCellFromArrayList(detailedAreaOfInterest.get(j));
 					break;
 				}
 			}
 
 		}
-
-		return(novelAreaOfInterest.size()/detailedQueryCube.size());
-
+		
+		return(((double) novelAreaOfInterest.size()/ (double) detailedQueryCube.size()));
 		
 	}
 	
+	private void removeSpecificCellFromArrayList(Cell cell) {
+		for (Cell c: novelAreaOfInterest) {
+			if(testifCellsHaveEqualSignatures(c.getDimensionMembers(), cell.getDimensionMembers())) {
+				novelAreaOfInterest.remove(c);
+				return;
+			}
+		}
+	}
+
 	/*
-	 * POY 3ERW TH SEIRA TVN DIMENSIONS, WSTE TA SIGNATURES NA BGAINOYN IDIA?
-	 * MHPWS MIA ME6ODOS ME INPUT A LIST OF DIMENSIONS AND CHECH VALUE-TO-VALUE PER DIMENSION?
+	 * Symfwna me tis dokimes pou exw kanei, ta signatures einai panta me thn idia seira opote den xreiazetai e3tra check (!)
 	 */
 	
 	public boolean testifCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {

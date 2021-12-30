@@ -114,5 +114,6 @@ public interface IHistoryInput {
 	 * @return the user's goals for a specific query
 	 */
 	public ArrayList<Cell> getQueryGoals();
+	public ArrayList<Cell> getAllCellsVisited();
 
 }

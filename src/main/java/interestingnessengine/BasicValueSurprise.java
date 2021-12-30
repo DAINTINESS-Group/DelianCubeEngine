@@ -11,14 +11,9 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 	private double counter = 0;
 	
 	public double computeMeasure(IExpectedValuesInput inputManager) {
-		//giati den les for(Cell c: inputManager.getCurrentQueryResult().getCells()) ???
-		for (int i=0; i<inputManager.getCurrentQueryResult().getCells().size();) {
-			//mhpws prepei na ay3hseis to j?
-			for (int j=0; j<inputManager.getExpectedValues().size();) {
-				Cell c = inputManager.getCurrentQueryResult().getCells().get(i);
-				Cell expectedCell = inputManager.getExpectedValues().get(j);
-				//If a cell's expected value exists
-				if(c.getDimensionMembers().equals(expectedCell.getDimensionMembers())) {
+		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
+			for (Cell expectedCell: inputManager.getExpectedValues()) {
+					if(c.getDimensionMembers().toString().equals(expectedCell.getDimensionMembers().toString())) {
 					expectedValue = Double.valueOf(expectedCell.getMeasure());
 					//δΜ -> absolute distance
 					cellSurprise = Math.abs(Double.valueOf(c.getMeasure()) - expectedValue);

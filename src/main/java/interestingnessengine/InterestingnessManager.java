@@ -20,7 +20,7 @@ public class InterestingnessManager {
 	private IInterestingnessMeasureWithHistory hMeasure;
 	private InputManager inputManager;
 	private ArrayList<String> historyMeasures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-			"Indirect Novelty", "Relevance with DAI", "Value Peculiarity"));
+			"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Partial Detailed Novelty","Belief Based Novelty", "Goal Based Relevance"));
 	//private ArrayList<String> expectedValueMeasures = new ArrayList<String>(Arrays.asList("Label Surprise", 
 		//	"Label Surprise Strict", "Value Surprise"));
 	/**
@@ -78,7 +78,8 @@ public class InterestingnessManager {
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
 			result = this.hMeasure.computeMeasure(inputManager);
-		}else {
+		}
+		else {
 			this.evMeasure = this.evMeasureFactory.createInterestingnessMeasureWithExpectedValues(chosenMeasure);
 			result = this.evMeasure.computeMeasure(inputManager);
 		}
