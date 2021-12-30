@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
 
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
@@ -28,9 +29,15 @@ public class NLQueriesClientExperiments {
 			System.exit(-100);
 		}
 		
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
+		service.initializeConnection(typeOfConnection, userInputList);
 		
-		service.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "loan");
 		System.out.println("Completed connection initialization for loan");
 		
 		
@@ -75,9 +82,15 @@ public class NLQueriesClientExperiments {
 			bringDataToTheClient(service, queryName, resMetadata);
 		}
 
-		
-		service.initializeConnection("pkdd99_star", "CinecubesUser",
-				"Cinecubes", "pkdd99_star", "orders");
+
+		HashMap<String, String>userInputList2 = new HashMap<>();
+		userInputList2.put("schemaName", "pkdd99_star");
+		userInputList2.put("username", "CinecubesUser");
+		userInputList2.put("password", "Cinecubes");
+		userInputList2.put("cubeName", "orders");
+		userInputList2.put("inputFolder", "pkdd99_star");
+		service.initializeConnection(typeOfConnection, userInputList2);
+
 		System.out.println("Completed connection initialization for orders");
 		
 		for(int i=0; i<nlqueriesForOrders.length; i++) {
@@ -94,9 +107,15 @@ public class NLQueriesClientExperiments {
 			bringDataToTheClient(service, queryName, resMetadata);
 		}
 		
-		
-		service.initializeConnection("adult", "CinecubesUser",
-				"Cinecubes", "adult", "adult");
+
+		HashMap<String, String>userInputList3 = new HashMap<>();
+		userInputList3.put("schemaName", "adult");
+		userInputList3.put("username", "CinecubesUser");
+		userInputList3.put("password", "Cinecubes");
+		userInputList3.put("cubeName", "adult");
+		userInputList3.put("inputFolder", "adult");
+		service.initializeConnection(typeOfConnection, userInputList3);
+
 		System.out.println("Completed connection initialization for adult");
 		
 		for(int i=0; i<nlqueriesForAdult.length; i++) {

@@ -20,6 +20,7 @@
 package client.gui.application;
 
 
+
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 //import javafx.application.Application;
@@ -30,6 +31,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
 
 import client.gui.controllers.MainAppController;
 import client.gui.utils.LauncherForViewControllerPairs;
@@ -89,8 +91,8 @@ public class MainApp extends AbstractApplication {
 
 		// Set the application icon.
 		//this.primaryStage.getIcons().add(new Image("file:resources/images/ZZZZ.png"));
-
-		MainAppController controller = new MainAppController();
+		
+		MainAppController controller = new MainAppController(service);
 		int launchResult = -100;
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
@@ -106,7 +108,7 @@ public class MainApp extends AbstractApplication {
 		this.setCurrentStage(primaryStage);
 		this.setFirstCalledController(controller);
 		this.setLastCalledController(controller);
-		
+
 		
 		// Cube ADULT and queries
 		/*service.initializeConnection("adult_no_dublic", "CinecubesUser",
@@ -115,15 +117,20 @@ public class MainApp extends AbstractApplication {
 		service.answerCubeQueriesFromFile(f);/**/
 				
 		// Cube LOAN and queries
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String> userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
 		try {
-			service.initializeConnection("pkdd99_star", "CinecubesUser",
-					"Cinecubes", "pkdd99_star", "loan");
+			service.initializeConnection(typeOfConnection, userInputList);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 		System.out.println("Completed connection initialization");
 		
-
 		
 		//initRootLayout();
 

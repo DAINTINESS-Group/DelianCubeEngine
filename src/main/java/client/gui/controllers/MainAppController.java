@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import client.ClientRMITransferer;
 import client.gui.application.AbstractApplication;
@@ -42,8 +43,14 @@ public class MainAppController extends AbstractController {
 	@FXML
 	private TextArea textLogger;
 	
-	public MainAppController() {
+	private String typeOfConnection;
+	private IMainEngine service;
+	private HashMap<String, String> userInputList;
+	
+	
+	public MainAppController(IMainEngine service) {
 		super();
+		this.service = service;
 	}
 
 	
@@ -196,6 +203,41 @@ public class MainAppController extends AbstractController {
 		
 		return launchResult;
 	}
+	
+	@FXML
+	private void connectRDBMS() {
+		this.typeOfConnection = "RDBMS";
+		userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
+		try {
+			service.initializeConnection(typeOfConnection, userInputList);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Completed connection initialization");
+	}
+	
+	@FXML
+	private void connectSpark() {
+		this.typeOfConnection = "Spark";
+		userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
+		try {
+			service.initializeConnection(typeOfConnection, userInputList);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Completed connection initialization");
+		
+	}
+	
+	
 	
 }//end class MAinAppController
 

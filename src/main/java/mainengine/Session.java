@@ -22,8 +22,8 @@ public class Session {
 		this.prsMng = prsMng;
 	}
 	
-	public String initialize(HashMap<String, String> userInputList) throws RemoteException {		
-		initializeCubeMgr(userInputList);
+	public String initialize(String typeOfConnection, HashMap<String, String> userInputList) throws RemoteException {		
+		initializeCubeMgr(typeOfConnection, userInputList);
 		cubeManager.createCubeBase(userInputList);
 		constructDimension(userInputList.get("inputFolder"), userInputList.get("cubeName"));
 		cubeManager.setCubeQueryTranslator();
@@ -31,9 +31,8 @@ public class Session {
 		return this.id;
 	}
 	
-	private void initializeCubeMgr(HashMap<String, String> userInputList) throws RemoteException {
-		//TODO: na douleuei me typeofconnection kai oxi hard coded rdbms
-		cubeManager = new CubeManager("RDBMS", userInputList);
+	private void initializeCubeMgr(String typeOfConnection, HashMap<String, String> userInputList) throws RemoteException {
+		cubeManager = new CubeManager(typeOfConnection, userInputList);
 	}
 	
 	private void constructDimension(String inputlookup, String cubeName)

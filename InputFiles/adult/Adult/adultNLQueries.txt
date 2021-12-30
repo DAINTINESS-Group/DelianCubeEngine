@@ -1,9 +1,0 @@
-Describe the min of adult hours_per_week per occupation_dim.lvl0 and education_dim.lvl2 for occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery0
-@@
-Describe the min of adult hours_per_week per lvl0 and lvl2 for lvl1 is 'Blue-collar' as AdultNLQuery0
-@
-Describe the avg of adult hours_per_week per occupation_dim.lvl0 and marital_dim.lvl0 for occupation_dim.lvl1 is 'Other' and marital_dim.lvl1 is 'Partner-absent' as AdultNLQuery1
-@
-Describe the avg of adult hours_per_week per education_dim.lvl2 and work_dim.lvl1 for education_dim.lvl3 is 'Post-Secondary' and work_dim.lvl2 is 'With-Pay' and age_dim.lvl3 is '37-56' as AdultNLQuery3
-@
-Describe the avg of adult hours_per_week per education_dim.lvl2 and work_dim.lvl1 for native_country_dim.lvl1 is 'USA' and education_dim.lvl3 is 'Post-Secondary' and work_dim.lvl2 is 'With-Pay' and occupation_dim.lvl1 is 'Blue-collar' as AdultNLQuery4

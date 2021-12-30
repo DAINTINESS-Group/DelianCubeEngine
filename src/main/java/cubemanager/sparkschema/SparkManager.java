@@ -82,7 +82,9 @@ public class SparkManager {
 	 * 
 	 */
 	public void readSparkIni() {
-		File file = new File(PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + schemaName + File.separator + "spark.ini"); 
+		File file = new File("InputFiles" + "/" + schemaName + "/" + "spark.ini"); 
+
+		//File file = new File(PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + schemaName + File.separator + "spark.ini"); 
 		
 		BufferedReader br;
 		try {
@@ -93,6 +95,9 @@ public class SparkManager {
 				while ((st = br.readLine()) != null) {
 					String[] words = st.split(" ");
 					if (!words[words.length-1].isEmpty()) {
+						if(words[words.length-1].equals("C:\\ProgramFiles\\Hadoop")) {
+							words[words.length-1] = "C:\\Program Files\\Hadoop";
+						}
 						sparkIni.add(words[words.length-1]);
 					}
 				}
@@ -113,7 +118,10 @@ public class SparkManager {
 	public void createDataSets() {
 		System.out.println("\nCreating the Datasets. This might take some time...");
 		Instant startTime = Instant.now();
-		String path = PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + schemaName + File.separator + "Data";
+		
+		String path = "InputFiles" + "/" + schemaName + "/" + "Data";
+
+		//String path = PathFolder.getPathOfProject() + File.separator + "InputFiles" + File.separator + schemaName + File.separator + "Data";
 		File[] files = new File(path).listFiles();
 		for (File file : files) {
 			if(file.isFile()) {
@@ -213,7 +221,8 @@ public class SparkManager {
 				if(StringUtils.isNumeric(queryList.get(i).get(j).toString().replace(",", "")) || StringUtils.isNumeric(queryList.get(i).get(j).toString().replace(".", ""))) {
 					if (!StringUtils.isNumeric(queryList.get(i).get(j).toString())) {
 						DecimalFormat decim = new DecimalFormat("0.0000");
-						value = decim.format(Float.parseFloat(queryList.get(i).get(j).toString()))+"";
+						//value = decim.format(Float.parseFloat(queryList.get(i).get(j).toString()))+"";
+						value = decim.format(Double.parseDouble(queryList.get(i).get(j).toString()))+"";
 						value = value.replace(",", ".");
 					} else {
 						value = queryList.get(i).get(j).toString();

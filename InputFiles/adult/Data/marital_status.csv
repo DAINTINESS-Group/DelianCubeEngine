@@ -1,0 +1,8 @@
+level0,level1,level2,level3
+Divorced,Partner-absent,Married,*
+Married-AF-spouse,Partner-present,Married,*
+Married-civ-spouse,Partner-present,Married,*
+Married-spouse-absent,Partner-absent,Married,*
+Never-married,Never-married,Never-married,*
+Separated,Partner-absent,Married,*
+Widowed,Partner-absent,Married,*

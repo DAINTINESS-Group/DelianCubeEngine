@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -53,8 +54,15 @@ public class ValuePeculiarityTest {
 
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
-		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", 1,"loan");
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99");
+		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", 1);
 		measures.add("Value Peculiarity");
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 

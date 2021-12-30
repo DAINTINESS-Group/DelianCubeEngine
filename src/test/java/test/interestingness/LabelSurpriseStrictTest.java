@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -53,8 +54,15 @@ public class LabelSurpriseStrictTest {
 		clearOldHistory();
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
-		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","", "", "InputFiles/UserProfile/ExpectedValues/predictions1", -1, "loan");
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99");
+		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
+				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", -1);
 		measures.add("Label Surprise Strict");
 	}
 	
