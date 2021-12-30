@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -47,10 +48,17 @@ public class BeliefBasedNoveltyTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		clearOldHistory();
+		String typeOfConnection = "RDBMS";
+		HashMap<String, String>userInputList = new HashMap<>();
+		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("username", "CinecubesUser");
+		userInputList.put("password", "Cinecubes");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99");
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
-		queryEngine.initializeConnectionWithIntrMng("pkdd99", "CinecubesUser",
-				"Cinecubes", "pkdd99","InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1,"loan");
+		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
 		//measures.add("Direct Novelty");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
@@ -70,7 +78,7 @@ public class BeliefBasedNoveltyTest {
 
 	}
 	@Test
-	public void test() throws Exception {
+	public void testBeliefBasedNovelty() throws Exception {
 		
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
