@@ -22,7 +22,9 @@ public class InterestingnessMeasureHFactory {
 			case "Belief Based Novelty" : measure = new BeliefBasedDetailedNovelty();
 									break;		
 			case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
-									break;		
+									break;
+			case "Syntactic Peculiarity" : measure = new SyntacticPeculiarity();
+									break;
 		}
 		if(measure == null) {
 			System.err.println("Did not manage to create the desired measure. Exiting");

@@ -16,6 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	test.interestingness.BeliefBasedNoveltyTest.class,
 	test.interestingness.GoalBasedRelevanceTest.class,
 	test.interestingness.PartialDetailedNoveltyTest.class,
+	test.interestingness.FamilyBasedRelevanceTest.class,
+	test.interestingness.SyntacticPeculiarityTest.class,
 	test.nlqueries.NLTranslatorTest.class,
 	test.nlqueries.SimplifiedNLQueriesTest.class,
 	test.spark.SparkNLQueriesTest.class,

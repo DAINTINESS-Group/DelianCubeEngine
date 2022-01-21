@@ -20,7 +20,7 @@ public class InterestingnessManager {
 	private IInterestingnessMeasureWithHistory hMeasure;
 	private InputManager inputManager;
 	private ArrayList<String> historyMeasures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-			"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Partial Detailed Novelty","Belief Based Novelty", "Goal Based Relevance"));
+			"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Partial Detailed Novelty","Belief Based Novelty", "Goal Based Relevance","Syntactic Peculiarity"));
 	//private ArrayList<String> expectedValueMeasures = new ArrayList<String>(Arrays.asList("Label Surprise", 
 		//	"Label Surprise Strict", "Value Surprise"));
 	/**
@@ -74,7 +74,14 @@ public class InterestingnessManager {
 	 */
 	public double computeMeasure(String chosenMeasure, CubeQuery currentQuery, Result currentResult) {
 		double result;
-				
+		
+		//FamilyBasedRelevance doesn't require History and doesn't depend on Expected Values. So I check for it individually
+		if(chosenMeasure.equals("FamilyBasedRelevance")){
+			FamilyBasedRelevance family = new FamilyBasedRelevance();
+			result = family.computeMeasure(chosenMeasure, chosenMeasure, inputManager);
+			return result;
+		}
+		
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
 			result = this.hMeasure.computeMeasure(inputManager);

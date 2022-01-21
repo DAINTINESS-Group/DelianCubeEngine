@@ -846,4 +846,29 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
 	}//end answerCubeQueryWithInterestMeasures
 	
+	public String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures)
+			throws RemoteException {
+		// answer query
+
+		answerCubeQueryFromString(queryString);
+		this.interestMng.updateState(currentCubeQuery, currentResult);
+		answerCubeQueryFromString(queryString1); 
+		this.interestMng.updateState(currentCubeQuery, currentResult);
+
+		double result;
+		String[] results = new String[measures.size()];
+
+		for(int i = 0; i < measures.size(); i++) {
+			//compute each measure
+			result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
+			results[i] = Double.toString(result);
+		}
+
+		saveQueryHistory(queryString,currentResult);
+
+		return results;
+
+	}//end answerCubeQueryWithInterestMeasures
+
+	
 }//end class
