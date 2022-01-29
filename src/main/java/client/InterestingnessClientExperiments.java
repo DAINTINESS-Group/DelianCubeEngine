@@ -34,6 +34,14 @@ public class InterestingnessClientExperiments {
 	        .forEach(File::delete);
 		}
 		
+		static void clearExperimentsOutput() throws IOException {
+			Files.walk(Paths.get("OutputFiles\\Interestingness\\Experiments"))
+	        .filter(Files::isRegularFile)
+	        .map(Path::toFile)
+	        .forEach(File::delete);
+		}
+
+		
 		static void createGitignoreFiles() {
 			try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/.gitignore", true);
 				    BufferedWriter bw = new BufferedWriter(fw);
@@ -61,7 +69,10 @@ public class InterestingnessClientExperiments {
 			
 			//Clear history files
 			clearOldHistory();
-						
+			
+			//Clear old experiments files
+			clearExperimentsOutput();
+			
 			// Cube LOAN and queries
 			String typeOfConnection = "RDBMS";
 			HashMap<String, String>userInputList = new HashMap<>();
@@ -162,7 +173,8 @@ public class InterestingnessClientExperiments {
 			// ###### end of History creation ######
 			measures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
 					"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Label Surprise", 
-					"Label Surprise Strict", "Value Surprise"));
+					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty","Syntactic Peculiarity",
+					"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"));
 			
 			String[] answers = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 					"Name: LoanQuery91_S8_CG-Prtl\n" + 

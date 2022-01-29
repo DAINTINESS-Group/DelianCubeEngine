@@ -74,14 +74,7 @@ public class InterestingnessManager {
 	 */
 	public double computeMeasure(String chosenMeasure, CubeQuery currentQuery, Result currentResult) {
 		double result;
-		
-		//FamilyBasedRelevance doesn't require History and doesn't depend on Expected Values. So I check for it individually
-		if(chosenMeasure.equals("FamilyBasedRelevance")){
-			FamilyBasedRelevance family = new FamilyBasedRelevance();
-			result = family.computeMeasure(chosenMeasure, chosenMeasure, inputManager);
-			return result;
-		}
-		
+				
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
 			result = this.hMeasure.computeMeasure(inputManager);
@@ -92,4 +85,23 @@ public class InterestingnessManager {
 		}
 		return result;
 	}
+	
+	public String getHelpingQuery(String queryString, String queryString1) {
+		FamilyBasedRelevance family = new FamilyBasedRelevance();
+		String helpingQuery = family.getHelpingQuery(queryString, queryString1, inputManager);
+		return helpingQuery;
+	}
+	
+	public double computeMeasure(String chosenMeasure, CubeQuery currentQuery, Result currentResult, String helpingQueryResult) {
+		double result = -10.0;
+		//FamilyBasedRelevance doesn't require History and doesn't depend on Expected Values. So I check for it individually
+		if(chosenMeasure.equals("FamilyBasedRelevance")){
+			FamilyBasedRelevance family = new FamilyBasedRelevance();
+			result = family.computeMeasure(chosenMeasure, chosenMeasure, inputManager, helpingQueryResult);
+			return result;
+		}
+		
+		return result;
+	}
+
 }
