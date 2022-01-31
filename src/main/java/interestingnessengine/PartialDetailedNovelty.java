@@ -41,7 +41,7 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
 			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
-				if(testifCellsHaveEqualSignatures(c.getDimensionMembers(),detailedAreaOfInterest.get(j).getDimensionMembers())) {
+				if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(),detailedAreaOfInterest.get(j).getDimensionMembers())) {
 					removeSpecificCellFromArrayList(detailedAreaOfInterest.get(j));
 					break;
 				}
@@ -73,7 +73,7 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 	
 	private void removeSpecificCellFromArrayList(Cell cell) {
 		for (Cell c: novelAreaOfInterest) {
-			if(testifCellsHaveEqualSignatures(c.getDimensionMembers(), cell.getDimensionMembers())) {
+			if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(), cell.getDimensionMembers())) {
 				novelAreaOfInterest.remove(c);
 				return;
 			}
@@ -87,7 +87,7 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 	 * @author SpyridonKaloudis
 	 */
 	
-	public boolean testifCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
+	private boolean testIfCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
 		if(c1.toString().equals(c2.toString())) {
 			return true;
 		}

@@ -93,8 +93,10 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 				if(gammaMap.containsKey(tempGamma.get(i)[0] + "." + tempGamma.get(i)[1])) {
 					intersetionGamma++;
 				}
-			unionGamma = gamma.size() + tempGamma.size();
 			}
+			
+			unionGamma = gamma.size() + tempGamma.size();
+			
 			//Add the the Jaccard distance of each query to the total Gamma distance
 			totalJaccardGammaDistance += (1 - (intersetionGamma/unionGamma));
 			
@@ -103,8 +105,10 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 				if(sigmaMap.containsKey(tempSigma.get(i)[0]+tempSigma.get(i)[1]+tempSigma.get(i)[2])) {
 					intersetionSigma++;
 				}
+			}
+			
 			unionSigma = sigma.size() + tempSigma.size();
-			}			
+
 			//Add the the Jaccard distance of each query to the total Sigma distance
 			totalJaccardSigmaDistance += (1 - (intersetionSigma/unionSigma));
 			
@@ -117,6 +121,7 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 				
 		//apply weights and divide by the number of past queries to find the total Jaccard distance
 		totalJaccardDistance = ((weightSigma * totalJaccardSigmaDistance) + (weightGamma * totalJaccardGammaDistance) + (weightMeasure * totalJaccardMeasureDistance)) / pastQueries.size();
+		
 		Instant endAlgorithm = Instant.now();
 		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
 		try {

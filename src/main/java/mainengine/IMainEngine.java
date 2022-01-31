@@ -21,6 +21,7 @@
 package mainengine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 //import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -216,6 +217,21 @@ public interface IMainEngine extends IServer {
 	 * @see answerCubeQueryFromString
 	 */
     String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures) throws RemoteException;
+    
+	/**
+	 * Answers a query as prescribed in a String and computes the chosen measures. Mainly used for FamilyBasedRelevance metric 
+	 * 
+	 * See the answerCubeQueryFromString
+	 * @param queryString A String with a query
+	 * @param queryString1 A String with another query
+	 * @param measures    A List with the chosen measures
+	 * @return A String Array with the results of all the measures
+	 * @throws RemoteException
+	 * @throws FileNotFoundException 
+	 * @see answerCubeQueryFromString
+	 */
+    String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
+
 	
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.

@@ -37,7 +37,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 		}
 
 		novelAreaOfInterest = new ArrayList<Cell>();
-		//Add all the current query's cells to noverAreaOfInterest ArrayList
+		//Add all the current query's cells to novelAreaOfInterest ArrayList
 		novelAreaOfInterest.addAll(detailedQueryCube);
 
 		//get the user's goals by reading the necessary file
@@ -50,7 +50,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 		for (int i=0; i<detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
 			for (int j=0; j<userGoals.size(); j++) {
-				if(testifCellsHaveEqualSignatures(c.getDimensionMembers(),userGoals.get(j).getDimensionMembers())){
+				if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(),userGoals.get(j).getDimensionMembers())){
 					//if c was part of the usre's goals, add it to the covered list and remove it from the novel list
 					coveredAreaOfInterest.add(detailedQueryCube.get(j));
 					novelAreaOfInterest.remove(detailedQueryCube.get(j));
@@ -79,7 +79,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 	 * @author SpyridonKaloudis
 	 */
 
-	public boolean testifCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
+	private boolean testIfCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
 		if(c1.toString().equals(c2.toString())) {
 			return true;
 		}

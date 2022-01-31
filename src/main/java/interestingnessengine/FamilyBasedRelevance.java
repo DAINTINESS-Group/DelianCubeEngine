@@ -1,5 +1,11 @@
 package interestingnessengine;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -14,6 +20,7 @@ public class FamilyBasedRelevance {
 	private CubeQuery query2;
 	private ArrayList<String[]> sigma1;
 	private ArrayList<String[]> sigma2;	
+	private long durationConstructingQuery;
 	
 	/** Computes the family based relevance of two queries.
 	 * @param q1 The string of {@link #query1}.
@@ -26,6 +33,8 @@ public class FamilyBasedRelevance {
 	
 	public double computeMeasure(String q1, String q2, InputManager inputManager, String helpingQueryResult) {
 		
+		Instant startAlgorithm = Instant.now();
+		
 		historySize = inputManager.getQueryHistory().size();
 		query1 = inputManager.getCurrentQuery();
 		query2 = inputManager.getQueryHistory().get(historySize-1);
@@ -34,6 +43,10 @@ public class FamilyBasedRelevance {
 		
 		//if helpingQuery returned an empty string, then q1 and q2 are not related. Gamma or Sigma size didn't match OR there are more than 2 different Sigmas.
 		if(helpingQueryResult=="") {
+			
+			Instant endAlgorithm = Instant.now();
+			computeAlgorithmTime(startAlgorithm,endAlgorithm);
+			
 			return 1.0;
 		}else {
 			//helpingQueryResult contains the ancestor of the lower level 
@@ -45,22 +58,33 @@ public class FamilyBasedRelevance {
 			//Search for helpingQueryResult in both queries' sigmas. If 1 sigma is equal to helpingQueryResult, then we have a Mother-Child, Ancestor or Sibling relation
 			for(String[] sigma : sigma1) {
 				if(sigma[2].trim().equals(helpingQueryResult)) {
+					
+					Instant endAlgorithm = Instant.now();
+					computeAlgorithmTime(startAlgorithm,endAlgorithm);
+					
 					return 0.0;
 				}
 			}
 			for(String[] sigma : sigma2) {
 				if(sigma[2].trim().equals(helpingQueryResult)) {
+					
+					Instant endAlgorithm = Instant.now();
+					computeAlgorithmTime(startAlgorithm,endAlgorithm);
+					
 					return 0.0;
 				}
 			}
 			
 			//If the helpingQueryResult didn't match any of the Sigmas, then the query is not related
+			Instant endAlgorithm = Instant.now();
+			computeAlgorithmTime(startAlgorithm,endAlgorithm);
+			
 			return 1.0;
 		}
 	}
 	
 	//Simple method to check if all Gammas match and have a pair.
-	public boolean checkIfGammasMatch(ArrayList<String[]> gamma1, ArrayList<String[]> gamma2) {
+	private boolean checkIfGammasMatch(ArrayList<String[]> gamma1, ArrayList<String[]> gamma2) {
 		String tempGamma = "";
 		Integer value = null;
 		
@@ -105,7 +129,7 @@ public class FamilyBasedRelevance {
 	//Use this method to find out if we need to ask a helping query
 	//If we need to ask a helping query, return the query itself as a String
 	public String getHelpingQuery(String q1, String q2, InputManager inputManager) {
-		
+		Instant startConstructingQuery = Instant.now();
 		historySize = inputManager.getQueryHistory().size();
 		CubeQuery query1 = inputManager.getCurrentQuery();
 		CubeQuery query2 = inputManager.getQueryHistory().get(historySize-1);
@@ -128,6 +152,8 @@ public class FamilyBasedRelevance {
 						if(checkIfGammasMatch(gamma1, gamma2)) {	//check if the queries have the same Gamma expressions.
 							
 							if(sigma1.size()!=sigma2.size()) {	//check if the queries have the same amount of Sigma expressions.
+								Instant endConstructingQuery = Instant.now();
+								durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
 								return "";	//If the queries don't have the same amount of Sigma, we don't need to ask a helping query, so return "";
 							}
 							
@@ -185,6 +211,10 @@ public class FamilyBasedRelevance {
 											String gamma = s1[0];
 											String sigma = s2[0]+s2[1]+s2[2];									
 											//return the helping query
+											
+											Instant endConstructingQuery = Instant.now();
+											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+											
 											return("CubeName:" + name + "\n" + 
 													"Name: helpingQuery\n" + 
 													"AggrFunc:" + aggr +"\n" + 
@@ -193,6 +223,8 @@ public class FamilyBasedRelevance {
 													"Sigma:" + sigma);
 										}else {
 											//or else return "" if the don't need to ask a helping query
+											Instant endConstructingQuery = Instant.now();
+											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
 											return "";
 										}
 									}else { //if level of query 2 > level of query 1
@@ -204,6 +236,10 @@ public class FamilyBasedRelevance {
 											String gamma = s2[0];
 											String sigma = s1[0]+s1[1]+s1[2];
 											//return the helping query
+											
+											Instant endConstructingQuery = Instant.now();
+											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 											return("CubeName:" + name + "\n" + 
 													"Name: helpingQuery\n" + 
 													"AggrFunc:" + aggr +"\n" + 
@@ -212,29 +248,66 @@ public class FamilyBasedRelevance {
 													"Sigma:" + sigma);
 										}else {
 											//or else return "" if the don't need to ask a helping query
+											Instant endConstructingQuery = Instant.now();
+											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 											return "";
 										}
 									}
 								}else {
+									Instant endConstructingQuery = Instant.now();
+									durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 									return "" ;
 								}
 							}else {
+								Instant endConstructingQuery = Instant.now();
+								durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 								return "" ;
 							}
 						}else {
+							Instant endConstructingQuery = Instant.now();
+							durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 							return "" ;
 						}
 					}else {
+						Instant endConstructingQuery = Instant.now();
+						durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 						return "" ;
 					}
 				}else {
+					Instant endConstructingQuery = Instant.now();
+					durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 					return "" ;
 				}
 			}else {
+				Instant endConstructingQuery = Instant.now();
+				durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 				return "" ;
 			}
 		}else {
+			Instant endConstructingQuery = Instant.now();
+			durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+
 			return "";
 		}			
+	}
+	
+	private void computeAlgorithmTime(Instant startAlgorithm, Instant endAlgorithm) {
+		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
+		
+		try {
+			String outputTxt = "\n\nFamily Based Relevance \n"+
+	    			"\tConstructing Query:\t" + durationConstructingQuery+ " ms\n"+
+	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ms\n"+
+	    			 "\tTotal Time:\t" + (durationConstructingQuery+durationAlgorithm) + " ms";
+		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+		}catch (IOException e) {}
 	}
 }

@@ -53,7 +53,7 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 		long durationAlgorithm = Duration.between(start, end).toMillis();
 		
 		try {
-			String outputTxt = "\n\nValue Surprise \n"+
+			String outputTxt = "\n\nBasic Value Surprise \n"+
 	    			"\tCompute Algorithm:\t" + durationAlgorithm+ " ms\n";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);

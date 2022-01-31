@@ -15,7 +15,7 @@ import result.Cell;
 public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
 
 	private ArrayList<Cell> detailedQueryCube;
-	private ArrayList<Cell> knownCells;
+	private ArrayList<Cell> unknownCells;
 	private ArrayList<Cell> allCellsVisited;
 	private HashMap<String, Float> beliefs;
 	private HashMap<String, Integer> timesVisitedCell;
@@ -77,22 +77,22 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 		long durationDetailedQuery = Duration.between(startDetailedQuery, endDetailedQuery).toMillis();
 
 		Instant startAlgorithm = Instant.now();
-		knownCells = new ArrayList<Cell>();
-		knownCells.addAll(detailedQueryCube);
+		unknownCells = new ArrayList<Cell>();
+		unknownCells.addAll(detailedQueryCube);
 		assignBeliefs(allCellsVisited);
 
 		// set threshold (0,05 means that if the user has seen the cell in more than 5% of his queries, 
 		// then it's value is probably not novel to him because his beliefs are close to the actual value)
 		threshold = (float)0.05;
 		
-		ArrayList<Cell> unknownCells = new ArrayList<Cell>();
+		ArrayList<Cell> knownCells = new ArrayList<Cell>();
 	
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
 			String signature = c.getDimensionMembers().toString();
 			if(beliefs.containsKey(signature)) {
 				if(beliefs.get(signature)>=threshold) {
-					unknownCells.add(c);
+					knownCells.add(c);
 					removeSpecificCellFromArrayList(c);
 				}
 			}
@@ -109,8 +109,8 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}
-
-		return(1 - (double) unknownCells.size() / ( (double) unknownCells.size() + (double) knownCells.size() ));
+		
+		return (double) unknownCells.size() / ( (double) knownCells.size() + (double) unknownCells.size() );
 	}
 
 	/** Assigns the user's beliefs to each cell of the current query,
@@ -150,9 +150,9 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	 * @author SpyridonKaloudis
 	 */
 	private void removeSpecificCellFromArrayList(Cell cell) {
-		for (Cell c: knownCells) {
-			if(testifCellsHaveEqualSignatures(c.getDimensionMembers(), cell.getDimensionMembers())) {
-				knownCells.remove(c);
+		for (Cell c: unknownCells) {
+			if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(), cell.getDimensionMembers())) {
+				unknownCells.remove(c);
 				return;
 			}
 		}
@@ -164,7 +164,7 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	 * @return true if the cells have equal signatures, false otherwise.
 	 * @author SpyridonKaloudis
 	 */
-	public boolean testifCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
+	private boolean testIfCellsHaveEqualSignatures(ArrayList<String> c1, ArrayList<String> c2) {
 		if(c1.toString().equals(c2.toString())) {
 			return true;
 		}

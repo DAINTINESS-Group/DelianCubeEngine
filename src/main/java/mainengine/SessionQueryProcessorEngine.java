@@ -849,7 +849,6 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	public String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures)
 			throws RemoteException, FileNotFoundException {
 		// answer query
-
 		answerCubeQueryFromString(queryString);
 		this.interestMng.updateState(currentCubeQuery, currentResult);
 		answerCubeQueryFromString(queryString1); 
@@ -857,34 +856,45 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
 		double result;
 		String[] results = new String[measures.size()];
-		
-		if(measures.get(0)=="FamilyBasedRelevance") {
-			//Get the helping query String
-			String helpingQuery = interestMng.getHelpingQuery(queryString,queryString1);
-			if(!helpingQuery.equals("")) {
-				//Answer the helping query
-				String file = answerCubeQueryFromString(helpingQuery);
-				  try {
-				      File myObj = new File(file);
-				      Scanner myReader = new Scanner(myObj);
-				      while (myReader.hasNextLine()) {
-				        String data = myReader.nextLine();
-				        if(!myReader.hasNextLine()) {
-				        	//Get the result we need from the answer file and save it in helpingQuery
-					        helpingQuery = data.split("	")[0];
-				        }
-				      }
-				      myReader.close();
-				    } catch (FileNotFoundException e) {
-				      System.out.println("An error occurred while reading the helping query file (Family based relevance).");
-				      e.printStackTrace();
-				    }
+		for(int i = 0; i < measures.size(); i++) {
+			//compute each measure
+			if(measures.get(i).equals("FamilyBasedRelevance")) {
+				//Get the helping query String
+				String helpingQuery = interestMng.getHelpingQuery(queryString,queryString1);
+				if(!helpingQuery.equals("")) {
+					//Answer the helping query
+					String file = answerCubeQueryFromString(helpingQuery);
+					  try {
+					      File myObj = new File(file);
+					      Scanner myReader = new Scanner(myObj);
+					      while (myReader.hasNextLine()) {
+					        String data = myReader.nextLine();
+					        if(!myReader.hasNextLine()) {
+					        	//Get the result we need from the answer file and save it in helpingQuery
+						        helpingQuery = data.split("	")[0];
+					        }
+					      }
+					      myReader.close();
+					    } catch (FileNotFoundException e) {
+					      System.out.println("An error occurred while reading the helping query file (Family based relevance).");
+					      e.printStackTrace();
+					    }
+				}
+				
+
+				result = interestMng.computeMeasure(measures.get(0), currentCubeQuery, currentResult, helpingQuery);
+
+				results[0] = Double.toString(result);
+
+			}else {
+				//compute each measure
+				result = interestMng.computeMeasure(measures.get(i), currentCubeQuery, currentResult);
+				results[i] = Double.toString(result);
+
 			}
-		
-			result = interestMng.computeMeasure(measures.get(0), currentCubeQuery, currentResult, helpingQuery);
-			results[0] = Double.toString(result);
 
 		}
+
 
 		saveQueryHistory(queryString,currentResult);
 

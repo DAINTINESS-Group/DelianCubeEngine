@@ -175,17 +175,37 @@ public class InterestingnessClientExperiments {
 					"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Label Surprise", 
 					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty","Syntactic Peculiarity",
 					"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"));
-			
-			String[] answers = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+			String q1 = "CubeName:loan\n" + 
 					"Name: LoanQuery91_S8_CG-Prtl\n" + 
 					"AggrFunc:Min\n" + 
 					"Measure:amount\n" + 
 					"Gamma:account_dim.district_name,date_dim.month\n" + 
-					"Sigma:account_dim.region='north Moravia'" , measures);
+					"Sigma:account_dim.region='north Moravia'";
+			String[] answers = service.answerCubeQueryWithInterestMeasures(q1 , measures);
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			for(int i = 0; i < answers.length; i++) {
 				System.out.println(measures.get(i) + ":    " + answers[i]);
 			}
+			
+			//Experiment for FamilyBasedRelevance bellow
+			String q2 = "CubeName:loan\n" + 
+					"Name: LoanQuery91_S8_CG-Prtl\n" + 
+					"AggrFunc:Min\n" + 
+					"Measure:amount\n" + 
+					"Gamma:account_dim.district_name,date_dim.month\n" + 
+					"Sigma:account_dim.region='central Bohemia'";
+			/*String q3 = "CubeName:loan\n" + 
+					"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+					"AggrFunc:Min\n" + 
+					"Measure:amount\n" + 
+					"Gamma:date_dim.month,account_dim.district_name\n" + 
+					"Sigma:account_dim.region='Prague',date_dim.year = '1997'";*/
+
+			measures.clear();
+			measures.add("FamilyBasedRelevance");
+			answers = service.answerCubeQueryWithInterestMeasures(q1, q2 , measures);
+			
+			System.out.println(measures.get(0) + ":    " + answers[0]);
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			
 			//Delete history files created
