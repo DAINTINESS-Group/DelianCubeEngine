@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import result.Cell;
 
@@ -24,17 +22,17 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 	 */
 	
 	public double computeMeasure(IHistoryInput inputManager) {
-		Instant startDetailedQuery = Instant.now();
+		long startDetailedQuery = System.nanoTime();
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
-		Instant endDetailedQuery = Instant.now();
-		long durationDetailedQuery = Duration.between(startDetailedQuery, endDetailedQuery).toMillis();
+		long endDetailedQuery = System.nanoTime();
+		long durationDetailedQuery = endDetailedQuery - startDetailedQuery;
 		
-		Instant startDetailedArea = Instant.now();
+		long startDetailedArea = System.nanoTime();
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
-		Instant endDetailedArea = Instant.now();
-		long durationDetailedArea = Duration.between(startDetailedArea, endDetailedArea).toMillis();
+		long endDetailedArea = System.nanoTime();
+		long durationDetailedArea = endDetailedArea - startDetailedArea;
 
-		Instant startAlgorithm = Instant.now();
+		long startAlgorithm = System.nanoTime();
 		novelAreaOfInterest = new ArrayList<Cell>();
 		novelAreaOfInterest.addAll(detailedQueryCube);
 		
@@ -49,15 +47,15 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 
 		}
 		
-		Instant endAlgorithm = Instant.now();
-		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
+		long endAlgorithm = System.nanoTime();
+		long durationAlgorithm = endAlgorithm - startAlgorithm;
 
 		try {
 			String outputTxt = "\n\nPartial Detailed Novelty \n"+
-	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ms\n"+
-	    			 "\tDetailed Area:\t" + durationDetailedArea + " ms \n"+
-	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ms\n"+
-	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationDetailedArea+durationAlgorithm) + " ms";
+	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
+	    			 "\tDetailed Area:\t" + durationDetailedArea + " ns \n"+
+	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n"+
+	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationDetailedArea+durationAlgorithm) + " ns";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}

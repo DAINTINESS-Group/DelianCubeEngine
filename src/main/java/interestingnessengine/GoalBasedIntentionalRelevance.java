@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 
 import result.Cell;
@@ -27,7 +25,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 
 	public double computeMeasure(IHistoryInput inputManager) {
 		
-		Instant startDetailedQuery = Instant.now();
+		long startDetailedQuery = System.nanoTime();
 		coveredAreaOfInterest = new ArrayList<Cell>();
 		Result res = inputManager.getCurrentQueryResult();
 		detailedQueryCube = new ArrayList<Cell>();
@@ -42,10 +40,10 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 
 		//get the user's goals by reading the necessary file
 		userGoals = inputManager.getQueryGoals();
-		Instant endDetailedQuery = Instant.now();
-		long durationDetailedQuery = Duration.between(startDetailedQuery, endDetailedQuery).toMillis();
+		long endDetailedQuery = System.nanoTime();
+		long durationDetailedQuery = endDetailedQuery - startDetailedQuery;
 
-		Instant startAlgorithm = Instant.now();
+		long startAlgorithm = System.nanoTime();
 
 		for (int i=0; i<detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
@@ -58,14 +56,14 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 				}
 			}
 		}
-		Instant endAlgorithm = Instant.now();
-		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
+		long endAlgorithm = System.nanoTime();
+		long durationAlgorithm = endAlgorithm - startAlgorithm;
 
 		try {
 			String outputTxt = "\n\nGoal Based Relevance \n"+
-	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ms\n"+
-	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ms\n"+
-	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationAlgorithm) + " ms";
+	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
+	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n"+
+	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationAlgorithm) + " ns";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}

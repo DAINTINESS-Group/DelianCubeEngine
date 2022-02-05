@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,7 +60,7 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 		totalJaccardMeasureDistance = 0.0;
 		totalJaccardDistance = 0.0;
 		
-		Instant startAnalizeQuery = Instant.now();
+		long startAnalizeQuery = System.nanoTime();
 		// Set up two HashMaps to easily compare expressions between queries
 		
 		// query.getGammaExpressions return gammas split in half (eg. account_dim.lvl1 becomes account_dim on index 0 and lvl1 on index 1. 
@@ -76,10 +74,10 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 		for(int i=0; i<gamma.size(); i++) {
 			gammaMap.put(gamma.get(i)[0] + "." + gamma.get(i)[1],0);
 		}
-		Instant endAnalizeQuery = Instant.now();
-		long durationAnalizeQuery = Duration.between(startAnalizeQuery, endAnalizeQuery).toMillis();
+		long endAnalizeQuery = System.nanoTime();
+		long durationAnalizeQuery = endAnalizeQuery - startAnalizeQuery;
 
-		Instant startAlgorithm = Instant.now();
+		long startAlgorithm = System.nanoTime();
 		for(CubeQuery pastQuery : pastQueries) {
 			tempMeasure = pastQuery.getListMeasure().get(0).getName();
 			tempAggr = pastQuery.getAggregateFunction();
@@ -122,13 +120,13 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 		//apply weights and divide by the number of past queries to find the total Jaccard distance
 		totalJaccardDistance = ((weightSigma * totalJaccardSigmaDistance) + (weightGamma * totalJaccardGammaDistance) + (weightMeasure * totalJaccardMeasureDistance)) / pastQueries.size();
 		
-		Instant endAlgorithm = Instant.now();
-		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
+		long endAlgorithm = System.nanoTime();
+		long durationAlgorithm = endAlgorithm - startAlgorithm;
 		try {
 			String outputTxt = "\n\nSyntactic Peculiarity \n"+
-	    			"\tAnalize Query:\t" + durationAnalizeQuery+ " ms\n"+
-	    			 "\tUse Algorithm:\t" + durationAlgorithm + " ms \n"+
-	    			 "\tTotal Time:\t" + (durationAnalizeQuery+durationAlgorithm) + " ms";
+	    			"\tAnalize Query:\t" + durationAnalizeQuery+ " ns\n"+
+	    			 "\tUse Algorithm:\t" + durationAlgorithm + " ns \n"+
+	    			 "\tTotal Time:\t" + (durationAnalizeQuery+durationAlgorithm) + " ns";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}

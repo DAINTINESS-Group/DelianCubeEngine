@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import result.Cell;
 /**
@@ -26,25 +24,25 @@ public class IndirectNovelty implements IInterestingnessMeasureWithHistory{
 	 * @return the indirect novelty value
 	 */
 	public double computeMeasure(IHistoryInput inputManager) {
-		Instant startDetailedQuery = Instant.now();
+		long startDetailedQuery = System.nanoTime();
 		
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
 		
-		Instant endDetailedQuery = Instant.now();
+		long endDetailedQuery = System.nanoTime();
 		
-		long durationDetailedQuery = Duration.between(startDetailedQuery, endDetailedQuery).toMillis();
+		long durationDetailedQuery = endDetailedQuery - startDetailedQuery;
 
-		Instant startDetailedArea = Instant.now();
+		long startDetailedArea = System.nanoTime();
 		
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
 		
-		Instant endDetailedArea = Instant.now();
+		long endDetailedArea = System.nanoTime();
 		
-		long durationDetailedArea = Duration.between(startDetailedArea, endDetailedArea).toMillis();
+		long durationDetailedArea = endDetailedArea - startDetailedArea;
 		
 		ArrayList<Cell> intersection = new ArrayList<Cell>();
 		
-		Instant startIntersection = Instant.now();
+		long startIntersection = System.nanoTime();
 		
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
@@ -56,16 +54,16 @@ public class IndirectNovelty implements IInterestingnessMeasureWithHistory{
 			}
 		}
 		
-		Instant endIntersection = Instant.now();
+		long endIntersection = System.nanoTime();
 		
-		long durationIntersection = Duration.between(startIntersection, endIntersection).toMillis();
+		long durationIntersection = endIntersection - startIntersection;
 		
 		try {
 			String outputTxt = "\n\nIndirect Novelty \n"+
-	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ms\n"+
-	    			 "\tDetailed Area:\t" + durationDetailedArea + " ms \n"+
-	    			 "\tIntersection:\t" +durationIntersection + " ms\n"+
-	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationDetailedArea+durationIntersection) + " ms";
+	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
+	    			 "\tDetailed Area:\t" + durationDetailedArea + " ns \n"+
+	    			 "\tIntersection:\t" +durationIntersection + " ns\n"+
+	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationDetailedArea+durationIntersection) + " ns";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}

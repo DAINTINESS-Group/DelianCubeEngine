@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -33,7 +31,7 @@ public class FamilyBasedRelevance {
 	
 	public double computeMeasure(String q1, String q2, InputManager inputManager, String helpingQueryResult) {
 		
-		Instant startAlgorithm = Instant.now();
+		long startAlgorithm = System.nanoTime();
 		
 		historySize = inputManager.getQueryHistory().size();
 		query1 = inputManager.getCurrentQuery();
@@ -44,7 +42,7 @@ public class FamilyBasedRelevance {
 		//if helpingQuery returned an empty string, then q1 and q2 are not related. Gamma or Sigma size didn't match OR there are more than 2 different Sigmas.
 		if(helpingQueryResult=="") {
 			
-			Instant endAlgorithm = Instant.now();
+			long endAlgorithm = System.nanoTime();
 			computeAlgorithmTime(startAlgorithm,endAlgorithm);
 			
 			return 1.0;
@@ -59,7 +57,7 @@ public class FamilyBasedRelevance {
 			for(String[] sigma : sigma1) {
 				if(sigma[2].trim().equals(helpingQueryResult)) {
 					
-					Instant endAlgorithm = Instant.now();
+					long endAlgorithm = System.nanoTime();
 					computeAlgorithmTime(startAlgorithm,endAlgorithm);
 					
 					return 0.0;
@@ -68,7 +66,7 @@ public class FamilyBasedRelevance {
 			for(String[] sigma : sigma2) {
 				if(sigma[2].trim().equals(helpingQueryResult)) {
 					
-					Instant endAlgorithm = Instant.now();
+					long endAlgorithm = System.nanoTime();
 					computeAlgorithmTime(startAlgorithm,endAlgorithm);
 					
 					return 0.0;
@@ -76,7 +74,7 @@ public class FamilyBasedRelevance {
 			}
 			
 			//If the helpingQueryResult didn't match any of the Sigmas, then the query is not related
-			Instant endAlgorithm = Instant.now();
+			long endAlgorithm = System.nanoTime();
 			computeAlgorithmTime(startAlgorithm,endAlgorithm);
 			
 			return 1.0;
@@ -129,7 +127,7 @@ public class FamilyBasedRelevance {
 	//Use this method to find out if we need to ask a helping query
 	//If we need to ask a helping query, return the query itself as a String
 	public String getHelpingQuery(String q1, String q2, InputManager inputManager) {
-		Instant startConstructingQuery = Instant.now();
+		long startConstructingQuery = System.nanoTime();
 		historySize = inputManager.getQueryHistory().size();
 		CubeQuery query1 = inputManager.getCurrentQuery();
 		CubeQuery query2 = inputManager.getQueryHistory().get(historySize-1);
@@ -143,7 +141,6 @@ public class FamilyBasedRelevance {
 		String cubeName2 = query2.getReferCube().getName();
 		String measure1 = query1.getListMeasure().get(0).getName();
 		String measure2 = query2.getListMeasure().get(0).getName();
-		
 		//A bunch of nested if-s to determine if we need to ask a query for help.
 		if(cubeName1.equals(cubeName2)) {	//check if the queries are about the same cube.
 			if(aggr1.equals(aggr2)) {	//check if the queries have the same aggr function.
@@ -152,8 +149,15 @@ public class FamilyBasedRelevance {
 						if(checkIfGammasMatch(gamma1, gamma2)) {	//check if the queries have the same Gamma expressions.
 							
 							if(sigma1.size()!=sigma2.size()) {	//check if the queries have the same amount of Sigma expressions.
-								Instant endConstructingQuery = Instant.now();
-								durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+								long endConstructingQuery = System.nanoTime();
+								durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+								try {
+									String outputTxt = "\n\nFamily Based Relevance \n"+
+							    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+								    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+								    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+								}catch (IOException e) {}
+								
 								return "";	//If the queries don't have the same amount of Sigma, we don't need to ask a helping query, so return "";
 							}
 							
@@ -212,9 +216,9 @@ public class FamilyBasedRelevance {
 											String sigma = s2[0]+s2[1]+s2[2];									
 											//return the helping query
 											
-											Instant endConstructingQuery = Instant.now();
-											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-											
+											long endConstructingQuery = System.nanoTime();
+											durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+
 											return("CubeName:" + name + "\n" + 
 													"Name: helpingQuery\n" + 
 													"AggrFunc:" + aggr +"\n" + 
@@ -223,8 +227,8 @@ public class FamilyBasedRelevance {
 													"Sigma:" + sigma);
 										}else {
 											//or else return "" if the don't need to ask a helping query
-											Instant endConstructingQuery = Instant.now();
-											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+											long endConstructingQuery = System.nanoTime();
+											durationConstructingQuery = endConstructingQuery - startConstructingQuery;
 											return "";
 										}
 									}else { //if level of query 2 > level of query 1
@@ -237,8 +241,16 @@ public class FamilyBasedRelevance {
 											String sigma = s1[0]+s1[1]+s1[2];
 											//return the helping query
 											
-											Instant endConstructingQuery = Instant.now();
-											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+											
+											long endConstructingQuery = System.nanoTime();
+											durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+
+											try {
+												String outputTxt = "\n\nFamily Based Relevance \n"+
+										    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+											    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+											    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+											}catch (IOException e) {}
 
 											return("CubeName:" + name + "\n" + 
 													"Name: helpingQuery\n" + 
@@ -248,64 +260,110 @@ public class FamilyBasedRelevance {
 													"Sigma:" + sigma);
 										}else {
 											//or else return "" if the don't need to ask a helping query
-											Instant endConstructingQuery = Instant.now();
-											durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
+											long endConstructingQuery = System.nanoTime();
+											durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+											try {
+												String outputTxt = "\n\nFamily Based Relevance \n"+
+										    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+											    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+											    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+											}catch (IOException e) {}
 
 											return "";
 										}
 									}
 								}else {
-									Instant endConstructingQuery = Instant.now();
-									durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+									long endConstructingQuery = System.nanoTime();
+									durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+									try {
+										String outputTxt = "\n\nFamily Based Relevance \n"+
+								    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+									    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+									    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+									}catch (IOException e) {}
+									
 									return "" ;
 								}
 							}else {
-								Instant endConstructingQuery = Instant.now();
-								durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+								long endConstructingQuery = System.nanoTime();
+								durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+								try {
+									String outputTxt = "\n\nFamily Based Relevance \n"+
+							    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+								    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+								    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+								}catch (IOException e) {}
+								
 								return "" ;
 							}
 						}else {
-							Instant endConstructingQuery = Instant.now();
-							durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+							long endConstructingQuery = System.nanoTime();
+							durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+							try {
+								String outputTxt = "\n\nFamily Based Relevance \n"+
+						    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+							    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+							    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+							}catch (IOException e) {}
+							
 							return "" ;
 						}
 					}else {
-						Instant endConstructingQuery = Instant.now();
-						durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+						long endConstructingQuery = System.nanoTime();
+						durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+						try {
+							String outputTxt = "\n\nFamily Based Relevance \n"+
+					    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+						    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+						    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+						}catch (IOException e) {}
+						
 						return "" ;
 					}
 				}else {
-					Instant endConstructingQuery = Instant.now();
-					durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+					long endConstructingQuery = System.nanoTime();
+					durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+					try {
+						String outputTxt = "\n\nFamily Based Relevance \n"+
+				    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+					    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+					    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+					}catch (IOException e) {}
+					
 					return "" ;
 				}
 			}else {
-				Instant endConstructingQuery = Instant.now();
-				durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+				long endConstructingQuery = System.nanoTime();
+				durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+				try {
+					String outputTxt = "\n\nFamily Based Relevance \n"+
+			    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+				    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+				    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+				}catch (IOException e) {}
+				
 				return "" ;
 			}
 		}else {
-			Instant endConstructingQuery = Instant.now();
-			durationConstructingQuery = Duration.between(startConstructingQuery, endConstructingQuery).toMillis();
-
+			long endConstructingQuery = System.nanoTime();
+			durationConstructingQuery = endConstructingQuery - startConstructingQuery;
+			try {
+				String outputTxt = "\n\nFamily Based Relevance \n"+
+		    			"\tConstructing Query:\t" + durationConstructingQuery+ " ns\n";
+			    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
+			    		outputTxt.getBytes(), StandardOpenOption.APPEND);
+			}catch (IOException e) {}
+			
 			return "";
 		}			
 	}
 	
-	private void computeAlgorithmTime(Instant startAlgorithm, Instant endAlgorithm) {
-		long durationAlgorithm = Duration.between(startAlgorithm, endAlgorithm).toMillis();
+	private void computeAlgorithmTime(long startAlgorithm, long endAlgorithm) {
+		long durationAlgorithm = endAlgorithm - startAlgorithm;
 		
 		try {
-			String outputTxt = "\n\nFamily Based Relevance \n"+
-	    			"\tConstructing Query:\t" + durationConstructingQuery+ " ms\n"+
-	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ms\n"+
-	    			 "\tTotal Time:\t" + (durationConstructingQuery+durationAlgorithm) + " ms";
+			String outputTxt =
+	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}

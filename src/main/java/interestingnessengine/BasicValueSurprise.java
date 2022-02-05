@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.Instant;
 
 import result.Cell;
 
@@ -27,7 +25,7 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 	 */
 	
 	public double computeMeasure(IExpectedValuesInput inputManager) {
-		Instant start = Instant.now();
+		long start = System.nanoTime();
 		
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for (Cell expectedCell: inputManager.getExpectedValues()) {
@@ -49,12 +47,12 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 			}
 		}
 		
-		Instant end = Instant.now();
-		long durationAlgorithm = Duration.between(start, end).toMillis();
+		long end = System.nanoTime();
+		long durationAlgorithm = end - start;
 		
 		try {
 			String outputTxt = "\n\nBasic Value Surprise \n"+
-	    			"\tCompute Algorithm:\t" + durationAlgorithm+ " ms\n";
+	    			"\tCompute Algorithm:\t" + durationAlgorithm+ " ns\n";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}
