@@ -171,9 +171,9 @@ public class InterestingnessClientExperiments {
 					"Gamma:account_dim.district_name,date_dim.month\n" + //"Gamma:account_dim.district_name,date_dim.year\n" + 
 					"Sigma:account_dim.region='west Bohemia'", measures); */
 			// ###### end of History creation ######
-			measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
+			measures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
 					"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Label Surprise", 
-					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty",*/"Syntactic Peculiarity",
+					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty","Syntactic Peculiarity",
 					"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"));
 			String q1 = "CubeName:loan\n" + 
 					"Name: LoanQuery91_S8_CG-Prtl\n" + 
