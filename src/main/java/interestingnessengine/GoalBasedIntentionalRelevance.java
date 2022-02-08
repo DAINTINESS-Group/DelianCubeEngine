@@ -50,8 +50,8 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 			for (int j=0; j<userGoals.size(); j++) {
 				if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(),userGoals.get(j).getDimensionMembers())){
 					//if c was part of the usre's goals, add it to the covered list and remove it from the novel list
-					coveredAreaOfInterest.add(detailedQueryCube.get(j));
-					novelAreaOfInterest.remove(detailedQueryCube.get(j));
+					coveredAreaOfInterest.add(detailedQueryCube.get(i));
+					novelAreaOfInterest.remove(detailedQueryCube.get(i));
 					break;
 				}
 			}
