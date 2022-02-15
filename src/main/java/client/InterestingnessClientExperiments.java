@@ -487,6 +487,57 @@ public class InterestingnessClientExperiments {
 		    			"########################################\n\n\n");
 			}
 			
+			/*
+			 * 
+			 * Experiments for 100M db
+			 * 
+			 */
+			
+			experimentCounter++;
+			for(int i=0; i<6; i++) {
+				historySize = 1;
+				database = "pkdd99_star_100M";
+				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
+				createHistory(service,historySize);
+				runExperiment(service,"\n\n########################################\n"+
+	    				"EXPERIMENT:\t"+experimentCounter+"\n"+
+						"LOOP NUMBER:\t " + i +" \n"+
+		    			"EXPERIMENT PARAMETERS\n"+
+		    			"DATABASE:\t" + database + "\n"+
+		    			"HISTORY_SIZE:\t"+historySize+"\n"+
+		    			"########################################\n\n\n");
+			}
+			
+			experimentCounter++;
+			for(int i=0; i<6; i++) {
+				historySize = 5;
+				database = "pkdd99_star_100M";
+				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
+				createHistory(service,historySize);
+				runExperiment(service,"\n\n########################################\n"+
+	    				"EXPERIMENT:\t"+experimentCounter+"\n"+
+						"LOOP NUMBER:\t " + i +" \n"+
+		    			"EXPERIMENT PARAMETERS\n"+
+		    			"DATABASE:\t" + database + "\n"+
+		    			"HISTORY_SIZE:\t"+historySize+"\n"+
+		    			"########################################\n\n\n");
+			}
+			
+			experimentCounter++;
+			for(int i=0; i<6; i++) {
+				historySize=10;
+				database = "pkdd99_star_100M";
+				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
+				createHistory(service,historySize);
+				runExperiment(service,"\n\n########################################\n"+
+	    				"EXPERIMENT:\t"+experimentCounter+"\n"+
+						"LOOP NUMBER:\t " + i +" \n"+
+		    			"EXPERIMENT PARAMETERS\n"+
+		    			"DATABASE:\t" + database + "\n"+
+		    			"HISTORY_SIZE:\t"+historySize+"\n"+
+		    			"########################################\n\n\n");
+			}
+			
 			//Create .gitignore files
 			createGitignoreFiles();
 			
