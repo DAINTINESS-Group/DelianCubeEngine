@@ -24,22 +24,18 @@ import cubemanager.relationalstarschema.FactTable;
 
 public class BasicStoredCube extends Cube {
     
-	/**
-	 * @uml.property  name="fCtbl"
-	 * @uml.associationEnd  
-	 */
-	private FactTable FCtbl;
+	private FactTable factTable;
         
-	public BasicStoredCube(String NAME) {
-			super(NAME);
+	public BasicStoredCube(String cubeName) {
+			super(cubeName);
 	}
 	 
-	public void setFactTable(FactTable Factbl){
-		FCtbl=Factbl;
+	public void setFactTable(FactTable factTable){
+		this.factTable=factTable;
 	}
 
-	public FactTable FactTable() {
-		return FCtbl;
+	public FactTable getFactTable() {
+		return factTable;
 	}
 
 }

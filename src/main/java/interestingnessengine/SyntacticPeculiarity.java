@@ -48,7 +48,7 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 		gamma = query.getGammaExpressions();
 		sigma = query.getSigmaExpressions();
 		aggr = query.getAggregateFunction();
-		measure = query.getListMeasure().get(0).getName();
+		measure = query.getMeasuresList().get(0).getName();
 		weightSigma = 0.5;
 		weightGamma = 0.35;
 		weightMeasure = 0.15;
@@ -79,7 +79,7 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 
 		long startAlgorithm = System.nanoTime();
 		for(CubeQuery pastQuery : pastQueries) {
-			tempMeasure = pastQuery.getListMeasure().get(0).getName();
+			tempMeasure = pastQuery.getMeasuresList().get(0).getName();
 			tempAggr = pastQuery.getAggregateFunction();
 			tempGamma = pastQuery.getGammaExpressions();
 			tempSigma = pastQuery.getSigmaExpressions();

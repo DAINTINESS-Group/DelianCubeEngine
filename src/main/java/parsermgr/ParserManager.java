@@ -39,58 +39,19 @@ import org.antlr.runtime.TokenStream;
  */
 public class ParserManager {
 	
-	/**
-	 * @uml.property  name="mode"
-	 */
 	public Integer mode;
-	/**
-	 * @uml.property  name="name_creation"
-	 */
 	public String name_creation;
-	/**
-	 * @uml.property  name="sqltable"
-	 */
-	public String sqltable;
-	/**
-	 * @uml.property  name="dimensionlst"
-	 */
-	public ArrayList<String> dimensionlst;
-	/**
-	 * @uml.property  name="hierachylst"
-	 */
-	public ArrayList<String> hierachylst;
-	/**
-	 * @uml.property  name="originallvllst"
-	 */
-	public ArrayList<String> originallvllst;
-	/**
-	 * @uml.property  name="customlvllst"
-	 */
-	public ArrayList<String> customlvllst;
-	/**
-	 * @uml.property  name="conditionlst"
-	 */
-	public ArrayList<String> conditionlst;
-	/**
-	 * @uml.property  name="tablelst"
-	 */
-	public ArrayList<String> tablelst;
-	/**
-	 * @uml.property  name="groupperlst"
-	 */
-	public ArrayList<String> groupperlst;
-	/**
-	 * @uml.property  name="measurelst"
-	 */
-	public ArrayList<String> measurelst;
-	/**
-	 * @uml.property  name="measurefields"
-	 */
-	public ArrayList<String> measurefields;
-	/**
-	 * @uml.property  name="aggregatefunc"
-	 */
-	public String aggregatefunc;
+	public String sqlTable;
+	public ArrayList<String> dimensionList;
+	public ArrayList<String> hierachyList;
+	public ArrayList<String> originalLevelList;
+	public ArrayList<String> customLevelList;
+	public ArrayList<String> conditionList;
+	public ArrayList<String> tableList;
+	public ArrayList<String> groupperList;
+	public ArrayList<String> measureList;
+	public ArrayList<String> measureFields;
+	public String aggregationFunction;
 	
 	/**
 	 * Simply initializes the ArrayLists holding information for dimensions and queries.
@@ -99,15 +60,15 @@ public class ParserManager {
 	 *  @since v0.0.0 (the Cincecubes system) 
 	 */
 	public ParserManager() {
-		dimensionlst=new ArrayList<String>();
-		hierachylst=new ArrayList<String>();
-		originallvllst=new ArrayList<String>();
-		customlvllst=new ArrayList<String>();
-		conditionlst=new ArrayList<String>();
-		tablelst=new ArrayList<String>();
-		groupperlst=new ArrayList<String>();
-		measurelst=new ArrayList<String>();
-		measurefields=new ArrayList<String>();
+		dimensionList=new ArrayList<String>();
+		hierachyList=new ArrayList<String>();
+		originalLevelList=new ArrayList<String>();
+		customLevelList=new ArrayList<String>();
+		conditionList=new ArrayList<String>();
+		tableList=new ArrayList<String>();
+		groupperList=new ArrayList<String>();
+		measureList=new ArrayList<String>();
+		measureFields=new ArrayList<String>();
 		
 	}
 	
@@ -125,33 +86,33 @@ public class ParserManager {
 		CubeSqlLexer lexer = new CubeSqlLexer(stream);
 		TokenStream tokenStream = new CommonTokenStream(lexer);
 		CubeSqlParser parser = new CubeSqlParser(tokenStream);
-		dimensionlst.clear();
-		hierachylst.clear();
-		originallvllst.clear();
-		customlvllst.clear();
+		dimensionList.clear();
+		hierachyList.clear();
+		originalLevelList.clear();
+		customLevelList.clear();
 		try {
 			parser.start();	
 			
 			/*For DIMENSION only*/
-			hierachylst.addAll(parser.hierachylst);
+			hierachyList.addAll(parser.hierachylst);
 			
 			/*For CUBE only*/
-			measurefields.addAll(parser.measurefields);
-			measurelst.addAll(parser.measurelst);
+			measureFields.addAll(parser.measurefields);
+			measureList.addAll(parser.measurelst);
 			
 			/*SHARED CUBE,DIMENSION */
-			dimensionlst.addAll(parser.dimensionlst);
-			originallvllst.addAll(parser.originallvllst);
-			customlvllst.addAll(parser.customlvllst);
+			dimensionList.addAll(parser.dimensionlst);
+			originalLevelList.addAll(parser.originallvllst);
+			customLevelList.addAll(parser.customlvllst);
 			mode=parser.mode;
 			name_creation=parser.name_creation;
-			sqltable=parser.sql_table;
+			sqlTable=parser.sql_table;
 			
 			/* SQL QUERY STAFF */ 
-			aggregatefunc=parser.aggregatefunc;
-			conditionlst.addAll(parser.conditionlst);
-			tablelst.addAll(parser.tablelst);
-			groupperlst.addAll(parser.groupperlst);
+			aggregationFunction=parser.aggregatefunc;
+			conditionList.addAll(parser.conditionlst);
+			tableList.addAll(parser.tablelst);
+			groupperList.addAll(parser.groupperlst);
 		} catch (RecognitionException e) {
 			e.printStackTrace();
 		}

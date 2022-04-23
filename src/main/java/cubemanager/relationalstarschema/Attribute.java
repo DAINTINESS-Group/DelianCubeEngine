@@ -28,15 +28,15 @@ public class Attribute {
 	/**
 	 * @uml.property  name="datatype"
 	 */
-	private String datatype;
+	private String dataType;
     
     public Attribute(String nm,String dt){
     	name = nm;
-    	datatype=dt;    			
+    	dataType=dt;    			
     }
     
     public String getDatatype(){
-    	return datatype;
+    	return dataType;
     }
     
     public String getName(){

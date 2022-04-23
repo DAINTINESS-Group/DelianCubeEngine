@@ -45,7 +45,7 @@ public class Table {
     	LstAttr=new ArrayList<Attribute>();
     }
     
-    public void addAllAttribute(Table newtable){
+    public void addAllAttributes(Table newtable){
     	LstAttr.addAll(newtable.LstAttr);
     }
     

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class LinearHierarchy  extends Hierarchy {
 	
     public LinearHierarchy(){
-    	lvls=new ArrayList<Level>();
+    	levelsList=new ArrayList<Level>();
     }
     
     public void setDimension(Dimension dimensionToPoint){

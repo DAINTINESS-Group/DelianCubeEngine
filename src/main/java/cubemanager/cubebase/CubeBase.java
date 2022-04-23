@@ -20,35 +20,22 @@
 
 package cubemanager.cubebase;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.sql.Connection;
-//import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import connection.DataSourceDescription;
 import connection.DataSourceFactory;
-import cubemanager.relationalstarschema.Database;
 import cubemanager.relationalstarschema.DimensionTable;
 import cubemanager.relationalstarschema.FactTable;
 import cubemanager.relationalstarschema.Table;
-//import exctractionmethod.ExtractionMethod;
-//import exctractionmethod.ExtractionMethodFactory;
-//import exctractionmethod.Result;
 import result.Result;
 
 public class CubeBase {
 
-	private String username;
-	private String password;
-	private String name;
-	private Database DB;
 	private DataSourceDescription dataSourceDescription;
-	public List<Dimension> dimensions;
-	public List<BasicStoredCube> BasicCubes;
+	public List<Dimension> dimensionsList;
+	public List<BasicStoredCube> basicStoredCubesList;
  
 	public DataSourceDescription getDataSourceDescription(){
 		return dataSourceDescription;
@@ -62,64 +49,36 @@ public class CubeBase {
 	public CubeBase(String typeOfConnection, HashMap<String, String> userInputList) {
 		DataSourceFactory dataSourceFactory = new DataSourceFactory();
 		dataSourceDescription = dataSourceFactory.createConnection(typeOfConnection, userInputList);
-		dimensions = new ArrayList<Dimension>();
-		BasicCubes = new ArrayList<BasicStoredCube>();
-		/*
-		String lookupFolder = userInputList.get("inputFolder");
-		try {
-			String line;
-			Scanner scanner = new Scanner(new FileReader("InputFiles/" + lookupFolder
-					+ "/dbc.ini"));
-			while (scanner.hasNextLine()) {
-				line = scanner.nextLine();
-				String results[] = line.split(";");
-				DB = new Database(results[1], results[3]);
-				dimensions = new ArrayList<Dimension>();
-				BasicCubes = new ArrayList<BasicStoredCube>();
-			}
-			scanner.close();
-		} catch (FileNotFoundException e1) {
-			System.err.println("Unable to work correctly with dbc.ini for the setup of the Cubebase");
-			e1.printStackTrace();
-		}*/
+		dimensionsList = new ArrayList<Dimension>();
+		basicStoredCubesList = new ArrayList<BasicStoredCube>();
 	}
 
 	public void registerCubeBase(HashMap<String, String> userInputList) {
 		dataSourceDescription.registerCubeBase(userInputList);
-		/*
-		name = userInputList.get("inputFolder");
-		this.username = userInputList.get("username");
-		this.password = userInputList.get("password");
-		DB.setDBName(name);
-		DB.setUsername(userInputList.get("username"));
-		DB.setPassword(userInputList.get("password"));
-		DB.registerDatabase();
-		DB.generateTableList();*/
-
 	}
 
-	public void addDimension(String nameDim) {
-		dimensions.add(new Dimension(nameDim));
+	public void addDimension(String dimensionName) {
+		dimensionsList.add(new Dimension(dimensionName));
 	}
 
-	public void addDimensionTbl(String dimensionTbl) {
-		Table tmp_tbl = dataSourceDescription.getConnectionTableInstance(dimensionTbl);
-		DimensionTable dm = new DimensionTable(tmp_tbl. getTableName());
-		dm.addAllAttribute(tmp_tbl);
-		this.getLastInsertedDimension().setDimTbl(dm);
+	public void addDimensionTable(String dimensionTable) {
+		Table tempTable = dataSourceDescription.getConnectionTableInstance(dimensionTable);
+		DimensionTable dm = new DimensionTable(tempTable.getTableName());
+		dm.addAllAttributes(tempTable);
+		this.getLastInsertedDimension().setDimensionTable(dm);
 	}
 
-	public void setDimensionLinearHierachy(ArrayList<String> hierachylst,
-			List<String> fld_tbl, List<String> custFld_name) {
+	public void setDimensionLinearHierachy(ArrayList<String> hierachyList,
+			List<String> fieldTables, List<String> customFieldNames) {
 		Dimension tmp;
 		tmp = this.getLastInsertedDimension();
-		LinearHierarchy LinHier = new LinearHierarchy();
-		LinHier.setDimension(tmp);
-		for (int i = 0; i < hierachylst.size(); i++) {
-			if (custFld_name.get(i).equals(hierachylst.get(i))) {
-				Level lvl = new Level(i, hierachylst.get(i));
+		LinearHierarchy linearHierarchy = new LinearHierarchy();
+		linearHierarchy.setDimension(tmp);
+		for (int i = 0; i < hierachyList.size(); i++) {
+			if (customFieldNames.get(i).equals(hierachyList.get(i))) {
+				Level lvl = new Level(i, hierachyList.get(i));
 
-				String[] tmp_str = fld_tbl.get(i).split("\\.");
+				String[] tmp_str = fieldTables.get(i).split("\\.");
 
 				LevelAttribute lvlattr = new LevelAttribute(tmp_str[1],
 						tmp_str[0]);
@@ -128,39 +87,39 @@ public class CubeBase {
 						tmp_str[1]));
 
 				lvl.addLevelAttribute(lvlattr);
-				lvl.setHierarchy(LinHier);
+				lvl.setHierarchy(linearHierarchy);
 
-				LinHier.lvls.add(lvl);
+				linearHierarchy.levelsList.add(lvl);
 			}
 		}
-		tmp.getHier().add(LinHier);
+		tmp.getHierarchy().add(linearHierarchy);
 	}
 
 	public Dimension getLastInsertedDimension() {
-		return dimensions.get(dimensions.size() - 1);
+		return dimensionsList.get(dimensionsList.size() - 1);
 	}
 	
 	public List<Dimension> getDimensions() {
-		return dimensions;
+		return dimensionsList;
 	}
 	
 	public void addCube(String name_creation) {
-		BasicCubes.add(new BasicStoredCube(name_creation));
+		basicStoredCubesList.add(new BasicStoredCube(name_creation));
 
 	}
 
 	//edw einai tothema
-	public void addSqlRelatedTbl(String sqltable) {
+	public void addSqlRelatedTable(String sqltable) {
 		Table tmp_tbl = dataSourceDescription.getConnectionTableInstance(sqltable);
-		BasicStoredCube tmp = BasicCubes.get(BasicCubes.size() - 1);
+		BasicStoredCube tmp = basicStoredCubesList.get(basicStoredCubesList.size() - 1);
 		FactTable fctbl = new FactTable(tmp_tbl. getTableName());
-		fctbl.addAllAttribute(tmp_tbl);
+		fctbl.addAllAttributes(tmp_tbl);
 		tmp.setFactTable(fctbl);
 	}
 
 	public void setCubeDimension(ArrayList<String> dimensionlst,
 			ArrayList<String> DimemsionRefField) {
-		BasicStoredCube last_cube = BasicCubes.get(BasicCubes.size() - 1);
+		BasicStoredCube last_cube = basicStoredCubesList.get(basicStoredCubesList.size() - 1);
 		int i = 0;
 		for (String item : dimensionlst) {
 			int tmp = findDimensionIdByName(item);
@@ -168,7 +127,7 @@ public class CubeBase {
 				System.err.println("Error with Dimension At Cube construction!");
 				System.exit(1);
 			}
-			last_cube.addDimension(this.dimensions.get(tmp));
+			last_cube.addDimension(this.dimensionsList.get(tmp));
 			last_cube.addDimensionRefField(DimemsionRefField.get(i));
 			i++;
 		}
@@ -176,12 +135,12 @@ public class CubeBase {
 
 	public void setCubeMeasure(ArrayList<String> measurelst,
 			ArrayList<String> measureRefField) {
-		BasicStoredCube last_cube = BasicCubes.get(BasicCubes.size() - 1);
+		BasicStoredCube last_cube = basicStoredCubesList.get(basicStoredCubesList.size() - 1);
 		int i = 0;
 		for (String item : measurelst) {
 			String[] tmp = measureRefField.get(i).split("\\.");
 			Measure msrToAdd = new Measure(i +1,item, this.dataSourceDescription.getFieldOfSqlTable(tmp[0], tmp[1]));
-			last_cube.Msr.add(msrToAdd);
+			last_cube.cubeMeasuresList.add(msrToAdd);
 		}
 	}
 
@@ -189,8 +148,8 @@ public class CubeBase {
 	private Integer findDimensionIdByName(String nameDimension) {
 		int ret_val = -1;
 		int i = 0;
-		while (ret_val == -1 && i < this.dimensions.size()) {
-			if (this.dimensions.get(i).hasSameName(nameDimension))
+		while (ret_val == -1 && i < this.dimensionsList.size()) {
+			if (this.dimensionsList.get(i).hasSameName(nameDimension))
 				ret_val = i;
 			i++;
 		}
@@ -199,8 +158,8 @@ public class CubeBase {
 
 	public boolean returnIfTableIsDimensionTbl(String table) {
 		boolean ret_value = true;
-		for (BasicStoredCube basiccube : this.BasicCubes) {
-			if (basiccube.FactTable(). getTableName().equals(table))
+		for (BasicStoredCube basiccube : this.basicStoredCubesList) {
+			if (basiccube.getFactTable().getTableName().equals(table))
 				ret_value = false;
 		}
 		return ret_value;
@@ -208,6 +167,10 @@ public class CubeBase {
 
 	public Result executeQueryToProduceResult(String queryString, Result result) {
 		return dataSourceDescription.executeQueryToProduceResult(queryString, result);
+	}
+	
+	public List<BasicStoredCube> getRegisteredCubeList(){
+		return basicStoredCubesList;
 	}
 	
 //	/*
@@ -226,14 +189,14 @@ public class CubeBase {
 	
 	public String getChildOfGamma(String[] gamma_tmp) {
 		String ret_value = null;
-		for (int i = 0; i < dimensions.size(); i++) {
-			Dimension tmp = dimensions.get(i);
+		for (int i = 0; i < dimensionsList.size(); i++) {
+			Dimension tmp = dimensionsList.get(i);
 			if (tmp.hasSameName(gamma_tmp[0])) {
-				for (Hierarchy hier : tmp.getHier()) {
-					for (int j = 0; j < hier.lvls.size(); j++) {
-						if (hier.lvls.get(j).getName().equals(gamma_tmp[1])) {
+				for (Hierarchy hier : tmp.getHierarchy()) {
+					for (int j = 0; j < hier.levelsList.size(); j++) {
+						if (hier.levelsList.get(j).getName().equals(gamma_tmp[1])) {
 							if (j > 0)
-								ret_value = hier.lvls.get(j - 1).getName();
+								ret_value = hier.levelsList.get(j - 1).getName();
 						}
 					}
 				}

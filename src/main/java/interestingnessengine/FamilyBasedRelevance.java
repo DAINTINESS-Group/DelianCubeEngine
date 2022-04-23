@@ -139,8 +139,8 @@ public class FamilyBasedRelevance {
 		String aggr2 = query2.getAggregateFunction();
 		String cubeName1 = query1.getReferCube().getName();
 		String cubeName2 = query2.getReferCube().getName();
-		String measure1 = query1.getListMeasure().get(0).getName();
-		String measure2 = query2.getListMeasure().get(0).getName();
+		String measure1 = query1.getMeasuresList().get(0).getName();
+		String measure2 = query2.getMeasuresList().get(0).getName();
 		//A bunch of nested if-s to determine if we need to ask a query for help.
 		if(cubeName1.equals(cubeName2)) {	//check if the queries are about the same cube.
 			if(aggr1.equals(aggr2)) {	//check if the queries have the same aggr function.
@@ -211,7 +211,7 @@ public class FamilyBasedRelevance {
 											//Start constructing the helping query
 											String aggr = query1.getAggregateFunction();
 											String name = query1.getReferCube().getName().replace("_cube", "");
-											String measure = query1.getMsr().get(0).getName();
+											String measure = query1.getMeasuresList().get(0).getName();
 											String gamma = s1[0];
 											String sigma = s2[0]+s2[1]+s2[2];									
 											//return the helping query
@@ -236,7 +236,7 @@ public class FamilyBasedRelevance {
 											//Start constructing the helping query
 											String aggr = query2.getAggregateFunction();
 											String name = query2.getReferCube().getName().replace("_cube", "");
-											String measure = query2.getMsr().get(0).getName();
+											String measure = query2.getMeasuresList().get(0).getName();
 											String gamma = s2[0];
 											String sigma = s1[0]+s1[1]+s1[2];
 											//return the helping query

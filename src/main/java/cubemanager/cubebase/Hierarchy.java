@@ -25,10 +25,10 @@ import java.util.List;
 
 public abstract class Hierarchy {
 	
-	protected List<Level> lvls;    
+	protected List<Level> levelsList;    
 	protected Dimension dimension;
 	
 	public List<Level> getLevels(){
-		return lvls;
+		return levelsList;
 	}
 }

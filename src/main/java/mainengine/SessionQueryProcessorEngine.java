@@ -237,11 +237,11 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		
 		//3.Bring data for Measure
 		measures = new ArrayList<String>();
-		measures= this.prsMng.measurefields;
+		measures= this.prsMng.measureFields;
 		
 		//4.Bring data for Dimensions
 		dimensions = new ArrayList<String>();
-		dimensions = this.prsMng.dimensionlst;
+		dimensions = this.prsMng.dimensionList;
 		
 		//5.Bring data for levels
 		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
@@ -251,8 +251,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		ArrayList<String> tmpDim = null;
 		for (int i=0;i < dimensionsList.size();i ++) {
 			Dimension dim = dimensionsList.get(i);
-			for(int j=0; j<dim.getHier().size(); j++) {
-				List<Level> l = dim.getHier().get(j).getLevels();
+			for(int j=0; j<dim.getHierarchy().size(); j++) {
+				List<Level> l = dim.getHierarchy().get(j).getLevels();
 				tmpLvls = new ArrayList<String>();
 				for (int k=0; k<l.size(); k++) {
 					tmpLvls.add(l.get(k).getName());

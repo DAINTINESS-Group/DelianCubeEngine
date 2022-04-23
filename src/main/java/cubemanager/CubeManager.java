@@ -37,13 +37,17 @@ import result.Result;
 
 public class CubeManager {
 
-	private CubeBase CBase;
+	private CubeBase cubeBase;
 	private ICubeQueryTranslator cubeQueryTranslator;
 	private CubeQueryTranslatorFactory cubeQueryTranslatorFactory;
-
+	private List<BasicStoredCube> registeredCubesList;
+	private List<Dimension> registeredDimensionsList;
+	
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
-		CBase = new CubeBase(typeOfConnection, userInputList);
+		cubeBase = new CubeBase(typeOfConnection, userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
+		registeredCubesList = new ArrayList<BasicStoredCube>();
+		registeredDimensionsList = new ArrayList<Dimension>();
 	}
 
 	public ICubeQueryTranslator setCubeQueryTranslator() {
@@ -57,33 +61,57 @@ public class CubeManager {
 	}
 	
 	public void createCubeBase(HashMap<String, String> userInputList) {
-		CBase.registerCubeBase(userInputList);
+		cubeBase.registerCubeBase(userInputList);
 	}
 	
 	public CubeBase getCubeBase(){
-		return CBase;
+		return cubeBase;
 	}
 	
 	public List<Dimension> getDimensions(){
-		return CBase.getDimensions();
+		return cubeBase.getDimensions();
 	}
 	
-	public void InsertionDimensionLvl(String dimensionName,
-			String dimensionTbl, ArrayList<String> fld_Name,
-			ArrayList<String> customFld_Name, ArrayList<String> hierachylst) {
-		CBase.addDimension(dimensionName);
-		CBase.addDimensionTbl(dimensionTbl);
-		CBase.setDimensionLinearHierachy(hierachylst, fld_Name, customFld_Name);
+	public List<Dimension> insertDimension(String dimensionName,
+			String dimensionTable, ArrayList<String> fieldName,
+			ArrayList<String> customFieldName, ArrayList<String> hierachyList) {
+		cubeBase.addDimension(dimensionName);
+		cubeBase.addDimensionTable(dimensionTable);
+		cubeBase.setDimensionLinearHierachy(hierachyList, fieldName, customFieldName);
+		registeredDimensionsList = cubeBase.getDimensions();
+		
+		//System.out.println(cubeBase.getDimensions().get(cubeBase.getDimensions().size()-1).getName());
+		//System.out.println(cubeBase.getDimensions().get(cubeBase.getDimensions().size()-1).getHierarchy().get(0).getLevels().get(0).getName());
+		
+		return registeredDimensionsList;
 	}
-
-	public void InsertionCube(String name_creation, String sqltable,
-			ArrayList<String> dimensionlst,
-			ArrayList<String> DimemsionRefField, ArrayList<String> measurelst,
+	
+	public List<BasicStoredCube> insertCube(String name_creation, String sqlTable,
+			ArrayList<String> dimensionList,
+			ArrayList<String> dimemsionRefField, ArrayList<String> measureList,
 			ArrayList<String> measureRefField) {
 
-		CBase.addCube(name_creation);
-		CBase.addSqlRelatedTbl(sqltable);
-		CBase.setCubeDimension(dimensionlst, DimemsionRefField);
+		cubeBase.addCube(name_creation);
+		cubeBase.addSqlRelatedTable(sqlTable);
+		cubeBase.setCubeDimension(dimensionList, dimemsionRefField);
+		cubeBase.setCubeMeasure(measureList, measureRefField);
+		registeredCubesList = cubeBase.getRegisteredCubeList();
+		/*
+		for(int i=0; i<registeredCubesList.size(); i++) {
+			System.out.println(registeredCubesList.get(i).getName());
+			for(int j=0; j<registeredCubesList.get(i).getMeasuresList().size(); j++) {
+				System.out.println(registeredCubesList.get(i).getMeasuresList().get(j).getName());
+			}
+			for(int j=0; j<registeredCubesList.get(i).getDimensionsList().size(); j++) {
+				System.out.println(registeredCubesList.get(i).getDimensionsList().get(j).getName());
+			}
+			for(int j=0; j<registeredCubesList.get(i).getDimensionRefFieldList().size(); j++) {
+				System.out.println(registeredCubesList.get(i).getDimensionRefFieldList().get(j));
+			}
+			System.out.println(registeredCubesList.get(i).getFactTable().getTableName());
+		}*/
+		
+		return registeredCubesList;
 	}
 
 
@@ -135,9 +163,9 @@ public class CubeManager {
 		cubequery.setAggregateFunction(aggregateFunction);
 		/* Must Create Measure In Cube Parser->> I Have Done this */
 		/* Search for Measure */
-		Measure msrToAdd = new Measure(1,measureName,CBase.getDataSourceDescription().getFieldOfSqlTable(Cbname,
+		Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname,
 				measureName));
-		cubequery.getListMeasure().add(msrToAdd);
+		cubequery.getMeasuresList().add(msrToAdd);
 		//msrname = measureName;
 		/* Need work to done up here */
 
@@ -148,7 +176,7 @@ public class CubeManager {
 		for (int i = 0; i < sigma.length; i++) {
 			cubequery.addSigmaExpression(sigma[i][0], sigma[i][1], sigma[i][2]);
 		}
-		for (BasicStoredCube bsc : CBase.BasicCubes) {
+		for (BasicStoredCube bsc : cubeBase.basicStoredCubesList) {
 			if (bsc.getName().equals(Cbname + "_cube")) {
 				cubequery.setBasicStoredCube(bsc);
 			}
@@ -194,7 +222,7 @@ public class CubeManager {
 		//	if you DEBUG
 		System.out.println("\n"+queryString);		
 
-		Result finalResult = CBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
+		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
 		if (finalResult == null) {
 			System.err.println("Exiting due to failure to populate the result");
 			System.exit(-100);

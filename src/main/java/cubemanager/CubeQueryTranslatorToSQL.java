@@ -42,7 +42,7 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		BasicStoredCube referCube;
 		ExtractionMethod extractionMethod;  
 		
-		measure = cubeQuery.getMsr();
+		measure = cubeQuery.getMeasuresList();
 		aggregateFunction = cubeQuery.getAggregateFunction();
 		gammaExpressions = cubeQuery.getGammaExpressions();
 		sigmaExpressions = cubeQuery.getSigmaExpressions();
@@ -58,21 +58,21 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 
 		/*Create WhereClausse */
 		for(String[] sigmaExpr: sigmaExpressions){
-			for(int i = 0;i < referCube.getListDimension().size(); i++) {
-				Dimension dimension = referCube.getListDimension().get(i);
+			for(int i = 0;i < referCube.getDimensionsList().size(); i++) {
+				Dimension dimension = referCube.getDimensionsList().get(i);
 				String[] tmp=sigmaExpr[0].split("\\.");
 				if(dimension.hasSameName(tmp[0].trim())){
 					/* FOR JOIN WITH Basic CUBE*/
 					String toaddJoin[]=new String[3];
-					toaddJoin[0] = referCube.getDimensionRefField().get(i);
+					toaddJoin[0] = referCube.getDimensionRefFieldList().get(i);
 					toaddJoin[1] = "=";
-					toaddJoin[2] = dimension.getTableName()+"."+((LinearHierarchy)dimension.getHier().get(0)).getLevels().get(0).getAttributeName(0);
+					toaddJoin[2] = dimension.getTableName()+"."+((LinearHierarchy)dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
 					extractionMethod.addFilter(toaddJoin);
 
 					FromTables.add(dimension.getTableName());
 
 					/* Add the Sigma Expression */
-					ArrayList<Hierarchy> current_hierachy=dimension.getHier();
+					ArrayList<Hierarchy> current_hierachy=dimension.getHierarchy();
 					String toaddSigma[]=new String[3];
 					toaddSigma[0]=dimension.getTableName()+".";
 					
@@ -95,7 +95,7 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		String[] tbl_tmp = new String[1];
 		tbl_tmp[0] = "";
 		if(referCube != null) 
-			tbl_tmp[0] = referCube.FactTable().getTableName();
+			tbl_tmp[0] = referCube.getFactTable().getTableName();
 		extractionMethod.addSourceCube(tbl_tmp);
 
 		for(int i=0;i<FromTables.size();i++){
@@ -112,21 +112,21 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 				extractionMethod.addGroupers(toadd);
 			}
 			else{
-				for(int i=0;i<referCube.getListDimension().size();i++){
-					Dimension dimension= referCube.getListDimension().get(i);
+				for(int i=0;i<referCube.getDimensionsList().size();i++){
+					Dimension dimension= referCube.getDimensionsList().get(i);
 					if(dimension.hasSameName(gammaExpr[0])){
 						String[] toadd=new String[1];
 						toadd[0]=dimension.getTableName()+".";
-						ArrayList<Hierarchy> current_hierachy=dimension.getHier();
+						ArrayList<Hierarchy> current_hierachy=dimension.getHierarchy();
 						for(int k=0;k<current_hierachy.size();k++){//for each hierarchy of dimension
 							List<Level> current_lvls=current_hierachy.get(k).getLevels();
 							for(int l=0;l<current_lvls.size();l++){
 								if(current_lvls.get(l).getName().equals(gammaExpr[1])){
 									/* FOR JOIN WITH Basic CUBE*/
 									String toaddJoin[]=new String[3];
-									toaddJoin[0]=referCube.getDimensionRefField().get(i);
+									toaddJoin[0]=referCube.getDimensionRefFieldList().get(i);
 									toaddJoin[1]="=";
-									toaddJoin[2]=dimension.getTableName()+"."+((LinearHierarchy)dimension.getHier().get(0)).getLevels().get(0).getAttributeName(0);
+									toaddJoin[2]=dimension.getTableName()+"."+((LinearHierarchy)dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
 									extractionMethod.addFilter(toaddJoin);
 									String[] toAddfrom=new String[1];
 									toAddfrom[0]=dimension.getTableName();

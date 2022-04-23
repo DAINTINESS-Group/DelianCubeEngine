@@ -53,7 +53,7 @@ public class CubeQuery extends Cube {
 		copySigmaExpressions(oldQuery);
 		this.AggregateFunction = (oldQuery.AggregateFunction);
 		this.referCube = oldQuery.referCube;
-		this.Msr = oldQuery.Msr;
+		this.cubeMeasuresList = oldQuery.cubeMeasuresList;
 	}
 
 	public ExtractionMethod getExtractionMethod() {
@@ -102,7 +102,7 @@ public class CubeQuery extends Cube {
 	}
 
 	public String getDimensionRefField(int index){
-		return referCube.getDimensionRefField().get(index);
+		return referCube.getDimensionRefFieldList().get(index);
 	}
 
 	public Result getResult() {
@@ -136,9 +136,9 @@ public class CubeQuery extends Cube {
 		String ret_value = "QueryName: " + this.name + 
 				"\nBasicCube : " + this.referCube.getName() + 
 				"\nAggregate Function : " + AggregateFunction + "\n";
-		if (this.Msr.size() > 0 && this.Msr.get(0) != null
-				&& this.Msr.get(0).getAttribute() != null)
-			ret_value += "Measure : " + this.Msr.get(0).getAttribute().getName() + "\n";
+		if (this.cubeMeasuresList.size() > 0 && this.cubeMeasuresList.get(0) != null
+				&& this.cubeMeasuresList.get(0).getAttribute() != null)
+			ret_value += "Measure : " + this.cubeMeasuresList.get(0).getAttribute().getName() + "\n";
 		ret_value += "Gamma Expression: ";
 		for (int i = 0; i < GammaExpressions.size(); i++) {
 			if (i > 0)
@@ -192,7 +192,7 @@ public class CubeQuery extends Cube {
 
 	public void addMeasure(int id, String name){
 		Measure msrToAdd = new Measure(id, name, null);
-		Msr.add( msrToAdd);
+		cubeMeasuresList.add( msrToAdd);
 	}
 
 	public boolean checkIfSigmaExprIsInGamma(int toChange) {

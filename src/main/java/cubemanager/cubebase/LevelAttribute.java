@@ -27,11 +27,11 @@ public class LevelAttribute{
 	/**
 	 * @uml.property  name="nameLvlAttr"
 	 */
-	private String nameLvlAttr;
+	private String nameLevelAttribute;
 	/**
 	 * @uml.property  name="moreinfos"
 	 */
-	private String Moreinfos;
+	private String moreInfo;
     /**
 	 * @uml.property  name="level"
 	 * @uml.associationEnd  inverse="lvlAttributes:CubeMgr.CubeBase.Level"
@@ -44,40 +44,40 @@ public class LevelAttribute{
     private Attribute attribute;
   
     public LevelAttribute(String name,String infos){
-    	setNameLvlAttr(name);
-    	setMoreinfos(infos);
+    	setNameLevelAttribute(name);
+    	setMoreInfo(infos);
     }
     
 	/**
 	 * @return
 	 * @uml.property  name="nameLvlAttr"
 	 */
-	public String getNameLvlAttr() {
-		return nameLvlAttr;
+	public String getNameLevelAttribute() {
+		return nameLevelAttribute;
 	}
 
 	/**
 	 * @param nameLvlAttr
 	 * @uml.property  name="nameLvlAttr"
 	 */
-	public void setNameLvlAttr(String nameLvlAttr) {
-		this.nameLvlAttr = nameLvlAttr;
+	public void setNameLevelAttribute(String nameLvlAttr) {
+		this.nameLevelAttribute = nameLvlAttr;
 	}
 
 	/**
 	 * @return
 	 * @uml.property  name="moreinfos"
 	 */
-	public String getMoreinfos() {
-		return Moreinfos;
+	public String getMoreInfo() {
+		return moreInfo;
 	}
 
 	/**
 	 * @param moreinfos
 	 * @uml.property  name="moreinfos"
 	 */
-	public void setMoreinfos(String moreinfos) {
-		Moreinfos = moreinfos;
+	public void setMoreInfo(String moreinfos) {
+		moreInfo = moreinfos;
 	}
 
 

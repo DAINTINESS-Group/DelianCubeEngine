@@ -29,12 +29,12 @@ public class Dimension{
 	 * @uml.property  name="hierachy"
 	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="CubeMgr.CubeBase.Level"
 	 */
-    private ArrayList<Hierarchy> hierachy;
+    private ArrayList<Hierarchy> hierachyList;
     /**
 	 * @uml.property  name="dimTbl"
 	 * @uml.associationEnd  
 	 */
-    private DimensionTable DimTbl;
+    private DimensionTable dimensionTable;
     /**
 	 * @uml.property  name="name"
 	 */
@@ -42,7 +42,7 @@ public class Dimension{
     
     public Dimension(String nameDim){
     	name=nameDim;
-    	hierachy=new ArrayList<Hierarchy>();
+    	hierachyList=new ArrayList<Hierarchy>();
     }
     
     public boolean hasSameName(String dimensionName){
@@ -54,26 +54,26 @@ public class Dimension{
 	 * @uml.property  name="dimTbl"
 	 */
     public String getTableName() {
-            return DimTbl.getTableName();
+            return dimensionTable.getTableName();
     }
 
     /**
 	 * @param dimTbl
 	 * @uml.property  name="dimTbl"
 	 */
-    public void setDimTbl(DimensionTable dimTbl) {
-            DimTbl = dimTbl;
+    public void setDimensionTable(DimensionTable dimTbl) {
+            dimensionTable = dimTbl;
     }
 
-    public ArrayList<Hierarchy> getHier() {
-            return hierachy;
+    public ArrayList<Hierarchy> getHierarchy() {
+            return hierachyList;
     }
     
     public String getName() {
     	return name;
     }
 
-    public void setHier(ArrayList<Hierarchy> hier) {
-    	hierachy = hier;
+    public void setHierarchy(ArrayList<Hierarchy> hier) {
+    	hierachyList = hier;
     }    
 }

@@ -26,57 +26,53 @@ import java.util.List;
 public class Cube {
 
 	protected String name;
-	protected List<Level> lvl;
-	protected List<Measure> Msr;
-	protected List<Dimension> Dim;
-	protected ArrayList<String> DimensionRefField; 
+	protected List<Level> cubeLevelsList;
+	protected List<Measure> cubeMeasuresList;
+	protected List<Dimension> cubeDimensionsList;
+	protected ArrayList<String> dimensionRefFieldList; 
+	
+	public Cube(String cubeName) {
+		this.name = cubeName;
+		cubeLevelsList = new ArrayList<Level>();
+		cubeMeasuresList = new ArrayList<Measure>();
+		cubeDimensionsList = new ArrayList<Dimension>();
+		dimensionRefFieldList = new ArrayList<String>();
+	}
 
 	public String getName(){
 		return name;
 	}
 	
-	public List<Level> getListLevel(){
-		return lvl;
+	public List<Level> getLevelsList(){
+		return cubeLevelsList;
 	}
 	
-	public List<Measure> getListMeasure(){
-		return Msr;
+	public List<Measure> getMeasuresList(){
+		return cubeMeasuresList;
 	}
 	
-	public List<Dimension> getListDimension(){
-		return Dim;
+	public List<Dimension> getDimensionsList(){
+		return cubeDimensionsList;
 	} 
 	
-	public Cube(String NAME) {
-		name = NAME;
-		lvl = new ArrayList<Level>();
-		Msr = new ArrayList<Measure>();
-		Dim = new ArrayList<Dimension>();
-		DimensionRefField = new ArrayList<String>();
+	public ArrayList<String> getDimensionRefFieldList() {
+		return dimensionRefFieldList;
 	}
 
-	public List<Measure> getMsr() {
-		return Msr;
-	}
-
-	public void setMsr(List<Measure> msr) {
-		Msr = msr;
-	}
-
-	public ArrayList<String> getDimensionRefField() {
-		return DimensionRefField;
+	public void setMeasuresList(List<Measure> measuresList) {
+		this.cubeMeasuresList = measuresList;
 	}
 	
 	public void addMeasure(Measure measure) {
-		Msr.add(measure);
+		cubeMeasuresList.add(measure);
 	}
 
 	public void addDimension(Dimension dimension) {
-		this.Dim.add(dimension);
+		this.cubeDimensionsList.add(dimension);
 	}
 
 	public void addDimensionRefField(String namefield) {
-		this.DimensionRefField.add(namefield);
+		this.dimensionRefFieldList.add(namefield);
 	}
 
 	/*
@@ -86,16 +82,16 @@ public class Cube {
 	 */
 	
 	public Level getParentLevel(String dimension, String level) {
-		List<Dimension> dimensions = this.Dim;
+		List<Dimension> dimensions = this.cubeDimensionsList;
 		for (int j = 0; j < dimensions.size(); j++) { // for each dimension
 			if (dimensions.get(j).hasSameName(dimension)) {
 				ArrayList<Hierarchy> current_hierachy = dimensions.get(j)
-						.getHier();
+						.getHierarchy();
 				for (int k = 0; k < current_hierachy.size(); k++) {// for each
 																	// hierarchy
 																	// of
 																	// dimension
-					List<Level> current_lvls = current_hierachy.get(k).lvls;
+					List<Level> current_lvls = current_hierachy.get(k).levelsList;
 					for (int l = 0; l < current_lvls.size(); l++) {
 						if (current_lvls.get(l).getName().equals(level)) {
 							if (l < current_lvls.size() - 1)
@@ -116,7 +112,7 @@ public class Cube {
 	 * we need the table name
 	 */
 	public String getSqlTableByDimensionName(String dimension) {
-		List<Dimension> dimensions = this.Dim;
+		List<Dimension> dimensions = this.cubeDimensionsList;
 		for (int j = 0; j < dimensions.size(); j++) { // for each dimension
 			if (dimensions.get(j).hasSameName(dimension)) {
 				return dimensions.get(j).getTableName();
@@ -131,15 +127,15 @@ public class Cube {
 	 * dimension name we need the table name
 	 */
 	public String getSqlFieldByDimensionLevelName(String dimension, String level) {
-		List<Dimension> dimensions = this.Dim;
+		List<Dimension> dimensions = this.cubeDimensionsList;
 		for (int j = 0; j < dimensions.size(); j++) { // for each dimension
 			if (dimensions.get(j).hasSameName(dimension)) {
-				ArrayList<Hierarchy> current_hierachy = dimensions.get(j).getHier();
+				ArrayList<Hierarchy> current_hierachy = dimensions.get(j).getHierarchy();
 				for (int k = 0; k < current_hierachy.size(); k++) {// for each
 																	// hierarchy
 																	// of
 																	// dimension
-					List<Level> current_lvls = current_hierachy.get(k).lvls;
+					List<Level> current_lvls = current_hierachy.get(k).levelsList;
 					for (int l = 0; l < current_lvls.size(); l++) {
 						if (current_lvls.get(l).getName().equals(level))
 							return current_lvls.get(l).getAttributeName(0);

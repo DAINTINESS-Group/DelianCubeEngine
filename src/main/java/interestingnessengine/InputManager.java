@@ -355,8 +355,8 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		ArrayList<String> tmpDim = null;
 		for (int i=0;i < dimensionsList.size();i ++) {
 			Dimension dim = dimensionsList.get(i);
-			for(int j=0; j<dim.getHier().size(); j++) {
-				List<Level> l = dim.getHier().get(j).getLevels();
+			for(int j=0; j<dim.getHierarchy().size(); j++) {
+				List<Level> l = dim.getHierarchy().get(j).getLevels();
 				tmpLvls = new ArrayList<String>();
 				for (int k=0; k<l.size(); k++) {
 					tmpLvls.add(l.get(k).getName());

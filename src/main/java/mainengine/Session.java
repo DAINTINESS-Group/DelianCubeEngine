@@ -14,12 +14,12 @@ public class Session {
 
 	private String id;
 	private CubeManager cubeManager;
-	private ParserManager prsMng;
+	private ParserManager parserManager;
 	
 	public Session(CubeManager cubeManager, ParserManager prsMng) {
 		id = new Timestamp(System.currentTimeMillis()).toInstant().toString();
 		this.cubeManager = cubeManager;
-		this.prsMng = prsMng;
+		this.parserManager = prsMng;
 	}
 	
 	public String initialize(String typeOfConnection, HashMap<String, String> userInputList) throws RemoteException {		
@@ -47,21 +47,21 @@ public class Session {
 	
 	private void parseFile(File file) throws FileNotFoundException {
 		if (file != null) {
-			prsMng = new ParserManager();
+			parserManager = new ParserManager();
 			@SuppressWarnings("resource")
 			Scanner sc = (new Scanner(file)).useDelimiter(";");
 			while (sc.hasNext()) {
-				prsMng.parse(sc.next() + ";");
-				if (prsMng.mode == 2) {
-					this.cubeManager.InsertionDimensionLvl(
-							prsMng.name_creation, prsMng.sqltable,
-							prsMng.originallvllst, prsMng.customlvllst,
-							prsMng.dimensionlst);
-				} else if (prsMng.mode == 1) {
-					this.cubeManager.InsertionCube(prsMng.name_creation,
-							prsMng.sqltable, prsMng.dimensionlst,
-							prsMng.originallvllst, prsMng.measurelst,
-							prsMng.measurefields);
+				parserManager.parse(sc.next() + ";");
+				if (parserManager.mode == 2) {
+					this.cubeManager.insertDimension(
+							parserManager.name_creation, parserManager.sqlTable,
+							parserManager.originalLevelList, parserManager.customLevelList,
+							parserManager.dimensionList);
+				} else if (parserManager.mode == 1) {
+					this.cubeManager.insertCube(parserManager.name_creation,
+							parserManager.sqlTable, parserManager.dimensionList,
+							parserManager.originalLevelList, parserManager.measureList,
+							parserManager.measureFields);
 				}
 			}
 		}
@@ -76,11 +76,11 @@ public class Session {
 	}
 
 	public ParserManager getPrsMng() {
-		return prsMng;
+		return parserManager;
 	}
 
 	public void setPrsMng(ParserManager prsMng) {
-		this.prsMng = prsMng;
+		this.parserManager = prsMng;
 	}
 
 	public String getId() {

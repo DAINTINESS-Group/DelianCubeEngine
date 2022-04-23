@@ -32,7 +32,7 @@ public class Level {
 	 * @uml.property  name="lvlAttributes"
 	 * @uml.associationEnd  multiplicity="(0 -1)" inverse="level:CubeMgr.CubeBase.LevelAttribute"
 	 */
-    private ArrayList<LevelAttribute> lvlAttributes;
+    private ArrayList<LevelAttribute> levelAttributes;
     /**
 	 * @uml.property  name="id"
 	 */
@@ -43,7 +43,7 @@ public class Level {
     private String name;
 
     public String getAttributeName(int i){
-    	return lvlAttributes.get(i).getAttribute().getName();
+    	return levelAttributes.get(i).getAttribute().getName();
     }
     
     public String getName() {
@@ -53,18 +53,18 @@ public class Level {
     public Level(Integer position,String nm,Hierarchy Hier){
     	id=position;
     	name=nm;
-    	lvlAttributes=new ArrayList<LevelAttribute>();
+    	levelAttributes=new ArrayList<LevelAttribute>();
     	setHierarchy(Hier);
     }
 
     public Level(Integer position,String nm){
     	id=position;
     	name=nm;
-    	lvlAttributes=new ArrayList<LevelAttribute>();
+    	levelAttributes=new ArrayList<LevelAttribute>();
     }
         
     public void setLevelAttribute(ArrayList<LevelAttribute> levelAttributes){
-    	this.lvlAttributes=levelAttributes;
+    	this.levelAttributes=levelAttributes;
     }
 
 	public Hierarchy getLinearHierarchy() {
@@ -80,6 +80,6 @@ public class Level {
 	}
 
 	public void addLevelAttribute(LevelAttribute lvlattribute) {
-		lvlAttributes.add(lvlattribute);
+		levelAttributes.add(lvlattribute);
 	}
 }
