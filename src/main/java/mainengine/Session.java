@@ -23,7 +23,7 @@ public class Session {
 	}
 	
 	public String initialize(String typeOfConnection, HashMap<String, String> userInputList) throws RemoteException {		
-		initializeCubeMgr(typeOfConnection, userInputList);
+		//initializeCubeMgr(typeOfConnection, userInputList);
 		cubeManager.createCubeBase(userInputList);
 		constructDimension(userInputList.get("inputFolder"), userInputList.get("cubeName"));
 		cubeManager.setCubeQueryTranslator();

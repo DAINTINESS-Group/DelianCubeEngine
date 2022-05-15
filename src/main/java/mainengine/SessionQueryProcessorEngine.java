@@ -89,6 +89,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	private static final long serialVersionUID = 313553263459485366L;
 	private CubeManager cubeManager;
+	private CubeBase cubeBase;
 	//private StoryMgr storMgr;
 	private ParserManager prsMng;
 //	private Options optMgr;
@@ -151,8 +152,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public void initializeConnection(String typeOfConnection, HashMap<String, String> userInputList)
 			throws RemoteException {
+		cubeManager = new CubeManager(typeOfConnection, userInputList);
 		session = new Session(cubeManager, prsMng);
 		sessionId = session.initialize(typeOfConnection, userInputList);
+		cubeBase=cubeManager.getCubeBase();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		extractSchemaMetadata();
 		System.out.println("DONE WITH INIT");

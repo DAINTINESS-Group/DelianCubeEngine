@@ -65,7 +65,7 @@ public class CubeManager {
 	}
 	
 	public CubeBase getCubeBase(){
-		return cubeBase;
+		return this.cubeBase;
 	}
 	
 	public List<Dimension> getDimensions(){
