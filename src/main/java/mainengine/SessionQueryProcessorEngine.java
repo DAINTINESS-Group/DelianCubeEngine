@@ -163,6 +163,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+		cubeManager = new CubeManager(typeOfConnection, userInputList);
 		session = new Session(cubeManager, prsMng);
 		sessionId = session.initialize(typeOfConnection, userInputList);
 		queryHistoryMng = new QueryHistoryManager(sessionId);
