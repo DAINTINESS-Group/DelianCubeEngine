@@ -52,15 +52,26 @@ public class Session {
 			Scanner sc = (new Scanner(file)).useDelimiter(";");
 			while (sc.hasNext()) {
 				parserManager.parse(sc.next() + ";");
-				if (parserManager.mode == 2) {
+				if (parserManager.mode.equals("Dimension")) {
+					System.out.println(parserManager.creationName);
+					System.out.println(parserManager.datasourceTable);
+					System.out.println(parserManager.originalLevelList);
+					System.out.println(parserManager.customLevelList);
+					System.out.println(parserManager.dimensionList);
 					this.cubeManager.insertDimension(
-							parserManager.name_creation, parserManager.sqlTable,
+							parserManager.creationName, parserManager.datasourceTable,
 							parserManager.originalLevelList, parserManager.customLevelList,
-							parserManager.dimensionList);
-				} else if (parserManager.mode == 1) {
-					this.cubeManager.insertCube(parserManager.name_creation,
-							parserManager.sqlTable, parserManager.dimensionList,
-							parserManager.originalLevelList, parserManager.measureList,
+							parserManager.hierarchyList);
+				} else if (parserManager.mode.equals("Cube")) {
+					System.out.println(parserManager.creationName);
+					System.out.println(parserManager.datasourceTable);
+					System.out.println(parserManager.dimensionList);
+					System.out.println(parserManager.dimensionsAtCubeDataSource);
+					System.out.println(parserManager.measureList);
+					System.out.println(parserManager.measureFields);
+					this.cubeManager.insertCube(parserManager.creationName,
+							parserManager.datasourceTable, parserManager.dimensionList,
+							parserManager.dimensionsAtCubeDataSource, parserManager.measureList,
 							parserManager.measureFields);
 				}
 			}

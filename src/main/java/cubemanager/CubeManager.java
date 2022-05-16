@@ -86,13 +86,13 @@ public class CubeManager {
 		return registeredDimensionsList;
 	}
 	
-	public List<BasicStoredCube> insertCube(String name_creation, String sqlTable,
+	public List<BasicStoredCube> insertCube(String creationName, String datasourceTable,
 			ArrayList<String> dimensionList,
 			ArrayList<String> dimemsionRefField, ArrayList<String> measureList,
 			ArrayList<String> measureRefField) {
 
-		cubeBase.addCube(name_creation);
-		cubeBase.addSqlRelatedTable(sqlTable);
+		cubeBase.addCube(creationName);
+		cubeBase.addSqlRelatedTable(datasourceTable);
 		cubeBase.setCubeDimension(dimensionList, dimemsionRefField);
 		cubeBase.setCubeMeasure(measureList, measureRefField);
 		registeredCubesList = cubeBase.getRegisteredCubeList();

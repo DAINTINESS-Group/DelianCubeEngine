@@ -68,11 +68,11 @@ public class NaiveRegistrationClient {
 		// Cube LOAN and queries
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("schemaName", "pkdd99");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99_star");
+		userInputList.put("inputFolder", "pkdd99");
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Completed connection initialization");
 

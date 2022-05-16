@@ -5,26 +5,38 @@ options {
 }
 
 tokens{
-  CREATE;CUBE;RELATED;SQL_TABLE;REFERENCES;DIMENSION;
-  DIMENSION_TABLE;LIST;OF;LEVEL;AS;HIERARCHY;NAME;
+  DATASOURCE;TYPE;COLON;WITH;INI;FILE;PATH; SLASH; BACKSLASH;
+  CREATE;CUBE;REFERENCES;DIMENSION;LEVEL;ATTRIBUTES;ID;DESCRIPTION;
+  DIMENSION_TYPE;LIST;OF;LEVELS;AS;HIERARCHY;NAME;
   LBRACE;RBRACE;DOT;COMMA;CHILDOF;QUESTMARK;UNDERSCORE;WS;AT;
   SELECT;OR;AND;WHERE;AS;GROUP;BY;MIN;MAX;COUNT;SUM;AVG;
 }
 
 @header{
-  package ParserMgr;
+  package parsermgr;
   
   import java.util.ArrayList;
+  import java.util.HashMap;
 }
 
 @parser::members{
-  Integer mode;
+  String sourceType;
+  String iniFilePath;
+  String mode;
   String name_creation;
-  String sql_table;
+  String datasource_table;
+  String levelName;
+  HashMap<String, String> levelID;
+  HashMap<String, String> levelDescription;
   ArrayList<String> dimensionlst;
-  ArrayList<String> hierachylst;
+  ArrayList<String> hierarchylst;
   ArrayList<String> originallvllst;
   ArrayList<String> customlvllst;
+  ArrayList<String> dimensionsAtCubeDataSource;
+  ArrayList<String> attributes;
+  HashMap<String, ArrayList<String>> levelAttributes;
+  HashMap<String, String> attributeTypes;
+  HashMap<String, String> attributeDatasource;
   ArrayList<String> conditionlst;
   ArrayList<String> tablelst;
   ArrayList<String> groupperlst;
@@ -33,84 +45,126 @@ tokens{
   String aggregatefunc;
   String tmp_con;
   boolean group;
+  String dimensionType;
+  
 }
 
 @lexer::header{
-  package ParserMgr;
+  package parsermgr;
 }
 
 start :{
-    mode=0;
+    mode="";
     tmp_con="";
     group=false;
     dimensionlst=new ArrayList<String>();
-    hierachylst=new ArrayList<String>();
+    hierarchylst=new ArrayList<String>();
     originallvllst=new ArrayList<String>();
     customlvllst=new ArrayList<String>();
+    levelID = new HashMap<String, String>();
+    levelDescription = new HashMap<String, String>();
+    attributes = new ArrayList<String>();
+    levelAttributes = new HashMap<String, ArrayList<String>>();
+    attributeTypes = new HashMap<String, String>();
+    attributeDatasource = new HashMap<String, String>();
     conditionlst=new ArrayList<String>();
     groupperlst=new ArrayList<String>();
     tablelst=new ArrayList<String>();
     measurelst=new ArrayList<String>();
     measurefields=new ArrayList<String>();
+    dimensionsAtCubeDataSource=new ArrayList<String>();
   } parse; 
 
-parse :  ({  mode=0;
+parse :  	{sourceType=""; iniFilePath="";} source_type_statement 
+	|		({  mode="";
+			levelName="";
             name_creation="";
-            sql_table="";
-            if(dimensionlst.size()>0)  dimensionlst.clear();
-            if(hierachylst.size()>0)  hierachylst.clear();
+            datasource_table="";
+            dimensionType = "other";
+            if(hierarchylst.size()>0)  hierarchylst.clear();
             if(originallvllst.size()>0)  originallvllst.clear();
             if(customlvllst.size()>0)  customlvllst.clear();
+            if(attributes.size()>0) attributes.clear();
+            if(levelAttributes.size()>0) levelAttributes.clear();
+            if(attributeTypes.size()>0) attributeTypes.clear();
+            if(attributeDatasource.size()>0) attributeDatasource.clear();
+            if(measurelst.size()>0) measurelst.clear();
+            if(measurefields.size()>0) measurefields.clear();
+            if(dimensionsAtCubeDataSource.size()>0) dimensionsAtCubeDataSource.clear();
            }
             creation_statement )* 
    |      sql_query
    ;
 
+source_type_statement: DATASOURCE TYPE COLON NAME {sourceType=$NAME.text;} WITH INI FILE COLON PATH {iniFilePath=$PATH.text;};
+
 creation_statement : creation QUESTMARK;
 
-creation: creation_cube | creation_dimension ;
+creation: creation_cube | creation_dimension;
 
-creation_cube : create_statement related_statement measure_statement referdimension_statement;
+creation_cube : create_statement datasource_statement measure_statement referdimension_statement;
 
-creation_dimension : create_statement related_statement level_statement hierarchy_statement;
+creation_dimension : create_statement levels_statement hierarchy_statement datasource_statement |
+					 create_statement levels_statement hierarchy_statement dimension_type_statement datasource_statement;
 
-create_statement: CREATE CUBE {mode=1;} NAME {name_creation=$NAME.text;}
+create_statement: CREATE CUBE {mode="Cube";} NAME {name_creation=$NAME.text;}
                   | 
-                  CREATE DIMENSION {mode=2;} NAME {name_creation=$NAME.text.replace("~"," ");};
-
-related_statement : RELATED SQL_TABLE NAME {sql_table=$NAME.text;} ;
+                  CREATE DIMENSION {mode="Dimension";} NAME {name_creation=$NAME.text.replace("~"," "); dimensionlst.add($NAME.text);};
+                  
+datasource_statement : DATASOURCE NAME {datasource_table=$NAME.text;} ;
 
 referdimension_statement : REFERENCES DIMENSION dimensions;
 
 measure_statement : MEASURES measures;
 
-level_statement: LIST OF LEVEL LBRACE levels RBRACE ;
+levels_statement: LIST OF LEVELS LBRACE levels RBRACE ;
 
 hierarchy_statement : HIERARCHY hierarchy;
 
+dimension_type_statement: DIMENSION_TYPE NAME {dimensionType = $NAME.text;};
+
 dimensions : dimension  (comma_statement dimension)* ;
 
-dimension : NAME {dimensionlst.add($NAME.text.replace("~"," "));} AT sqlfield;
+dimension : NAME AT sqlfield;
 
 measures : measure (comma_statement measure)*;
 
-measure : NAME {measurelst.add($NAME.text);mode=3;tmp_con="";} AT sqlfield {mode=1;measurefields.add(tmp_con);} ;
+measure : NAME {measurelst.add($NAME.text);} AT measureName=PATH {measurefields.add($measureName.text);};
 
 levels: level (comma_statement level)*;
 
+level : CREATE LEVEL sqlfield attributes_statement WITH ID COLON idName=NAME {levelID.put(levelName, $idName.text);} AND DESCRIPTION COLON descrName=NAME {levelDescription.put(levelName, $descrName.text);};
+
+attributes_statement: WITH ATTRIBUTES LBRACE attributes RBRACE;
+
+attributes: {attributes.clear();} attribute (comma_statement attribute)* {levelAttributes.put(levelName, (ArrayList)attributes.clone()); originallvllst.add(attributeDatasource.get(attributes.get(0)));};
+
+attribute: attrName=NAME {attributes.add($attrName.text);} 
+		   COLON typeName=NAME {attributeTypes.put(($attrName.text), ($typeName.text));}
+		   datasource_statement {attributeDatasource.put(($attrName.text), datasource_table);}
+		 | attrName1=NAME DOT attrName2=NAME {attributes.add($attrName1.text+"."+$attrName2.text);} 
+		   COLON typeName=NAME {attributeTypes.put(($attrName1.text+"."+$attrName2.text), ($typeName.text));}
+		   datasource_statement {attributeDatasource.put(($attrName.text), datasource_table);};
+
 comma_statement: WS* COMMA WS*;
 
-level :  sqlfield AS name3=NAME {customlvllst.add($name3.text);}
-        | sqlfield ;
+hierarchy: name1=NAME {hierarchylst.add($name1.text);} (CHILDOF name2=NAME {hierarchylst.add($name2.text);} )+;
 
-hierarchy: name1=NAME {dimensionlst.add($name1.text);} (CHILDOF name2=NAME {dimensionlst.add($name2.text);} )+;
+sqlfield : name1=NAME DOT name2=NAME { tmp_con+=$name1.text+"."+$name2.text;
+									   if(mode.equals("Dimension")){ customlvllst.add($name1.text+"."+$name2.text);
+                                       levelName = $name1.text+"."+$name2.text;}
+                                       if(mode.equals("Cube")){ dimensionsAtCubeDataSource.add($name1.text+"."+$name2.text);}}
+        | NAME {tmp_con+= $NAME.text;
+        		if(mode.equals("Dimension")){ customlvllst.add($NAME.text); levelName=$NAME.text;}
+        		if(mode.equals("Cube")){ dimensionsAtCubeDataSource.add($NAME.text);}}
+        
+        | name=PATH {tmp_con+= $name.text;
+        			 if(mode.equals("Dimension")){ customlvllst.add($name.text); levelName=$name.text;}
+        			 if(mode.equals("Cube")){ dimensionsAtCubeDataSource.add($name.text);}};
 
-sqlfield : name1=NAME DOT name2=NAME { if(mode==1 || mode==2) originallvllst.add($name1.text+"."+$name2.text);
-                                      tmp_con+=$name1.text+"."+$name2.text;
-}
-        | NAME {tmp_con+= $NAME.text;if(mode==1 || mode==2) {originallvllst.add($NAME.text);}}
-        ;
 
+
+        
 sql_query: select_statement 
            from_statement
            where_statement
@@ -162,25 +216,46 @@ OR : O R;
 
 AND : A N D;
 
+DATASOURCE: D A T A S O U R C E;
+
+TYPE: T Y P E;
+
+COLON: ':';
+
+INI: I N I;
+
+FILE: F I L E;
+
+PATH: NAME (NAME | DOT | SLASH | BACKSLASH)* DOT NAME;
+SLASH: '/';
+BACKSLASH: '\'';
+
+
 CREATE: C R E A T E;
 
 CUBE :  C U B E ;
-
-RELATED : R E L A T E D;
-
-SQL_TABLE: S Q L UNDERSCORE T A B L E ;
 
 REFERENCES: R E F E R E N C E S;
 
 DIMENSION : D I M E N S I O N ;
 
-DIMENSION_TABLE: D I M E N S I O N UNDERSCORE T A B L E;
+DIMENSION_TYPE: D I M E N S I O N UNDERSCORE T Y P E;
 
 LIST: L I S T;
 
 OF: O F;
 
-LEVEL:L E V E L ;
+LEVELS:L E V E L S;
+
+LEVEL: L E V E L;
+
+WITH: W I T H;
+
+ATTRIBUTES: A T T R I B U T E S;
+
+ID: I D;
+
+DESCRIPTION: D E S C R I P T I O N;
 
 AS: A S;
 

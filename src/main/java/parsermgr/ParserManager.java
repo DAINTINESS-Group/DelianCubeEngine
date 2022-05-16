@@ -22,6 +22,7 @@ package parsermgr;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -39,20 +40,29 @@ import org.antlr.runtime.TokenStream;
  */
 public class ParserManager {
 	
-	public Integer mode;
-	public String name_creation;
-	public String sqlTable;
+	public String sourceType;
+	public String iniFilePath;
+	public String mode;
+	public String creationName;
+	public String datasourceTable;
+	public HashMap<String, String> levelID;
+	public HashMap<String, String> levelDescription;
 	public ArrayList<String> dimensionList;
-	public ArrayList<String> hierachyList;
+	public ArrayList<String> hierarchyList;
 	public ArrayList<String> originalLevelList;
 	public ArrayList<String> customLevelList;
+	public String dimensionType;
+	public HashMap<String, ArrayList<String>> levelAttributes;
+	public HashMap<String, String> attributeTypes;
 	public ArrayList<String> conditionList;
 	public ArrayList<String> tableList;
 	public ArrayList<String> groupperList;
 	public ArrayList<String> measureList;
 	public ArrayList<String> measureFields;
-	public String aggregationFunction;
+	public ArrayList<String> dimensionsAtCubeDataSource;
+	public String aggregationFunction;	
 	
+
 	/**
 	 * Simply initializes the ArrayLists holding information for dimensions and queries.
 	 * 
@@ -60,15 +70,29 @@ public class ParserManager {
 	 *  @since v0.0.0 (the Cincecubes system) 
 	 */
 	public ParserManager() {
+		
+		sourceType = null;
+		iniFilePath = null;
+		mode = null;
+		creationName = null;
+		datasourceTable = null;
+		levelID = new HashMap<String, String>();
+		levelDescription = new HashMap<String, String>();
 		dimensionList=new ArrayList<String>();
-		hierachyList=new ArrayList<String>();
+		hierarchyList=new ArrayList<String>();
 		originalLevelList=new ArrayList<String>();
 		customLevelList=new ArrayList<String>();
-		conditionList=new ArrayList<String>();
-		tableList=new ArrayList<String>();
-		groupperList=new ArrayList<String>();
-		measureList=new ArrayList<String>();
-		measureFields=new ArrayList<String>();
+		dimensionType = null;
+		levelAttributes = new HashMap<String, ArrayList<String>>();
+	    attributeTypes = new HashMap<String, String>();
+	    conditionList=new ArrayList<String>();
+	    tableList=new ArrayList<String>();
+	    groupperList=new ArrayList<String>();
+	    measureList=new ArrayList<String>();
+	    measureFields=new ArrayList<String>();
+	    dimensionsAtCubeDataSource=new ArrayList<String>();
+	    aggregationFunction = null;
+		
 		
 	}
 	
@@ -86,27 +110,45 @@ public class ParserManager {
 		CubeSqlLexer lexer = new CubeSqlLexer(stream);
 		TokenStream tokenStream = new CommonTokenStream(lexer);
 		CubeSqlParser parser = new CubeSqlParser(tokenStream);
-		dimensionList.clear();
-		hierachyList.clear();
+		levelID.clear();
+		levelDescription.clear();
+		hierarchyList.clear();
 		originalLevelList.clear();
 		customLevelList.clear();
+		levelAttributes.clear();
+		attributeTypes.clear();
 		try {
 			parser.start();	
 			
+			sourceType = parser.sourceType;
+			iniFilePath = parser.iniFilePath;
 			/*For DIMENSION only*/
-			hierachyList.addAll(parser.hierachylst);
+			hierarchyList.addAll(parser.hierarchylst);
+			dimensionType = parser.dimensionType;
 			
 			/*For CUBE only*/
 			measureFields.addAll(parser.measurefields);
 			measureList.addAll(parser.measurelst);
+			dimensionsAtCubeDataSource.addAll(parser.dimensionsAtCubeDataSource);
 			
 			/*SHARED CUBE,DIMENSION */
-			dimensionList.addAll(parser.dimensionlst);
-			originalLevelList.addAll(parser.originallvllst);
-			customLevelList.addAll(parser.customlvllst);
 			mode=parser.mode;
-			name_creation=parser.name_creation;
-			sqlTable=parser.sql_table;
+			creationName=parser.name_creation;
+			datasourceTable=parser.datasource_table;
+			dimensionList.addAll(parser.dimensionlst);
+			for(int i=0; i<parser.originallvllst.size(); i++) {
+				originalLevelList.add(datasourceTable+"."+parser.originallvllst.get(i));
+			}
+			customLevelList.addAll(parser.customlvllst);
+			
+			
+			/*For LEVEL ATTRIBUTES only*/
+			levelAttributes.putAll(parser.levelAttributes);
+			levelID.putAll(parser.levelID);
+			levelDescription.putAll(parser.levelDescription);
+			//levelAttributes = parser.levelAttributes;
+			attributeTypes.putAll(parser.attributeTypes);
+			//attributeTypes = parser.attributeTypes;
 			
 			/* SQL QUERY STAFF */ 
 			aggregationFunction=parser.aggregatefunc;

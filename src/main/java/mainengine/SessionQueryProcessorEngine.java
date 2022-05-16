@@ -226,7 +226,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		for (int i=0; i<cubes.size(); i++) {
 			cubeNames.add(cubes.get(i).getName());
 		}*/
-		cubeNames.add(this.prsMng.name_creation);
+		cubeNames.add(this.prsMng.creationName);
 		
 		//2.Create data for AggrFunc
 		aggrFunctions = new ArrayList<String>();
