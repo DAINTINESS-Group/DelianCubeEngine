@@ -64,6 +64,7 @@ public class SparkManager {
 					.builder()
 					.appName("Spark Session")
 					.master(sparkIni.get(1).toString())
+					.config("spark.driver.bindAddress", "127.0.0.1")
 					.config("spark.sql.warehouse.dir", sparkIni.get(2).toString())
 					.getOrCreate();
 		}
