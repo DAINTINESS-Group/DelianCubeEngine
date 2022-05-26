@@ -32,7 +32,7 @@ import mainengine.ResultFileMetadata;
 /**
  * A simple client that 
  * (a) locates an RMI server in the HOST at PORT
- * (b) issues queries against a specific cubebase and a specific cube
+ * (b) implements the registration of the database
  * 
  * @author DimosGkitsakis
  *
@@ -54,25 +54,15 @@ public class NaiveRegistrationClient {
 			System.out.println("Unable to commence server, exiting");
 			System.exit(-100);
 		}
-		// The first arg is audio; the second is for Word
-		//service.optionsChoice(false, false);
 		
-		
-		
-		// Cube ADULT and queries
-		/*service.initializeConnection("adult_no_dublic", "CinecubesUser",
-				"Cinecubes", "adult", "adult");
-		File f = new File("InputFiles/cubeQueries.ini");
-		service.answerCubeQueriesFromFile(f);/**/
 				
-		// Cube LOAN and queries
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99");
+		userInputList.put("inputFolder", "pkdd99_star");
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Completed connection initialization");
 

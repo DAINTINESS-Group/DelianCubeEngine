@@ -24,95 +24,55 @@ import cubemanager.relationalstarschema.Attribute;
 
 public class LevelAttribute{
     
-	/**
-	 * @uml.property  name="nameLvlAttr"
-	 */
-	private String nameLevelAttribute;
-	/**
-	 * @uml.property  name="moreinfos"
-	 */
-	private String moreInfo;
-    /**
-	 * @uml.property  name="level"
-	 * @uml.associationEnd  inverse="lvlAttributes:CubeMgr.CubeBase.Level"
-	 */
-    private Level level;
-    /**
-	 * @uml.property  name="attribute"
-	 * @uml.associationEnd  
-	 */
-    private Attribute attribute;
+	private String levelAttributeName;
+	private String levelAttributeDatasource;
+    private Level levelToPoint;
+    private Attribute attributeTable;
+    private String attributeType;
   
-    public LevelAttribute(String name,String infos){
-    	setNameLevelAttribute(name);
-    	setMoreInfo(infos);
+    public LevelAttribute(String name, String datasource){
+    	setLevelAttributeName(name);
+    	setLevelAttributeDatasource(datasource);
     }
     
-	/**
-	 * @return
-	 * @uml.property  name="nameLvlAttr"
-	 */
-	public String getNameLevelAttribute() {
-		return nameLevelAttribute;
+	public String getLevelAttributeName() {
+		return levelAttributeName;
 	}
 
-	/**
-	 * @param nameLvlAttr
-	 * @uml.property  name="nameLvlAttr"
-	 */
-	public void setNameLevelAttribute(String nameLvlAttr) {
-		this.nameLevelAttribute = nameLvlAttr;
+	public void setLevelAttributeName(String lvlAttrName) {
+		this.levelAttributeName = lvlAttrName;
 	}
 
-	/**
-	 * @return
-	 * @uml.property  name="moreinfos"
-	 */
-	public String getMoreInfo() {
-		return moreInfo;
+	public String getLevelAttributeDatasource() {
+		return levelAttributeDatasource;
 	}
 
-	/**
-	 * @param moreinfos
-	 * @uml.property  name="moreinfos"
-	 */
-	public void setMoreInfo(String moreinfos) {
-		moreInfo = moreinfos;
+	public void setLevelAttributeDatasource(String datasource) {
+		levelAttributeDatasource = datasource;
 	}
 
-
-	/**
-	 * @return
-	 * @uml.property  name="level"
-	 */
 	public Level getLevel() {
-		return level;
+		return levelToPoint;
 	}
 
-
-	/**
-	 * @param level
-	 * @uml.property  name="level"
-	 */
 	public void setLevel(Level level) {
-		this.level = level;
+		this.levelToPoint = level;
 	}
 
-
-	/**
-	 * @param attribute
-	 * @uml.property  name="attribute"
-	 */
-	public void setAttribute(Attribute attribute) {
-		this.attribute = attribute;
+	public void setAttributeTable(Attribute attribute) {
+		this.attributeTable = attribute;
 	}
 
-	/**
-	 * @return
-	 * @uml.property  name="attribute"
-	 */
-	public Attribute getAttribute() {
-		return attribute;
+	public Attribute getAttributeTable() {
+		return attributeTable;
+	}
+	
+	public void setAttributeType(String type) {
+		this.attributeType = type;
+	}
+	
+	public String getAttributeType() {
+		return this.attributeType;
 	}
     
 }

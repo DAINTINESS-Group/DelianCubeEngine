@@ -111,7 +111,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
 	private HashMap<String, String> userInputList;
-
+	private List<Dimension> registeredDimensions;
+	private List<BasicStoredCube> registeredCubesList;
+	
 	
 	
 	private InterestingnessManager interestMng;
@@ -158,6 +160,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		cubeBase=cubeManager.getCubeBase();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		extractSchemaMetadata();
+		
+		registeredDimensions = cubeManager.getDimensions();
+		registeredCubesList = cubeManager.getCubes();
 		System.out.println("DONE WITH INIT");
 	}
 	
@@ -182,38 +187,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	/*private void initializeCubeMgr(String lookupFolder) throws RemoteException {
 		cubeManager = new CubeManager(lookupFolder);
 	}
-
-	private void constructDimension(String inputlookup, String cubeName)
-			throws RemoteException {
-		try {
-			this.parseFile(new File("InputFiles/" + inputlookup + "/"
-					+ cubeName + ".ini"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	private void parseFile(File file) throws FileNotFoundException {
-		if (file != null) {
-			prsMng = new ParserManager();
-			@SuppressWarnings("resource")
-			Scanner sc = (new Scanner(file)).useDelimiter(";");
-			while (sc.hasNext()) {
-				prsMng.parse(sc.next() + ";");
-				if (prsMng.mode == 2) {
-					this.cubeManager.InsertionDimensionLvl(
-							prsMng.name_creation, prsMng.sqltable,
-							prsMng.originallvllst, prsMng.customlvllst,
-							prsMng.dimensionlst);
-				} else if (prsMng.mode == 1) {
-					this.cubeManager.InsertionCube(prsMng.name_creation,
-							prsMng.sqltable, prsMng.dimensionlst,
-							prsMng.originallvllst, prsMng.measurelst,
-							prsMng.measurefields);
-				}
-			}
-		}
-	}*/
+	*/
 	
 
 	private void extractSchemaMetadata() {

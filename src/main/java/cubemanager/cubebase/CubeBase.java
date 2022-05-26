@@ -68,8 +68,16 @@ public class CubeBase {
 		this.getLastInsertedDimension().setDimensionTable(dm);
 	}
 
-	public void setDimensionLinearHierachy(ArrayList<String> hierachyList,
-			List<String> fieldTables, List<String> customFieldNames) {
+	public void setDimensionType(String dimensionType) {
+		Dimension tmp;
+		tmp = this.getLastInsertedDimension();
+		tmp.setDimensionType(dimensionType);
+	}
+	
+	public void setDimensionLevelsAndLinearHierachy(ArrayList<String> hierachyList,
+			List<String> fieldTables, List<String> customFieldNames, 
+			HashMap<String, String> levelID, HashMap<String, String> levelDescription,
+			HashMap<String, ArrayList<String>> levelAttributesMap, HashMap<String, String> attributesTypesMap, HashMap<String, String> attributeDatasourceMap) {
 		Dimension tmp;
 		tmp = this.getLastInsertedDimension();
 		LinearHierarchy linearHierarchy = new LinearHierarchy();
@@ -77,18 +85,28 @@ public class CubeBase {
 		for (int i = 0; i < hierachyList.size(); i++) {
 			if (customFieldNames.get(i).equals(hierachyList.get(i))) {
 				Level lvl = new Level(i, hierachyList.get(i));
-
+				
+				lvl.setLevelIDAttribute(levelID.get(customFieldNames.get(i)));
+				lvl.setLevelDescriptionAttribute(levelDescription.get(customFieldNames.get(i)));
+				
+				
 				String[] tmp_str = fieldTables.get(i).split("\\.");
-
-				LevelAttribute lvlattr = new LevelAttribute(tmp_str[1],
-						tmp_str[0]);
-				lvlattr.setLevel(lvl);
-				lvlattr.setAttribute(dataSourceDescription.getFieldOfSqlTable(tmp_str[0],
-						tmp_str[1]));
-
-				lvl.addLevelAttribute(lvlattr);
-				lvl.setHierarchy(linearHierarchy);
-
+				ArrayList<String> levelAttributesList = levelAttributesMap.get(customFieldNames.get(i));
+				for(int j=0; j <levelAttributesList.size(); j++) {
+					
+					LevelAttribute lvlattr = new LevelAttribute(attributeDatasourceMap.get(levelAttributesList.get(j)),
+							tmp_str[0]);
+					
+					lvlattr.setLevel(lvl);
+					String type = attributesTypesMap.get(levelAttributesList.get(j));
+					lvlattr.setAttributeType(type);
+					
+					lvlattr.setAttributeTable(dataSourceDescription.getFieldOfSqlTable(tmp_str[0],
+							attributeDatasourceMap.get(levelAttributesList.get(j))));
+					
+					lvl.addLevelAttribute(lvlattr);
+				}
+				
 				linearHierarchy.levelsList.add(lvl);
 			}
 		}
@@ -108,7 +126,6 @@ public class CubeBase {
 
 	}
 
-	//edw einai tothema
 	public void addSqlRelatedTable(String sqltable) {
 		Table tmp_tbl = dataSourceDescription.getConnectionTableInstance(sqltable);
 		BasicStoredCube tmp = basicStoredCubesList.get(basicStoredCubesList.size() - 1);

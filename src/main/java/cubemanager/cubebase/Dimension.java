@@ -21,6 +21,7 @@
 package cubemanager.cubebase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cubemanager.relationalstarschema.DimensionTable;
 
@@ -29,16 +30,11 @@ public class Dimension{
 	 * @uml.property  name="hierachy"
 	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="CubeMgr.CubeBase.Level"
 	 */
+	private String name;
+	private DimensionTable dimensionDataSourceTable;
     private ArrayList<Hierarchy> hierachyList;
-    /**
-	 * @uml.property  name="dimTbl"
-	 * @uml.associationEnd  
-	 */
-    private DimensionTable dimensionTable;
-    /**
-	 * @uml.property  name="name"
-	 */
-    private String name;
+    private String dimensionType;
+	
     
     public Dimension(String nameDim){
     	name=nameDim;
@@ -54,7 +50,7 @@ public class Dimension{
 	 * @uml.property  name="dimTbl"
 	 */
     public String getTableName() {
-            return dimensionTable.getTableName();
+            return dimensionDataSourceTable.getTableName();
     }
 
     /**
@@ -62,7 +58,15 @@ public class Dimension{
 	 * @uml.property  name="dimTbl"
 	 */
     public void setDimensionTable(DimensionTable dimTbl) {
-            dimensionTable = dimTbl;
+            dimensionDataSourceTable = dimTbl;
+    }
+    
+    public void setDimensionType(String dimensionType) {
+    	this.dimensionType = dimensionType;
+    }
+    
+    public String getDimensionType() {
+    	return this.dimensionType;
     }
 
     public ArrayList<Hierarchy> getHierarchy() {

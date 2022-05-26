@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -53,26 +54,35 @@ public class Session {
 			while (sc.hasNext()) {
 				parserManager.parse(sc.next() + ";");
 				if (parserManager.mode.equals("Dimension")) {
-					System.out.println(parserManager.creationName);
-					System.out.println(parserManager.datasourceTable);
-					System.out.println(parserManager.originalLevelList);
-					System.out.println(parserManager.customLevelList);
-					System.out.println(parserManager.dimensionList);
+					String creationName = parserManager.creationName;
+					String datasourceTable = parserManager.datasourceTable;
+					ArrayList<String> originalLevelList = parserManager.originalLevelList;
+					ArrayList<String> customLevelList = parserManager.customLevelList;
+					String dimensionType = parserManager.dimensionType;
+					ArrayList<String> hierarchyList = parserManager.hierarchyList;
+					HashMap<String, String> levelID = parserManager.levelID;
+					HashMap<String, String> levelDescription = parserManager.levelDescription;
+					HashMap<String, ArrayList<String>> levelAttributes = parserManager.levelAttributes;
+					HashMap<String, String> attributeTypes = parserManager.attributeTypes;
+					HashMap<String, String> attributeDatasource = parserManager.attributeDatasource;
+					
 					this.cubeManager.insertDimension(
-							parserManager.creationName, parserManager.datasourceTable,
-							parserManager.originalLevelList, parserManager.customLevelList,
-							parserManager.hierarchyList);
+							creationName, datasourceTable,
+							originalLevelList, customLevelList, dimensionType,
+							hierarchyList, levelID, levelDescription,
+							levelAttributes, attributeTypes, attributeDatasource);
 				} else if (parserManager.mode.equals("Cube")) {
-					System.out.println(parserManager.creationName);
-					System.out.println(parserManager.datasourceTable);
-					System.out.println(parserManager.dimensionList);
-					System.out.println(parserManager.dimensionsAtCubeDataSource);
-					System.out.println(parserManager.measureList);
-					System.out.println(parserManager.measureFields);
-					this.cubeManager.insertCube(parserManager.creationName,
-							parserManager.datasourceTable, parserManager.dimensionList,
-							parserManager.dimensionsAtCubeDataSource, parserManager.measureList,
-							parserManager.measureFields);
+					String creationName = parserManager.creationName;
+					String datasourceTable = parserManager.datasourceTable;
+					ArrayList<String> dimensionList = parserManager.dimensionList;
+					ArrayList<String> dimensionsAtCubeDataSource = parserManager.dimensionsAtCubeDataSource;
+					ArrayList<String> measureList = parserManager.measureList;
+					ArrayList<String> measureFields = parserManager.measureFields;
+					
+					this.cubeManager.insertCube(creationName,
+							datasourceTable, dimensionList,
+							dimensionsAtCubeDataSource, measureList,
+							measureFields);
 				}
 			}
 		}

@@ -54,6 +54,7 @@ public class ParserManager {
 	public String dimensionType;
 	public HashMap<String, ArrayList<String>> levelAttributes;
 	public HashMap<String, String> attributeTypes;
+	public HashMap<String, String> attributeDatasource;
 	public ArrayList<String> conditionList;
 	public ArrayList<String> tableList;
 	public ArrayList<String> groupperList;
@@ -85,6 +86,7 @@ public class ParserManager {
 		dimensionType = null;
 		levelAttributes = new HashMap<String, ArrayList<String>>();
 	    attributeTypes = new HashMap<String, String>();
+	    attributeDatasource = new HashMap<String, String>();
 	    conditionList=new ArrayList<String>();
 	    tableList=new ArrayList<String>();
 	    groupperList=new ArrayList<String>();
@@ -117,6 +119,7 @@ public class ParserManager {
 		customLevelList.clear();
 		levelAttributes.clear();
 		attributeTypes.clear();
+		attributeDatasource.clear();
 		try {
 			parser.start();	
 			
@@ -146,9 +149,9 @@ public class ParserManager {
 			levelAttributes.putAll(parser.levelAttributes);
 			levelID.putAll(parser.levelID);
 			levelDescription.putAll(parser.levelDescription);
-			//levelAttributes = parser.levelAttributes;
 			attributeTypes.putAll(parser.attributeTypes);
-			//attributeTypes = parser.attributeTypes;
+			attributeDatasource.putAll(parser.attributeDatasource);
+			
 			
 			/* SQL QUERY STAFF */ 
 			aggregationFunction=parser.aggregatefunc;
@@ -160,5 +163,6 @@ public class ParserManager {
 		}
 
 	}
-
+	
+	
 }

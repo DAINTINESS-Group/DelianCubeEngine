@@ -72,17 +72,21 @@ public class CubeManager {
 		return cubeBase.getDimensions();
 	}
 	
+	public List<BasicStoredCube> getCubes(){
+		return cubeBase.getRegisteredCubeList();
+	}
+	
 	public List<Dimension> insertDimension(String dimensionName,
-			String dimensionTable, ArrayList<String> fieldName,
-			ArrayList<String> customFieldName, ArrayList<String> hierachyList) {
+			String dimensionTable, ArrayList<String> originalFieldName,ArrayList<String> customFieldName, 
+			String dimensionType, ArrayList<String> hierachyList, HashMap<String, String> levelID, HashMap<String, String> levelDescription,
+			HashMap<String, ArrayList<String>> levelAttributes, HashMap<String, String> attributeTypes, HashMap<String, String> attributeDatasource) {
 		cubeBase.addDimension(dimensionName);
 		cubeBase.addDimensionTable(dimensionTable);
-		cubeBase.setDimensionLinearHierachy(hierachyList, fieldName, customFieldName);
+		cubeBase.setDimensionType(dimensionType);
+		cubeBase.setDimensionLevelsAndLinearHierachy(hierachyList, originalFieldName, customFieldName, 
+													 levelID, levelDescription, levelAttributes, attributeTypes, attributeDatasource);
 		registeredDimensionsList = cubeBase.getDimensions();
-		
-		//System.out.println(cubeBase.getDimensions().get(cubeBase.getDimensions().size()-1).getName());
-		//System.out.println(cubeBase.getDimensions().get(cubeBase.getDimensions().size()-1).getHierarchy().get(0).getLevels().get(0).getName());
-		
+				
 		return registeredDimensionsList;
 	}
 	
@@ -96,20 +100,6 @@ public class CubeManager {
 		cubeBase.setCubeDimension(dimensionList, dimemsionRefField);
 		cubeBase.setCubeMeasure(measureList, measureRefField);
 		registeredCubesList = cubeBase.getRegisteredCubeList();
-		/*
-		for(int i=0; i<registeredCubesList.size(); i++) {
-			System.out.println(registeredCubesList.get(i).getName());
-			for(int j=0; j<registeredCubesList.get(i).getMeasuresList().size(); j++) {
-				System.out.println(registeredCubesList.get(i).getMeasuresList().get(j).getName());
-			}
-			for(int j=0; j<registeredCubesList.get(i).getDimensionsList().size(); j++) {
-				System.out.println(registeredCubesList.get(i).getDimensionsList().get(j).getName());
-			}
-			for(int j=0; j<registeredCubesList.get(i).getDimensionRefFieldList().size(); j++) {
-				System.out.println(registeredCubesList.get(i).getDimensionRefFieldList().get(j));
-			}
-			System.out.println(registeredCubesList.get(i).getFactTable().getTableName());
-		}*/
 		
 		return registeredCubesList;
 	}

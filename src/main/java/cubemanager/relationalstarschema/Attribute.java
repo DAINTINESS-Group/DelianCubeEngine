@@ -21,26 +21,21 @@
 package cubemanager.relationalstarschema;
 
 public class Attribute {
-	/**
-	 * @uml.property  name="name"
-	 */
-	private String name;
-	/**
-	 * @uml.property  name="datatype"
-	 */
-	private String dataType;
+	
+	private String tableName;
+	private String fieldName;
     
-    public Attribute(String nm,String dt){
-    	name = nm;
-    	dataType=dt;    			
+    public Attribute(String table,String field){
+    	tableName = table;
+    	fieldName=field;    			
     }
     
     public String getDatatype(){
-    	return dataType;
+    	return fieldName;
     }
     
     public String getName(){
-    	return name;
+    	return tableName;
     }
     
 }

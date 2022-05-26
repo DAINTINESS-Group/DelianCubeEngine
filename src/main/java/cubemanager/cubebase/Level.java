@@ -23,62 +23,55 @@ package cubemanager.cubebase;
 import java.util.ArrayList;
 
 public class Level {
-    /**
-	 * @uml.property  name="hierarchy"
-	 * @uml.associationEnd  inverse="lvls:CubeMgr.CubeBase.Hierarchy"
-	 */
-    private Hierarchy hierarchy;
-    /**
-	 * @uml.property  name="lvlAttributes"
-	 * @uml.associationEnd  multiplicity="(0 -1)" inverse="level:CubeMgr.CubeBase.LevelAttribute"
-	 */
+
     private ArrayList<LevelAttribute> levelAttributes;
-    /**
-	 * @uml.property  name="id"
-	 */
-    private Integer id;
-    /**
-	 * @uml.property  name="name"
-	 */
+    private Integer positionInHierarchy;
     private String name;
+    private String levelIDAttribute;
+    private String levelDescriptionAttribute;
+    
+    public Level(Integer position,String nm){
+    	positionInHierarchy=position;
+    	name=nm;
+    	levelAttributes=new ArrayList<LevelAttribute>();
+    }
 
     public String getAttributeName(int i){
-    	return levelAttributes.get(i).getAttribute().getName();
+    	return levelAttributes.get(i).getAttributeTable().getName();
     }
     
     public String getName() {
     	return name;
     }
     
-    public Level(Integer position,String nm,Hierarchy Hier){
-    	id=position;
-    	name=nm;
-    	levelAttributes=new ArrayList<LevelAttribute>();
-    	setHierarchy(Hier);
+    public void setLevelIDAttribute(String id) {
+    	this.levelIDAttribute = id;
     }
-
-    public Level(Integer position,String nm){
-    	id=position;
-    	name=nm;
-    	levelAttributes=new ArrayList<LevelAttribute>();
+    
+    public String getLevelIDAttribute() {
+    	return this.levelIDAttribute;
+    }
+    
+    public void setLevelDescriptionAttribute(String descriptionAttribute) {
+    	this.levelDescriptionAttribute = descriptionAttribute;
+    }
+    
+    public String getLevelDescriptionAttribute() {
+    	return this.levelDescriptionAttribute;
     }
         
-    public void setLevelAttribute(ArrayList<LevelAttribute> levelAttributes){
+    public void setLevelAttributesList(ArrayList<LevelAttribute> levelAttributes){
     	this.levelAttributes=levelAttributes;
     }
 
-	public Hierarchy getLinearHierarchy() {
-		return hierarchy;
-	}
+    public ArrayList<LevelAttribute> getLevelAttributesList() {
+    	return this.levelAttributes;
+    }
 
-	/**
-	 * @param hier
-	 * @uml.property  name="hierarchy"
-	 */
-	public void setHierarchy(Hierarchy hier) {
-		hierarchy = hier;
-	}
-
+    public Integer getPositionInHierarchy() {
+    	return this.positionInHierarchy;
+    }
+    
 	public void addLevelAttribute(LevelAttribute lvlattribute) {
 		levelAttributes.add(lvlattribute);
 	}
