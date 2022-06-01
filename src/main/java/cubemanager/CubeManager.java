@@ -73,7 +73,7 @@ public class CubeManager {
 	}
 	
 	public List<BasicStoredCube> getCubes(){
-		return cubeBase.getRegisteredCubeList();
+		return this.registeredCubesList;
 	}
 	
 	public List<Dimension> insertDimension(String dimensionName,

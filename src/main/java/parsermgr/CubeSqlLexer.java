@@ -1,4 +1,4 @@
-// $ANTLR 3.4 CubeSql.g 2022-05-15 23:04:33
+// $ANTLR 3.4 CubeSql.g 2022-05-30 21:00:12
 
   package parsermgr;
 
@@ -11,88 +11,69 @@ import java.util.ArrayList;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class CubeSqlLexer extends Lexer {
     public static final int EOF=-1;
-    public static final int T__78=78;
-    public static final int T__79=79;
-    public static final int T__80=80;
-    public static final int T__81=81;
-    public static final int T__82=82;
-    public static final int T__83=83;
-    public static final int T__84=84;
-    public static final int T__85=85;
     public static final int A=4;
     public static final int AND=5;
     public static final int AS=6;
     public static final int AT=7;
     public static final int ATTRIBUTES=8;
-    public static final int AVG=9;
-    public static final int B=10;
-    public static final int BACKSLASH=11;
-    public static final int BY=12;
-    public static final int C=13;
-    public static final int CHILDOF=14;
-    public static final int COLON=15;
-    public static final int COMMA=16;
-    public static final int COUNT=17;
-    public static final int CREATE=18;
-    public static final int CUBE=19;
-    public static final int D=20;
-    public static final int DATASOURCE=21;
-    public static final int DESCRIPTION=22;
-    public static final int DIMENSION=23;
-    public static final int DIMENSION_TYPE=24;
-    public static final int DOT=25;
-    public static final int Digit=26;
-    public static final int E=27;
-    public static final int F=28;
-    public static final int FILE=29;
-    public static final int FROM=30;
-    public static final int G=31;
-    public static final int GROUP=32;
-    public static final int H=33;
-    public static final int HIERARCHY=34;
-    public static final int I=35;
-    public static final int ID=36;
-    public static final int INI=37;
-    public static final int J=38;
-    public static final int K=39;
-    public static final int L=40;
-    public static final int LBRACE=41;
-    public static final int LEVEL=42;
-    public static final int LEVELS=43;
-    public static final int LIST=44;
-    public static final int Letter=45;
-    public static final int M=46;
-    public static final int MAX=47;
-    public static final int MEASURES=48;
-    public static final int MIN=49;
-    public static final int N=50;
-    public static final int NAME=51;
-    public static final int O=52;
-    public static final int OF=53;
-    public static final int OR=54;
-    public static final int P=55;
-    public static final int PATH=56;
-    public static final int Q=57;
-    public static final int QUESTMARK=58;
-    public static final int R=59;
-    public static final int RBRACE=60;
-    public static final int REFERENCES=61;
-    public static final int S=62;
-    public static final int SELECT=63;
-    public static final int SLASH=64;
-    public static final int SUM=65;
-    public static final int T=66;
-    public static final int TYPE=67;
-    public static final int U=68;
-    public static final int UNDERSCORE=69;
-    public static final int V=70;
-    public static final int W=71;
-    public static final int WHERE=72;
-    public static final int WITH=73;
-    public static final int WS=74;
-    public static final int X=75;
-    public static final int Y=76;
-    public static final int Z=77;
+    public static final int B=9;
+    public static final int BACKSLASH=10;
+    public static final int C=11;
+    public static final int CHILDOF=12;
+    public static final int COLON=13;
+    public static final int COMMA=14;
+    public static final int CREATE=15;
+    public static final int CUBE=16;
+    public static final int D=17;
+    public static final int DATASOURCE=18;
+    public static final int DESCRIPTION=19;
+    public static final int DIMENSION=20;
+    public static final int DIMENSION_TYPE=21;
+    public static final int DOT=22;
+    public static final int Digit=23;
+    public static final int E=24;
+    public static final int F=25;
+    public static final int FILE=26;
+    public static final int G=27;
+    public static final int H=28;
+    public static final int HIERARCHY=29;
+    public static final int I=30;
+    public static final int ID=31;
+    public static final int INI=32;
+    public static final int J=33;
+    public static final int K=34;
+    public static final int L=35;
+    public static final int LBRACE=36;
+    public static final int LEVEL=37;
+    public static final int LEVELS=38;
+    public static final int LIST=39;
+    public static final int Letter=40;
+    public static final int M=41;
+    public static final int MEASURES=42;
+    public static final int N=43;
+    public static final int NAME=44;
+    public static final int O=45;
+    public static final int OF=46;
+    public static final int P=47;
+    public static final int PATH=48;
+    public static final int Q=49;
+    public static final int QUESTMARK=50;
+    public static final int R=51;
+    public static final int RBRACE=52;
+    public static final int REFERENCES=53;
+    public static final int S=54;
+    public static final int SLASH=55;
+    public static final int T=56;
+    public static final int TYPE=57;
+    public static final int U=58;
+    public static final int UNDERSCORE=59;
+    public static final int V=60;
+    public static final int W=61;
+    public static final int WITH=62;
+    public static final int WS=63;
+    public static final int X=64;
+    public static final int Y=65;
+    public static final int Z=66;
 
     // delegates
     // delegators
@@ -109,212 +90,13 @@ public class CubeSqlLexer extends Lexer {
     }
     public String getGrammarFileName() { return "CubeSql.g"; }
 
-    // $ANTLR start "T__78"
-    public final void mT__78() throws RecognitionException {
-        try {
-            int _type = T__78;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:6:7: ( '\"' )
-            // CubeSql.g:6:9: '\"'
-            {
-            match('\"'); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__78"
-
-    // $ANTLR start "T__79"
-    public final void mT__79() throws RecognitionException {
-        try {
-            int _type = T__79;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:7:7: ( '(' )
-            // CubeSql.g:7:9: '('
-            {
-            match('('); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__79"
-
-    // $ANTLR start "T__80"
-    public final void mT__80() throws RecognitionException {
-        try {
-            int _type = T__80;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:8:7: ( ')' )
-            // CubeSql.g:8:9: ')'
-            {
-            match(')'); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__80"
-
-    // $ANTLR start "T__81"
-    public final void mT__81() throws RecognitionException {
-        try {
-            int _type = T__81;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:9:7: ( '<' )
-            // CubeSql.g:9:9: '<'
-            {
-            match('<'); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__81"
-
-    // $ANTLR start "T__82"
-    public final void mT__82() throws RecognitionException {
-        try {
-            int _type = T__82;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:10:7: ( '<=' )
-            // CubeSql.g:10:9: '<='
-            {
-            match("<="); 
-
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__82"
-
-    // $ANTLR start "T__83"
-    public final void mT__83() throws RecognitionException {
-        try {
-            int _type = T__83;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:11:7: ( '=' )
-            // CubeSql.g:11:9: '='
-            {
-            match('='); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__83"
-
-    // $ANTLR start "T__84"
-    public final void mT__84() throws RecognitionException {
-        try {
-            int _type = T__84;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:12:7: ( '>=' )
-            // CubeSql.g:12:9: '>='
-            {
-            match(">="); 
-
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__84"
-
-    // $ANTLR start "T__85"
-    public final void mT__85() throws RecognitionException {
-        try {
-            int _type = T__85;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:13:7: ( 'LIKE' )
-            // CubeSql.g:13:9: 'LIKE'
-            {
-            match("LIKE"); 
-
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "T__85"
-
-    // $ANTLR start "OR"
-    public final void mOR() throws RecognitionException {
-        try {
-            int _type = OR;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:215:4: ( O R )
-            // CubeSql.g:215:6: O R
-            {
-            mO(); 
-
-
-            mR(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "OR"
-
     // $ANTLR start "AND"
     public final void mAND() throws RecognitionException {
         try {
             int _type = AND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:217:5: ( A N D )
-            // CubeSql.g:217:7: A N D
+            // CubeSql.g:156:5: ( A N D )
+            // CubeSql.g:156:7: A N D
             {
             mA(); 
 
@@ -341,8 +123,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = DATASOURCE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:219:11: ( D A T A S O U R C E )
-            // CubeSql.g:219:13: D A T A S O U R C E
+            // CubeSql.g:158:11: ( D A T A S O U R C E )
+            // CubeSql.g:158:13: D A T A S O U R C E
             {
             mD(); 
 
@@ -390,8 +172,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = TYPE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:221:5: ( T Y P E )
-            // CubeSql.g:221:7: T Y P E
+            // CubeSql.g:160:5: ( T Y P E )
+            // CubeSql.g:160:7: T Y P E
             {
             mT(); 
 
@@ -421,8 +203,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:223:6: ( ':' )
-            // CubeSql.g:223:8: ':'
+            // CubeSql.g:162:6: ( ':' )
+            // CubeSql.g:162:8: ':'
             {
             match(':'); 
 
@@ -442,8 +224,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = INI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:225:4: ( I N I )
-            // CubeSql.g:225:6: I N I
+            // CubeSql.g:164:4: ( I N I )
+            // CubeSql.g:164:6: I N I
             {
             mI(); 
 
@@ -470,8 +252,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = FILE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:227:5: ( F I L E )
-            // CubeSql.g:227:7: F I L E
+            // CubeSql.g:166:5: ( F I L E )
+            // CubeSql.g:166:7: F I L E
             {
             mF(); 
 
@@ -501,20 +283,20 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = PATH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:229:5: ( NAME ( NAME | DOT | SLASH | BACKSLASH )* DOT NAME )
-            // CubeSql.g:229:7: NAME ( NAME | DOT | SLASH | BACKSLASH )* DOT NAME
+            // CubeSql.g:168:5: ( NAME ( NAME | DOT | SLASH | BACKSLASH )* DOT NAME )
+            // CubeSql.g:168:7: NAME ( NAME | DOT | SLASH | BACKSLASH )* DOT NAME
             {
             mNAME(); 
 
 
-            // CubeSql.g:229:12: ( NAME | DOT | SLASH | BACKSLASH )*
+            // CubeSql.g:168:12: ( NAME | DOT | SLASH | BACKSLASH )*
             loop1:
             do {
                 int alt1=5;
                 alt1 = dfa1.predict(input);
                 switch (alt1) {
             	case 1 :
-            	    // CubeSql.g:229:13: NAME
+            	    // CubeSql.g:168:13: NAME
             	    {
             	    mNAME(); 
 
@@ -522,7 +304,7 @@ public class CubeSqlLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // CubeSql.g:229:20: DOT
+            	    // CubeSql.g:168:20: DOT
             	    {
             	    mDOT(); 
 
@@ -530,7 +312,7 @@ public class CubeSqlLexer extends Lexer {
             	    }
             	    break;
             	case 3 :
-            	    // CubeSql.g:229:26: SLASH
+            	    // CubeSql.g:168:26: SLASH
             	    {
             	    mSLASH(); 
 
@@ -538,7 +320,7 @@ public class CubeSqlLexer extends Lexer {
             	    }
             	    break;
             	case 4 :
-            	    // CubeSql.g:229:34: BACKSLASH
+            	    // CubeSql.g:168:34: BACKSLASH
             	    {
             	    mBACKSLASH(); 
 
@@ -574,8 +356,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:230:6: ( '/' )
-            // CubeSql.g:230:8: '/'
+            // CubeSql.g:169:6: ( '/' )
+            // CubeSql.g:169:8: '/'
             {
             match('/'); 
 
@@ -595,8 +377,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = BACKSLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:231:10: ( '\\'' )
-            // CubeSql.g:231:12: '\\''
+            // CubeSql.g:170:10: ( '\\'' )
+            // CubeSql.g:170:12: '\\''
             {
             match('\''); 
 
@@ -616,8 +398,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = CREATE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:234:7: ( C R E A T E )
-            // CubeSql.g:234:9: C R E A T E
+            // CubeSql.g:173:7: ( C R E A T E )
+            // CubeSql.g:173:9: C R E A T E
             {
             mC(); 
 
@@ -653,8 +435,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = CUBE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:236:6: ( C U B E )
-            // CubeSql.g:236:9: C U B E
+            // CubeSql.g:175:6: ( C U B E )
+            // CubeSql.g:175:9: C U B E
             {
             mC(); 
 
@@ -684,8 +466,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = REFERENCES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:238:11: ( R E F E R E N C E S )
-            // CubeSql.g:238:13: R E F E R E N C E S
+            // CubeSql.g:177:11: ( R E F E R E N C E S )
+            // CubeSql.g:177:13: R E F E R E N C E S
             {
             mR(); 
 
@@ -733,8 +515,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = DIMENSION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:240:11: ( D I M E N S I O N )
-            // CubeSql.g:240:13: D I M E N S I O N
+            // CubeSql.g:179:11: ( D I M E N S I O N )
+            // CubeSql.g:179:13: D I M E N S I O N
             {
             mD(); 
 
@@ -779,8 +561,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = DIMENSION_TYPE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:242:15: ( D I M E N S I O N UNDERSCORE T Y P E )
-            // CubeSql.g:242:17: D I M E N S I O N UNDERSCORE T Y P E
+            // CubeSql.g:181:15: ( D I M E N S I O N UNDERSCORE T Y P E )
+            // CubeSql.g:181:17: D I M E N S I O N UNDERSCORE T Y P E
             {
             mD(); 
 
@@ -840,8 +622,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = LIST;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:244:5: ( L I S T )
-            // CubeSql.g:244:7: L I S T
+            // CubeSql.g:183:5: ( L I S T )
+            // CubeSql.g:183:7: L I S T
             {
             mL(); 
 
@@ -871,8 +653,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = OF;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:246:3: ( O F )
-            // CubeSql.g:246:5: O F
+            // CubeSql.g:185:3: ( O F )
+            // CubeSql.g:185:5: O F
             {
             mO(); 
 
@@ -896,8 +678,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = LEVELS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:248:7: ( L E V E L S )
-            // CubeSql.g:248:8: L E V E L S
+            // CubeSql.g:187:7: ( L E V E L S )
+            // CubeSql.g:187:8: L E V E L S
             {
             mL(); 
 
@@ -933,8 +715,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = LEVEL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:250:6: ( L E V E L )
-            // CubeSql.g:250:8: L E V E L
+            // CubeSql.g:189:6: ( L E V E L )
+            // CubeSql.g:189:8: L E V E L
             {
             mL(); 
 
@@ -967,8 +749,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = WITH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:252:5: ( W I T H )
-            // CubeSql.g:252:7: W I T H
+            // CubeSql.g:191:5: ( W I T H )
+            // CubeSql.g:191:7: W I T H
             {
             mW(); 
 
@@ -998,8 +780,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = ATTRIBUTES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:254:11: ( A T T R I B U T E S )
-            // CubeSql.g:254:13: A T T R I B U T E S
+            // CubeSql.g:193:11: ( A T T R I B U T E S )
+            // CubeSql.g:193:13: A T T R I B U T E S
             {
             mA(); 
 
@@ -1047,8 +829,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:256:3: ( I D )
-            // CubeSql.g:256:5: I D
+            // CubeSql.g:195:3: ( I D )
+            // CubeSql.g:195:5: I D
             {
             mI(); 
 
@@ -1072,8 +854,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = DESCRIPTION;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:258:12: ( D E S C R I P T I O N )
-            // CubeSql.g:258:14: D E S C R I P T I O N
+            // CubeSql.g:197:12: ( D E S C R I P T I O N )
+            // CubeSql.g:197:14: D E S C R I P T I O N
             {
             mD(); 
 
@@ -1124,8 +906,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = AS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:260:3: ( A S )
-            // CubeSql.g:260:5: A S
+            // CubeSql.g:199:3: ( A S )
+            // CubeSql.g:199:5: A S
             {
             mA(); 
 
@@ -1149,8 +931,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:262:4: ( A T )
-            // CubeSql.g:262:5: A T
+            // CubeSql.g:201:4: ( A T )
+            // CubeSql.g:201:5: A T
             {
             mA(); 
 
@@ -1174,8 +956,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = HIERARCHY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:264:10: ( H I E R A R C H Y )
-            // CubeSql.g:264:12: H I E R A R C H Y
+            // CubeSql.g:203:10: ( H I E R A R C H Y )
+            // CubeSql.g:203:12: H I E R A R C H Y
             {
             mH(); 
 
@@ -1215,320 +997,13 @@ public class CubeSqlLexer extends Lexer {
     }
     // $ANTLR end "HIERARCHY"
 
-    // $ANTLR start "SELECT"
-    public final void mSELECT() throws RecognitionException {
-        try {
-            int _type = SELECT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:266:8: ( S E L E C T )
-            // CubeSql.g:266:10: S E L E C T
-            {
-            mS(); 
-
-
-            mE(); 
-
-
-            mL(); 
-
-
-            mE(); 
-
-
-            mC(); 
-
-
-            mT(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "SELECT"
-
-    // $ANTLR start "AVG"
-    public final void mAVG() throws RecognitionException {
-        try {
-            int _type = AVG;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:268:5: ( A V G )
-            // CubeSql.g:268:7: A V G
-            {
-            mA(); 
-
-
-            mV(); 
-
-
-            mG(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "AVG"
-
-    // $ANTLR start "SUM"
-    public final void mSUM() throws RecognitionException {
-        try {
-            int _type = SUM;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:270:5: ( S U M )
-            // CubeSql.g:270:7: S U M
-            {
-            mS(); 
-
-
-            mU(); 
-
-
-            mM(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "SUM"
-
-    // $ANTLR start "MAX"
-    public final void mMAX() throws RecognitionException {
-        try {
-            int _type = MAX;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:272:5: ( M A X )
-            // CubeSql.g:272:7: M A X
-            {
-            mM(); 
-
-
-            mA(); 
-
-
-            mX(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "MAX"
-
-    // $ANTLR start "MIN"
-    public final void mMIN() throws RecognitionException {
-        try {
-            int _type = MIN;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:274:5: ( M I N )
-            // CubeSql.g:274:7: M I N
-            {
-            mM(); 
-
-
-            mI(); 
-
-
-            mN(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "MIN"
-
-    // $ANTLR start "COUNT"
-    public final void mCOUNT() throws RecognitionException {
-        try {
-            int _type = COUNT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:276:7: ( C O U N T )
-            // CubeSql.g:276:9: C O U N T
-            {
-            mC(); 
-
-
-            mO(); 
-
-
-            mU(); 
-
-
-            mN(); 
-
-
-            mT(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "COUNT"
-
-    // $ANTLR start "WHERE"
-    public final void mWHERE() throws RecognitionException {
-        try {
-            int _type = WHERE;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:278:7: ( W H E R E )
-            // CubeSql.g:278:9: W H E R E
-            {
-            mW(); 
-
-
-            mH(); 
-
-
-            mE(); 
-
-
-            mR(); 
-
-
-            mE(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "WHERE"
-
-    // $ANTLR start "FROM"
-    public final void mFROM() throws RecognitionException {
-        try {
-            int _type = FROM;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:280:6: ( F R O M )
-            // CubeSql.g:280:8: F R O M
-            {
-            mF(); 
-
-
-            mR(); 
-
-
-            mO(); 
-
-
-            mM(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "FROM"
-
-    // $ANTLR start "GROUP"
-    public final void mGROUP() throws RecognitionException {
-        try {
-            int _type = GROUP;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:282:7: ( G R O U P )
-            // CubeSql.g:282:9: G R O U P
-            {
-            mG(); 
-
-
-            mR(); 
-
-
-            mO(); 
-
-
-            mU(); 
-
-
-            mP(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "GROUP"
-
-    // $ANTLR start "BY"
-    public final void mBY() throws RecognitionException {
-        try {
-            int _type = BY;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:284:3: ( B Y )
-            // CubeSql.g:284:5: B Y
-            {
-            mB(); 
-
-
-            mY(); 
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "BY"
-
     // $ANTLR start "MEASURES"
     public final void mMEASURES() throws RecognitionException {
         try {
             int _type = MEASURES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:286:10: ( M E A S U R E S )
-            // CubeSql.g:286:12: M E A S U R E S
+            // CubeSql.g:205:10: ( M E A S U R E S )
+            // CubeSql.g:205:12: M E A S U R E S
             {
             mM(); 
 
@@ -1570,13 +1045,13 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = NAME;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:288:5: ( Letter ( Letter | Digit | '_' | '-' | '~' )* )
-            // CubeSql.g:288:7: Letter ( Letter | Digit | '_' | '-' | '~' )*
+            // CubeSql.g:207:5: ( Letter ( Letter | Digit | '_' | '-' | '~' )* )
+            // CubeSql.g:207:7: Letter ( Letter | Digit | '_' | '-' | '~' )*
             {
             mLetter(); 
 
 
-            // CubeSql.g:288:14: ( Letter | Digit | '_' | '-' | '~' )*
+            // CubeSql.g:207:14: ( Letter | Digit | '_' | '-' | '~' )*
             loop2:
             do {
                 int alt2=2;
@@ -1626,8 +1101,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:290:7: ( '{' )
-            // CubeSql.g:290:8: '{'
+            // CubeSql.g:209:7: ( '{' )
+            // CubeSql.g:209:8: '{'
             {
             match('{'); 
 
@@ -1647,8 +1122,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:291:7: ( '}' )
-            // CubeSql.g:291:8: '}'
+            // CubeSql.g:210:7: ( '}' )
+            // CubeSql.g:210:8: '}'
             {
             match('}'); 
 
@@ -1668,8 +1143,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:292:4: ( '.' )
-            // CubeSql.g:292:5: '.'
+            // CubeSql.g:211:4: ( '.' )
+            // CubeSql.g:211:5: '.'
             {
             match('.'); 
 
@@ -1689,8 +1164,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:293:6: ( ',' )
-            // CubeSql.g:293:7: ','
+            // CubeSql.g:212:6: ( ',' )
+            // CubeSql.g:212:7: ','
             {
             match(','); 
 
@@ -1710,8 +1185,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = CHILDOF;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:294:8: ( '>' )
-            // CubeSql.g:294:9: '>'
+            // CubeSql.g:213:8: ( '>' )
+            // CubeSql.g:213:9: '>'
             {
             match('>'); 
 
@@ -1731,8 +1206,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = QUESTMARK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:295:10: ( ';' )
-            // CubeSql.g:295:11: ';'
+            // CubeSql.g:214:10: ( ';' )
+            // CubeSql.g:214:11: ';'
             {
             match(';'); 
 
@@ -1752,8 +1227,8 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = UNDERSCORE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:296:11: ( '_' )
-            // CubeSql.g:296:12: '_'
+            // CubeSql.g:215:11: ( '_' )
+            // CubeSql.g:215:12: '_'
             {
             match('_'); 
 
@@ -1771,7 +1246,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "Digit"
     public final void mDigit() throws RecognitionException {
         try {
-            // CubeSql.g:298:16: ( '0' .. '9' )
+            // CubeSql.g:217:16: ( '0' .. '9' )
             // CubeSql.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -1797,7 +1272,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "Letter"
     public final void mLetter() throws RecognitionException {
         try {
-            // CubeSql.g:299:17: ( 'a' .. 'z' | 'A' .. 'Z' )
+            // CubeSql.g:218:17: ( 'a' .. 'z' | 'A' .. 'Z' )
             // CubeSql.g:
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -1823,7 +1298,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "A"
     public final void mA() throws RecognitionException {
         try {
-            // CubeSql.g:300:11: ( 'A' | 'a' )
+            // CubeSql.g:219:11: ( 'A' | 'a' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
@@ -1849,7 +1324,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "B"
     public final void mB() throws RecognitionException {
         try {
-            // CubeSql.g:301:11: ( 'B' | 'b' )
+            // CubeSql.g:220:11: ( 'B' | 'b' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='B'||input.LA(1)=='b' ) {
@@ -1875,7 +1350,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "C"
     public final void mC() throws RecognitionException {
         try {
-            // CubeSql.g:302:11: ( 'C' | 'c' )
+            // CubeSql.g:221:11: ( 'C' | 'c' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
@@ -1901,7 +1376,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "D"
     public final void mD() throws RecognitionException {
         try {
-            // CubeSql.g:303:11: ( 'D' | 'd' )
+            // CubeSql.g:222:11: ( 'D' | 'd' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
@@ -1927,7 +1402,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // CubeSql.g:304:11: ( 'E' | 'e' )
+            // CubeSql.g:223:11: ( 'E' | 'e' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
@@ -1953,7 +1428,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "F"
     public final void mF() throws RecognitionException {
         try {
-            // CubeSql.g:305:11: ( 'F' | 'f' )
+            // CubeSql.g:224:11: ( 'F' | 'f' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
@@ -1979,7 +1454,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "G"
     public final void mG() throws RecognitionException {
         try {
-            // CubeSql.g:306:11: ( 'G' | 'g' )
+            // CubeSql.g:225:11: ( 'G' | 'g' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='G'||input.LA(1)=='g' ) {
@@ -2005,7 +1480,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "H"
     public final void mH() throws RecognitionException {
         try {
-            // CubeSql.g:307:11: ( 'H' | 'h' )
+            // CubeSql.g:226:11: ( 'H' | 'h' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='H'||input.LA(1)=='h' ) {
@@ -2031,7 +1506,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "I"
     public final void mI() throws RecognitionException {
         try {
-            // CubeSql.g:308:11: ( 'I' | 'i' )
+            // CubeSql.g:227:11: ( 'I' | 'i' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
@@ -2057,7 +1532,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "J"
     public final void mJ() throws RecognitionException {
         try {
-            // CubeSql.g:309:11: ( 'J' | 'j' )
+            // CubeSql.g:228:11: ( 'J' | 'j' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='J'||input.LA(1)=='j' ) {
@@ -2083,7 +1558,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "K"
     public final void mK() throws RecognitionException {
         try {
-            // CubeSql.g:310:11: ( 'K' | 'k' )
+            // CubeSql.g:229:11: ( 'K' | 'k' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='K'||input.LA(1)=='k' ) {
@@ -2109,7 +1584,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "L"
     public final void mL() throws RecognitionException {
         try {
-            // CubeSql.g:311:11: ( 'L' | 'l' )
+            // CubeSql.g:230:11: ( 'L' | 'l' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
@@ -2135,7 +1610,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "M"
     public final void mM() throws RecognitionException {
         try {
-            // CubeSql.g:312:11: ( 'M' | 'm' )
+            // CubeSql.g:231:11: ( 'M' | 'm' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
@@ -2161,7 +1636,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "N"
     public final void mN() throws RecognitionException {
         try {
-            // CubeSql.g:313:11: ( 'N' | 'n' )
+            // CubeSql.g:232:11: ( 'N' | 'n' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
@@ -2187,7 +1662,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "O"
     public final void mO() throws RecognitionException {
         try {
-            // CubeSql.g:314:11: ( 'O' | 'o' )
+            // CubeSql.g:233:11: ( 'O' | 'o' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
@@ -2213,7 +1688,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "P"
     public final void mP() throws RecognitionException {
         try {
-            // CubeSql.g:315:11: ( 'P' | 'p' )
+            // CubeSql.g:234:11: ( 'P' | 'p' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='P'||input.LA(1)=='p' ) {
@@ -2239,7 +1714,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "Q"
     public final void mQ() throws RecognitionException {
         try {
-            // CubeSql.g:316:11: ( 'Q' | 'q' )
+            // CubeSql.g:235:11: ( 'Q' | 'q' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='Q'||input.LA(1)=='q' ) {
@@ -2265,7 +1740,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "R"
     public final void mR() throws RecognitionException {
         try {
-            // CubeSql.g:317:11: ( 'R' | 'r' )
+            // CubeSql.g:236:11: ( 'R' | 'r' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
@@ -2291,7 +1766,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "S"
     public final void mS() throws RecognitionException {
         try {
-            // CubeSql.g:318:11: ( 'S' | 's' )
+            // CubeSql.g:237:11: ( 'S' | 's' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
@@ -2317,7 +1792,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "T"
     public final void mT() throws RecognitionException {
         try {
-            // CubeSql.g:319:11: ( 'T' | 't' )
+            // CubeSql.g:238:11: ( 'T' | 't' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
@@ -2343,7 +1818,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "U"
     public final void mU() throws RecognitionException {
         try {
-            // CubeSql.g:320:11: ( 'U' | 'u' )
+            // CubeSql.g:239:11: ( 'U' | 'u' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
@@ -2369,7 +1844,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "V"
     public final void mV() throws RecognitionException {
         try {
-            // CubeSql.g:321:11: ( 'V' | 'v' )
+            // CubeSql.g:240:11: ( 'V' | 'v' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='V'||input.LA(1)=='v' ) {
@@ -2395,7 +1870,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "W"
     public final void mW() throws RecognitionException {
         try {
-            // CubeSql.g:322:11: ( 'W' | 'w' )
+            // CubeSql.g:241:11: ( 'W' | 'w' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='W'||input.LA(1)=='w' ) {
@@ -2421,7 +1896,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "X"
     public final void mX() throws RecognitionException {
         try {
-            // CubeSql.g:323:11: ( 'X' | 'x' )
+            // CubeSql.g:242:11: ( 'X' | 'x' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -2447,7 +1922,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "Y"
     public final void mY() throws RecognitionException {
         try {
-            // CubeSql.g:324:11: ( 'Y' | 'y' )
+            // CubeSql.g:243:11: ( 'Y' | 'y' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='Y'||input.LA(1)=='y' ) {
@@ -2473,7 +1948,7 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR start "Z"
     public final void mZ() throws RecognitionException {
         try {
-            // CubeSql.g:325:11: ( 'Z' | 'z' )
+            // CubeSql.g:244:11: ( 'Z' | 'z' )
             // CubeSql.g:
             {
             if ( input.LA(1)=='Z'||input.LA(1)=='z' ) {
@@ -2501,10 +1976,10 @@ public class CubeSqlLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // CubeSql.g:327:4: ( ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) ) )
-            // CubeSql.g:327:6: ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) )
+            // CubeSql.g:246:4: ( ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) ) )
+            // CubeSql.g:246:6: ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) )
             {
-            // CubeSql.g:327:6: ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) )
+            // CubeSql.g:246:6: ( ( ' ' | '\\t' | '\\f' )+ | ( '\\r\\n' | '\\r' | '\\n' ) )
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -2523,9 +1998,9 @@ public class CubeSqlLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // CubeSql.g:328:5: ( ' ' | '\\t' | '\\f' )+
+                    // CubeSql.g:247:5: ( ' ' | '\\t' | '\\f' )+
                     {
-                    // CubeSql.g:328:5: ( ' ' | '\\t' | '\\f' )+
+                    // CubeSql.g:247:5: ( ' ' | '\\t' | '\\f' )+
                     int cnt3=0;
                     loop3:
                     do {
@@ -2567,9 +2042,9 @@ public class CubeSqlLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // CubeSql.g:331:5: ( '\\r\\n' | '\\r' | '\\n' )
+                    // CubeSql.g:250:5: ( '\\r\\n' | '\\r' | '\\n' )
                     {
-                    // CubeSql.g:331:5: ( '\\r\\n' | '\\r' | '\\n' )
+                    // CubeSql.g:250:5: ( '\\r\\n' | '\\r' | '\\n' )
                     int alt4=3;
                     int LA4_0 = input.LA(1);
 
@@ -2595,7 +2070,7 @@ public class CubeSqlLexer extends Lexer {
                     }
                     switch (alt4) {
                         case 1 :
-                            // CubeSql.g:331:7: '\\r\\n'
+                            // CubeSql.g:250:7: '\\r\\n'
                             {
                             match("\r\n"); 
 
@@ -2604,14 +2079,14 @@ public class CubeSqlLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // CubeSql.g:332:9: '\\r'
+                            // CubeSql.g:251:9: '\\r'
                             {
                             match('\r'); 
 
                             }
                             break;
                         case 3 :
-                            // CubeSql.g:333:9: '\\n'
+                            // CubeSql.g:252:9: '\\n'
                             {
                             match('\n'); 
 
@@ -2641,436 +2116,284 @@ public class CubeSqlLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // CubeSql.g:1:8: ( T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | OR | AND | DATASOURCE | TYPE | COLON | INI | FILE | PATH | SLASH | BACKSLASH | CREATE | CUBE | REFERENCES | DIMENSION | DIMENSION_TYPE | LIST | OF | LEVELS | LEVEL | WITH | ATTRIBUTES | ID | DESCRIPTION | AS | AT | HIERARCHY | SELECT | AVG | SUM | MAX | MIN | COUNT | WHERE | FROM | GROUP | BY | MEASURES | NAME | LBRACE | RBRACE | DOT | COMMA | CHILDOF | QUESTMARK | UNDERSCORE | WS )
-        int alt6=54;
+        // CubeSql.g:1:8: ( AND | DATASOURCE | TYPE | COLON | INI | FILE | PATH | SLASH | BACKSLASH | CREATE | CUBE | REFERENCES | DIMENSION | DIMENSION_TYPE | LIST | OF | LEVELS | LEVEL | WITH | ATTRIBUTES | ID | DESCRIPTION | AS | AT | HIERARCHY | MEASURES | NAME | LBRACE | RBRACE | DOT | COMMA | CHILDOF | QUESTMARK | UNDERSCORE | WS )
+        int alt6=35;
         alt6 = dfa6.predict(input);
         switch (alt6) {
             case 1 :
-                // CubeSql.g:1:10: T__78
-                {
-                mT__78(); 
-
-
-                }
-                break;
-            case 2 :
-                // CubeSql.g:1:16: T__79
-                {
-                mT__79(); 
-
-
-                }
-                break;
-            case 3 :
-                // CubeSql.g:1:22: T__80
-                {
-                mT__80(); 
-
-
-                }
-                break;
-            case 4 :
-                // CubeSql.g:1:28: T__81
-                {
-                mT__81(); 
-
-
-                }
-                break;
-            case 5 :
-                // CubeSql.g:1:34: T__82
-                {
-                mT__82(); 
-
-
-                }
-                break;
-            case 6 :
-                // CubeSql.g:1:40: T__83
-                {
-                mT__83(); 
-
-
-                }
-                break;
-            case 7 :
-                // CubeSql.g:1:46: T__84
-                {
-                mT__84(); 
-
-
-                }
-                break;
-            case 8 :
-                // CubeSql.g:1:52: T__85
-                {
-                mT__85(); 
-
-
-                }
-                break;
-            case 9 :
-                // CubeSql.g:1:58: OR
-                {
-                mOR(); 
-
-
-                }
-                break;
-            case 10 :
-                // CubeSql.g:1:61: AND
+                // CubeSql.g:1:10: AND
                 {
                 mAND(); 
 
 
                 }
                 break;
-            case 11 :
-                // CubeSql.g:1:65: DATASOURCE
+            case 2 :
+                // CubeSql.g:1:14: DATASOURCE
                 {
                 mDATASOURCE(); 
 
 
                 }
                 break;
-            case 12 :
-                // CubeSql.g:1:76: TYPE
+            case 3 :
+                // CubeSql.g:1:25: TYPE
                 {
                 mTYPE(); 
 
 
                 }
                 break;
-            case 13 :
-                // CubeSql.g:1:81: COLON
+            case 4 :
+                // CubeSql.g:1:30: COLON
                 {
                 mCOLON(); 
 
 
                 }
                 break;
-            case 14 :
-                // CubeSql.g:1:87: INI
+            case 5 :
+                // CubeSql.g:1:36: INI
                 {
                 mINI(); 
 
 
                 }
                 break;
-            case 15 :
-                // CubeSql.g:1:91: FILE
+            case 6 :
+                // CubeSql.g:1:40: FILE
                 {
                 mFILE(); 
 
 
                 }
                 break;
-            case 16 :
-                // CubeSql.g:1:96: PATH
+            case 7 :
+                // CubeSql.g:1:45: PATH
                 {
                 mPATH(); 
 
 
                 }
                 break;
-            case 17 :
-                // CubeSql.g:1:101: SLASH
+            case 8 :
+                // CubeSql.g:1:50: SLASH
                 {
                 mSLASH(); 
 
 
                 }
                 break;
-            case 18 :
-                // CubeSql.g:1:107: BACKSLASH
+            case 9 :
+                // CubeSql.g:1:56: BACKSLASH
                 {
                 mBACKSLASH(); 
 
 
                 }
                 break;
-            case 19 :
-                // CubeSql.g:1:117: CREATE
+            case 10 :
+                // CubeSql.g:1:66: CREATE
                 {
                 mCREATE(); 
 
 
                 }
                 break;
-            case 20 :
-                // CubeSql.g:1:124: CUBE
+            case 11 :
+                // CubeSql.g:1:73: CUBE
                 {
                 mCUBE(); 
 
 
                 }
                 break;
-            case 21 :
-                // CubeSql.g:1:129: REFERENCES
+            case 12 :
+                // CubeSql.g:1:78: REFERENCES
                 {
                 mREFERENCES(); 
 
 
                 }
                 break;
-            case 22 :
-                // CubeSql.g:1:140: DIMENSION
+            case 13 :
+                // CubeSql.g:1:89: DIMENSION
                 {
                 mDIMENSION(); 
 
 
                 }
                 break;
-            case 23 :
-                // CubeSql.g:1:150: DIMENSION_TYPE
+            case 14 :
+                // CubeSql.g:1:99: DIMENSION_TYPE
                 {
                 mDIMENSION_TYPE(); 
 
 
                 }
                 break;
-            case 24 :
-                // CubeSql.g:1:165: LIST
+            case 15 :
+                // CubeSql.g:1:114: LIST
                 {
                 mLIST(); 
 
 
                 }
                 break;
-            case 25 :
-                // CubeSql.g:1:170: OF
+            case 16 :
+                // CubeSql.g:1:119: OF
                 {
                 mOF(); 
 
 
                 }
                 break;
-            case 26 :
-                // CubeSql.g:1:173: LEVELS
+            case 17 :
+                // CubeSql.g:1:122: LEVELS
                 {
                 mLEVELS(); 
 
 
                 }
                 break;
-            case 27 :
-                // CubeSql.g:1:180: LEVEL
+            case 18 :
+                // CubeSql.g:1:129: LEVEL
                 {
                 mLEVEL(); 
 
 
                 }
                 break;
-            case 28 :
-                // CubeSql.g:1:186: WITH
+            case 19 :
+                // CubeSql.g:1:135: WITH
                 {
                 mWITH(); 
 
 
                 }
                 break;
-            case 29 :
-                // CubeSql.g:1:191: ATTRIBUTES
+            case 20 :
+                // CubeSql.g:1:140: ATTRIBUTES
                 {
                 mATTRIBUTES(); 
 
 
                 }
                 break;
-            case 30 :
-                // CubeSql.g:1:202: ID
+            case 21 :
+                // CubeSql.g:1:151: ID
                 {
                 mID(); 
 
 
                 }
                 break;
-            case 31 :
-                // CubeSql.g:1:205: DESCRIPTION
+            case 22 :
+                // CubeSql.g:1:154: DESCRIPTION
                 {
                 mDESCRIPTION(); 
 
 
                 }
                 break;
-            case 32 :
-                // CubeSql.g:1:217: AS
+            case 23 :
+                // CubeSql.g:1:166: AS
                 {
                 mAS(); 
 
 
                 }
                 break;
-            case 33 :
-                // CubeSql.g:1:220: AT
+            case 24 :
+                // CubeSql.g:1:169: AT
                 {
                 mAT(); 
 
 
                 }
                 break;
-            case 34 :
-                // CubeSql.g:1:223: HIERARCHY
+            case 25 :
+                // CubeSql.g:1:172: HIERARCHY
                 {
                 mHIERARCHY(); 
 
 
                 }
                 break;
-            case 35 :
-                // CubeSql.g:1:233: SELECT
-                {
-                mSELECT(); 
-
-
-                }
-                break;
-            case 36 :
-                // CubeSql.g:1:240: AVG
-                {
-                mAVG(); 
-
-
-                }
-                break;
-            case 37 :
-                // CubeSql.g:1:244: SUM
-                {
-                mSUM(); 
-
-
-                }
-                break;
-            case 38 :
-                // CubeSql.g:1:248: MAX
-                {
-                mMAX(); 
-
-
-                }
-                break;
-            case 39 :
-                // CubeSql.g:1:252: MIN
-                {
-                mMIN(); 
-
-
-                }
-                break;
-            case 40 :
-                // CubeSql.g:1:256: COUNT
-                {
-                mCOUNT(); 
-
-
-                }
-                break;
-            case 41 :
-                // CubeSql.g:1:262: WHERE
-                {
-                mWHERE(); 
-
-
-                }
-                break;
-            case 42 :
-                // CubeSql.g:1:268: FROM
-                {
-                mFROM(); 
-
-
-                }
-                break;
-            case 43 :
-                // CubeSql.g:1:273: GROUP
-                {
-                mGROUP(); 
-
-
-                }
-                break;
-            case 44 :
-                // CubeSql.g:1:279: BY
-                {
-                mBY(); 
-
-
-                }
-                break;
-            case 45 :
-                // CubeSql.g:1:282: MEASURES
+            case 26 :
+                // CubeSql.g:1:182: MEASURES
                 {
                 mMEASURES(); 
 
 
                 }
                 break;
-            case 46 :
-                // CubeSql.g:1:291: NAME
+            case 27 :
+                // CubeSql.g:1:191: NAME
                 {
                 mNAME(); 
 
 
                 }
                 break;
-            case 47 :
-                // CubeSql.g:1:296: LBRACE
+            case 28 :
+                // CubeSql.g:1:196: LBRACE
                 {
                 mLBRACE(); 
 
 
                 }
                 break;
-            case 48 :
-                // CubeSql.g:1:303: RBRACE
+            case 29 :
+                // CubeSql.g:1:203: RBRACE
                 {
                 mRBRACE(); 
 
 
                 }
                 break;
-            case 49 :
-                // CubeSql.g:1:310: DOT
+            case 30 :
+                // CubeSql.g:1:210: DOT
                 {
                 mDOT(); 
 
 
                 }
                 break;
-            case 50 :
-                // CubeSql.g:1:314: COMMA
+            case 31 :
+                // CubeSql.g:1:214: COMMA
                 {
                 mCOMMA(); 
 
 
                 }
                 break;
-            case 51 :
-                // CubeSql.g:1:320: CHILDOF
+            case 32 :
+                // CubeSql.g:1:220: CHILDOF
                 {
                 mCHILDOF(); 
 
 
                 }
                 break;
-            case 52 :
-                // CubeSql.g:1:328: QUESTMARK
+            case 33 :
+                // CubeSql.g:1:228: QUESTMARK
                 {
                 mQUESTMARK(); 
 
 
                 }
                 break;
-            case 53 :
-                // CubeSql.g:1:338: UNDERSCORE
+            case 34 :
+                // CubeSql.g:1:238: UNDERSCORE
                 {
                 mUNDERSCORE(); 
 
 
                 }
                 break;
-            case 54 :
-                // CubeSql.g:1:349: WS
+            case 35 :
+                // CubeSql.g:1:249: WS
                 {
                 mWS(); 
 
@@ -3143,114 +2466,83 @@ public class CubeSqlLexer extends Lexer {
             this.transition = DFA1_transition;
         }
         public String getDescription() {
-            return "()* loopback of 229:12: ( NAME | DOT | SLASH | BACKSLASH )*";
+            return "()* loopback of 168:12: ( NAME | DOT | SLASH | BACKSLASH )*";
         }
     }
     static final String DFA6_eotS =
-        "\4\uffff\1\43\1\uffff\1\45\5\47\1\uffff\3\47\2\uffff\11\47\13\uffff"+
-        "\1\47\1\uffff\2\47\1\uffff\2\47\1\116\1\117\1\47\1\121\1\123\6\47"+
-        "\1\132\17\47\1\152\5\47\2\uffff\1\156\1\uffff\1\47\1\uffff\1\160"+
-        "\4\47\1\165\1\uffff\12\47\1\u0080\1\u0081\1\u0082\2\47\1\uffff\1"+
-        "\u0085\1\u0086\1\47\1\uffff\1\47\1\uffff\3\47\1\u008c\1\uffff\1"+
-        "\u008d\1\u008e\1\47\1\u0090\2\47\1\u0093\3\47\3\uffff\2\47\2\uffff"+
-        "\1\u0099\4\47\3\uffff\1\47\1\uffff\1\u00a0\1\47\1\uffff\1\u00a2"+
-        "\3\47\1\u00a6\1\uffff\1\u00a7\4\47\1\u00ac\1\uffff\1\47\1\uffff"+
-        "\1\47\1\u00af\1\47\2\uffff\4\47\1\uffff\2\47\1\uffff\7\47\1\u00be"+
-        "\2\47\1\u00c1\2\47\1\u00c5\1\uffff\1\u00c6\1\u00c7\1\uffff\2\47"+
-        "\1\u00ca\3\uffff\1\47\1\u00cc\1\uffff\1\47\1\uffff\1\47\1\u00cf"+
-        "\1\uffff";
+        "\1\uffff\3\31\1\uffff\3\31\2\uffff\7\31\11\uffff\1\31\1\63\1\31"+
+        "\1\uffff\1\65\6\31\1\73\6\31\1\102\3\31\1\106\2\31\1\uffff\1\31"+
+        "\1\uffff\4\31\1\114\1\uffff\6\31\1\uffff\3\31\1\uffff\4\31\1\132"+
+        "\1\uffff\1\133\1\31\1\135\1\31\1\137\1\31\1\141\6\31\2\uffff\1\31"+
+        "\1\uffff\1\31\1\uffff\1\152\1\uffff\6\31\1\162\1\31\1\uffff\1\164"+
+        "\6\31\1\uffff\1\31\1\uffff\10\31\1\u0084\2\31\1\u0087\2\31\1\u008b"+
+        "\1\uffff\1\u008c\1\u008d\1\uffff\2\31\1\u0090\3\uffff\1\31\1\u0092"+
+        "\1\uffff\1\31\1\uffff\1\31\1\u0095\1\uffff";
     static final String DFA6_eofS =
-        "\u00d0\uffff";
+        "\u0096\uffff";
     static final String DFA6_minS =
-        "\1\11\3\uffff\1\75\1\uffff\1\75\5\47\1\uffff\3\47\2\uffff\11\47"+
-        "\13\uffff\1\47\1\uffff\2\47\1\uffff\43\47\2\uffff\1\47\1\uffff\1"+
-        "\47\1\uffff\6\47\1\uffff\17\47\1\uffff\3\47\1\uffff\1\47\1\uffff"+
-        "\4\47\1\uffff\12\47\3\uffff\2\47\2\uffff\5\47\3\uffff\1\47\1\uffff"+
-        "\2\47\1\uffff\5\47\1\uffff\6\47\1\uffff\1\47\1\uffff\3\47\2\uffff"+
-        "\4\47\1\uffff\2\47\1\uffff\16\47\1\uffff\2\47\1\uffff\3\47\3\uffff"+
-        "\2\47\1\uffff\1\47\1\uffff\2\47\1\uffff";
+        "\1\11\3\47\1\uffff\3\47\2\uffff\7\47\11\uffff\3\47\1\uffff\25\47"+
+        "\1\uffff\1\47\1\uffff\5\47\1\uffff\6\47\1\uffff\3\47\1\uffff\5\47"+
+        "\1\uffff\15\47\2\uffff\1\47\1\uffff\1\47\1\uffff\1\47\1\uffff\10"+
+        "\47\1\uffff\7\47\1\uffff\1\47\1\uffff\17\47\1\uffff\2\47\1\uffff"+
+        "\3\47\3\uffff\2\47\1\uffff\1\47\1\uffff\2\47\1\uffff";
     static final String DFA6_maxS =
-        "\1\175\3\uffff\1\75\1\uffff\1\75\5\176\1\uffff\3\176\2\uffff\11"+
-        "\176\13\uffff\1\176\1\uffff\2\176\1\uffff\43\176\2\uffff\1\176\1"+
-        "\uffff\1\176\1\uffff\6\176\1\uffff\17\176\1\uffff\3\176\1\uffff"+
-        "\1\176\1\uffff\4\176\1\uffff\12\176\3\uffff\2\176\2\uffff\5\176"+
-        "\3\uffff\1\176\1\uffff\2\176\1\uffff\5\176\1\uffff\6\176\1\uffff"+
-        "\1\176\1\uffff\3\176\2\uffff\4\176\1\uffff\2\176\1\uffff\16\176"+
+        "\1\175\3\176\1\uffff\3\176\2\uffff\7\176\11\uffff\3\176\1\uffff"+
+        "\25\176\1\uffff\1\176\1\uffff\5\176\1\uffff\6\176\1\uffff\3\176"+
+        "\1\uffff\5\176\1\uffff\15\176\2\uffff\1\176\1\uffff\1\176\1\uffff"+
+        "\1\176\1\uffff\10\176\1\uffff\7\176\1\uffff\1\176\1\uffff\17\176"+
         "\1\uffff\2\176\1\uffff\3\176\3\uffff\2\176\1\uffff\1\176\1\uffff"+
         "\2\176\1\uffff";
     static final String DFA6_acceptS =
-        "\1\uffff\1\1\1\2\1\3\1\uffff\1\6\6\uffff\1\15\3\uffff\1\21\1\22"+
-        "\11\uffff\1\57\1\60\1\61\1\62\1\64\1\65\1\66\1\5\1\4\1\7\1\63\1"+
-        "\uffff\1\56\2\uffff\1\20\43\uffff\1\11\1\31\1\uffff\1\41\1\uffff"+
-        "\1\40\6\uffff\1\36\17\uffff\1\54\3\uffff\1\12\1\uffff\1\44\4\uffff"+
-        "\1\16\12\uffff\1\45\1\46\1\47\2\uffff\1\10\1\30\5\uffff\1\14\1\17"+
-        "\1\52\1\uffff\1\24\2\uffff\1\34\5\uffff\1\33\6\uffff\1\50\1\uffff"+
-        "\1\51\3\uffff\1\53\1\32\4\uffff\1\23\2\uffff\1\43\16\uffff\1\55"+
-        "\2\uffff\1\26\3\uffff\1\42\1\35\1\13\2\uffff\1\25\1\uffff\1\37\2"+
-        "\uffff\1\27";
+        "\4\uffff\1\4\3\uffff\1\10\1\11\7\uffff\1\34\1\35\1\36\1\37\1\40"+
+        "\1\41\1\42\1\43\1\33\3\uffff\1\7\25\uffff\1\30\1\uffff\1\27\5\uffff"+
+        "\1\25\6\uffff\1\20\3\uffff\1\1\5\uffff\1\5\15\uffff\1\3\1\6\1\uffff"+
+        "\1\13\1\uffff\1\17\1\uffff\1\23\10\uffff\1\22\7\uffff\1\12\1\uffff"+
+        "\1\21\17\uffff\1\32\2\uffff\1\15\3\uffff\1\31\1\24\1\2\2\uffff\1"+
+        "\14\1\uffff\1\26\2\uffff\1\16";
     static final String DFA6_specialS =
-        "\u00d0\uffff}>";
+        "\u0096\uffff}>";
     static final String[] DFA6_transitionS = {
-            "\2\41\1\uffff\2\41\22\uffff\1\41\1\uffff\1\1\4\uffff\1\21\1"+
-            "\2\1\3\2\uffff\1\36\1\uffff\1\35\1\20\12\uffff\1\14\1\37\1\4"+
-            "\1\5\1\6\2\uffff\1\11\1\31\1\17\1\12\1\32\1\16\1\30\1\25\1\15"+
-            "\2\32\1\7\1\27\1\32\1\10\2\32\1\22\1\26\1\13\2\32\1\24\3\32"+
-            "\4\uffff\1\40\1\uffff\1\11\1\31\1\17\1\12\1\32\1\16\1\30\1\25"+
-            "\1\15\2\32\1\23\1\27\1\32\1\10\2\32\1\22\1\26\1\13\2\32\1\24"+
-            "\3\32\1\33\1\uffff\1\34",
+            "\2\30\1\uffff\2\30\22\uffff\1\30\6\uffff\1\11\4\uffff\1\24\1"+
+            "\uffff\1\23\1\10\12\uffff\1\4\1\26\2\uffff\1\25\2\uffff\1\1"+
+            "\1\20\1\7\1\2\1\20\1\6\1\20\1\16\1\5\2\20\1\13\1\17\1\20\1\14"+
+            "\2\20\1\12\1\20\1\3\2\20\1\15\3\20\4\uffff\1\27\1\uffff\1\1"+
+            "\1\20\1\7\1\2\1\20\1\6\1\20\1\16\1\5\2\20\1\13\1\17\1\20\1\14"+
+            "\2\20\1\12\1\20\1\3\2\20\1\15\3\20\1\21\1\uffff\1\22",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\15\37\1\32\4\37\1\36"+
+            "\1\33\6\37\4\uffff\1\34\1\uffff\15\37\1\32\4\37\1\36\1\33\6"+
+            "\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\1\40\3\37\1\42\3\37\1"+
+            "\41\21\37\4\uffff\1\34\1\uffff\1\40\3\37\1\42\3\37\1\41\21\37"+
+            "\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\30\37\1\43\1\37\4\uffff"+
+            "\1\34\1\uffff\30\37\1\43\1\37\3\uffff\1\34",
+            "",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\3\37\1\45\11\37\1\44"+
+            "\14\37\4\uffff\1\34\1\uffff\3\37\1\45\11\37\1\44\14\37\3\uffff"+
+            "\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\10\37\1\46\21\37\4\uffff"+
+            "\1\34\1\uffff\10\37\1\46\21\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\21\37\1\47\2\37\1\50"+
+            "\5\37\4\uffff\1\34\1\uffff\21\37\1\47\2\37\1\50\5\37\3\uffff"+
+            "\1\34",
             "",
             "",
-            "",
-            "\1\42",
-            "",
-            "\1\44",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\4\54\1\53\3\54\1\46\21"+
-            "\54\4\uffff\1\51\1\uffff\4\54\1\53\3\54\1\50\21\54\3\uffff\1"+
-            "\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\5\54\1\56\13\54\1\55"+
-            "\10\54\4\uffff\1\51\1\uffff\5\54\1\56\13\54\1\55\10\54\3\uffff"+
-            "\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\15\54\1\57\4\54\1\61"+
-            "\1\60\1\54\1\62\4\54\4\uffff\1\51\1\uffff\15\54\1\57\4\54\1"+
-            "\61\1\60\1\54\1\62\4\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\1\63\3\54\1\65\3\54\1"+
-            "\64\21\54\4\uffff\1\51\1\uffff\1\63\3\54\1\65\3\54\1\64\21\54"+
-            "\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\30\54\1\66\1\54\4\uffff"+
-            "\1\51\1\uffff\30\54\1\66\1\54\3\uffff\1\51",
-            "",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\3\54\1\70\11\54\1\67"+
-            "\14\54\4\uffff\1\51\1\uffff\3\54\1\70\11\54\1\67\14\54\3\uffff"+
-            "\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\10\54\1\71\10\54\1\72"+
-            "\10\54\4\uffff\1\51\1\uffff\10\54\1\71\10\54\1\72\10\54\3\uffff"+
-            "\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\16\54\1\75\2\54\1\73"+
-            "\2\54\1\74\5\54\4\uffff\1\51\1\uffff\16\54\1\75\2\54\1\73\2"+
-            "\54\1\74\5\54\3\uffff\1\51",
-            "",
-            "",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\4\54\1\76\25\54\4\uffff"+
-            "\1\51\1\uffff\4\54\1\76\25\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\4\54\1\53\3\54\1\50\21"+
-            "\54\4\uffff\1\51\1\uffff\4\54\1\53\3\54\1\50\21\54\3\uffff\1"+
-            "\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\7\54\1\100\1\77\21\54"+
-            "\4\uffff\1\51\1\uffff\7\54\1\100\1\77\21\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\10\54\1\101\21\54\4\uffff"+
-            "\1\51\1\uffff\10\54\1\101\21\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\4\54\1\102\17\54\1\103"+
-            "\5\54\4\uffff\1\51\1\uffff\4\54\1\102\17\54\1\103\5\54\3\uffff"+
-            "\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\1\104\3\54\1\106\3\54"+
-            "\1\105\21\54\4\uffff\1\51\1\uffff\1\104\3\54\1\106\3\54\1\105"+
-            "\21\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\21\54\1\107\10\54\4\uffff"+
-            "\1\51\1\uffff\21\54\1\107\10\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\30\54\1\110\1\54\4\uffff"+
-            "\1\51\1\uffff\30\54\1\110\1\54\3\uffff\1\51",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\32\54\4\uffff\1\51\1"+
-            "\uffff\32\54\3\uffff\1\51",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\4\37\1\51\25\37\4\uffff"+
+            "\1\34\1\uffff\4\37\1\51\25\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\4\37\1\53\3\37\1\52\21"+
+            "\37\4\uffff\1\34\1\uffff\4\37\1\53\3\37\1\52\21\37\3\uffff\1"+
+            "\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\5\37\1\54\24\37\4\uffff"+
+            "\1\34\1\uffff\5\37\1\54\24\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\10\37\1\55\21\37\4\uffff"+
+            "\1\34\1\uffff\10\37\1\55\21\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\10\37\1\56\21\37\4\uffff"+
+            "\1\34\1\uffff\10\37\1\56\21\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\4\37\1\57\25\37\4\uffff"+
+            "\1\34\1\uffff\4\37\1\57\25\37\3\uffff\1\34",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\32\37\4\uffff\1\34\1"+
+            "\uffff\32\37\3\uffff\1\34",
             "",
             "",
             "",
@@ -3260,312 +2552,230 @@ public class CubeSqlLexer extends Lexer {
             "",
             "",
             "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\3\61\1\60\26\61\4\uffff"+
+            "\1\62\1\uffff\3\61\1\60\26\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\64\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\64\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\34\2\35\12\34\7\uffff\32\37\4\uffff\1\34\1"+
+            "\uffff\32\37\3\uffff\1\34",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\66\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\66\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\14\61\1\67\15\61\4\uffff"+
+            "\1\62\1\uffff\14\61\1\67\15\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\70\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\70\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\17\61\1\71\12\61\4\uffff"+
+            "\1\62\1\uffff\17\61\1\71\12\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\10\61\1\72\21\61\4\uffff"+
+            "\1\62\1\uffff\10\61\1\72\21\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\13\61\1\74\16\61\4\uffff"+
+            "\1\62\1\uffff\13\61\1\74\16\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\75\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\75\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\61\1\76\30\61\4\uffff"+
+            "\1\62\1\uffff\1\61\1\76\30\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\5\61\1\77\24\61\4\uffff"+
+            "\1\62\1\uffff\5\61\1\77\24\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\100\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\100\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\25\61\1\101\4\61\4\uffff"+
+            "\1\62\1\uffff\25\61\1\101\4\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\103\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\103\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\104\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\104\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\105\31\61\4\uffff\1"+
+            "\62\1\uffff\1\105\31\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\107\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\107\10\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\110\31\61\4\uffff\1"+
+            "\62\1\uffff\1\110\31\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\111\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\111\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\2\61\1\112\27\61\4\uffff"+
+            "\1\62\1\uffff\2\61\1\112\27\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\113\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\113\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\115\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\115\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\116\31\61\4\uffff\1"+
+            "\62\1\uffff\1\116\31\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\117\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\117\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\120\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\120\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\121\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\121\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\122\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\122\25\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\7\61\1\123\22\61\4\uffff"+
+            "\1\62\1\uffff\7\61\1\123\22\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\124\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\124\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\125\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\125\7\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\10\61\1\126\21\61\4\uffff"+
+            "\1\62\1\uffff\10\61\1\126\21\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\127\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\127\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\15\61\1\130\14\61\4\uffff"+
+            "\1\62\1\uffff\15\61\1\130\14\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\131\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\131\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\134\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\134\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\136\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\136\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\13\61\1\140\16\61\4\uffff"+
+            "\1\62\1\uffff\13\61\1\140\16\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\142\31\61\4\uffff\1"+
+            "\62\1\uffff\1\142\31\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\24\61\1\143\5\61\4\uffff"+
+            "\1\62\1\uffff\24\61\1\143\5\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\1\61\1\144\30\61\4\uffff"+
+            "\1\62\1\uffff\1\61\1\144\30\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\16\61\1\145\13\61\4\uffff"+
+            "\1\62\1\uffff\16\61\1\145\13\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\146\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\146\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\10\61\1\147\21\61\4\uffff"+
+            "\1\62\1\uffff\10\61\1\147\21\61\3\uffff\1\62",
             "",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\12\114\1\111\7\114"+
-            "\1\112\7\114\4\uffff\1\113\1\uffff\22\114\1\112\7\114\3\uffff"+
-            "\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\150\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\150\25\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\112\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\112\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\51\2\52\12\51\7\uffff\32\54\4\uffff\1\51\1"+
-            "\uffff\32\54\3\uffff\1\51",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\151\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\151\25\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\25\114\1\115\4\114"+
-            "\4\uffff\1\113\1\uffff\25\114\1\115\4\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\3\114\1\120\26\114"+
-            "\4\uffff\1\113\1\uffff\3\114\1\120\26\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\122\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\122\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\6\114\1\124\23\114"+
-            "\4\uffff\1\113\1\uffff\6\114\1\124\23\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\125\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\125\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\14\114\1\126\15\114"+
-            "\4\uffff\1\113\1\uffff\14\114\1\126\15\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\127\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\127\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\17\114\1\130\12\114"+
-            "\4\uffff\1\113\1\uffff\17\114\1\130\12\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\10\114\1\131\21\114"+
-            "\4\uffff\1\113\1\uffff\10\114\1\131\21\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\13\114\1\133\16\114"+
-            "\4\uffff\1\113\1\uffff\13\114\1\133\16\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\16\114\1\134\13\114"+
-            "\4\uffff\1\113\1\uffff\16\114\1\134\13\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\135\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\135\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\114\1\136\30\114"+
-            "\4\uffff\1\113\1\uffff\1\114\1\136\30\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\24\114\1\137\5\114"+
-            "\4\uffff\1\113\1\uffff\24\114\1\137\5\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\5\114\1\140\24\114"+
-            "\4\uffff\1\113\1\uffff\5\114\1\140\24\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\141\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\141\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\142\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\142\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\143\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\143\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\13\114\1\144\16\114"+
-            "\4\uffff\1\113\1\uffff\13\114\1\144\16\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\14\114\1\145\15\114"+
-            "\4\uffff\1\113\1\uffff\14\114\1\145\15\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\27\114\1\146\2\114"+
-            "\4\uffff\1\113\1\uffff\27\114\1\146\2\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\147\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\147\14\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\150\31\114\4\uffff"+
-            "\1\113\1\uffff\1\150\31\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\16\114\1\151\13\114"+
-            "\4\uffff\1\113\1\uffff\16\114\1\151\13\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\153\25\114"+
-            "\4\uffff\1\113\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\154\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\154\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\155\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\155\25\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\153\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\153\7\61\3\uffff\1\62",
             "",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\154\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\154\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\155\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\155\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\24\61\1\156\5\61\4\uffff"+
+            "\1\62\1\uffff\24\61\1\156\5\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\24\61\1\157\5\61\4\uffff"+
+            "\1\62\1\uffff\24\61\1\157\5\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\10\61\1\160\21\61\4\uffff"+
+            "\1\62\1\uffff\10\61\1\160\21\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\17\61\1\161\12\61\4\uffff"+
+            "\1\62\1\uffff\17\61\1\161\12\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\15\61\1\163\14\61\4\uffff"+
+            "\1\62\1\uffff\15\61\1\163\14\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\2\61\1\165\27\61\4\uffff"+
+            "\1\62\1\uffff\2\61\1\165\27\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\166\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\166\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\167\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\167\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\21\61\1\170\10\61\4\uffff"+
+            "\1\62\1\uffff\21\61\1\170\10\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\16\61\1\171\13\61\4\uffff"+
+            "\1\62\1\uffff\16\61\1\171\13\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\172\6\61\4\uffff"+
+            "\1\62\1\uffff\23\61\1\172\6\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\157\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\157\10\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\2\61\1\173\27\61\4\uffff"+
+            "\1\62\1\uffff\2\61\1\173\27\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\161\31\114\4\uffff"+
-            "\1\113\1\uffff\1\161\31\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\162\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\162\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\2\114\1\163\27\114"+
-            "\4\uffff\1\113\1\uffff\2\114\1\163\27\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\164\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\164\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\7\61\1\174\22\61\4\uffff"+
+            "\1\62\1\uffff\7\61\1\174\22\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\175\7\61\4\uffff"+
+            "\1\62\1\uffff\22\61\1\175\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\176\25\61\4\uffff"+
+            "\1\62\1\uffff\4\61\1\176\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\2\61\1\177\27\61\4\uffff"+
+            "\1\62\1\uffff\2\61\1\177\27\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\15\61\1\u0080\14\61\4"+
+            "\uffff\1\62\1\uffff\15\61\1\u0080\14\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\10\61\1\u0081\21\61\4"+
+            "\uffff\1\62\1\uffff\10\61\1\u0081\21\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\u0082\25\61\4"+
+            "\uffff\1\62\1\uffff\4\61\1\u0082\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\30\61\1\u0083\1\61\4"+
+            "\uffff\1\62\1\uffff\30\61\1\u0083\1\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\u0085\7\61\4"+
+            "\uffff\1\62\1\uffff\22\61\1\u0085\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\u0086\25\61\4"+
+            "\uffff\1\62\1\uffff\4\61\1\u0086\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\u0088"+
+            "\1\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\16\61\1\u0089\13\61\4"+
+            "\uffff\1\62\1\uffff\16\61\1\u0089\13\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\22\61\1\u008a\7\61\4"+
+            "\uffff\1\62\1\uffff\22\61\1\u008a\7\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\166\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\166\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\14\114\1\167\15\114"+
-            "\4\uffff\1\113\1\uffff\14\114\1\167\15\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\170\31\114\4\uffff"+
-            "\1\113\1\uffff\1\170\31\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\171\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\171\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\172\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\172\14\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\173\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\173\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\7\114\1\174\22\114"+
-            "\4\uffff\1\113\1\uffff\7\114\1\174\22\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\175\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\175\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\176\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\176\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\177\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\177\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u0083\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u0083\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\24\114\1\u0084\5\114"+
-            "\4\uffff\1\113\1\uffff\24\114\1\u0084\5\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\13\114\1\u0087\16\114"+
-            "\4\uffff\1\113\1\uffff\13\114\1\u0087\16\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\10\114\1\u0088\21\114"+
-            "\4\uffff\1\113\1\uffff\10\114\1\u0088\21\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u0089\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u0089\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\u008a\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\u008a\14\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\u008b\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\u008b\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u008f\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u008f\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u0091\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u0091\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\u0092\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\u0092\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u0094\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u0094\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\u0095\31\114\4\uffff"+
-            "\1\113\1\uffff\1\u0095\31\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\2\114\1\u0096\27\114"+
-            "\4\uffff\1\113\1\uffff\2\114\1\u0096\27\114\3\uffff\1\113",
-            "",
-            "",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\24\114\1\u0097\5\114"+
-            "\4\uffff\1\113\1\uffff\24\114\1\u0097\5\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\17\114\1\u0098\12\114"+
-            "\4\uffff\1\113\1\uffff\17\114\1\u0098\12\114\3\uffff\1\113",
-            "",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u009a\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u009a\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\1\114\1\u009b\30\114"+
-            "\4\uffff\1\113\1\uffff\1\114\1\u009b\30\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\16\114\1\u009c\13\114"+
-            "\4\uffff\1\113\1\uffff\16\114\1\u009c\13\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u009d\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u009d\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\10\114\1\u009e\21\114"+
-            "\4\uffff\1\113\1\uffff\10\114\1\u009e\21\114\3\uffff\1\113",
-            "",
-            "",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u009f\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u009f\25\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00a1\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00a1\25\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\u00a3\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\u00a3\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u00a4\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u00a4\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\u00a5\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\u00a5\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\24\114\1\u00a8\5\114"+
-            "\4\uffff\1\113\1\uffff\24\114\1\u00a8\5\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\24\114\1\u00a9\5\114"+
-            "\4\uffff\1\113\1\uffff\24\114\1\u00a9\5\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\10\114\1\u00aa\21\114"+
-            "\4\uffff\1\113\1\uffff\10\114\1\u00aa\21\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\17\114\1\u00ab\12\114"+
-            "\4\uffff\1\113\1\uffff\17\114\1\u00ab\12\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\u00ad\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\u00ad\14\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\2\114\1\u00ae\27\114"+
-            "\4\uffff\1\113\1\uffff\2\114\1\u00ae\27\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00b0\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00b0\25\114\3\uffff\1\113",
-            "",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u00b1\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u00b1\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\21\114\1\u00b2\10\114"+
-            "\4\uffff\1\113\1\uffff\21\114\1\u00b2\10\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\16\114\1\u00b3\13\114"+
-            "\4\uffff\1\113\1\uffff\16\114\1\u00b3\13\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u00b4\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u00b4\6\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\2\114\1\u00b5\27\114"+
-            "\4\uffff\1\113\1\uffff\2\114\1\u00b5\27\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\7\114\1\u00b6\22\114"+
-            "\4\uffff\1\113\1\uffff\7\114\1\u00b6\22\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u00b7\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u00b7\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00b8\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00b8\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\2\114\1\u00b9\27\114"+
-            "\4\uffff\1\113\1\uffff\2\114\1\u00b9\27\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\u00ba\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\u00ba\14\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\10\114\1\u00bb\21\114"+
-            "\4\uffff\1\113\1\uffff\10\114\1\u00bb\21\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00bc\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00bc\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\30\114\1\u00bd\1\114"+
-            "\4\uffff\1\113\1\uffff\30\114\1\u00bd\1\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u00bf\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u00bf\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00c0\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00c0\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\u00c2"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\16\114\1\u00c3\13\114"+
-            "\4\uffff\1\113\1\uffff\16\114\1\u00c3\13\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\22\114\1\u00c4\7\114"+
-            "\4\uffff\1\113\1\uffff\22\114\1\u00c4\7\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
-            "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\23\114\1\u00c8\6\114"+
-            "\4\uffff\1\113\1\uffff\23\114\1\u00c8\6\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\15\114\1\u00c9\14\114"+
-            "\4\uffff\1\113\1\uffff\15\114\1\u00c9\14\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\23\61\1\u008e\6\61\4"+
+            "\uffff\1\62\1\uffff\23\61\1\u008e\6\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\15\61\1\u008f\14\61\4"+
+            "\uffff\1\62\1\uffff\15\61\1\u008f\14\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
             "",
             "",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\30\114\1\u00cb\1\114"+
-            "\4\uffff\1\113\1\uffff\30\114\1\u00cb\1\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\30\61\1\u0091\1\61\4"+
+            "\uffff\1\62\1\uffff\30\61\1\u0091\1\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\17\114\1\u00cd\12\114"+
-            "\4\uffff\1\113\1\uffff\17\114\1\u00cd\12\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\17\61\1\u0093\12\61\4"+
+            "\uffff\1\62\1\uffff\17\61\1\u0093\12\61\3\uffff\1\62",
             "",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\4\114\1\u00ce\25\114"+
-            "\4\uffff\1\113\1\uffff\4\114\1\u00ce\25\114\3\uffff\1\113",
-            "\1\52\5\uffff\1\113\2\52\12\113\7\uffff\32\114\4\uffff\1\113"+
-            "\1\uffff\32\114\3\uffff\1\113",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\4\61\1\u0094\25\61\4"+
+            "\uffff\1\62\1\uffff\4\61\1\u0094\25\61\3\uffff\1\62",
+            "\1\35\5\uffff\1\62\2\35\12\62\7\uffff\32\61\4\uffff\1\62\1"+
+            "\uffff\32\61\3\uffff\1\62",
             ""
     };
 
@@ -3599,7 +2809,7 @@ public class CubeSqlLexer extends Lexer {
             this.transition = DFA6_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | OR | AND | DATASOURCE | TYPE | COLON | INI | FILE | PATH | SLASH | BACKSLASH | CREATE | CUBE | REFERENCES | DIMENSION | DIMENSION_TYPE | LIST | OF | LEVELS | LEVEL | WITH | ATTRIBUTES | ID | DESCRIPTION | AS | AT | HIERARCHY | SELECT | AVG | SUM | MAX | MIN | COUNT | WHERE | FROM | GROUP | BY | MEASURES | NAME | LBRACE | RBRACE | DOT | COMMA | CHILDOF | QUESTMARK | UNDERSCORE | WS );";
+            return "1:1: Tokens : ( AND | DATASOURCE | TYPE | COLON | INI | FILE | PATH | SLASH | BACKSLASH | CREATE | CUBE | REFERENCES | DIMENSION | DIMENSION_TYPE | LIST | OF | LEVELS | LEVEL | WITH | ATTRIBUTES | ID | DESCRIPTION | AS | AT | HIERARCHY | MEASURES | NAME | LBRACE | RBRACE | DOT | COMMA | CHILDOF | QUESTMARK | UNDERSCORE | WS );";
         }
     }
  

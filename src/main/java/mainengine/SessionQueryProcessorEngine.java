@@ -91,9 +91,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private CubeManager cubeManager;
 	private CubeBase cubeBase;
 	//private StoryMgr storMgr;
-	private ParserManager prsMng;
+
 //	private Options optMgr;
-//	private String msrname;
+
 	private Session session;
 	private QueryHistoryManager queryHistoryMng;
 	
@@ -106,7 +106,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private ITranslatorFactory translatorFactory;
 	private ArrayList<String> cubeNames;
 	private ArrayList<String> aggrFunctions;
-	private ArrayList<String> measures;
+	private ArrayList<String> measuresFields;
 	private ArrayList <String> dimensions;
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
@@ -155,22 +155,22 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public void initializeConnection(String typeOfConnection, HashMap<String, String> userInputList)
 			throws RemoteException {
 		cubeManager = new CubeManager(typeOfConnection, userInputList);
-		session = new Session(cubeManager, prsMng);
+		session = new Session(cubeManager);
 		sessionId = session.initialize(typeOfConnection, userInputList);
-		cubeBase=cubeManager.getCubeBase();
-		queryHistoryMng = new QueryHistoryManager(sessionId);
-		extractSchemaMetadata();
-		
 		registeredDimensions = cubeManager.getDimensions();
 		registeredCubesList = cubeManager.getCubes();
+		cubeBase=cubeManager.getCubeBase();
+		queryHistoryMng = new QueryHistoryManager(sessionId);
 		System.out.println("DONE WITH INIT");
 	}
 	
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
 		cubeManager = new CubeManager(typeOfConnection, userInputList);
-		session = new Session(cubeManager, prsMng);
+		session = new Session(cubeManager);
 		sessionId = session.initialize(typeOfConnection, userInputList);
+		registeredDimensions = cubeManager.getDimensions();
+		registeredCubesList = cubeManager.getCubes();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, k);
 		System.out.println("DONE WITH INIT");
@@ -183,75 +183,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, session.getCubeManager(), k);
 		}
 	}
-
-	/*private void initializeCubeMgr(String lookupFolder) throws RemoteException {
-		cubeManager = new CubeManager(lookupFolder);
-	}
-	
-	*/
 	
 
-	private void extractSchemaMetadata() {
-		prsMng = session.getPrsMng();
-		//1.Bring data for CubeName
-		cubeNames = new ArrayList<String>();
-		//CubeBase cBase = cubeManager.getCubeBase();
-		//List<BasicStoredCube> cubes = cBase.getBasicStoredCube();
-		/*
-		for (int i=0; i<cubes.size(); i++) {
-			cubeNames.add(cubes.get(i).getName());
-		}*/
-		cubeNames.add(this.prsMng.creationName);
-		
-		//2.Create data for AggrFunc
-		aggrFunctions = new ArrayList<String>();
-		aggrFunctions.add("max");
-		aggrFunctions.add("maximum");
-		aggrFunctions.add("min");
-		aggrFunctions.add("minimum");
-		aggrFunctions.add("count");
-		aggrFunctions.add("avg");
-		aggrFunctions.add("average");
-		aggrFunctions.add("sum");
-		
-		//3.Bring data for Measure
-		measures = new ArrayList<String>();
-		measures= this.prsMng.measureFields;
-		
-		//4.Bring data for Dimensions
-		dimensions = new ArrayList<String>();
-		dimensions = this.prsMng.dimensionList;
-		
-		//5.Bring data for levels
-		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
-		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
-		List<Dimension> dimensionsList = session.getCubeManager().getDimensions();
-		ArrayList<String> tmpLvls = null; 
-		ArrayList<String> tmpDim = null;
-		for (int i=0;i < dimensionsList.size();i ++) {
-			Dimension dim = dimensionsList.get(i);
-			for(int j=0; j<dim.getHierarchy().size(); j++) {
-				List<Level> l = dim.getHierarchy().get(j).getLevels();
-				tmpLvls = new ArrayList<String>();
-				for (int k=0; k<l.size(); k++) {
-					tmpLvls.add(l.get(k).getName());
-					String tmpLevelKey = l.get(k).getName();
-					//TODO na ginei elegxos oti leitourgei an uparxoun idia lvl names. h pkdd99_star den exei idia lvl names, den to checkara.
-					if(levelsToDimensionsHashmap.containsKey(tmpLevelKey)) {
-						tmpDim = levelsToDimensionsHashmap.get(tmpLevelKey);
-						tmpDim.add(dimensionsList.get(i).getName());
-						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
-					}else {
-						tmpDim = new ArrayList<String>();
-						tmpDim.add(dimensionsList.get(i).getName());
-						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
-					}
-				}
-				dimensionsToLevelsHashmap.put(dimensionsList.get(i).getName(), tmpLvls);
-			}
-		}
-		
-	}
+	
 //	public void optionsChoice(boolean audio, boolean word)
 //			throws RemoteException {
 //		optMgr.setAudio(audio);
@@ -359,41 +293,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	
 	
 	
-	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
-	 * executes the query and produces the output of the query.
-	 * 
-	 * The idea is:
-	 * 1. Parse and analyze the natural language query via <code>analyzeNLQuery</code> of <code>NLTranslator</code>, see {@link NLTranslator}.
-	 * 2. Produces a String with the cube query.
-	 * 3. Calls <code>answerCubeQueryFromString</code> with this String as a parameter.
-	 * 4. Returns the results in a file with the name of the query and outputs them to the console.
-	 * 
-	 * @param queryRawString a String with the natural language query
-	 * @return a String containing the location of output file at the server
-	 * @author DimosGkitsakis
-	 * 
-	 */
-	@Override
-	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
-		//1. parse and analyse natural language query and produce a CubeQuery
-		ITranslator translator = getNLTranslator();
-		long t0 = System.nanoTime();
-		String analysedString = translator.produceCubeQueryString(queryRawString);
-		long tF = System.nanoTime();
-		long duration = tF - t0;
-		System.out.println("NLQuery Transformation Time: " + duration + " nanoseconds");
-		
-		//String analysedString = query.toString();
-		System.out.println(analysedString);
-		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
-		t0 = System.nanoTime();
-		String outputLocation = answerCubeQueryFromString(analysedString);
-		tF = System.nanoTime();
-		duration = tF - t0;
-		System.out.println("Query Execution Time " + duration + " nanoseconds");
-		return outputLocation;
-		
-	}//answerCubeQueryFromNLString
+	
 
 
 	/** 
@@ -457,38 +357,6 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		
 		return resMetadata;
 	}//answerCubeQueryFromStringWithMetada
-	
-	/**
-	 * Same idea as the {@link #answerCubeQueryFromStringWithMetadata(String)}, but for a natural language query instead of cube query.
-	 * Gets the natural language query from a string, executes it and produces the output of a query as a ResultFileMetadata object.
-	 * Result produced via {@link #answerCubeQueryFromNLString(String)} instead of {@link #answerCubeQueryFromString(String)}.
-	 * 
-	 * @param queryRawString a String with the natural language query
-	 * @return a ResultFileMetadata containing info on the location of output files at the server
-	 * 
-	 * 
-	 */
-	@Override
-	public ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException {
-
-		String outputLocation = answerCubeQueryFromNLString(queryRawString);
-		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-		
-		ResultFileMetadata resMetadata = new ResultFileMetadata();
-		
-		resMetadata.setComponentResultFiles(null);
-		resMetadata.setComponentResultInfoFiles(null);
-		resMetadata.setLocalFolder("OutputFiles" + File.separator);
-		resMetadata.setResultFile(outputLocation);
-		resMetadata.setResultInfoFile(outputInfoLocation);
-System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
-System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
-
-
-		
-		return resMetadata;
-	}//answerCubeQueryFromNLStringWithMetadata
 	
 	
 	@Override
@@ -596,57 +464,141 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		return fileName;
 	}//end method
 	
-
-	/**
-	 * Populates a file, XXX_info.txt, XXX being the query name, containing information for the query launched and returns its location.
-	 * 
-	 * @param cubequery   the CubeQuery whose info is recorded 
-	 * @param outputFolder the folder to which the file is going to be stored
-	 * @return  the String with the location of the produced file
-	 */
-	public String printQueryInfo(CubeQuery cubequery, String outputFolder) {
-		//Result res = cubequery.getResult();
-		String fileName = computeQueryInfoName(cubequery, outputFolder);
-		File file=new File(fileName);
-		FileOutputStream fileOutputStream=null;
-		PrintStream printStream=null;
-		try {
-			fileOutputStream=new FileOutputStream(file);
-			printStream=new PrintStream(fileOutputStream);
-			
-			//printStream.print(cubequery.getName()+"\n\n");
-			printStream.print(cubequery.toString()+"\n\n");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				if(fileOutputStream!=null){
-					fileOutputStream.close();
-				}
-				if(printStream!=null){
-					printStream.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}//end finally try
-		}//end finally
-		
-		return fileName;
-	}//end method
-
-	/**
-	 * Given an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
-	 * 
-	 * @param cubequery a CubeQuery whose info file name is requested
-	 * @param outputFolder  a String representing a target folder, if the form of "MyFolder/" where the output will be placed. Don't forget the "/"
-	 * @return the path of the _info.txt file of the query
-	 */
-	private String computeQueryInfoName(CubeQuery cubequery, String outputFolder) {
-		String fileName = outputFolder + cubequery.getName() + "_info.txt";
-		return fileName;
-	}//end method
 	
+	//NATURAL LANGUAGE QUERYING METHODS
+	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
+	 * executes the query and produces the output of the query.
+	 * 
+	 * The idea is:
+	 * 1. Parse and analyze the natural language query via <code>analyzeNLQuery</code> of <code>NLTranslator</code>, see {@link NLTranslator}.
+	 * 2. Produces a String with the cube query.
+	 * 3. Calls <code>answerCubeQueryFromString</code> with this String as a parameter.
+	 * 4. Returns the results in a file with the name of the query and outputs them to the console.
+	 * 
+	 * @param queryRawString a String with the natural language query
+	 * @return a String containing the location of output file at the server
+	 * @author DimosGkitsakis
+	 * 
+	 */
+	@Override
+	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
+		//1. parse and analyse natural language query and produce a CubeQuery
+		extractCubeMetadata();
+		ITranslator translator = getNLTranslator();
+		long t0 = System.nanoTime();
+		String analysedString = translator.produceCubeQueryString(queryRawString);
+		long tF = System.nanoTime();
+		long duration = tF - t0;
+		System.out.println("NLQuery Transformation Time: " + duration + " nanoseconds");
+		
+		//String analysedString = query.toString();
+		System.out.println(analysedString);
+		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
+		t0 = System.nanoTime();
+		String outputLocation = answerCubeQueryFromString(analysedString);
+		tF = System.nanoTime();
+		duration = tF - t0;
+		System.out.println("Query Execution Time " + duration + " nanoseconds");
+		return outputLocation;
+		
+	}//answerCubeQueryFromNLString
+	
+	
+	
+	/**
+	 * Same idea as the {@link #answerCubeQueryFromStringWithMetadata(String)}, but for a natural language query instead of cube query.
+	 * Gets the natural language query from a string, executes it and produces the output of a query as a ResultFileMetadata object.
+	 * Result produced via {@link #answerCubeQueryFromNLString(String)} instead of {@link #answerCubeQueryFromString(String)}.
+	 * 
+	 * @param queryRawString a String with the natural language query
+	 * @return a ResultFileMetadata containing info on the location of output files at the server
+	 * 
+	 * 
+	 */
+	@Override
+	public ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException {
+
+		String outputLocation = answerCubeQueryFromNLString(queryRawString);
+		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
+		
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
+		
+		resMetadata.setComponentResultFiles(null);
+		resMetadata.setComponentResultInfoFiles(null);
+		resMetadata.setLocalFolder("OutputFiles" + File.separator);
+		resMetadata.setResultFile(outputLocation);
+		resMetadata.setResultInfoFile(outputInfoLocation);
+System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
+System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
+System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+
+
+		
+		return resMetadata;
+	}//answerCubeQueryFromNLStringWithMetadata
+	
+	private void extractCubeMetadata() {
+		cubeNames = new ArrayList<String>();
+		measuresFields = new ArrayList<String>();
+		dimensions = new ArrayList<String>();
+		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
+		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
+		
+		for(int i=0; i<registeredCubesList.size(); i++) {
+			//1.Bring data for CubeName
+			cubeNames.add(registeredCubesList.get(i).getName());
+			//2.Bring data for Measure Fields
+			for(int j=0; j<registeredCubesList.get(i).getMeasuresList().size(); j++) {
+				measuresFields.add(registeredCubesList.get(i).getFactTable().getTableName()
+						+"."+registeredCubesList.get(i).getMeasuresList().get(j).getAttribute().getName());
+			}
+		}
+		
+		//3.Bring data for Dimensions		
+		for(int i =0; i<registeredDimensions.size(); i++) {
+			dimensions.add(registeredDimensions.get(i).getName());	
+		}
+		
+		//4.Create data for AggrFunc
+		aggrFunctions = new ArrayList<String>();
+		aggrFunctions.add("max");
+		aggrFunctions.add("maximum");
+		aggrFunctions.add("min");
+		aggrFunctions.add("minimum");
+		aggrFunctions.add("count");
+		aggrFunctions.add("avg");
+		aggrFunctions.add("average");
+		aggrFunctions.add("sum");	
+
+		
+		//5.Bring data for levels
+		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
+		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
+		List<Dimension> dimensionsList = registeredDimensions;
+		ArrayList<String> tmpLvls = null; 
+		ArrayList<String> tmpDim = null;
+		for (int i=0;i < registeredDimensions.size();i ++) {
+			Dimension dim = registeredDimensions.get(i);
+			for(int j=0; j<dim.getHierarchy().size(); j++) {
+				List<Level> l = dim.getHierarchy().get(j).getLevels();
+				tmpLvls = new ArrayList<String>();
+				for (int k=0; k<l.size(); k++) {
+					tmpLvls.add(l.get(k).getName());
+					String tmpLevelKey = l.get(k).getName();
+					if(levelsToDimensionsHashmap.containsKey(tmpLevelKey)) {
+						tmpDim = levelsToDimensionsHashmap.get(tmpLevelKey);
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}else {
+						tmpDim = new ArrayList<String>();
+						tmpDim.add(dimensionsList.get(i).getName());
+						levelsToDimensionsHashmap.put(tmpLevelKey, tmpDim);
+					}
+				}
+				dimensionsToLevelsHashmap.put(dimensionsList.get(i).getName(), tmpLvls);
+			}
+		}
+	}
 	
 	/**
 	 * Validates a natural language Query String and returns a ResultFileMetadata object with the result.
@@ -660,10 +612,10 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	 */
 	@Override
 	public ResultFileMetadata prepareCubeQuery(String naturalLanguageQueryString) throws RemoteException {
+		extractCubeMetadata();
 		ITranslator translator = getNLTranslator();
-		
 		long t0 = System.nanoTime();
-		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measures, naturalLanguageQueryString);
+		NLQValidationResults results = translator.prepareCubeQuery(cubeNames, aggrFunctions, measuresFields, naturalLanguageQueryString);
 		long tF = System.nanoTime();
 		long duration = tF - t0;
 		System.out.println("NLQuery Preprocessing Time: " + duration + " nanoseconds");
@@ -710,6 +662,61 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		}//end finally
 		return fileName;
 	}
+	
+	
+	
+	/**
+	 * Populates a file, XXX_info.txt, XXX being the query name, containing information for the query launched and returns its location.
+	 * 
+	 * @param cubequery   the CubeQuery whose info is recorded 
+	 * @param outputFolder the folder to which the file is going to be stored
+	 * @return  the String with the location of the produced file
+	 */
+	public String printQueryInfo(CubeQuery cubequery, String outputFolder) {
+		//Result res = cubequery.getResult();
+		String fileName = computeQueryInfoName(cubequery, outputFolder);
+		File file=new File(fileName);
+		FileOutputStream fileOutputStream=null;
+		PrintStream printStream=null;
+		try {
+			fileOutputStream=new FileOutputStream(file);
+			printStream=new PrintStream(fileOutputStream);
+			
+			//printStream.print(cubequery.getName()+"\n\n");
+			printStream.print(cubequery.toString()+"\n\n");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fileOutputStream!=null){
+					fileOutputStream.close();
+				}
+				if(printStream!=null){
+					printStream.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}//end finally try
+		}//end finally
+		
+		return fileName;
+	}//end method
+	
+	
+	/**
+	 * Given an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
+	 * 
+	 * @param cubequery a CubeQuery whose info file name is requested
+	 * @param outputFolder  a String representing a target folder, if the form of "MyFolder/" where the output will be placed. Don't forget the "/"
+	 * @return the path of the _info.txt file of the query
+	 */
+	private String computeQueryInfoName(CubeQuery cubequery, String outputFolder) {
+		String fileName = outputFolder + cubequery.getName() + "_info.txt";
+		return fileName;
+	}//end method
+	
+	
 
 	/**
 	 * Populates a file qX.txt in History/Queries, X being an augmenting number, containing the raw query string

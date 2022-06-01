@@ -9,7 +9,7 @@ tokens{
   CREATE;CUBE;REFERENCES;DIMENSION;LEVEL;ATTRIBUTES;ID;DESCRIPTION;
   DIMENSION_TYPE;LIST;OF;LEVELS;AS;HIERARCHY;NAME;
   LBRACE;RBRACE;DOT;COMMA;CHILDOF;QUESTMARK;UNDERSCORE;WS;AT;
-  AND;AS;
+  SELECT;OR;AND;WHERE;AS;GROUP;BY;MIN;MAX;COUNT;SUM;AVG;
 }
 
 @header{
@@ -37,9 +37,14 @@ tokens{
   HashMap<String, ArrayList<String>> levelAttributes;
   HashMap<String, String> attributeTypes;
   HashMap<String, String> attributeDatasource;
+  ArrayList<String> conditionlst;
+  ArrayList<String> tablelst;
+  ArrayList<String> groupperlst;
   ArrayList<String> measurelst;
   ArrayList<String> measurefields;
+  String aggregatefunc;
   String tmp_con;
+  boolean group;
   String dimensionType;
   
 }
@@ -51,6 +56,7 @@ tokens{
 start :{
     mode="";
     tmp_con="";
+    group=false;
     dimensionlst=new ArrayList<String>();
     hierarchylst=new ArrayList<String>();
     originallvllst=new ArrayList<String>();
@@ -61,6 +67,9 @@ start :{
     levelAttributes = new HashMap<String, ArrayList<String>>();
     attributeTypes = new HashMap<String, String>();
     attributeDatasource = new HashMap<String, String>();
+    conditionlst=new ArrayList<String>();
+    groupperlst=new ArrayList<String>();
+    tablelst=new ArrayList<String>();
     measurelst=new ArrayList<String>();
     measurefields=new ArrayList<String>();
     dimensionsAtCubeDataSource=new ArrayList<String>();
@@ -84,6 +93,7 @@ parse :  	{sourceType=""; iniFilePath="";} source_type_statement
             if(dimensionsAtCubeDataSource.size()>0) dimensionsAtCubeDataSource.clear();
            }
             creation_statement )* 
+   |      sql_query
    ;
 
 source_type_statement: DATASOURCE TYPE COLON NAME {sourceType=$NAME.text;} WITH INI FILE COLON PATH {iniFilePath=$PATH.text;};
@@ -153,6 +163,57 @@ sqlfield : name1=NAME DOT name2=NAME { tmp_con+=$name1.text+"."+$name2.text;
         			 if(mode.equals("Cube")){ dimensionsAtCubeDataSource.add($name.text);}};
 
 
+
+        
+sql_query: select_statement 
+           from_statement
+           where_statement
+           group_statement;
+           
+select_statement: SELECT grouppers COMMA aggregate_statement;
+
+aggregate_statement : {tmp_con="";} aggregate_func '(' sqlfield ')' {aggregatefunc=tmp_con;tmp_con="";};
+
+aggregate_func : SUM {tmp_con=$SUM.text+"~";}
+                | AVG {tmp_con=$AVG.text+"~";} 
+                | COUNT {tmp_con=$COUNT.text+"~";}
+                | MAX {tmp_con=$MAX.text+"~";}
+                | MIN {tmp_con=$MIN.text+"~";};
+
+from_statement : FROM tables;
+
+tables : table (COMMA table)*;
+
+table : name1=NAME AS name2=NAME  {tablelst.add($name1.text+"~"+$name2.text);}
+      | name1=NAME name2=NAME {tablelst.add($name1.text+"~"+$name2.text);}
+      | NAME {tablelst.add($NAME.text);};
+
+where_statement : WHERE {tmp_con="";} cond_statement {conditionlst.add(tmp_con);} (boolean_expr {tmp_con="";} cond_statement {conditionlst.add(tmp_con);})*
+                  | ;
+cond_statement : sqlfield operator {tmp_con+="~"+$operator.text+"~";} sqlfield 
+                | sqlfield operator {tmp_con+="~"+$operator.text+"~";}  quote_statement NAME quote_statement {tmp_con+="'"+$NAME.text+"'";}
+                | sqlfield operator {tmp_con+="~"+$operator.text+"~";}  quote_statement (Digit)+ NAME  quote_statement {tmp_con+="'"+$Digit.text+$NAME.text+"'";}
+                | sqlfield operator {tmp_con+="~"+$operator.text+"~";} (Digit)+ {tmp_con+=$Digit.text;}
+                | sqlfield operator {tmp_con+="~"+$operator.text+"~";}  quote_statement  quote_statement {tmp_con+="'"+"'";};
+                
+                
+boolean_expr : OR | AND;
+
+quote_statement: '"' | '\'' ;
+
+operator : '=' 
+          | '>=' 
+          | '<=' 
+          | '>'
+          | '<'
+          | 'LIKE';
+
+group_statement : GROUP BY {group=true;} grouppers {group=false;};
+
+grouppers : {tmp_con="";} sqlfield {if(group){ groupperlst.add(tmp_con);}} (comma_statement {tmp_con="";} sqlfield {if(group)groupperlst.add(tmp_con);} );
+
+OR : O R;
+
 AND : A N D;
 
 DATASOURCE: D A T A S O U R C E;
@@ -201,6 +262,26 @@ AS: A S;
 AT :A T;
 
 HIERARCHY: H I E R A R C H Y;
+
+SELECT : S E L E C T;
+
+AVG : A V G;
+
+SUM : S U M;
+
+MAX : M A X;
+
+MIN : M I N;
+
+COUNT : C O U N T;
+
+WHERE : W H E R E;
+
+FROM : F R O M;
+
+GROUP : G R O U P;
+
+BY: B Y;
 
 MEASURES : M E A S U R E S;
 

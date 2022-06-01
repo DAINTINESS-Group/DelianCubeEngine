@@ -40,28 +40,24 @@ import org.antlr.runtime.TokenStream;
  */
 public class ParserManager {
 	
-	public String sourceType;
-	public String iniFilePath;
-	public String mode;
-	public String creationName;
-	public String datasourceTable;
-	public HashMap<String, String> levelID;
-	public HashMap<String, String> levelDescription;
-	public ArrayList<String> dimensionList;
-	public ArrayList<String> hierarchyList;
-	public ArrayList<String> originalLevelList;
-	public ArrayList<String> customLevelList;
-	public String dimensionType;
-	public HashMap<String, ArrayList<String>> levelAttributes;
-	public HashMap<String, String> attributeTypes;
-	public HashMap<String, String> attributeDatasource;
-	public ArrayList<String> conditionList;
-	public ArrayList<String> tableList;
-	public ArrayList<String> groupperList;
-	public ArrayList<String> measureList;
-	public ArrayList<String> measureFields;
-	public ArrayList<String> dimensionsAtCubeDataSource;
-	public String aggregationFunction;	
+	private String sourceType;
+	private String iniFilePath;
+	private String mode;
+	private String creationName;
+	private String datasourceTable;
+	private HashMap<String, String> levelID;
+	private HashMap<String, String> levelDescription;
+	private ArrayList<String> dimensionList;
+	private ArrayList<String> hierarchyList;
+	private ArrayList<String> originalLevelList;
+	private ArrayList<String> customLevelList;
+	private String dimensionType;
+	private HashMap<String, ArrayList<String>> levelAttributes;
+	private HashMap<String, String> attributeTypes;
+	private HashMap<String, String> attributeDatasource;	
+	private ArrayList<String> measureList;
+	private ArrayList<String> measureFields;
+	private ArrayList<String> dimensionsAtCubeDataSource;
 	
 
 	/**
@@ -87,14 +83,10 @@ public class ParserManager {
 		levelAttributes = new HashMap<String, ArrayList<String>>();
 	    attributeTypes = new HashMap<String, String>();
 	    attributeDatasource = new HashMap<String, String>();
-	    conditionList=new ArrayList<String>();
-	    tableList=new ArrayList<String>();
-	    groupperList=new ArrayList<String>();
 	    measureList=new ArrayList<String>();
 	    measureFields=new ArrayList<String>();
 	    dimensionsAtCubeDataSource=new ArrayList<String>();
-	    aggregationFunction = null;
-		
+	    
 		
 	}
 	
@@ -152,17 +144,81 @@ public class ParserManager {
 			attributeTypes.putAll(parser.attributeTypes);
 			attributeDatasource.putAll(parser.attributeDatasource);
 			
-			
-			/* SQL QUERY STAFF */ 
-			aggregationFunction=parser.aggregatefunc;
-			conditionList.addAll(parser.conditionlst);
-			tableList.addAll(parser.tablelst);
-			groupperList.addAll(parser.groupperlst);
 		} catch (RecognitionException e) {
 			e.printStackTrace();
 		}
 
 	}
 	
+	public String getSourceType() {
+		return this.sourceType;
+	}
 	
+	public String getIniFilePath() {
+		return this.iniFilePath;
+	}
+	
+	public String getMode() {
+		return this.mode;
+	}
+	
+	public String getCreationName() {
+		return this.creationName;
+	}
+	
+	public String getDatasourceTable() {
+		return this.datasourceTable;
+	}
+	
+	public HashMap<String, String> getLevelID(){
+		return this.levelID;
+	}
+	
+	public HashMap<String, String> getLevelDescription(){
+		return this.levelDescription;
+	}
+	
+	public ArrayList<String> getDimensionList(){
+		return this.dimensionList;
+	}
+	
+	public ArrayList<String> getHierarchyList(){
+		return this.hierarchyList;
+	}
+	
+	public ArrayList<String> getOriginalLevelList(){
+		return this.originalLevelList;
+	}
+	
+	public ArrayList<String> getCustomLevelList(){
+		return this.customLevelList;
+	}
+	
+	public String getDimensionType() {
+		return this.dimensionType;
+	}
+	
+	public HashMap<String, ArrayList<String>> getLevelAttributes(){
+		return this.levelAttributes;
+	}
+	
+	public HashMap<String, String> getAttributeTypes(){
+		return this.attributeTypes;
+	}
+	
+	public HashMap<String, String> getAttributeDatasource(){
+		return this.attributeDatasource;
+	}
+	
+	public ArrayList<String> getMeasureList(){
+		return this.measureList;
+	}
+	
+	public ArrayList<String> getMeasureFields(){
+		return this.measureFields;
+	}
+	
+	public ArrayList<String> getDimensionsAtCubeDataSource(){
+		return this.dimensionsAtCubeDataSource;
+	}
 }

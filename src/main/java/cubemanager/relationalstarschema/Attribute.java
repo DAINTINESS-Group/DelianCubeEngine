@@ -22,12 +22,12 @@ package cubemanager.relationalstarschema;
 
 public class Attribute {
 	
-	private String tableName;
+	private String dataType;
 	private String fieldName;
     
-    public Attribute(String table,String field){
-    	tableName = table;
-    	fieldName=field;    			
+    public Attribute(String dataType,String field){
+    	this.dataType = dataType;
+    	this.fieldName=field;    			
     }
     
     public String getDatatype(){
@@ -35,7 +35,7 @@ public class Attribute {
     }
     
     public String getName(){
-    	return tableName;
+    	return dataType;
     }
     
 }
