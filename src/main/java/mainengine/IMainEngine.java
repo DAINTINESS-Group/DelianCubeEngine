@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cubemanager.CubeManager;
-import mainengine.nlq.NLQValidationResults;
 
 /**
  * @author pvassil
@@ -166,6 +164,33 @@ public interface IMainEngine extends IServer {
 	 */
 	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
 	
+	
+	
+	/**
+	 * Performs the Roll-Up operator and executes the new query returning the results in a file
+	 * 
+	 * @param cubeQueryName 	The name of the query the user wants to perform Roll-Up on
+	 * @param newQueryName 		The name of the query that will be produced after the performance of the Roll-Up operator
+	 * @param dimensionName		The dimension that the Roll-Up operator will be performed on
+	 * @param targetLevelName	The level that is the target of the Roll-Up operator
+	 * @return 	A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata rollUp(String cubeQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException;
+	
+	
+	
+	/**
+	 * Performs the Drill-Down operator and executes the new query returning the results in a file
+	 * 
+	 * @param cubeQueryName 	The name of the query the user wants to perform Drill-Down on
+	 * @param newQueryName 		The name of the query that will be produced after the performance of the Drill-Down operator
+	 * @param dimensionName		The dimension that the Drill-Down operator will be performed on
+	 * @param targetLevelName	The level that is the target of the Drill-Down operator
+	 * @return 	A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata drillDown(String cubeQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException;
 	
 	
 	

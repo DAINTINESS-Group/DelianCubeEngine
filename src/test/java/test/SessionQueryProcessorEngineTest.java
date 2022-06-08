@@ -37,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
@@ -44,6 +45,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.IMainEngine;
+import mainengine.ResultFileMetadata;
 import mainengine.SessionQueryProcessorEngine;
 
 
@@ -228,7 +230,121 @@ public class SessionQueryProcessorEngineTest {
         assertEquals(fileInfoProduced2 , fileInfoReference2);/**/
 	}//end method testanswerCubeQueryFromStringWithMetadata
 
+	
+	/**
+	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#rollUp(String,String,String,String)}.
+	 * @throws RemoteException
+	 */
+	@Test
+	public final void testrollUp() throws RemoteException {
+		
+		String testQueryString2 = 
+				"CubeName:loan" + " \n" +
+				"Name:CubeQueryLoan2_Copy" + " \n" +
+				"AggrFunc:Avg" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
+		
+		testedQPEngine.answerCubeQueryFromString(testQueryString2);
+		ResultFileMetadata resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl3");
+		
+		
+		String fileInfoProduced2 = getContents("OutputFiles/CubeQueryLoan2_RollUp_Info.txt");
+		String fileInfoReference2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2_RollUp_Info.txt");
+		System.out.println(resMetadata.getErrorCheckingStatus());
+		if(resMetadata.getErrorCheckingStatus()==null) {
+			assertEquals(fileInfoProduced2, fileInfoReference2);
+		}
+		else {
+			System.out.println(resMetadata.getErrorCheckingStatus());
+			assertEquals(resMetadata.getErrorCheckingStatus(), null);
+		}
+		
+		
+		
+		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "accunt_dim", "lvl3");
+		assertEquals("Dimension not found", resMetadata.getErrorCheckingStatus());
+		
+		
+		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl1");
+		assertEquals("Target level is not higher than the current level in the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
+		
+		
+		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl");
+		assertEquals("Level not found", resMetadata.getErrorCheckingStatus());
+		
+		
+		testQueryString2 = 
+				"CubeName:loan" + " \n" +
+				"Name:CubeQueryLoan2_Copy2" + " \n" +
+				"AggrFunc:Avg" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl3,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
+		testedQPEngine.answerCubeQueryFromString(testQueryString2);
+		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy2", "CubeQueryLoan2_RollUp", "account_dim", "lvl3");
+		assertEquals("Already at the top of the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
+	}
 
+	
+	/**
+	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#drillDown(String,String,String,String)}.
+	 * @throws RemoteException
+	 */
+	@Test
+	public final void testdrillDown() throws RemoteException {
+		
+		String testQueryString2 = 
+				"CubeName:loan" + " \n" +
+				"Name:CubeQueryLoan2_Copy" + " \n" +
+				"AggrFunc:Avg" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
+		
+		testedQPEngine.answerCubeQueryFromString(testQueryString2);
+		ResultFileMetadata resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl0");
+		
+		
+		String fileInfoProduced2 = getContents("OutputFiles/CubeQueryLoan2_DrillDown_Info.txt");
+		String fileInfoReference2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2_DrillDown_Info.txt");
+		System.out.println(resMetadata.getErrorCheckingStatus());
+		if(resMetadata.getErrorCheckingStatus()==null) {
+			assertEquals(fileInfoProduced2, fileInfoReference2);
+		}
+		else {
+			System.out.println(resMetadata.getErrorCheckingStatus());
+			assertEquals(resMetadata.getErrorCheckingStatus(), null);
+		}
+		
+		
+		
+		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "accunt_dim", "lvl3");
+		assertEquals("Dimension not found", resMetadata.getErrorCheckingStatus());
+		
+		
+		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl3");
+		assertEquals("Target level is not lower than the current level in the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
+		
+		
+		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl");
+		assertEquals("Level not found", resMetadata.getErrorCheckingStatus());
+		
+		
+		testQueryString2 = 
+				"CubeName:loan" + " \n" +
+				"Name:CubeQueryLoan2_Copy3" + " \n" +
+				"AggrFunc:Avg" + " \n" +
+				"Measure:amount" + " \n" +
+				"Gamma:account_dim.lvl0,date_dim.lvl2" + " \n" +
+				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
+		testedQPEngine.answerCubeQueryFromString(testQueryString2);
+		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy3", "CubeQueryLoan2_DrillDown", "account_dim", "lvl0");
+		assertEquals("Already at the bottom of the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
+	}
+	
+	
 	/**
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueryFromStringWithModels(String, String [])}.
 	 * @throws IOException 

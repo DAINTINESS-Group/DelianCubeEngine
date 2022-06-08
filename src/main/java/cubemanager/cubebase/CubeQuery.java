@@ -64,6 +64,9 @@ public class CubeQuery extends Cube {
 		this.extractionMethod = extractionMethod;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public void setBasicStoredCube(BasicStoredCube referCube){
 		this.referCube = referCube;

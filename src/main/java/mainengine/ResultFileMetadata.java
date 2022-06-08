@@ -12,6 +12,12 @@ public class ResultFileMetadata implements Serializable{
 	 * UID by Eclipse 
 	 */
 	private static final long serialVersionUID = 3980458219744779036L;
+	private String resultFile;
+	private String resultInfoFile;
+	private ArrayList<String> componentResultFiles;
+	private ArrayList<String> componentResultInfoFiles;
+	private String localFolder;
+	private String errorCheckingStatus;
 	
 	public ResultFileMetadata() {
 		;
@@ -50,12 +56,12 @@ public class ResultFileMetadata implements Serializable{
 		this.localFolder = localFolder;
 	}
 
-	public String getErrorCheckingFile() {
-		return errorCheckingFile;
+	public String getErrorCheckingStatus() {
+		return errorCheckingStatus;
 	}
 	
-	public void setErrorCheckingFile(String errorCheckingFile) {
-		this.errorCheckingFile = errorCheckingFile;
+	public void setErrorCheckingStatus(String errorCheckingStatus) {
+		this.errorCheckingStatus = errorCheckingStatus;
 	}
 	
 	private void writeObject(ObjectOutputStream oos) throws IOException {
@@ -64,7 +70,7 @@ public class ResultFileMetadata implements Serializable{
 		oos.writeObject(componentResultFiles);
 		oos.writeObject(componentResultInfoFiles);
 		oos.writeObject(localFolder);
-		oos.writeObject(errorCheckingFile);
+		oos.writeObject(errorCheckingStatus);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -74,13 +80,8 @@ public class ResultFileMetadata implements Serializable{
 		componentResultFiles = (ArrayList<String>) ois.readObject();
 		componentResultInfoFiles = (ArrayList<String>) ois.readObject();
 		localFolder = (String) ois.readObject();
-		errorCheckingFile = (String) ois.readObject();
+		errorCheckingStatus = (String) ois.readObject();
 	}
 	
-	private String resultFile;
-	private String resultInfoFile;
-	private ArrayList<String> componentResultFiles;
-	private ArrayList<String> componentResultInfoFiles;
-	private String localFolder;
-	private String errorCheckingFile;
+	
 } //end class

@@ -261,7 +261,7 @@ public class QueryEditorController extends AbstractController {
 			
 			errors = serverEngine.prepareCubeQuery(queryString);
 			if (errors != null){
-				String remoteErrorFileLocation = errors.getErrorCheckingFile();
+				String remoteErrorFileLocation = errors.getErrorCheckingStatus();
 				System.out.println("Remote error checking file:" + remoteErrorFileLocation);
 				if(remoteErrorFileLocation.length() == 0) {	
 					CustomAlertDialog a = new CustomAlertDialog("Error", null, "No error checking results found", this.stage); 

@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -50,10 +51,8 @@ import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 
 import cubemanager.CubeManager;
-import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
-import cubemanager.cubebase.Hierarchy;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.QueryHistoryManager;
 import cubemanager.cubebase.BasicStoredCube;
@@ -63,7 +62,6 @@ import filecreation.FileMgr;
 import filecreation.PptxFile;
 import filecreation.WordFile;
 */
-import parsermgr.ParserManager;
 //import storymgr.FinResult;
 //import storymgr.StoryMgr;
 import result.Result;
@@ -89,19 +87,16 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	private static final long serialVersionUID = 313553263459485366L;
 	private CubeManager cubeManager;
-	private CubeBase cubeBase;
 	//private StoryMgr storMgr;
-
 //	private Options optMgr;
 
 	private Session session;
+	private String sessionId;
 	private QueryHistoryManager queryHistoryMng;
 	
 	private CubeQuery currentCubeQuery;
 	private Result currentResult;
 	private String currentQueryName;
-	
-	private String sessionId;
 	
 	private ITranslatorFactory translatorFactory;
 	private ArrayList<String> cubeNames;
@@ -110,11 +105,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private ArrayList <String> dimensions;
 	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
 	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
-	private HashMap<String, String> userInputList;
 	private List<Dimension> registeredDimensions;
 	private List<BasicStoredCube> registeredCubesList;
-	
-	
 	
 	private InterestingnessManager interestMng;
 	private int historyCounter = 0;
@@ -159,7 +151,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		sessionId = session.initialize(typeOfConnection, userInputList);
 		registeredDimensions = cubeManager.getDimensions();
 		registeredCubesList = cubeManager.getCubes();
-		cubeBase=cubeManager.getCubeBase();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		System.out.println("DONE WITH INIT");
 	}
@@ -465,6 +456,241 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 	}//end method
 	
 	
+	//OLAP BASIC OPERATORS METHODS
+	@Override
+	public ResultFileMetadata rollUp(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
+		Integer oldLevelHierarchyPosition = null;
+		Integer targetLevelHierarchyPosition = null;
+		Boolean dimensionFound = false;
+		Boolean targetLevelFound = false;
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
+		
+		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
+		BasicStoredCube referCube = oldCubeQuery.getReferCube();
+
+		
+		for(int i=0; i<referCube.getDimensionsList().size(); i++) {
+			//find if dimension exists
+			if(referCube.getDimensionsList().get(i).getName().equals(dimensionName)){
+				dimensionFound = true;
+				
+				//find if target level exists in hierarchy
+				for(int j=0; j<referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().size(); j++) {
+					if(referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getName().equals(targetLevelName)) {
+						targetLevelFound = true;
+						//find target level's position in hierarchy
+						targetLevelHierarchyPosition = referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getPositionInHierarchy();						
+					}
+					//find old level's position in hierarchy
+					for(int k=0; k<oldCubeQuery.getGammaExpressions().size(); k++) {
+						if(oldCubeQuery.getGammaExpressions().get(k)[0].equals(dimensionName)) {
+							if(referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getName().equals(oldCubeQuery.getGammaExpressions().get(k)[1])) {
+								oldLevelHierarchyPosition = referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getPositionInHierarchy();
+							}
+						}
+					}
+				}
+				if(oldLevelHierarchyPosition==referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().size()-1) {
+					System.out.println("Already at the top of the dimension hierarchy. Cannot perform Roll-Up");
+					resMetadata.setErrorCheckingStatus("Already at the top of the dimension hierarchy.");
+					return resMetadata;
+				}
+			}
+		}
+		if(dimensionFound==false) {
+			System.out.println("Dimension was not found. Cannot perform Roll-Up");
+			resMetadata.setErrorCheckingStatus("Dimension not found");
+			return resMetadata;
+		}
+		else if(targetLevelFound==false) {
+			System.out.println("Target level was not found. Cannot perform Roll-Up");
+			resMetadata.setErrorCheckingStatus("Level not found");
+			return resMetadata;
+		}
+		else if(targetLevelHierarchyPosition<oldLevelHierarchyPosition) {
+			System.out.println("Target level is not higher than the current level in the dimension hierarchy. Cannot perfom Roll-Up");
+			resMetadata.setErrorCheckingStatus("Target level is not higher than the current level in the dimension hierarchy.");
+			return resMetadata;
+		}
+		
+		CubeQuery cubeQuery = new CubeQuery(oldCubeQuery);
+		cubeQuery.setName(newQueryName);
+		for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
+			if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
+						
+				System.out.println("Before the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
+				//1. Perform the Roll-Up	
+				cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
+				System.out.println("After the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
+				this.currentCubeQuery = cubeQuery;
+				
+				
+				//2. execute the query AND populate Result with a 2D string
+				Instant t0 = Instant.now();
+				cubeManager = session.getCubeManager();
+				Result res = cubeManager.executeQuery(currentCubeQuery);
+				this.currentResult = res;
+				
+				Instant tExecuted = Instant.now();
+				long durationExecution = Duration.between(t0, tExecuted).toMillis();
+
+				//3a. print result to file and screen
+				this.currentQueryName = newQueryName;
+						
+				//3b. print result to file
+				String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
+				
+				if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
+					res.printCellsToStream(System.out);
+				}
+				Instant tOutputed = Instant.now();
+				
+				
+				long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
+				long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
+				
+				System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
+						+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
+				
+				System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
+
+				
+				queryHistoryMng.addQuery(currentCubeQuery);
+				
+				String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
+				
+				
+				resMetadata.setComponentResultFiles(null);
+				resMetadata.setComponentResultInfoFiles(null);
+				resMetadata.setLocalFolder("OutputFiles" + File.separator);
+				resMetadata.setResultFile(outputLocation);
+				resMetadata.setResultInfoFile(outputInfoLocation);
+				resMetadata.setErrorCheckingStatus(null);
+				System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
+				System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
+				System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+			}
+		}
+		return resMetadata;
+	}
+	
+	
+	@Override
+	public ResultFileMetadata drillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
+		Integer oldLevelHierarchyPosition = null;
+		Integer targetLevelHierarchyPosition = null;
+		Boolean dimensionFound = false;
+		Boolean targetLevelFound = false;
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
+		
+		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);	
+		BasicStoredCube referCube = oldCubeQuery.getReferCube();
+		
+		
+		for(int i=0; i<referCube.getDimensionsList().size(); i++) {
+			//find if dimension exists
+			if(referCube.getDimensionsList().get(i).getName().equals(dimensionName)){
+				dimensionFound = true;
+				
+				//find if target level exists in hierarchy
+				for(int j=0; j<referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().size(); j++) {
+					if(referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getName().equals(targetLevelName)) {
+						targetLevelFound = true;
+						//find target level's position in hierarchy
+						targetLevelHierarchyPosition = referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getPositionInHierarchy();						
+					}
+					//find old level's position in hierarchy
+					for(int k=0; k<oldCubeQuery.getGammaExpressions().size(); k++) {
+						if(oldCubeQuery.getGammaExpressions().get(k)[0].equals(dimensionName)) {
+							if(referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getName().equals(oldCubeQuery.getGammaExpressions().get(k)[1])) {
+								oldLevelHierarchyPosition = referCube.getDimensionsList().get(i).getHierarchy().get(0).getLevels().get(j).getPositionInHierarchy();
+							}
+						}
+					}
+				}
+				if(oldLevelHierarchyPosition==0) {
+					System.out.println("Already at the bottom of the dimension hierarchy. Cannot perform Drill-Down");
+					resMetadata.setErrorCheckingStatus("Already at the bottom of the dimension hierarchy.");
+					return resMetadata;
+				}
+			}
+		}
+		if(dimensionFound==false) {
+			System.out.println("Dimension was not found. Cannot perform Drill-Down");
+			resMetadata.setErrorCheckingStatus("Dimension not found");
+			return resMetadata;
+		}
+		else if(targetLevelFound==false) {
+			System.out.println("Target level was not found. Cannot perform Drill-Down");
+			resMetadata.setErrorCheckingStatus("Level not found");
+			return resMetadata;
+		}
+		else if(targetLevelHierarchyPosition>oldLevelHierarchyPosition) {
+			System.out.println("Target level is not lower than the current level in the dimension hierarchy. Cannot perfom Drill-Down");
+			resMetadata.setErrorCheckingStatus("Target level is not lower than the current level in the dimension hierarchy.");
+			return resMetadata;
+		}
+		
+		CubeQuery cubeQuery = new CubeQuery(oldCubeQuery);
+		cubeQuery.setName(newQueryName);
+		for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
+			if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
+				
+				System.out.println("Before the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));				
+				//1. Perform the Drill-Down
+				cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
+				System.out.println("After the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
+				this.currentCubeQuery = cubeQuery;
+				
+				//2. execute the query AND populate Result with a 2D string
+				Instant t0 = Instant.now();
+				cubeManager = session.getCubeManager();
+				Result res = cubeManager.executeQuery(currentCubeQuery);
+				this.currentResult = res;
+				
+				Instant tExecuted = Instant.now();
+				long durationExecution = Duration.between(t0, tExecuted).toMillis();
+
+				//3a. print result to file and screen
+				this.currentQueryName = newQueryName;
+						
+				//3b. print result to file
+				String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
+				
+				if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
+					res.printCellsToStream(System.out);
+				}
+				Instant tOutputed = Instant.now();
+				
+				
+				long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
+				long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
+				
+				System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
+						+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
+				
+				System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
+
+				queryHistoryMng.addQuery(currentCubeQuery);
+				
+				String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
+				
+				
+				resMetadata.setComponentResultFiles(null);
+				resMetadata.setComponentResultInfoFiles(null);
+				resMetadata.setLocalFolder("OutputFiles" + File.separator);
+				resMetadata.setResultFile(outputLocation);
+				resMetadata.setResultInfoFile(outputInfoLocation);
+				resMetadata.setErrorCheckingStatus(null);
+				System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
+				System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
+				System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+			}
+		}
+		return resMetadata;
+	}
+	
+	
 	//NATURAL LANGUAGE QUERYING METHODS
 	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
 	 * executes the query and produces the output of the query.
@@ -623,7 +849,7 @@ System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
 		
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
-		resMetadata.setErrorCheckingFile(errorCheckingInfoOutput);
+		resMetadata.setErrorCheckingStatus(errorCheckingInfoOutput);
 		return resMetadata;		
 	}
 

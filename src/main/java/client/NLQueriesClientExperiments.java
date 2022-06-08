@@ -169,7 +169,7 @@ public class NLQueriesClientExperiments {
 	 */
 	private static String bringErrorDataToTheClient(IMainEngine service, String name, ResultFileMetadata resMetadata)
 			throws IOException {
-		String remoteErrorFile = resMetadata.getErrorCheckingFile();
+		String remoteErrorFile = resMetadata.getErrorCheckingStatus();
 		
 		System.out.println("\nError RES\t" + remoteErrorFile);
 		
