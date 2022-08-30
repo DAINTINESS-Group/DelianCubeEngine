@@ -291,10 +291,12 @@ public class InterestingnessClientExperiments {
 					"Gamma:account_dim.district_name,date_dim.month\n" + 
 					"Sigma:account_dim.region='north Moravia',date_dim.year='1998'";
 				measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
-						"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Label Surprise", 
-						"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty",*/"Syntactic Peculiarity",
-						"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"));
+						"Indirect Novelty", */"Relevance with DAI", "Value Peculiarity"/*, "Label Surprise", 
+						"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty", "Syntactic Peculiarity",
+						"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"*/));
 
+				//TODO: theloyme result size experiments gia tous goal based kai basic value surprise
+				
 				String[] answers = service.answerCubeQueryWithInterestMeasures(q1 , measures);
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				for(int i = 0; i < answers.length; i++) {
@@ -538,6 +540,7 @@ public class InterestingnessClientExperiments {
 		    			"########################################\n\n\n");
 			}
 			
+
 			//Create .gitignore files
 			createGitignoreFiles();
 			
