@@ -293,9 +293,9 @@ public class InterestingnessClientExperiments {
 				measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
 						"Indirect Novelty", */"Relevance with DAI", "Value Peculiarity"/*, "Label Surprise", 
 						"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty", "Syntactic Peculiarity",
-						"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"*/));
+						"Belief Based Novelty"*/, "Goal Based Relevance", "Basic Value Surprise"));
 
-				//TODO: theloyme result size experiments gia tous goal based kai basic value surprise
+				//theloyme result size experiments gia tous goal based kai basic value surprise
 				
 				String[] answers = service.answerCubeQueryWithInterestMeasures(q1 , measures);
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -392,7 +392,7 @@ public class InterestingnessClientExperiments {
 			 * Experiments for 1M db
 			 * 
 			 */
-			
+			/*
 			experimentCounter++;
 			for(int i=0; i<6; i++) {
 				historySize = 1;
@@ -438,12 +438,13 @@ public class InterestingnessClientExperiments {
 		    			"########################################\n\n\n");
 			}
 
+*/
 			/*
 			 * 
 			 * Experiments for 10M db
 			 * 
 			 */
-			
+			/*
 			experimentCounter++;
 			for(int i=0; i<6; i++) {
 				historySize = 1;
@@ -488,13 +489,14 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
+			*/
 			
 			/*
 			 * 
 			 * Experiments for 100M db
 			 * 
 			 */
-			
+			/*
 			experimentCounter++;
 			for(int i=0; i<6; i++) {
 				historySize = 1;
@@ -540,7 +542,7 @@ public class InterestingnessClientExperiments {
 		    			"########################################\n\n\n");
 			}
 			
-
+			 */
 			//Create .gitignore files
 			createGitignoreFiles();
 			

@@ -21,8 +21,8 @@ public class InterestingnessMeasureHFactory {
 									break;
 			case "Belief Based Novelty" : measure = new BeliefBasedDetailedNovelty();
 									break;		
-			case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
-									break;
+			//case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
+				//					break;
 			case "Syntactic Peculiarity" : measure = new SyntacticPeculiarity();
 									break;
 		}

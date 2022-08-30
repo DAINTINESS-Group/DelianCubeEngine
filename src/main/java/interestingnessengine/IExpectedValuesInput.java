@@ -55,6 +55,11 @@ public interface IExpectedValuesInput {
 	 */
 	public ArrayList<Cell> computeDetailedQueryCube(CubeQuery query);
 	
+	/**
+	 * @return the user's goals for a specific query
+	 */
+	public ArrayList<Cell> getQueryGoals();
+	
 	// --------------------- MADE PRIVATE IN INPUT MANAGER CLASS --------------------
 	/**
 	 * Parses the user's expected values. 

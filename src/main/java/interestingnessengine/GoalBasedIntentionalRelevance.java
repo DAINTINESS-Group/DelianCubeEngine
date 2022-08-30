@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import result.Cell;
 import result.Result;
 
-public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWithHistory{
+public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWithExpectedValues{
 
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> novelAreaOfInterest;
@@ -23,7 +23,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 	 * @author SpyridonKaloudis
 	 */
 
-	public double computeMeasure(IHistoryInput inputManager) {
+	public double computeMeasure(IExpectedValuesInput inputManager) {
 		
 		long startDetailedQuery = System.nanoTime();
 		coveredAreaOfInterest = new ArrayList<Cell>();
@@ -85,5 +85,7 @@ public class GoalBasedIntentionalRelevance implements IInterestingnessMeasureWit
 			return false;
 		}
 	}
+
+	
 
 }

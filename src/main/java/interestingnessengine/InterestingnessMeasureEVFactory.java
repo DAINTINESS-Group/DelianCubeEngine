@@ -18,6 +18,8 @@ public class InterestingnessMeasureEVFactory {
 								break;
 		case "Basic Value Surprise" : measure = new BasicValueSurprise();
 								break;
+		case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
+								break;
 		}
 		if(measure == null) {
 			System.err.println("Did not manage to create the desired measure. Exiting");
