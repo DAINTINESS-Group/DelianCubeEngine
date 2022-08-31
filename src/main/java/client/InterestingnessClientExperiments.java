@@ -69,6 +69,8 @@ public class InterestingnessClientExperiments {
 			// History size = 1
 			
 			switch (historySize) {
+				case 0:
+					break;
 				case 1:
 					service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 							"Name: LoanQuery11_S1_CG-Prtl\n" + 
@@ -277,11 +279,11 @@ public class InterestingnessClientExperiments {
 			
 			//#### Create experiment results file #### OR keep writing for next experiments
 			try(FileWriter fw = new FileWriter("OutputFiles/Interestingness/Experiments/experiments200T.txt", true);
-				    BufferedWriter bw = new BufferedWriter(fw);
-				    PrintWriter out = new PrintWriter(bw))
-				{
-				    out.println(experimentText);
-				} catch (IOException e) {}
+			    BufferedWriter bw = new BufferedWriter(fw);
+			    PrintWriter out = new PrintWriter(bw))
+			{
+				out.println(experimentText);
+			} catch (IOException e) {}
 			
 			List<String> measures;
 			String q1 = "CubeName:loan\n" + 
@@ -290,41 +292,68 @@ public class InterestingnessClientExperiments {
 					"Measure:amount\n" + 
 					"Gamma:account_dim.district_name,date_dim.month\n" + 
 					"Sigma:account_dim.region='north Moravia',date_dim.year='1998'";
-				measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
-						"Indirect Novelty", */"Relevance with DAI", "Value Peculiarity"/*, "Label Surprise", 
-						"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty", "Syntactic Peculiarity",
-						"Belief Based Novelty"*/, "Goal Based Relevance", "Basic Value Surprise"));
+			
+			//~10 tuples query for 1M
+			String q2 = "CubeName:loan\n" +
+					"Name: LoanQuery31_S3_CG-Prtl\n" +
+					"AggrFunc:Sum\n" +
+					"Measure:amount\n" +
+					"Gamma:account_dim.district_name,date_dim.year\n" +
+					"Sigma:account_dim.region='west Bohemia',status_dim.status='Contract Finished/No Problems', date_dim.year = '1996'";
+			
+			//~80 tuples query for 1M
+			String q3 = "CubeName:loan\n" +
+					"Name: LoanQuery22_S2_CG-Prtl\n" +
+					"AggrFunc:Sum\n" +
+					"Measure:amount\n" +
+					"Gamma:account_dim.district_name,date_dim.year\n" +
+					"Sigma:account_dim.region='south Moravia',status_dim.status='Running Contract/OK'";
+			
+			//~800 tuples query for 1M
+			String q4= "CubeName:loan\n" +
+					"Name: LoanQuery11_S1_CG-Prtl\n" +
+					"AggrFunc:Avg\n" +
+					"Measure:amount\n" +
+					"Gamma:account_dim.district_name,date_dim.month\n" +
+					"Sigma:account_dim.region='north Moravia'";
+			
+			measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
+					"Indirect Novelty", "Relevance with DAI", "Value Peculiarity",/* "Label Surprise", 
+					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty", "Syntactic Peculiarity",
+					"Belief Based Novelty",*/ "Goal Based Relevance", "Basic Value Surprise"));
 
-				//theloyme result size experiments gia tous goal based kai basic value surprise
-				
-				String[] answers = service.answerCubeQueryWithInterestMeasures(q1 , measures);
-				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-				for(int i = 0; i < answers.length; i++) {
-					System.out.println(measures.get(i) + ":    " + answers[i]);
-				}
-				
-				//Experiment for FamilyBasedRelevance bellow
-				String q2 = "CubeName:loan\n" + 
-						"Name: LoanQuery91_S8_CG-Prtl\n" + 
-						"AggrFunc:Min\n" + 
-						"Measure:amount\n" + 
-						"Gamma:account_dim.district_name,date_dim.month\n" + 
-						"Sigma:account_dim.region='central Bohemia'";
-				/*String q3 = "CubeName:loan\n" + 
-						"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-						"AggrFunc:Min\n" + 
-						"Measure:amount\n" + 
-						"Gamma:date_dim.month,account_dim.district_name\n" + 
-						"Sigma:account_dim.region='Prague',date_dim.year = '1997'";*/
+			//theloyme result size experiments gia tous goal based kai value surprise
+			//kai history-table size gia Value Peculiarity, Relevance with DAI kai partial detailed novelty
+			
+			String[] answers = service.answerCubeQueryWithInterestMeasures(q2 , measures);
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			for(int i = 0; i < answers.length; i++) {
+				System.out.println(measures.get(i) + ":    " + answers[i]);
+			}
+			
+			//Experiment for FamilyBasedRelevance bellow
+			/*String q2 = "CubeName:loan\n" + 
+					"Name: LoanQuery91_S8_CG-Prtl\n" + 
+					"AggrFunc:Min\n" + 
+					"Measure:amount\n" + 
+					"Gamma:account_dim.district_name,date_dim.month\n" + 
+					"Sigma:account_dim.region='central Bohemia'";*/
+			/*String q3 = "CubeName:loan\n" + 
+					"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+					"AggrFunc:Min\n" + 
+					"Measure:amount\n" + 
+					"Gamma:date_dim.month,account_dim.district_name\n" + 
+					"Sigma:account_dim.region='Prague',date_dim.year = '1997'";*/
 
-				measures.clear();
-				measures.add("FamilyBasedRelevance");
-				answers = service.answerCubeQueryWithInterestMeasures(q1, q2 , measures);
-				
-				System.out.println(measures.get(0) + ":    " + answers[0]);
-				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-				//Delete history files created to be ready for next set of experiments
-				clearOldHistory();
+			//measures.clear();
+			//measures.add("FamilyBasedRelevance");
+			//answers = service.answerCubeQueryWithInterestMeasures(q1, q2 , measures);
+			//System.out.println(measures.get(0) + ":    " + answers[0]);
+			
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			//Delete history files created to be ready for next set of experiments
+			clearOldHistory();
+			
 		}
 			
 		public static void main(String[] args) throws Exception {
@@ -341,9 +370,9 @@ public class InterestingnessClientExperiments {
 			 * Experiments for 100K db
 			 * 
 			 */
-			
+			/*
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 1;
 				database = "pkdd99_star_100K";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -358,7 +387,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 5;
 				database = "pkdd99_star_100K";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -373,7 +402,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize=10;
 				database = "pkdd99_star_100K";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -386,15 +415,32 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
-			
+			*/
 			/*
 			 * 
 			 * Experiments for 1M db
 			 * 
 			 */
+			
+			//the below for loop is for the result size experiment
+			experimentCounter++;
+			for(int i=0; i<5; i++) {
+				historySize = 0;
+				database = "pkdd99_star_1M";
+				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
+				createHistory(service,historySize);
+				runExperiment(service,"\n\n########################################\n"+
+	    				"EXPERIMENT:\t"+experimentCounter+"\n"+
+						"LOOP NUMBER:\t " + i +" \n"+
+		    			"EXPERIMENT PARAMETERS\n"+
+		    			"DATABASE:\t" + database + "\n"+
+		    			"HISTORY_SIZE:\t"+historySize+"\n"+
+		    			"########################################\n\n\n");
+			}
+			
 			/*
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 1;
 				database = "pkdd99_star_1M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -409,7 +455,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 5;
 				database = "pkdd99_star_1M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -424,7 +470,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize=10;
 				database = "pkdd99_star_1M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -446,7 +492,7 @@ public class InterestingnessClientExperiments {
 			 */
 			/*
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 1;
 				database = "pkdd99_star_10M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -461,7 +507,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 5;
 				database = "pkdd99_star_10M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -476,7 +522,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize=10;
 				database = "pkdd99_star_10M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -498,7 +544,7 @@ public class InterestingnessClientExperiments {
 			 */
 			/*
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 1;
 				database = "pkdd99_star_100M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -513,7 +559,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize = 5;
 				database = "pkdd99_star_100M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
@@ -528,7 +574,7 @@ public class InterestingnessClientExperiments {
 			}
 			
 			experimentCounter++;
-			for(int i=0; i<6; i++) {
+			for(int i=0; i<5; i++) {
 				historySize=10;
 				database = "pkdd99_star_100M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
