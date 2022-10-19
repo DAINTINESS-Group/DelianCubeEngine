@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import result.Cell;
 
 public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistory{
@@ -12,6 +14,7 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> detailedAreaOfInterest;
 	private ArrayList<Cell> novelAreaOfInterest;
+	private HashMap<String, Cell> detailedAreaOfInterestHashMap;
 
 	
 	/** Computes the partial detailed novelty of the current query as the percentage of
@@ -29,6 +32,11 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 		
 		long startDetailedArea = System.nanoTime();
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
+		detailedAreaOfInterestHashMap = new HashMap<String, Cell>();
+		for (Cell c: detailedAreaOfInterest) {
+			String key = c.getDimensionMembers().toString();
+			detailedAreaOfInterestHashMap.put(key, c);
+		}
 		long endDetailedArea = System.nanoTime();
 		long durationDetailedArea = endDetailedArea - startDetailedArea;
 
@@ -38,12 +46,18 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 		
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
+			ArrayList<String> cellDimensionMembers = c.getDimensionMembers();
+			if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers.toString())) {
+				removeSpecificCellFromArrayList(detailedAreaOfInterestHashMap.get(cellDimensionMembers.toString()));
+			}
+			
+			/*
 			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
-				if(testIfCellsHaveEqualSignatures(c.getDimensionMembers(),detailedAreaOfInterest.get(j).getDimensionMembers())) {
+				if(testIfCellsHaveEqualSignatures(cellDimensionMembers,detailedAreaOfInterest.get(j).getDimensionMembers())) {
 					removeSpecificCellFromArrayList(detailedAreaOfInterest.get(j));
 					break;
 				}
-			}
+			}*/
 
 		}
 		

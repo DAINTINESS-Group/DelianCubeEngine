@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import result.Cell;
 /**
  * 
@@ -15,6 +17,7 @@ public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
 	
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> detailedAreaOfInterest;
+	private HashMap<String, Cell> detailedAreaOfInterestHashMap;
 	
 	public RelevanceWithDAI(){}
 	/**
@@ -32,6 +35,11 @@ public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
 
 		long startDetailedArea = System.nanoTime();
 		detailedAreaOfInterest = inputManager.computeDetailedAreaOfInterest();
+		detailedAreaOfInterestHashMap = new HashMap<String, Cell>();
+		for (Cell c: detailedAreaOfInterest) {
+			String key = c.getDimensionMembers().toString();
+			detailedAreaOfInterestHashMap.put(key, c);
+		}
 		long endDetailedArea = System.nanoTime();
 		
 		long durationDetailedArea =  endDetailedArea - startDetailedArea;
@@ -41,12 +49,18 @@ public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
 		long startIntersection = System.nanoTime();
 		for(int i = 0; i < detailedQueryCube.size(); i++) {
 			Cell c = detailedQueryCube.get(i);
+			String cellDimensionMembers = c.getDimensionMembers().toString();
+			
+			if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers)) {
+				intersection.add(detailedAreaOfInterestHashMap.get(cellDimensionMembers));
+			}
+			/*
 			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
-				if(c.getDimensionMembers().toString().equals(detailedAreaOfInterest.get(j).getDimensionMembers().toString())) {
+				if(cellDimensionMembers.equals(detailedAreaOfInterest.get(j).getDimensionMembers().toString())) {
 					intersection.add(detailedAreaOfInterest.get(j));
 					break;
 				}
-			}
+			}*/
 		}
 		long endIntersection = System.nanoTime();
 		

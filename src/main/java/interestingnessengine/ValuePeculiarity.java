@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.TreeSet;
 import cubemanager.cubebase.CubeQuery;
 import result.Cell;
@@ -19,6 +20,7 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 	private ArrayList<Cell> detailedPreviousQueryCube;
 	private ArrayList<Cell> detailedCurrentQueryCube;
 	private ArrayList<Double> jaccardDistances = new ArrayList<Double>();
+	private HashMap<String, Cell> detailedAreaOfInterestHashMap;
 	private double temp;
 	
 	public ValuePeculiarity(){}
@@ -52,6 +54,11 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 			startDetailedQuery = System.nanoTime();
 			
 			detailedPreviousQueryCube = inputManager.computeDetailedQueryCube(query);
+			detailedAreaOfInterestHashMap = new HashMap<String, Cell>();
+			for (Cell c: detailedPreviousQueryCube) {
+				String key = c.getDimensionMembers().toString();
+				detailedAreaOfInterestHashMap.put(key, c);
+			}
 			
 			endDetailedQuery = System.nanoTime();
 			
@@ -63,12 +70,18 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 			startIntersection = System.nanoTime();	
 			for(int i = 0; i < detailedCurrentQueryCube.size(); i++) {
 				Cell c = detailedCurrentQueryCube.get(i);
+				ArrayList<String> cellDimensionMembers = c.getDimensionMembers();
+				if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers.toString())) {
+					intersection.add(detailedAreaOfInterestHashMap.get(cellDimensionMembers.toString()));
+				}
+				
+				/*
 				for(int j = 0; j < detailedPreviousQueryCube.size(); j++) {
 					if(c.getDimensionMembers().toString().equals(detailedPreviousQueryCube.get(j).getDimensionMembers().toString())) {
 						intersection.add(detailedPreviousQueryCube.get(j));
 						break;
 					}
-				}
+				}*/
 			}
 			
 			endIntersection = System.nanoTime();

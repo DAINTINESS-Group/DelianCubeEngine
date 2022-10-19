@@ -318,9 +318,9 @@ public class InterestingnessClientExperiments {
 					"Sigma:account_dim.region='north Moravia'";
 			
 			measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
-					"Indirect Novelty", "Relevance with DAI", "Value Peculiarity",/* "Label Surprise", 
-					"Label Surprise Strict", "Value Surprise","Partial Detailed Novelty", "Syntactic Peculiarity",
-					"Belief Based Novelty",*/ "Goal Based Relevance", "Basic Value Surprise"));
+					"Indirect Novelty", */"Relevance with DAI", "Value Peculiarity"/*, "Label Surprise", 
+					"Label Surprise Strict", "Value Surprise"*/,"Partial Detailed Novelty"/*, "Syntactic Peculiarity",
+					"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"*/));
 
 			//theloyme result size experiments gia tous goal based kai value surprise
 			//kai history-table size gia Value Peculiarity, Relevance with DAI kai partial detailed novelty
@@ -370,7 +370,7 @@ public class InterestingnessClientExperiments {
 			 * Experiments for 100K db
 			 * 
 			 */
-			/*
+			
 			experimentCounter++;
 			for(int i=0; i<5; i++) {
 				historySize = 1;
@@ -415,13 +415,13 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
-			*/
+			
 			/*
 			 * 
 			 * Experiments for 1M db
 			 * 
 			 */
-			
+			/*
 			//the below for loop is for the result size experiment
 			experimentCounter++;
 			for(int i=0; i<5; i++) {
@@ -437,8 +437,8 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
+			*/
 			
-			/*
 			experimentCounter++;
 			for(int i=0; i<5; i++) {
 				historySize = 1;
@@ -483,14 +483,14 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
+			
 
-*/
 			/*
 			 * 
 			 * Experiments for 10M db
 			 * 
 			 */
-			/*
+		
 			experimentCounter++;
 			for(int i=0; i<5; i++) {
 				historySize = 1;
@@ -535,7 +535,7 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
-			*/
+		
 			
 			/*
 			 * 
