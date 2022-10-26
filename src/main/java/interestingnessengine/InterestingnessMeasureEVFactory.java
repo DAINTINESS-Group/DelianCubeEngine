@@ -18,7 +18,7 @@ public class InterestingnessMeasureEVFactory {
 								break;
 		case "Basic Value Surprise" : measure = new BasicValueSurprise();
 								break;
-		case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
+		case "Goal Based Relevance" : measure = new GoalBasedRelevance();
 								break;
 		}
 		if(measure == null) {
