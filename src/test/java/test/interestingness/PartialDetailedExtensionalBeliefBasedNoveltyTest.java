@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-public class BeliefBasedNoveltyTest {
+public class PartialDetailedExtensionalBeliefBasedNoveltyTest {
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -74,7 +74,7 @@ public class BeliefBasedNoveltyTest {
 				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
 		measures.clear();
-		measures.add("Belief Based Novelty");
+		measures.add("Partial Detailed Extensional Belief Based Novelty");
 
 	}
 	@Test

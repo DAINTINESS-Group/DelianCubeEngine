@@ -318,14 +318,13 @@ public class InterestingnessClientExperiments {
 					"Sigma:account_dim.region='north Moravia'";
 			
 			measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
-					"Indirect Novelty", */"Relevance with DAI", "Value Peculiarity"/*, "Label Surprise", 
-					"Label Surprise Strict", "Value Surprise"*/,"Partial Detailed Novelty"/*, "Syntactic Peculiarity",
-					"Belief Based Novelty", "Goal Based Relevance", "Basic Value Surprise"*/));
+					"Indirect Novelty", "Partial Detailed Extensional Relevance", "Value Peculiarity", "Label Surprise", 
+					"Label Surprise Strict", "Partial Detailed Extensional Jaccard Based Peculiarity","Partial Detailed Extensional Novelty", "Partial Syntactic Average Peculiarity",
+					*/"Belief Based Novelty"/*, "Partial Same Level Extensional Relevance", "Partial Extensional Value Based Surprise"*/));
 
 			//theloyme result size experiments gia tous goal based kai value surprise
-			//kai history-table size gia Value Peculiarity, Relevance with DAI kai partial detailed novelty
 			
-			String[] answers = service.answerCubeQueryWithInterestMeasures(q2 , measures);
+			String[] answers = service.answerCubeQueryWithInterestMeasures(q1 , measures);
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			for(int i = 0; i < answers.length; i++) {
 				System.out.println(measures.get(i) + ":    " + answers[i]);

@@ -10,7 +10,7 @@ import java.util.List;
 import result.Cell;
 import result.Result;
 
-public class GoalBasedRelevance implements IInterestingnessMeasureWithExpectedValues{
+public class PartialSameLevelExtensionalRelevance implements IInterestingnessMeasureWithExpectedValues{
 
 	private List<Cell> currentQueryCube;
 	private List<Cell> novelAreaOfInterest;
@@ -57,7 +57,7 @@ public class GoalBasedRelevance implements IInterestingnessMeasureWithExpectedVa
 		long durationAlgorithm = endAlgorithm - startAlgorithm;
 
 		try {
-			String outputTxt = "\n\nGoal Based Relevance \n"+
+			String outputTxt = "\n\nPartial Same Level Extensional Relevance \n"+
 	    			"\tQuery:\t" + durationQuery+ " ns\n"+
 	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n"+
 	    			 "\tTotal Time:\t" + (durationQuery+durationAlgorithm) + " ns";

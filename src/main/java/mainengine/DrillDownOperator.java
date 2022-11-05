@@ -2,18 +2,43 @@ package mainengine;
 
 import java.util.Arrays;
 
+import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeQuery;
+import result.Result;
 
 public class DrillDownOperator {
 
 	private CubeQuery oldCubeQuery;
+	private CubeManager cubeManager;
+	private CubeQuery cubeQuery;
+	private Result res;
 	
-	public DrillDownOperator(CubeQuery oldCubeQuery) {
+	public DrillDownOperator(CubeQuery oldCubeQuery, CubeManager cManager) {
 		this.oldCubeQuery = oldCubeQuery;
+		this.cubeManager = cManager;
 	}
 	
-	public ResultFileMetadata validateDrillDown(String dimensionName, String targetLevelName) {
+	public ResultFileMetadata executeDrillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) {
+		ResultFileMetadata resMetadata = validateDrillDown(dimensionName, targetLevelName);
+		if(resMetadata.getErrorCheckingStatus()==null) {
+			this.cubeQuery = new CubeQuery(oldCubeQuery);
+			cubeQuery.setName(newQueryName);
+			for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
+				if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
+					
+					System.out.println("Before the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));				
+					cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
+					System.out.println("After the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
+				}
+			}
+		
+			this.res = cubeManager.executeQuery(cubeQuery);
+		}
+		return resMetadata;
+	}
+	
+	private ResultFileMetadata validateDrillDown(String dimensionName, String targetLevelName) {
 		Integer oldLevelHierarchyPosition = null;
 		Integer targetLevelHierarchyPosition = null;
 		Boolean dimensionFound = false;
@@ -67,24 +92,16 @@ public class DrillDownOperator {
 			return resMetadata;
 		}
 		else {
-			resMetadata.setErrorCheckingStatus("");
+			resMetadata.setErrorCheckingStatus(null);
 		}
 		return resMetadata;
 	}
-
 	
-	public CubeQuery executeDrillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) {
-		CubeQuery cubeQuery = new CubeQuery(oldCubeQuery);
-		cubeQuery.setName(newQueryName);
-		for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
-			if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
-				
-				System.out.println("Before the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));				
-				//1. Perform the Drill-Down
-				cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
-				System.out.println("After the Drill-down: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
-			}
-		}
-		return cubeQuery;
+	public CubeQuery getCubeQuery() {
+		return this.cubeQuery;
+	}
+	
+	public Result getResult() {
+		return this.res;
 	}
 }

@@ -13,17 +13,17 @@ public class InterestingnessMeasureHFactory {
 									break;
 			case "Indirect Novelty" : measure = new IndirectNovelty();
 									break;
-			case "Relevance with DAI" : measure = new RelevanceWithDAI();
+			case "Partial Detailed Extensional Relevance" : measure = new PartialDetailedExtensionalRelevance();
 									break;
-			case "Value Peculiarity" : measure = new ValuePeculiarity();
+			case "Partial Detailed Extensional Jaccard Based Peculiarity" : measure = new PartialDetailedExtensionalJaccardBasedPeculiarity();
 									break;
-			case "Partial Detailed Novelty" : measure = new PartialDetailedNovelty();
+			case "Partial Detailed Extensional Novelty" : measure = new PartialDetailedExtensionalNovelty();
 									break;
-			case "Belief Based Novelty" : measure = new BeliefBasedDetailedNovelty();
+			case "Partial Detailed Extensional Belief Based Novelty" : measure = new PartialDetailedExtensionalBeliefBasedDetailedNovelty();
 									break;		
 			//case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
 				//					break;
-			case "Syntactic Peculiarity" : measure = new SyntacticPeculiarity();
+			case "Partial Syntactic Average Peculiarity" : measure = new PartialSyntacticAveragePeculiarity();
 									break;
 		}
 		if(measure == null) {

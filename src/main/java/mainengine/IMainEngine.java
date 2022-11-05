@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
+
 /**
  * @author pvassil
  *
@@ -191,6 +192,24 @@ public interface IMainEngine extends IServer {
 	 * @throws RemoteException
 	 */
 	ResultFileMetadata drillDown(String cubeQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException;
+	
+	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the analyze operator
+	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata analyze(String incomingExpression) throws RemoteException;
+	
+	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the assess operator
+	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata assess(String incomingExpression) throws RemoteException;
 	
 	
 	

@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import result.Cell;
 
-public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistory{
+public class PartialDetailedExtensionalNovelty implements IInterestingnessMeasureWithHistory{
 
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> detailedAreaOfInterest;
@@ -44,28 +44,18 @@ public class PartialDetailedNovelty implements IInterestingnessMeasureWithHistor
 		novelAreaOfInterest = new ArrayList<Cell>();
 		novelAreaOfInterest.addAll(detailedQueryCube);
 		
-		for(int i = 0; i < detailedQueryCube.size(); i++) {
-			Cell c = detailedQueryCube.get(i);
+		for(Cell c: detailedQueryCube) {
 			ArrayList<String> cellDimensionMembers = c.getDimensionMembers();
 			if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers.toString())) {
 				removeSpecificCellFromArrayList(detailedAreaOfInterestHashMap.get(cellDimensionMembers.toString()));
 			}
-			
-			/*
-			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
-				if(testIfCellsHaveEqualSignatures(cellDimensionMembers,detailedAreaOfInterest.get(j).getDimensionMembers())) {
-					removeSpecificCellFromArrayList(detailedAreaOfInterest.get(j));
-					break;
-				}
-			}*/
-
 		}
 		
 		long endAlgorithm = System.nanoTime();
 		long durationAlgorithm = endAlgorithm - startAlgorithm;
 
 		try {
-			String outputTxt = "\n\nPartial Detailed Novelty \n"+
+			String outputTxt = "\n\nPartial Detailed Extensional Novelty \n"+
 	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
 	    			 "\tDetailed Area:\t" + durationDetailedArea + " ns \n"+
 	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n"+

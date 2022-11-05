@@ -97,7 +97,7 @@ public class InterestingnessClient {
 		//compute all measures
 		
 		measures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-				"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Label Surprise", 
+				"Indirect Novelty", "Partial Detailed Extensional Relevance", "Value Peculiarity", "Label Surprise", 
 				"Label Surprise Strict", "Value Surprise"));
 		// New query with predictions available
 		String[] answers = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 

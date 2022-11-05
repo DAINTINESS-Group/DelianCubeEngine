@@ -15,7 +15,7 @@ import result.Cell;
  * @author eiriniMouselli
  *
  */
-public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
+public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInterestingnessMeasureWithHistory{
 
 	private ArrayList<Cell> detailedPreviousQueryCube;
 	private ArrayList<Cell> detailedCurrentQueryCube;
@@ -23,7 +23,7 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 	private HashMap<String, Cell> detailedAreaOfInterestHashMap;
 	private double temp;
 	
-	public ValuePeculiarity(){}
+	public PartialDetailedExtensionalJaccardBasedPeculiarity(){}
 	
 	/**
 	 * Computes the peculiarity of the current query as the smallest Jaccard distance of its cells compared to 
@@ -103,7 +103,7 @@ public class ValuePeculiarity implements IInterestingnessMeasureWithHistory{
 		}
 		
 		try {
-			String outputTxt = "\n\nValue Peculiarity \n"+
+			String outputTxt = "\n\nPartial Detailed Extensional Jaccard Based Peculiarity \n"+
 	    			"\tDetailed Query:\t" + totalDetailedQuery+ " ns\n"+
 	    			 "\tIntersection:\t" +totalIntersection + " ns\n"+
 	    			 "\tTotal Time:\t" + (totalDetailedQuery+totalIntersection) + " ns";

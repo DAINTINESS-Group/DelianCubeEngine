@@ -13,13 +13,13 @@ import result.Cell;
  * @author eiriniMouselli
  *
  */
-public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
+public class PartialDetailedExtensionalRelevance implements IInterestingnessMeasureWithHistory {
 	
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> detailedAreaOfInterest;
 	private HashMap<String, Cell> detailedAreaOfInterestHashMap;
 	
-	public RelevanceWithDAI(){}
+	public PartialDetailedExtensionalRelevance(){}
 	/**
 	 * Computes the relevance of the current query as the pct of the cells in the current query 
 	 * that the user has seen already.
@@ -47,27 +47,18 @@ public class RelevanceWithDAI implements IInterestingnessMeasureWithHistory {
 		ArrayList<Cell> intersection = new ArrayList<Cell>();
 		
 		long startIntersection = System.nanoTime();
-		for(int i = 0; i < detailedQueryCube.size(); i++) {
-			Cell c = detailedQueryCube.get(i);
-			String cellDimensionMembers = c.getDimensionMembers().toString();
-			
+		for(Cell c: detailedQueryCube) {
+			String cellDimensionMembers = c.getDimensionMembers().toString();		
 			if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers)) {
 				intersection.add(detailedAreaOfInterestHashMap.get(cellDimensionMembers));
 			}
-			/*
-			for(int j = 0; j < detailedAreaOfInterest.size(); j++) {
-				if(cellDimensionMembers.equals(detailedAreaOfInterest.get(j).getDimensionMembers().toString())) {
-					intersection.add(detailedAreaOfInterest.get(j));
-					break;
-				}
-			}*/
 		}
 		long endIntersection = System.nanoTime();
 		
 		long durationIntersection = endIntersection - startIntersection;
 		
 		try {
-			String outputTxt = "\n\nRelevanceWithDAI \n"+
+			String outputTxt = "\n\nPartial Detailed Extensional Relevance \n"+
 	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
 	    			 "\tDetailed Area:\t" + durationDetailedArea + " ns \n"+
 	    			 "\tIntersection:\t" +durationIntersection + " ns\n"+

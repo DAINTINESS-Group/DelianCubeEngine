@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class ValuePeculiarityTest {
+public class PartialDetailedExtensionalJaccardBasedPeculiarityTest {
 	
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -63,7 +63,7 @@ public class ValuePeculiarityTest {
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", 1);
-		measures.add("Value Peculiarity");
+		measures.add("Partial Detailed Extensional Jaccard Based Peculiarity");
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 

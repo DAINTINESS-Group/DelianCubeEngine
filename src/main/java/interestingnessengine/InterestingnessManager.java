@@ -20,9 +20,8 @@ public class InterestingnessManager {
 	private IInterestingnessMeasureWithHistory hMeasure;
 	private InputManager inputManager;
 	private ArrayList<String> historyMeasures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-			"Indirect Novelty", "Relevance with DAI", "Value Peculiarity", "Partial Detailed Novelty","Belief Based Novelty", "Syntactic Peculiarity"));
-	//private ArrayList<String> expectedValueMeasures = new ArrayList<String>(Arrays.asList("Label Surprise", 
-		//	"Label Surprise Strict", "Value Surprise"));
+			"Indirect Novelty", "Partial Detailed Extensional Relevance", "Partial Detailed Extensional Jaccard Based Peculiarity", "Partial Detailed Extensional Novelty","Partial Detailed Extensional Belief Based Novelty", "Partial Syntactic Average Peculiarity"));
+	
 	/**
 	 * Constructor to be used when there is no history stored and no expected values/labels.
 	 * @param cubeMng The current {@link CubeManager} object, to be passed to {@link InputManager} constructor

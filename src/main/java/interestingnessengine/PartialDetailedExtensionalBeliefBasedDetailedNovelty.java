@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 import result.Cell;
 
-public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
+public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
 
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> unknownCells;
@@ -20,41 +20,6 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	private float threshold;
 	private float pastQuerySize;
 	
-	/*	Keep until the final push, may need parts of it
-	public BeliefBasedDetailedNovelty(IHistoryInput inputManager) {
-		
-		// Assigning beliefs based on % of cell's appearance in previous searches
-		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
-		// Could also assign with using a simple method instead of constructor
-		
-		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
-		timesVisitedCell = new HashMap<String, Integer>();
-		
-		for(int i = 0; i < detailedQueryCube.size(); i++) {
-			String c = detailedQueryCube.get(i).getDimensionMembers().toString();
-				if(timesVisitedCell.containsKey(c)) {
-					timesVisitedCell.replace(c, timesVisitedCell.get(c)+1);
-				}
-				else {
-					timesVisitedCell.put(c, 1);
-				}					
-		}
-		
-		beliefs = new HashMap<String, Float>();
-		for(Entry<String, Integer> entry : timesVisitedCell.entrySet()) {
-			beliefs.put(entry.getKey(), entry.getValue()/pastQuerySize);
-		}
-		
-		
-		//run through map for check
-		for(Entry<String, Integer> entry : beliefs.entrySet()) {
-			String key = entry.getKey();
-			Integer value = entry.getValue();
-			System.out.println(key + "    " + value);
-		}
-		
-	}
-	*/
 	
 	/** Computes the belief based novelty of the current query according to the user's beliefs,
 	 * where beliefs are extracted by analyzing the user's query history.
@@ -64,20 +29,24 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	 */
 
 	public double computeMeasure(IHistoryInput inputManager) {
-		long startDetailedArea = System.nanoTime();
 		allCellsVisited = inputManager.getAllCellsVisited();
-		long endDetailedArea = System.nanoTime();
-		long durationDetailedArea = endDetailedArea - startDetailedArea;
-
+		timesVisitedCell = new HashMap<String, Integer>();
+		
+		
 		long startDetailedQuery = System.nanoTime();
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
+		for(Cell c: detailedQueryCube){
+			String key = c.getDimensionMembers().toString();
+			timesVisitedCell.put(key, 0);
+		}
 		long endDetailedQuery = System.nanoTime();
 		long durationDetailedQuery = endDetailedQuery - startDetailedQuery;
-
+		
+		assignBeliefs(allCellsVisited);
+		
 		long startAlgorithm = System.nanoTime();
 		unknownCells = new ArrayList<Cell>();
 		unknownCells.addAll(detailedQueryCube);
-		assignBeliefs(allCellsVisited);
 
 		// set threshold (0,05 means that if the user has seen the cell in more than 5% of his queries, 
 		// then it's value is probably not novel to him because his beliefs are close to the actual value)
@@ -85,8 +54,7 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 		
 		ArrayList<Cell> knownCells = new ArrayList<Cell>();
 	
-		for(int i = 0; i < detailedQueryCube.size(); i++) {
-			Cell c = detailedQueryCube.get(i);
+		for(Cell c: detailedQueryCube) {
 			String signature = c.getDimensionMembers().toString();
 			if(beliefs.containsKey(signature)) {
 				if(beliefs.get(signature)>=threshold) {
@@ -101,9 +69,8 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 		try {
 			String outputTxt = "\n\nBelief Based Detailed Novelty \n"+
 	    			"\tDetailed Query:\t" + durationDetailedQuery+ " ns\n"+
-	    			 "\tDetailed Area:\t" + durationDetailedArea + " ns \n"+
 	    			 "\tCompute Algorithm:\t" +durationAlgorithm + " ns\n"+
-	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationDetailedArea+durationAlgorithm) + " ns";
+	    			 "\tTotal Time:\t" + (durationDetailedQuery+durationAlgorithm) + " ns";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}
@@ -121,14 +88,8 @@ public class BeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHi
 	private void assignBeliefs(ArrayList<Cell> allCellsVisited) {
 		// Assigning beliefs based on % of cell's appearance in previous searches
 		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
-		
-		timesVisitedCell = new HashMap<String, Integer>();
+
 		pastQuerySize = allCellsVisited.size();
-		
-		for(Cell c: detailedQueryCube){
-			String key = c.getDimensionMembers().toString();
-			timesVisitedCell.put(key, 0);
-		}
 		
 		for(Cell c: allCellsVisited) {
 			String key = c.getDimensionMembers().toString();

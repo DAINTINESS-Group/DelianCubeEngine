@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class RelevanceWithDAITest {
+public class PartialDetailedExtensionalRelevanceTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -62,7 +62,7 @@ public class RelevanceWithDAITest {
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
-		measures.add("Relevance with DAI");
+		measures.add("Partial Detailed Extensional Relevance");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 

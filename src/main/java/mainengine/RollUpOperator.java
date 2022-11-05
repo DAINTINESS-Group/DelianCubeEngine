@@ -3,19 +3,49 @@ package mainengine;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
+import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeQuery;
+import result.Result;
 
 
 public class RollUpOperator {
 	
 	private CubeQuery oldCubeQuery;
+	private CubeManager cubeManager;
+	private CubeQuery cubeQuery;
+	private Result res;
 	
-	public RollUpOperator(CubeQuery oldCubeQuery) {
+	public RollUpOperator(CubeQuery oldCubeQuery, CubeManager cManager) {
 		this.oldCubeQuery = oldCubeQuery;
+		this.cubeManager = cManager;
 	}
 	
-	public ResultFileMetadata validateRollUp(String dimensionName, String targetLevelName) {
+	
+	public ResultFileMetadata executeRollUp(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {	
+		
+		ResultFileMetadata resMetadata = validateRollUp(dimensionName, targetLevelName);
+		
+		if(resMetadata.getErrorCheckingStatus()==null) {
+			this.cubeQuery = new CubeQuery(oldCubeQuery);
+			cubeQuery.setName(newQueryName);
+			for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
+				if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
+							
+					System.out.println("Before the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
+					cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
+					System.out.println("After the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));		
+				}
+			}
+			
+			this.res = cubeManager.executeQuery(cubeQuery);
+
+		}
+		
+		return resMetadata;		
+	}
+	
+	private ResultFileMetadata validateRollUp(String dimensionName, String targetLevelName) {
 		Integer oldLevelHierarchyPosition = null;
 		Integer targetLevelHierarchyPosition = null;
 		Boolean dimensionFound = false;
@@ -69,26 +99,17 @@ public class RollUpOperator {
 			return resMetadata;
 		}
 		else {
-			resMetadata.setErrorCheckingStatus("");
+			resMetadata.setErrorCheckingStatus(null);
 		}
-		
 		
 		return resMetadata;
 	}
 	
+	public CubeQuery getCubeQuery() {
+		return this.cubeQuery;
+	}
 	
-	
-	public CubeQuery executeRollUp(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {	
-		CubeQuery cubeQuery = new CubeQuery(oldCubeQuery);
-		cubeQuery.setName(newQueryName);
-		for(int i=0; i<cubeQuery.getGammaExpressions().size(); i++) {
-			if(cubeQuery.getGammaExpressions().get(i)[0].equals(dimensionName)) {
-						
-				System.out.println("Before the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));
-				cubeQuery.getGammaExpressions().get(i)[1] = targetLevelName;
-				System.out.println("After the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));		
-			}
-		}
-		return cubeQuery;		
+	public Result getResult() {
+		return this.res;
 	}
 }

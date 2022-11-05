@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import cubemanager.cubebase.CubeQuery;
 
-public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
+public class PartialSyntacticAveragePeculiarity implements IInterestingnessMeasureWithHistory{
 
 	private String tempMeasure;
 	private String tempAggr;
@@ -123,7 +123,7 @@ public class SyntacticPeculiarity implements IInterestingnessMeasureWithHistory{
 		long endAlgorithm = System.nanoTime();
 		long durationAlgorithm = endAlgorithm - startAlgorithm;
 		try {
-			String outputTxt = "\n\nSyntactic Peculiarity \n"+
+			String outputTxt = "\n\nPartial Syntactic Average Peculiarity \n"+
 	    			"\tAnalize Query:\t" + durationAnalizeQuery+ " ns\n"+
 	    			 "\tUse Algorithm:\t" + durationAlgorithm + " ns \n"+
 	    			 "\tTotal Time:\t" + (durationAnalizeQuery+durationAlgorithm) + " ns";

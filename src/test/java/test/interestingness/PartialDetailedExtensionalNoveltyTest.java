@@ -18,9 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-
-public class GoalBasedRelevanceTest {
-
+public class PartialDetailedExtensionalNoveltyTest {
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -57,25 +55,31 @@ public class GoalBasedRelevanceTest {
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
-
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
-		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,"", 
-					"InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
-		measures.add("Goal Based Relevance");
-
-	}
-	
-	@Test
-	public void test() throws Exception {
-
-		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
+		
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
-		String[] answer1 = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery31_S3_CG-Prtl\n" + 
+				"AggrFunc:Sum\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
+		measures.clear();
+		measures.add("Partial Detailed Extensional Novelty");
+
+	}
+	@Test
+	public void test() throws Exception {
+		
+		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
@@ -83,9 +87,9 @@ public class GoalBasedRelevanceTest {
 				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("1.0", answer[0]);
-		assertEquals("0.17777777777777778", answer1[0]);
-
+		assertEquals("0.7857142857142857", answer[0]);	
 	}
 
+ 
 }
+

@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 
 import result.Cell;
 
-public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedValues{
+public class PartialExtensionalValueBasedSurprise implements IInterestingnessMeasureWithExpectedValues{
 
 	private double cellSurprise = 0;
 	private double cubeSurprise = 0;
@@ -16,6 +17,7 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 	private double counter = 0;
 	private double min = Integer.MAX_VALUE;
 	private double max = Integer.MIN_VALUE;
+	private HashMap<String, Cell> expectedValuesHashMap;
 	
 	/** Computes the basic surprise of the current query as the average of
 	 * the total surprise of all cells of the query.
@@ -26,24 +28,27 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 	
 	public double computeMeasure(IExpectedValuesInput inputManager) {
 		long start = System.nanoTime();
+		expectedValuesHashMap = new HashMap<String, Cell>();
+		for(Cell expectedCell: inputManager.getExpectedValues()) {
+			String key = expectedCell.getDimensionMembers().toString();
+			expectedValuesHashMap.put(key, expectedCell);
+		}
 		
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
-			for (Cell expectedCell: inputManager.getExpectedValues()) {
-					if(c.getDimensionMembers().toString().equals(expectedCell.getDimensionMembers().toString())) {
-					expectedValue = Double.valueOf(expectedCell.getMeasure());
-					//δΜ -> absolute distance
-					cellSurprise = Math.abs(Double.valueOf(c.getMeasure()) - expectedValue);
-					if(cellSurprise<min) {
-						min = cellSurprise;
-					}
-					if(cellSurprise>max) {
-						max = cellSurprise;
-					}
-					//fagg/cell -> sum
-					surpriseSum += cellSurprise;
-					counter++;
-					break;
+			String cellDimensionMembers = c.getDimensionMembers().toString();
+			if(expectedValuesHashMap.containsKey(cellDimensionMembers)) {
+				expectedValue = Double.valueOf(expectedValuesHashMap.get(cellDimensionMembers).getMeasure());
+				//δΜ -> absolute distance
+				cellSurprise = Math.abs(Double.valueOf(c.getMeasure()) - expectedValue);
+				if(cellSurprise<min) {
+					min = cellSurprise;
 				}
+				if(cellSurprise>max) {
+					max = cellSurprise;
+				}
+				//fagg/cell -> sum
+				surpriseSum += cellSurprise;
+				counter++;
 			}
 		}
 		
@@ -51,7 +56,7 @@ public class BasicValueSurprise implements IInterestingnessMeasureWithExpectedVa
 		long durationAlgorithm = end - start;
 		
 		try {
-			String outputTxt = "\n\nBasic Value Surprise \n"+
+			String outputTxt = "\n\nPartial Extensional Value Based Surprise \n"+
 	    			"\tCompute Algorithm:\t" + durationAlgorithm+ " ns\n";
 		    Files.write(Paths.get("OutputFiles/Interestingness/Experiments/experiments200T.txt"), 
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);

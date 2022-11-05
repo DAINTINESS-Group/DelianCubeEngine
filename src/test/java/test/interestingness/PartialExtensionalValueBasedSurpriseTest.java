@@ -18,7 +18,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-public class PartialDetailedNoveltyTest {
+
+public class PartialExtensionalValueBasedSurpriseTest {
+
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -55,41 +57,28 @@ public class PartialDetailedNoveltyTest {
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
+
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
-		
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery31_S3_CG-Prtl\n" + 
-				"AggrFunc:Sum\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
-		measures.clear();
-		measures.add("Partial Detailed Novelty");
+					"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
+		measures.add("Partial Extensional Value Based Surprise");
 
 	}
+	
 	@Test
-	public void test() throws Exception {
-		
+	public void testBasicValueSurprise() throws Exception {
+
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague'", measures);
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.7857142857142857", answer[0]);	
+		assertEquals("0.12502928257686677", answer[0]);
+
 	}
 
- 
 }
-
