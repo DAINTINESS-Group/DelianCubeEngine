@@ -154,8 +154,7 @@ public class CubeManager {
 		cubequery.setAggregateFunction(aggregateFunction);
 		/* Must Create Measure In Cube Parser->> I Have Done this */
 		/* Search for Measure */
-		Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname,
-				measureName));
+		Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
 		cubequery.getMeasuresList().add(msrToAdd);
 		//msrname = measureName;
 		/* Need work to done up here */
