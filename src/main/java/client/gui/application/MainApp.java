@@ -115,7 +115,7 @@ public class MainApp extends AbstractApplication {
 				"Cinecubes", "adult", "adult");
 		File f = new File("InputFiles/cubeQueries.ini");
 		service.answerCubeQueriesFromFile(f);/**/
-				
+		
 		// Cube LOAN and queries
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
