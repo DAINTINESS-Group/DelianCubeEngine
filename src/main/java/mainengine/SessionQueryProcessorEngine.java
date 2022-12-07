@@ -922,8 +922,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	}//end answerCubeQueryWithInterestMeasures
 
-
 	
-
 	
 }//end class
