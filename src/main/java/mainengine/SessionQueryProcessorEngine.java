@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import assess.AssessOperator;
 import mainengine.nlq.ITranslator;
 import mainengine.nlq.ITranslatorFactory;
 import mainengine.nlq.NLQValidationResults;
@@ -495,7 +496,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		operator.execute();
 		return null;
 	}
-
 
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
