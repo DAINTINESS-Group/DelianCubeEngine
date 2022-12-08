@@ -21,7 +21,6 @@
 package cubemanager.cubebase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cubemanager.relationalstarschema.DimensionTable;
 

@@ -1,10 +1,11 @@
-package connection;
+package cubemanager.cubebase;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import connection.DataSourceDescription;
 import cubemanager.relationalstarschema.Database;
 import cubemanager.sparkschema.SparkDataset;
 
@@ -31,7 +32,6 @@ public class DataSourceFactory {
 	 */
 	public DataSourceDescription createConnection(String typeOfConnection, HashMap<String, String> userInputList) {
 		
-		DataSourceDescription dataSource = null;
 		
 		if (typeOfConnection.equals("RDBMS")) {
 			// userInputList are the values pulled from GUI

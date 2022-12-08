@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import cubemanager.relationalstarschema.Attribute;
 
 public class Table {
    

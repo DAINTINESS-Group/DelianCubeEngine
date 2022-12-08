@@ -20,7 +20,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-import parsermgr.PathFolder;
 import result.Cell;
 import result.Result;
 
@@ -92,7 +91,6 @@ public class SparkManager {
 			br = new BufferedReader(new FileReader(file));
 			String st;
 			try {
-				int counter = 0;
 				while ((st = br.readLine()) != null) {
 					String[] words = st.split(" ");
 					if (!words[words.length-1].isEmpty()) {
@@ -205,7 +203,7 @@ public class SparkManager {
 	public Result generateResult(List<Row> queryList, Dataset<Row> queryDS, Result result) {
 		int columnCount = queryDS.columns().length;
 		int rowCount = queryList.size();
-		boolean ret_value=false;
+
 		String resultArray [][] = new String[rowCount+2][columnCount];
 
 		for(int i=0;i<columnCount;i++) {

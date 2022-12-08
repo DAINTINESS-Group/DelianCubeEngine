@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import connection.DataSourceDescription;
-import connection.DataSourceFactory;
 import cubemanager.relationalstarschema.DimensionTable;
 import cubemanager.relationalstarschema.FactTable;
 import cubemanager.relationalstarschema.Table;

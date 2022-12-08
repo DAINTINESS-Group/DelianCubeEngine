@@ -7,9 +7,7 @@ import java.util.HashMap;
 import org.apache.commons.io.FilenameUtils;
 
 import connection.DataSourceDescription;
-import cubemanager.sparkschema.SparkManager;
 import cubemanager.relationalstarschema.Table;
-import parsermgr.PathFolder;
 import result.Result;
 
 /**
