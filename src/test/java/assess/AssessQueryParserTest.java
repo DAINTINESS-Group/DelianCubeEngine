@@ -15,18 +15,20 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.Assert.assertTrue;
 
 public class AssessQueryParserTest {
+	private AssessQueryParser createParser (String query) throws IOException {
+		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
+		ANTLRInputStream input = new ANTLRInputStream(stream);
+		AssessQueryLexer lexer = new AssessQueryLexer (input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		return new AssessQueryParser(tokens);
+	}
 
 	// This should be throwing a mismatch warning (TODO: Create an exception?)
 	@Test
 	public void givenInvalidQuery_whenParsingQuery_thenThrowException() throws IOException, RecognitionException {
 		String query = "with SALES by month\n" +
 				"labels quartiles";
-		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
-		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AssessQueryParser parser = new AssessQueryParser(tokens);
-		parser.parse();
+		createParser(query).parse();
 		assertTrue(true); //TODO: Catch mismatch message
 	}
 
@@ -38,12 +40,7 @@ public class AssessQueryParserTest {
 	@Test
 	public void parseSimpleQuery() throws IOException, RecognitionException {
 		String query = "with SALES by month assess storeSales labels quartiles";
-		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
-		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AssessQueryParser parser = new AssessQueryParser(tokens);
-		parser.parse();
+		createParser(query).parse();
 		assertTrue(true);
 	}
 
@@ -57,12 +54,7 @@ public class AssessQueryParserTest {
 				"assess storeSales against 1000\n" +
 				"using minMaxNorm(difference(storeSales, 1000))\n" +
 				"labels stars";
-		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
-		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AssessQueryParser parser = new AssessQueryParser(tokens);
-		parser.parse();
+		createParser(query).parse();
 		assertTrue(true);
 	}
 
@@ -73,12 +65,7 @@ public class AssessQueryParserTest {
 				"against country = 'France'\n" +
 				"using percOfTotal(difference(quantity, benchmark.quantity))\n"+
 				"labels {[-inf, -0.2): bad, [-0.2,0.2]: ok, (0.2, inf]: good}";
-		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
-		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AssessQueryParser parser = new AssessQueryParser(tokens);
-		parser.parse();
+		createParser(query).parse();
 		assertTrue(true);
 	}
 
@@ -90,12 +77,7 @@ public class AssessQueryParserTest {
 				"assess storeSales against past 4 \n" +
 				"using ratio(storeSales, benchmark.storeSales)\n"+
 				"labels {[0, 0.9): worse, [0.9, 1.1]: fine, (1.1,inf): better}";
-		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
-		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AssessQueryParser parser = new AssessQueryParser(tokens);
-		parser.parse();
+		createParser(query).parse();
 		assertTrue(true);
 	}
 }
