@@ -18,12 +18,24 @@
 */
 
 
-package cubemanager.relationalstarschema;
+package connection.physicalschema;
 
-public class DimensionTable extends Table {
-    
+public class Attribute {
 	
-	public DimensionTable(String name) {
-		super(name);
-	}
+	private String dataType;
+	private String fieldName;
+    
+    public Attribute(String dataType,String field){
+    	this.dataType = dataType;
+    	this.fieldName=field;    			
+    }
+    
+    public String getDatatype(){
+    	return fieldName;
+    }
+    
+    public String getName(){
+    	return dataType;
+    }
+    
 }

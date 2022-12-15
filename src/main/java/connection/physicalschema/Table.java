@@ -18,7 +18,7 @@
 */
 
 
-package cubemanager.relationalstarschema;
+package connection.physicalschema;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+
 
 
 public class Table {

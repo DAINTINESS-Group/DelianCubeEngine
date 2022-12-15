@@ -24,10 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import connection.DataSourceDescription;
-import cubemanager.relationalstarschema.DimensionTable;
-import cubemanager.relationalstarschema.FactTable;
-import cubemanager.relationalstarschema.Table;
+import connection.DataSourceFactory;
+import connection.physicalschema.DataSourceDescription;
+import connection.physicalschema.DimensionTable;
+import connection.physicalschema.FactTable;
+import connection.physicalschema.Table;
 import result.Result;
 
 public class CubeBase {

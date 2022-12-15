@@ -28,7 +28,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import connection.DataSourceDescription;
+
+import connection.physicalschema.Attribute;
+import connection.physicalschema.DataSourceDescription;
+import connection.physicalschema.Table;
 import result.Cell;
 import result.Result;
 

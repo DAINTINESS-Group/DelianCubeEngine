@@ -1,10 +1,8 @@
-package connection;
+package connection.physicalschema;
 
 import java.util.HashMap;
 import java.util.List;
 
-import cubemanager.relationalstarschema.Table;
-import cubemanager.relationalstarschema.Attribute;
 import result.Result;
 
 /**

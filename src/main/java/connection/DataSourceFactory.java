@@ -1,11 +1,11 @@
-package cubemanager.cubebase;
+package connection;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import connection.DataSourceDescription;
+import connection.physicalschema.DataSourceDescription;
 import cubemanager.relationalstarschema.Database;
 import cubemanager.sparkschema.SparkDataset;
 

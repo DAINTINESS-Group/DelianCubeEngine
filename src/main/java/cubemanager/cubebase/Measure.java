@@ -20,7 +20,7 @@
 
 package cubemanager.cubebase;
 
-import cubemanager.relationalstarschema.Attribute;
+import connection.physicalschema.Attribute;
 
 public class Measure{
     /**

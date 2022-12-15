@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 import org.apache.commons.io.FilenameUtils;
 
-import connection.DataSourceDescription;
-import cubemanager.relationalstarschema.Table;
+import connection.physicalschema.DataSourceDescription;
+import connection.physicalschema.Table;
 import result.Result;
 
 /**

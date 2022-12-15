@@ -18,24 +18,27 @@
 */
 
 
-package cubemanager.relationalstarschema;
+package connection.physicalschema;
 
-public class Attribute {
+import java.util.List;
+
+public class FactTable extends Table {
+    
+	/**
+	 * @uml.property  name="dimTable"
+	 */
+	private List<DimensionTable> DimTable;
+    
+    public FactTable(String name) {
+		super(name);
+	}
+    
+	public List<DimensionTable> getDimTable() {
+		return DimTable;
+	}
 	
-	private String dataType;
-	private String fieldName;
-    
-    public Attribute(String dataType,String field){
-    	this.dataType = dataType;
-    	this.fieldName=field;    			
-    }
-    
-    public String getDatatype(){
-    	return fieldName;
-    }
-    
-    public String getName(){
-    	return dataType;
-    }
-    
+	public void setDimTable(List<DimensionTable> dimTable) {
+		DimTable = dimTable;
+	}
+
 }
