@@ -20,6 +20,7 @@
 
 package cubemanager.cubebase;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
