@@ -18,7 +18,7 @@
 */
 
 
-package connection.physicalschema;
+package cubemanager.physicalschema;
 
 public class Attribute {
 	

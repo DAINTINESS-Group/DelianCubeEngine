@@ -20,7 +20,7 @@
 
 package cubemanager.cubebase;
 
-import connection.physicalschema.FactTable;
+import cubemanager.physicalschema.FactTable;
 
 public class BasicStoredCube extends Cube {
     

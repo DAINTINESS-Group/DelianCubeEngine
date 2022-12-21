@@ -1,4 +1,4 @@
-package connection.physicalschema;
+package cubemanager.physicalschema;
 
 import java.util.HashMap;
 import java.util.List;

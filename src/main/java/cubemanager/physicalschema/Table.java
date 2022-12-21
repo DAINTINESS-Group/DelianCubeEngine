@@ -18,7 +18,7 @@
 */
 
 
-package connection.physicalschema;
+package cubemanager.physicalschema;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

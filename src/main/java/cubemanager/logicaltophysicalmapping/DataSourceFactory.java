@@ -1,11 +1,11 @@
-package connection;
+package cubemanager.logicaltophysicalmapping;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import connection.physicalschema.DataSourceDescription;
+import cubemanager.physicalschema.DataSourceDescription;
 import cubemanager.relationalstarschema.Database;
 import cubemanager.sparkschema.SparkDataset;
 

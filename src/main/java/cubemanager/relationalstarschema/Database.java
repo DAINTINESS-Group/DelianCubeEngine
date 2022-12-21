@@ -29,9 +29,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import connection.physicalschema.Attribute;
-import connection.physicalschema.DataSourceDescription;
-import connection.physicalschema.Table;
+import cubemanager.physicalschema.Attribute;
+import cubemanager.physicalschema.DataSourceDescription;
+import cubemanager.physicalschema.Table;
 import result.Cell;
 import result.Result;
 

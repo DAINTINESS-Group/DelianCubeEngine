@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 import org.apache.commons.io.FilenameUtils;
 
-import connection.physicalschema.DataSourceDescription;
-import connection.physicalschema.Table;
+import cubemanager.physicalschema.DataSourceDescription;
+import cubemanager.physicalschema.Table;
 import result.Result;
 
 /**

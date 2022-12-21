@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import connection.DataSourceFactory;
-import connection.physicalschema.DataSourceDescription;
-import connection.physicalschema.DimensionTable;
-import connection.physicalschema.FactTable;
-import connection.physicalschema.Table;
+import cubemanager.logicaltophysicalmapping.DataSourceFactory;
+import cubemanager.physicalschema.DataSourceDescription;
+import cubemanager.physicalschema.DimensionTable;
+import cubemanager.physicalschema.FactTable;
+import cubemanager.physicalschema.Table;
 import result.Result;
 
 public class CubeBase {

@@ -22,7 +22,7 @@ package cubemanager.cubebase;
 
 import java.util.ArrayList;
 
-import connection.physicalschema.DimensionTable;
+import cubemanager.physicalschema.DimensionTable;
 
 public class Dimension{
     /**
