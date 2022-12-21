@@ -73,7 +73,7 @@ public class AssessQueryParserTest {
 	public void parseQueryWithPastBenchmark() throws IOException, RecognitionException {
 		String query = "with SALES " +
 				"for month = '1997/07', store = 'SmartMart'\n" +
-				"by month, store\n" +
+				"by month, store, date\n" +
 				"assess storeSales against past 4 \n" +
 				"using ratio(storeSales, benchmark.storeSales)\n"+
 				"labels {[0, 0.9): worse, [0.9, 1.1]: fine, (1.1,inf): better}";
