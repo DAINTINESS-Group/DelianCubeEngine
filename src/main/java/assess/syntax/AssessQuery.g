@@ -1,37 +1,68 @@
 grammar AssessQuery;
 options { language = Java; }
 
-parse : query EOF;
+@lexer::header {
+package assess.syntax;
+}
 
-query : WITH target_cube
-        (FOR selection_predicates)?
-        BY group_by_set
-        ASSESS measurement
-        (AGAINST benchmark)?
-        (USING comparison_function)?
-        LABELS labeling_function
-      ;
+@parser::header {
+package assess.syntax;
+import assess.AssessQuery;
+import java.util.Arrays;
+}
 
-target_cube : ID;
+parse returns [AssessQuery parsedQuery]
+    : result=query EOF {parsedQuery = result;};
 
-selection_predicates : expr (',' expr)* ;
-expr : ID '=' '\'' (ID+|date) '\'';
-date : INT('/' INT ('/' INT)? )? ;
+query returns [AssessQuery query]
+    @after {
+    String parsedTargetCube = $targetCube.text;
+    String parsedMeasurement = $measurement.text;
 
-group_by_set : ID (',' ID)*;
+    query = new AssessQuery(parsedTargetCube, parsedGammas, parsedMeasurement);
+    }
+    : WITH targetCube = ID
+      (FOR selection_predicates)?
+      BY gammas = group_by_set
+      ASSESS measurement = ID
+      (AGAINST benchmark)?
+      (USING comparison_function)?
+      LABELS labeling_function
+    ;
 
-measurement : ID;
+selection_predicates
+    : level (',' level)*
+    ;
 
-benchmark : constant_benchmark
-          | external_benchmark
-          | sibling_benchmark
-          | past_benchmark
-          ;
+level returns [List sigma]
+    : ID '=' '\'' value = level_value '\'' ;
 
-constant_benchmark : SIGN? (INT | FLOAT);
-external_benchmark : ID '.' ID;
-sibling_benchmark : expr;
-past_benchmark : PAST INT;
+level_value returns [String value]
+    : ids += ID+
+    | date {value = $date.text; }
+    ;
+
+date : INT '/' INT ('/' INT)? ;
+
+group_by_set : ID  (',' ID)*;
+
+benchmark
+    : constant_benchmark
+    | external_benchmark
+    | sibling_benchmark
+    | past_benchmark
+    ;
+
+constant_benchmark
+    : SIGN? (INT | FLOAT);
+
+external_benchmark
+    : ID '.' ID;
+
+sibling_benchmark : level;
+
+past_benchmark
+    : PAST INT;
 
 comparison_function : ID '(' comparison_args ')';
 
@@ -39,12 +70,21 @@ comparison_args : ID ',' ( ('benchmark.')? ID | INT)
                 | comparison_function
                 ;
 
-labeling_function : ID
-                  | '{' label_term (',' label_term)* '}'
-                  ;
+labeling_function
+    : name = ID
+    | '{' term = label_term (',' label_term)* '}'
+    ;
 
-label_term : label_range ':' ID;
-label_range : ('['|'(') range_point ',' range_point (')'|']');
+label_term returns [List term]
+    : range=label_range ':' label=ID ;
+
+label_range
+    : start_limit = ( '['|'(' )
+      start = range_point ','
+      end = range_point
+      end_limit = (')'|']')
+    ;
+
 range_point : SIGN? (INT|FLOAT|'inf');
 
 // -- LEXER PART
@@ -68,7 +108,7 @@ fragment U : ('U'|'u');
 fragment W : ('W'|'w');
 fragment Y : ('Y'|'y');
 
-// Keywords
+// Keywords (case-insensitive)
 AGAINST : A G A I N S T;
 ASSESS : A S S E S S;
 BY : B Y;
@@ -81,6 +121,8 @@ WITH : W I T H;
 // LEXICAL TOKENS
 SIGN : ('+' | '-');
 ID : ('a'..'z'|'A'..'Z')+;
+
 INT : '0'..'9'+;
-FLOAT : '0'..'9'+ '.' '0'..'9'+;
+FLOAT : INT '.' INT;
+
 WS : (' '|'\t'|'\n'|'\r') {skip();} ;
