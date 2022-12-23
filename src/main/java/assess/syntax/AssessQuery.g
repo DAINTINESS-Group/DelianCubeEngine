@@ -18,6 +18,8 @@ query returns [AssessQuery query]
     @after {
     String parsedTargetCube = $targetCube.text;
     String parsedMeasurement = $measurement.text;
+	List<String> parsedGammas = Arrays.asList(($gammas.text).split(","));
+
 
     query = new AssessQuery(parsedTargetCube, parsedGammas, parsedMeasurement);
     }
