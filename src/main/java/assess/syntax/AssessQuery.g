@@ -16,12 +16,8 @@ parse returns [AssessQuery parsedQuery]
 
 query returns [AssessQuery query]
     @after {
-    String parsedTargetCube = $targetCube.text;
-    String parsedMeasurement = $measurement.text;
 	List<String> parsedGammas = Arrays.asList(($gammas.text).split(","));
-
-
-    query = new AssessQuery(parsedTargetCube, parsedGammas, parsedMeasurement);
+    query = new AssessQuery($targetCube.text, parsedGammas, $measurement.text, $labelingMethod.text, labelingSystem);
     }
     : WITH targetCube = ID
       (FOR selection_predicates)?
@@ -29,7 +25,7 @@ query returns [AssessQuery query]
       ASSESS measurement = ID
       (AGAINST benchmark)?
       (USING comparison_function)?
-      LABELS labeling_function
+      LABELS (labelingMethod = ID | labelingSystem = custom_labeling)
     ;
 
 selection_predicates
@@ -72,19 +68,21 @@ comparison_args : ID ',' ( ('benchmark.')? ID | INT)
                 | comparison_function
                 ;
 
-labeling_function
-    : name = ID
-    | '{' term = label_term (',' label_term)* '}'
+custom_labeling returns [List<List<String>> labelingTerms]
+    @init {labelingTerms = new ArrayList<List<String>>();}
+    : '{' term = label_term {labelingTerms.add(term);}(',' term = label_term {labelingTerms.add(term);})* '}'
     ;
 
-label_term returns [List term]
-    : range=label_range ':' label=ID ;
+label_term returns [List<String> term]
+    @after{term = range;}
+    : range=label_range ':' label=ID {range.add($label.text); };
 
-label_range
-    : start_limit = ( '['|'(' )
-      start = range_point ','
-      end = range_point
-      end_limit = (')'|']')
+label_range returns [List<String> limits]
+    @init {limits = new ArrayList<String>();}
+    : ( '[' { $limits.add(">="); } | '(' { $limits.add(">"); })
+      start = range_point { $limits.add($start.text); } ','
+      end = range_point { $limits.add($end.text); }
+      (')' { $limits.add("<"); }|']' { $limits.add("<="); })
     ;
 
 range_point : SIGN? (INT|FLOAT|'inf');
