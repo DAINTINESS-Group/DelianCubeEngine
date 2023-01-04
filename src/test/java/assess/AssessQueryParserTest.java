@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,6 +25,16 @@ public class AssessQueryParserTest {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		return new AssessQueryParser(tokens);
 	}
+
+	// This should be throwing a mismatch warning (TODO: Create custom exception?)
+	@Test
+	public void givenInvalidQuery_whenParsingQuery_thenThrowException() throws IOException, RecognitionException {
+		String query = "with SALES by month labels quartiles";
+		createParser(query).parse();
+		assertTrue(true); //TODO: Catch mismatch message
+	}
+
+	// Unit Tests
 
 	@Test
 	public void givenSelectionFiltersInQuery_whenParsing_thenCollectPredicates()
@@ -41,16 +52,22 @@ public class AssessQueryParserTest {
 		assertEquals(expected, actual);
 	}
 
-
-
-	// This should be throwing a mismatch warning (TODO: Create an exception?)
 	@Test
-	public void givenInvalidQuery_whenParsingQuery_thenThrowException() throws IOException, RecognitionException {
-		String query = "with SALES by month\n" +
-				"labels quartiles";
-		createParser(query).parse();
-		assertTrue(true); //TODO: Catch mismatch message
+	public void givenGroupByPredicatesInQuery_whenParsing_theCollectGroupByPredicates()
+			throws IOException, RecognitionException {
+		String predicates = "country, product";
+		AssessQueryParser parser = createParser(predicates);
+
+		HashSet<String> expected = new HashSet<>();
+		expected.add("product");
+		expected.add("country");
+
+		HashSet<String> actual = parser.group_by_set();
+
+		assertEquals(expected, actual);
 	}
+
+	// Integration (AssessParser and AssessBuilder) Tests
 
 	/**
 	 * In this test we use the simplest example of a valid query.

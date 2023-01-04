@@ -10,23 +10,31 @@ package assess.syntax;
 import assess.AssessQuery;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import assess.AssessQueryBuilder;
 }
 
 parse returns [AssessQuery parsedQuery]
     : result=query EOF {parsedQuery = result;};
 
 query returns [AssessQuery query]
-    @after {
-	List<String> parsedGammas = Arrays.asList(($gammas.text).split(","));
-    query = new AssessQuery($targetCube.text, parsedGammas, $measurement.text, $labelingMethod.text, labelingSystem);
-    }
+    @init{AssessQueryBuilder builder = new AssessQueryBuilder();}
     : WITH targetCube = ID
-      (FOR selection_predicates)?
+      (FOR predicates = selection_predicates)?
       BY gammas = group_by_set
       ASSESS measurement = ID
+      // Build the Target Cube Here
+      {builder.buildTargetCube($targetCube.text, $measurement.text, predicates, gammas);}
+
       (AGAINST parsedBenchmark = benchmark)?
+      // Build the Benchmark Cube Here
+
       (USING comparison_function)?
+      // Build the Comparison Scheme Here
+
       LABELS (labelingMethod = ID | labelingSystem = custom_labeling)
+      // Build the Labeling Scheme Here
+
     ;
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
@@ -44,14 +52,16 @@ level_value : ID+ | date ;
 
 date : INT '/' INT ('/' INT)? ;
 
-group_by_set : ID  (',' ID)*;
+group_by_set returns [HashSet<String> groupBySet]
+    @init{$groupBySet = new HashSet<>();}
+    : id=ID {$groupBySet.add($id.text);} (',' id=ID)* {$groupBySet.add($id.text);}
+    ;
 
 benchmark
-    // Return a benchmark object?
-    : result = constant_benchmark {System.out.println($result.text);}
-    | result = external_benchmark {System.out.println($result.text);}
-    | result = sibling_benchmark {System.out.println($result.text);}
-    | result = past_benchmark {System.out.println($result.text);}
+    : result = constant_benchmark
+    | result = external_benchmark
+    | result = sibling_benchmark
+    | result = past_benchmark
     ;
 
 constant_benchmark : SIGN? (INT|FLOAT);
