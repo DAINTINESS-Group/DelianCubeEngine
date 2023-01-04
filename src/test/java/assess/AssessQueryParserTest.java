@@ -11,7 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AssessQueryParserTest {
@@ -22,6 +24,24 @@ public class AssessQueryParserTest {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		return new AssessQueryParser(tokens);
 	}
+
+	@Test
+	public void givenSelectionFiltersInQuery_whenParsing_thenCollectPredicates()
+			throws IOException, RecognitionException {
+		String predicates = "date = '20/5/2019', type = 'Fresh Fruit', country = 'Italy'";
+		AssessQueryParser parser = createParser(predicates);
+
+		HashMap<String, String> expected = new HashMap<>();
+		expected.put("date", "20/5/2019");
+		expected.put("type", "Fresh Fruit");
+		expected.put("country", "Italy");
+
+		HashMap<String, String> actual = parser.selection_predicates();
+
+		assertEquals(expected, actual);
+	}
+
+
 
 	// This should be throwing a mismatch warning (TODO: Create an exception?)
 	@Test

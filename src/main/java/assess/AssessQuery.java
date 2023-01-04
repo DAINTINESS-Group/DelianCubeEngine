@@ -12,7 +12,8 @@ public class AssessQuery {
 		System.out.println("Target Cube: " + targetCube);
 		System.out.println("Group By: " + parsedGammas);
 		System.out.println("Measurement: " + measurement);
-		// Break this to different part?
+
+		// TODO: Create a labeling System based on the data below
 		System.out.println(java.util.Optional.ofNullable(labelingMethod).orElse("Provided Custom System"));
 		if (labelingSystem != null) { System.out.println(labelingSystem); }
 	}

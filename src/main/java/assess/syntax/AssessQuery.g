@@ -9,6 +9,7 @@ package assess.syntax;
 package assess.syntax;
 import assess.AssessQuery;
 import java.util.Arrays;
+import java.util.HashMap;
 }
 
 parse returns [AssessQuery parsedQuery]
@@ -23,50 +24,50 @@ query returns [AssessQuery query]
       (FOR selection_predicates)?
       BY gammas = group_by_set
       ASSESS measurement = ID
-      (AGAINST benchmark)?
+      (AGAINST parsedBenchmark = benchmark)?
       (USING comparison_function)?
       LABELS (labelingMethod = ID | labelingSystem = custom_labeling)
     ;
 
-selection_predicates
-    : level (',' level)*
+selection_predicates returns [HashMap<String, String> selectionPredicates]
+    @init{$selectionPredicates = new HashMap<>();}
+    : parsed_predicate = predicate {$selectionPredicates.put($parsed_predicate.level, $parsed_predicate.value);}
+    (',' additional_predicate = predicate {$selectionPredicates.put($additional_predicate.level, $additional_predicate.value);})*
     ;
 
-level returns [List sigma]
-    : ID '=' '\'' value = level_value '\'' ;
-
-level_value returns [String value]
-    : ids += ID+
-    | date {value = $date.text; }
+predicate returns [String level, String value]
+    : level_name = ID {$level = $level_name.text;}
+    '=' '\'' val = level_value {$value = $val.text;} '\''
     ;
+
+level_value : ID+ | date ;
 
 date : INT '/' INT ('/' INT)? ;
 
 group_by_set : ID  (',' ID)*;
 
 benchmark
-    : constant_benchmark
-    | external_benchmark
-    | sibling_benchmark
-    | past_benchmark
+    // Return a benchmark object?
+    : result = constant_benchmark {System.out.println($result.text);}
+    | result = external_benchmark {System.out.println($result.text);}
+    | result = sibling_benchmark {System.out.println($result.text);}
+    | result = past_benchmark {System.out.println($result.text);}
     ;
 
-constant_benchmark
-    : SIGN? (INT | FLOAT);
+constant_benchmark : SIGN? (INT|FLOAT);
 
-external_benchmark
-    : ID '.' ID;
+external_benchmark : ID '.' ID;
 
-sibling_benchmark : level;
+sibling_benchmark : predicate;
 
-past_benchmark
-    : PAST INT;
+past_benchmark : PAST INT;
 
 comparison_function : ID '(' comparison_args ')';
 
-comparison_args : ID ',' ( ('benchmark.')? ID | INT)
-                | comparison_function
-                ;
+comparison_args
+    : ID ',' ( ('benchmark.')? ID | INT)
+    | comparison_function
+    ;
 
 custom_labeling returns [List<List<String>> labelingTerms]
     @init {labelingTerms = new ArrayList<List<String>>();}
@@ -125,4 +126,4 @@ ID : ('a'..'z'|'A'..'Z')+;
 INT : '0'..'9'+;
 FLOAT : INT '.' INT;
 
-WS : (' '|'\t'|'\n'|'\r') {skip();} ;
+WS : (' '|'\t'|'\n'|'\r') {$channel=HIDDEN;} ;
