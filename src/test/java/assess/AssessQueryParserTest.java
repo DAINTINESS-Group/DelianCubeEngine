@@ -11,30 +11,23 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+/**
+ * Collections of tests for checking validity of parser's rules.
+ * Their main purpose is to collect the needed string information for later
+ * usage by the builder.
+ */
 public class AssessQueryParserTest {
-	private AssessQueryParser createParser (String query) throws IOException {
+	private AssessQueryParser createParser(String query) throws IOException {
 		InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
 		ANTLRInputStream input = new ANTLRInputStream(stream);
-		AssessQueryLexer lexer = new AssessQueryLexer (input);
+		AssessQueryLexer lexer = new AssessQueryLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		return new AssessQueryParser(tokens);
 	}
-
-	// This should be throwing a mismatch warning (TODO: Create custom exception?)
-	@Test
-	public void givenInvalidQuery_whenParsingQuery_thenThrowException() throws IOException, RecognitionException {
-		String query = "with SALES by month labels quartiles";
-		createParser(query).parse();
-		assertTrue(true); //TODO: Catch mismatch message
-	}
-
-	// Unit Tests
 
 	@Test
 	public void givenSelectionFiltersInQuery_whenParsing_thenCollectPredicates()
@@ -53,7 +46,7 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenGroupByPredicatesInQuery_whenParsing_theCollectGroupByPredicates()
+	public void givenGroupByPredicatesInQuery_whenParsing_thenCollectGroupByPredicates()
 			throws IOException, RecognitionException {
 		String predicates = "country, product";
 		AssessQueryParser parser = createParser(predicates);
@@ -67,54 +60,85 @@ public class AssessQueryParserTest {
 		assertEquals(expected, actual);
 	}
 
-	// Integration (AssessParser and AssessBuilder) Tests
-
-	/**
-	 * In this test we use the simplest example of a valid query.
-	 * The system retrieve the storeSales measurements and then labels
-	 * them based on quartiles.
-	 */
 	@Test
-	public void parseSimpleQuery() throws IOException, RecognitionException {
-		String query = "with SALES by month assess storeSales labels quartiles";
-		createParser(query).parse();
-		assertTrue(true);
-	}
+	public void givenConstantBenchmark_whenParsingQuery_thenInitializeConstantBenchmark()
+			throws IOException, RecognitionException {
+		String benchmark = "-1000";
+		AssessQueryParser parser = createParser(benchmark);
 
-	/**
-	 * Using a constant benchmark, the user assess the cells of the target cube
-	 * against some fixed value.
-	 */
-	@Test
-	public void parseQueryWithConstantBenchmark() throws IOException, RecognitionException {
-		String query = "with SALES by month\n" +
-				"assess storeSales against 1000\n" +
-				"using minMaxNorm(difference(storeSales, 1000))\n" +
-				"labels stars";
-		createParser(query).parse();
-		assertTrue(true);
+		String expected = "Constant -1000";
+		String actual = parser.benchmark();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void parseQueryWithSiblingBenchmark() throws IOException, RecognitionException {
-		String query = "with SALES for type = 'Fresh Fruit', country = 'Italy'\n" +
-				"by product, country assess quantity\n" +
-				"against country = 'France'\n" +
-				"using percOfTotal(difference(quantity, benchmark.quantity))\n"+
-				"labels {[-inf, -0.2): bad, [-0.2,0.2]: ok, (0.2, inf]: good}";
-		createParser(query).parse();
-		assertTrue(true);
+	public void givenSiblingBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
+		String benchmark = "country = 'France'";
+		AssessQueryParser parser = createParser(benchmark);
+		parser.benchmark(); // What should we check this for?
 	}
 
 	@Test
-	public void parseQueryWithPastBenchmark() throws IOException, RecognitionException {
-		String query = "with SALES " +
-				"for month = '1997/07', store = 'SmartMart'\n" +
-				"by month, store, date\n" +
-				"assess storeSales against past 4 \n" +
-				"using ratio(storeSales, benchmark.storeSales)\n"+
-				"labels {[0, 0.9): worse, [0.9, 1.1]: fine, (1.1,inf): better}";
-		createParser(query).parse();
-		assertTrue(true);
+	public void givenExternalBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
+		String benchmark = "SALES.stores";
+		AssessQueryParser parser = createParser(benchmark);
+		parser.benchmark(); // What should we check this for?
+	}
+
+	@Test
+	public void givenPastBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
+		String benchmark = "past 4";
+		AssessQueryParser parser = createParser(benchmark);
+
+		String expected = "Past 4";
+		String actual = parser.benchmark();
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void givenUsingStatement_whenParsingInput_thenIdentifyComparisonMethod()
+			throws IOException, RecognitionException {
+		String usingStatement = "ratio(storeSales,benchmark.storeSales)";
+		AssessQueryParser parser = createParser(usingStatement);
+
+		List<String> expected = new ArrayList<>();
+		expected.add("ratio");
+
+		List<String> actual = parser.comparison_scheme(new ArrayList<>());
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void givenUsingStatement_whenParsingInput_thenCollectComparisonMethods()
+			throws IOException, RecognitionException {
+		String usingStatement = "ratio(deference(storeSales,benchmark.storeSales))";
+		AssessQueryParser parser = createParser(usingStatement);
+
+		List<String> expected = new ArrayList<>(Arrays.asList("ratio", "deference"));
+		List<String> actual = parser.comparison_scheme(new ArrayList<>());
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void givenLabelsStatement_whenParsingInput_buildCustomLabelingScheme() throws IOException, RecognitionException {
+		String labelsStatement = "{[-inf, -0.2): bad, [-0.2, 0.2]: ok, (0.2, inf]: awesome}";
+		List<List<String>> expected = new ArrayList<>();
+
+		List<String> firstTerm = new ArrayList<>(Arrays.asList(">=", "-inf", "-0.2", "<", "bad"));
+		expected.add(firstTerm);
+
+		List<String> secondTerm = new ArrayList<>(Arrays.asList(">=", "-0.2", "0.2", "<=", "ok"));
+		expected.add(secondTerm);
+
+		List<String> thirdTerm = new ArrayList<>(Arrays.asList(">", "0.2", "inf", "<=", "awesome"));
+		expected.add(thirdTerm);
+
+		AssessQueryParser parser = createParser(labelsStatement);
+
+		List<List<String>> actual = parser.custom_labeling();
+		assertEquals(expected, actual);
 	}
 }

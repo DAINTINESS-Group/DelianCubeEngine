@@ -18,23 +18,24 @@ parse returns [AssessQuery parsedQuery]
     : result=query EOF {parsedQuery = result;};
 
 query returns [AssessQuery query]
-    @init{AssessQueryBuilder builder = new AssessQueryBuilder();}
+    @init{
+    AssessQueryBuilder builder = new AssessQueryBuilder();
+    List<String> comparisonMethods = new ArrayList<String>();
+    }
     : WITH targetCube = ID
       (FOR predicates = selection_predicates)?
       BY gammas = group_by_set
       ASSESS measurement = ID
-      // Build the Target Cube Here
       {builder.buildTargetCube($targetCube.text, $measurement.text, predicates, gammas);}
 
       (AGAINST parsedBenchmark = benchmark)?
       // Build the Benchmark Cube Here
 
-      (USING comparison_function)?
+      (USING comparison_scheme[comparisonMethods])?
       // Build the Comparison Scheme Here
 
       LABELS (labelingMethod = ID | labelingSystem = custom_labeling)
       // Build the Labeling Scheme Here
-
     ;
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
@@ -57,31 +58,30 @@ group_by_set returns [HashSet<String> groupBySet]
     : id=ID {$groupBySet.add($id.text);} (',' id=ID)* {$groupBySet.add($id.text);}
     ;
 
-benchmark
-    : result = constant_benchmark
-    | result = external_benchmark
-    | result = sibling_benchmark
-    | result = past_benchmark
+benchmark returns [String parsedBenchmark]
+    : constant_benchmark {$parsedBenchmark = "Constant " + $constant_benchmark.text;}
+    | external_benchmark {System.out.println("External against cube " + $external_benchmark.cube + " measurement: " + $external_benchmark.measurement);}
+    | predicate {System.out.println("Sibling on " + $predicate.level + " being " +$predicate.value);}
+    | PAST INT {$parsedBenchmark = "Past " + $INT.text;}
     ;
 
-constant_benchmark : SIGN? (INT|FLOAT);
+constant_benchmark : (SIGN)? number = (INT|FLOAT) ;
 
-external_benchmark : ID '.' ID;
+external_benchmark returns [String cube, String measurement]
+    : benchmarkCube = ID {$cube = $benchmarkCube.text;} '.'
+    benchmarkMeasurement = ID {$measurement = $benchmarkMeasurement.text;};
 
-sibling_benchmark : predicate;
+comparison_scheme [List<String> comparisonMethods] returns [List<String> updatedComparisonMethods]
+    @init{$updatedComparisonMethods = $comparisonMethods;}
+    : method_name = ID {$updatedComparisonMethods.add($method_name.text);}
+    '(' comparison_scheme[$updatedComparisonMethods] | comparison_args')';
 
-past_benchmark : PAST INT;
-
-comparison_function : ID '(' comparison_args ')';
-
-comparison_args
-    : ID ',' ( ('benchmark.')? ID | INT)
-    | comparison_function
-    ;
+comparison_args : ID ',' ( ('benchmark.')? ID | INT);
 
 custom_labeling returns [List<List<String>> labelingTerms]
     @init {labelingTerms = new ArrayList<List<String>>();}
-    : '{' term = label_term {labelingTerms.add(term);}(',' term = label_term {labelingTerms.add(term);})* '}'
+    : '{' term = label_term {labelingTerms.add(term);}
+    (',' term = label_term {labelingTerms.add(term);})* '}'
     ;
 
 label_term returns [List<String> term]
