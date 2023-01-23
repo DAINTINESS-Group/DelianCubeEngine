@@ -19,6 +19,9 @@ import static org.junit.Assert.assertEquals;
  * Collections of tests for checking validity of parser's rules.
  * Their main purpose is to collect the needed string information for later
  * usage by the builder.
+ *
+ * NOTE: When giving a full query, make sure you separate the keywords with
+ * whitespaces
  */
 public class AssessQueryParserTest {
 	private AssessQueryParser createParser(String query) throws IOException {
@@ -27,6 +30,20 @@ public class AssessQueryParserTest {
 		AssessQueryLexer lexer = new AssessQueryLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		return new AssessQueryParser(tokens);
+	}
+
+	@Test
+	public void givenFullQuery_whenParsing_thenCollectEverythingNeeded()
+		throws IOException, RecognitionException {
+		String query = "WITH loan " +
+				"BY region " +
+				"Assess product " +
+				"using minMaxNorm(difference(product, 1000) "+
+				"labels {[-inf, -0.2): bad, [-0.2, 0.2]: ok, (0.2, inf]: awesome}";
+		AssessQueryParser parser = createParser(query);
+
+		parser.parse();
+
 	}
 
 	@Test
@@ -127,13 +144,13 @@ public class AssessQueryParserTest {
 		String labelsStatement = "{[-inf, -0.2): bad, [-0.2, 0.2]: ok, (0.2, inf]: awesome}";
 		List<List<String>> expected = new ArrayList<>();
 
-		List<String> firstTerm = new ArrayList<>(Arrays.asList(">=", "-inf", "-0.2", "<", "bad"));
+		List<String> firstTerm = new ArrayList<>(Arrays.asList("[", "-inf", "-0.2", ")", "bad"));
 		expected.add(firstTerm);
 
-		List<String> secondTerm = new ArrayList<>(Arrays.asList(">=", "-0.2", "0.2", "<=", "ok"));
+		List<String> secondTerm = new ArrayList<>(Arrays.asList("[", "-0.2", "0.2", "]", "ok"));
 		expected.add(secondTerm);
 
-		List<String> thirdTerm = new ArrayList<>(Arrays.asList(">", "0.2", "inf", "<=", "awesome"));
+		List<String> thirdTerm = new ArrayList<>(Arrays.asList("(", "0.2", "inf", "]", "awesome"));
 		expected.add(thirdTerm);
 
 		AssessQueryParser parser = createParser(labelsStatement);

@@ -1,9 +1,11 @@
 package assess;
 
+import assess.labelers.LabelingScheme;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class AssessQueryBuilderTest {
     @Test
@@ -20,5 +22,20 @@ public class AssessQueryBuilderTest {
         groupBySet.add("country");
 
         // Note: We have to decide whether the query or the object should be returned
+    }
+
+    @Test
+    public void buildCustomLabelingScheme() {
+        AssessQueryBuilder builder = new AssessQueryBuilder();
+        List<List<String>> rules = new ArrayList<>();
+        rules.add(Arrays.asList("(", "-inf", "-10.0", ")", "bad"));
+        rules.add(Arrays.asList("[", "-10.0", "10.0", "]", "average"));
+        rules.add(Arrays.asList("(", "10.0", "inf", "]", "good"));
+
+        LabelingScheme labelingScheme = builder.buildLabelingScheme(rules);
+
+        assertEquals("bad", labelingScheme.applyLabels(-12));
+        assertEquals("average", labelingScheme.applyLabels(10.0));
+        assertEquals("good", labelingScheme.applyLabels(100));
     }
 }

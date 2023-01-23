@@ -26,16 +26,20 @@ query returns [AssessQuery query]
       (FOR predicates = selection_predicates)?
       BY gammas = group_by_set
       ASSESS measurement = ID
-      {builder.buildTargetCube($targetCube.text, $measurement.text, predicates, gammas);}
+      {builder.buildTargetCubeQuery($targetCube.text, $measurement.text, predicates, gammas);}
 
       (AGAINST parsedBenchmark = benchmark)?
       // Build the Benchmark Cube Here
 
-      (USING comparison_scheme[comparisonMethods])?
-      // Build the Comparison Scheme Here
+      (USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
+      {builder.buildDeltaScheme(updatedComparisonMethods);})?
 
-      LABELS (labelingMethod = ID | labelingSystem = custom_labeling)
       // Build the Labeling Scheme Here
+      LABELS (labelingMethod = ID
+      {builder.buildLabelingScheme($labelingMethod.text);}
+      | labelingSystem = custom_labeling
+      {builder.buildLabelingScheme(labelingSystem);}
+      )
     ;
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
@@ -90,10 +94,10 @@ label_term returns [List<String> term]
 
 label_range returns [List<String> limits]
     @init {limits = new ArrayList<String>();}
-    : ( '[' { $limits.add(">="); } | '(' { $limits.add(">"); })
+    : ( lowLimit = '[' | lowLimit = '(' ) {$limits.add($lowLimit.text);}
       start = range_point { $limits.add($start.text); } ','
       end = range_point { $limits.add($end.text); }
-      (')' { $limits.add("<"); }|']' { $limits.add("<="); })
+      ( highLimit = ')' | highLimit = ']') {$limits.add($highLimit.text);}
     ;
 
 range_point : SIGN? (INT|FLOAT|'inf');
