@@ -3,6 +3,7 @@ package assess;
 import java.util.List;
 
 import assess.deltas.AbstractDeltaClass;
+import assess.labelers.LabelingScheme;
 
 public class AssessQuery {
 	//TODO
@@ -15,23 +16,20 @@ public class AssessQuery {
 	private List<String> parsedGammas;
 	private String measurement;
 	private String labelingMethod;
-	private List<List<String>> labelingSystem; //FIX
+
+	private LabelingScheme labelingScheme;
 	private AbstractDeltaClass deltaFunction;
 	
 	public AssessQuery(
 			String targetCube,
 			List<String> parsedGammas,
-			String measurement,
-			String labelingMethod,
-			List<List<String>> labelingSystem) {
+			String measurement) {
 		
 		//CHECK CORRECTNESS OF PASSED PARAMETERS
 		this.targetCube = targetCube;
 		this.parsedGammas  = parsedGammas;
 		this.measurement = measurement; 
-		this.labelingMethod = labelingMethod;
-		this.labelingSystem = labelingSystem;
-		
+
 		//validate();
 		
 		System.out.println("Target Cube: " + targetCube);
@@ -40,8 +38,5 @@ public class AssessQuery {
 
 		// TODO: Create a labeling System based on the data below
 		System.out.println(java.util.Optional.ofNullable(labelingMethod).orElse("Provided Custom System"));
-		if (labelingSystem != null) { System.out.println(labelingSystem); }
 	}
-	
-	//private ResultFileMetadata validate();
 }

@@ -1,13 +1,9 @@
 package assess.deltas;
 
-import java.lang.Math;
-
 public class DeltaAbsolute extends AbstractDeltaClass{
 
 	@Override
-	public double compare(double argument1, double argument2) {
-		return Math.abs(argument1 - argument2);
+	public double compare(double actual, double benchmark) {
+		return Math.abs(actual - benchmark);
 	}
-
-		
 }
