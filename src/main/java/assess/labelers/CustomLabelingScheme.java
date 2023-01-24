@@ -24,25 +24,7 @@ public class CustomLabelingScheme implements LabelingScheme{
 		private final EdgeCondition highCondition;
 		private final String label;
 
-		public LabelingRule(List<String> dataString) {
-			Map<String, EdgeCondition> stringToConditionMap = createMap();
-
-			lowCondition = stringToConditionMap.get(dataString.get(0));
-
-			if (dataString.get(1).equals("-inf")) {
-				lowLimit = -Double.MAX_VALUE;
-			} else {
-				lowLimit = Double.parseDouble(dataString.get(1));
-			}
-
-			if (dataString.get(2).equals("inf")) {
-				highLimit = Double.MAX_VALUE;
-			} else {
-				highLimit = Double.parseDouble(dataString.get(2));
-			}
-			highCondition = stringToConditionMap.get(dataString.get(3));
-			label = dataString.get(4);
-		}
+		private final String originalRule;
 
 		private static Map<String, EdgeCondition> createMap() {
 			Map<String, EdgeCondition> map = new HashMap<>();
@@ -52,6 +34,30 @@ public class CustomLabelingScheme implements LabelingScheme{
 			map.put("]", EdgeCondition.LESS_EQUAL);
 			return map;
 		}
+
+		public LabelingRule(List<String> parsedRule) {
+			Map<String, EdgeCondition> stringToConditionMap = createMap();
+
+			lowCondition = stringToConditionMap.get(parsedRule.get(0));
+
+			if (parsedRule.get(1).equals("-inf")) {
+				lowLimit = -Double.MAX_VALUE;
+			} else {
+				lowLimit = Double.parseDouble(parsedRule.get(1));
+			}
+
+			if (parsedRule.get(2).equals("inf")) {
+				highLimit = Double.MAX_VALUE;
+			} else {
+				highLimit = Double.parseDouble(parsedRule.get(2));
+			}
+			highCondition = stringToConditionMap.get(parsedRule.get(3));
+			label = parsedRule.get(4);
+
+			originalRule = parsedRule.get(0) + parsedRule.get(1) + ", "
+					+ parsedRule.get(2) + parsedRule.get(3);
+		}
+
 
 		private boolean isGreaterThanLowLimit(double testedValue) {
 			if (lowCondition == EdgeCondition.GREATER) {
@@ -70,18 +76,36 @@ public class CustomLabelingScheme implements LabelingScheme{
 		public boolean containsValue(double value) {
 			return isGreaterThanLowLimit(value) && isLessThanHighLimit(value);
 		}
+		public String getOriginalRule() {
+			return originalRule;
+		}
 	}
 
 	List<LabelingRule> rules = new ArrayList<>();
 	
-	public CustomLabelingScheme(List<List<String>> rulesList) {
-		/*
-			We need two checks here
-			1. There is no rule overlapping.
-			2. All possible values are contained.
-		 */
-		for (List<String> rule : rulesList)
-			rules.add(new LabelingRule(rule));
+	public CustomLabelingScheme(List<List<String>> rulesList)
+			throws OverlappingLabelingRulesException {
+		LabelingRule oldRule = null;
+		// TODO: Force ascending order of rules.
+
+		for (List<String> rule : rulesList) {
+			LabelingRule newRule = new LabelingRule(rule);
+			if (oldRule != null && areRulesOverlapping(oldRule, newRule)) {
+				throw new OverlappingLabelingRulesException(
+						oldRule.getOriginalRule(),
+						newRule.getOriginalRule(),
+						String.valueOf(newRule.lowLimit));
+			}
+
+			rules.add(newRule);
+			oldRule = newRule;
+		}
+	}
+
+	private boolean areRulesOverlapping(LabelingRule oldRule, LabelingRule newRule) {
+		return oldRule.highCondition == LabelingRule.EdgeCondition.LESS_EQUAL &&
+				newRule.lowCondition == LabelingRule.EdgeCondition.GREATER_EQUAL &&
+				oldRule.highLimit == newRule.lowLimit;
 	}
 
 	@Override

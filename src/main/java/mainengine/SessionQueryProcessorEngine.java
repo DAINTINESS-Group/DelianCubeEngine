@@ -64,6 +64,7 @@ import filecreation.WordFile;
 */
 //import storymgr.FinResult;
 //import storymgr.StoryMgr;
+import org.antlr.runtime.RecognitionException;
 import result.Result;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
@@ -501,7 +502,11 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
 		AssessOperator operator = new AssessOperator(incomingExpression, cubeManager);
-		operator.execute();
+		try {
+			operator.execute();
+		} catch (RecognitionException e) {
+			throw new RuntimeException(e);
+		}
 		return null;
 	}
 	

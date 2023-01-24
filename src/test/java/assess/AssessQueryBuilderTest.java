@@ -3,29 +3,16 @@ package assess;
 import assess.labelers.LabelingScheme;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class AssessQueryBuilderTest {
-    @Test
-    public void givenNecessaryInput_whenAskedToBuildTarget_thenReturnTargetCube() {
-        String targetCubeName = "SALES";
-        String measurement = "storeSales";
 
-        HashMap<String, String> selectionPredicates = new HashMap<>();
-        selectionPredicates.put("type", "Fresh Fruit");
-        selectionPredicates.put("country", "Italy");
-
-        HashSet<String> groupBySet = new HashSet<>();
-        groupBySet.add("product");
-        groupBySet.add("country");
-
-        // Note: We have to decide whether the query or the object should be returned
-    }
-
-    @Test
-    public void buildCustomLabelingScheme() {
+    @Test public void
+    givenSetOfLabelingRules_whenAskedToBuildLabelingScheme_thenReturnACustomScheme() {
         AssessQueryBuilder builder = new AssessQueryBuilder();
         List<List<String>> rules = new ArrayList<>();
         rules.add(Arrays.asList("(", "-inf", "-10.0", ")", "bad"));
