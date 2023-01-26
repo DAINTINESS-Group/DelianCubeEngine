@@ -7,7 +7,8 @@ import java.util.Map;
 
 /**
  * This implementation of a labeling scheme is used when the user provides
- * a non-defined scheme. <br> E.g. [-2, 5): Good, [5, 10]: Excellent
+ * a non-defined scheme. <br>
+ * E.g. [-2, 5): Good, [5, 10]: Excellent
  */
 public class CustomLabelingScheme implements LabelingScheme{
 
@@ -26,6 +27,14 @@ public class CustomLabelingScheme implements LabelingScheme{
 
 		private final String originalRule;
 
+		private static final Map<String, EdgeCondition> stringToConditionMap = createMap();
+
+		/**
+		 * Creates a map that translates edge condition characters to
+		 * EdgeCondition values
+		 *
+		 * @return stringToEdgeCondition map
+		 */
 		private static Map<String, EdgeCondition> createMap() {
 			Map<String, EdgeCondition> map = new HashMap<>();
 			map.put("(", EdgeCondition.GREATER);
@@ -36,21 +45,9 @@ public class CustomLabelingScheme implements LabelingScheme{
 		}
 
 		public LabelingRule(List<String> parsedRule) {
-			Map<String, EdgeCondition> stringToConditionMap = createMap();
-
 			lowCondition = stringToConditionMap.get(parsedRule.get(0));
-
-			if (parsedRule.get(1).equals("-inf")) {
-				lowLimit = -Double.MAX_VALUE;
-			} else {
-				lowLimit = Double.parseDouble(parsedRule.get(1));
-			}
-
-			if (parsedRule.get(2).equals("inf")) {
-				highLimit = Double.MAX_VALUE;
-			} else {
-				highLimit = Double.parseDouble(parsedRule.get(2));
-			}
+			lowLimit = parseLimitValue(parsedRule.get(1));
+			highLimit = parseLimitValue(parsedRule.get(2));
 			highCondition = stringToConditionMap.get(parsedRule.get(3));
 			label = parsedRule.get(4);
 
@@ -58,6 +55,14 @@ public class CustomLabelingScheme implements LabelingScheme{
 					+ parsedRule.get(2) + parsedRule.get(3);
 		}
 
+		private double parseLimitValue(String value) {
+			if(value.equals("-inf")) {
+				return -Double.MAX_VALUE;
+			} else if (value.equals("inf")) {
+				return Double.MAX_VALUE;
+			}
+			return Double.parseDouble(value);
+		}
 
 		private boolean isGreaterThanLowLimit(double testedValue) {
 			if (lowCondition == EdgeCondition.GREATER) {
@@ -82,37 +87,99 @@ public class CustomLabelingScheme implements LabelingScheme{
 	}
 
 	List<LabelingRule> rules = new ArrayList<>();
+	// Should we be keeping a set of labels so that results are unique as well?
 	
-	public CustomLabelingScheme(List<List<String>> rulesList)
-			throws OverlappingLabelingRulesException {
-		LabelingRule oldRule = null;
-		// TODO: Force ascending order of rules.
-
-		for (List<String> rule : rulesList) {
-			LabelingRule newRule = new LabelingRule(rule);
-			if (oldRule != null && areRulesOverlapping(oldRule, newRule)) {
-				throw new OverlappingLabelingRulesException(
-						oldRule.getOriginalRule(),
-						newRule.getOriginalRule(),
-						String.valueOf(newRule.lowLimit));
-			}
-
+	public CustomLabelingScheme(List<List<String>> rulesList) {
+		for (List<String> parsedRule : rulesList) {
+			LabelingRule newRule = new LabelingRule(parsedRule);
+			validateRule(newRule);
 			rules.add(newRule);
-			oldRule = newRule;
 		}
 	}
 
-	private boolean areRulesOverlapping(LabelingRule oldRule, LabelingRule newRule) {
+	private void validateRule(LabelingRule rule) {
+		if (rule.lowLimit > rule.highLimit) {
+			throw new InvalidLabelingRuleException(
+					rule.getOriginalRule(), "has low limit higher than high limit"
+			);
+		}
+		if (!rules.isEmpty()) {
+			compareToPreviousRule(rule);
+		}
+	}
+
+	/* After the first rule has been added, any new rule must abide to the
+	 * following rules:
+	 * 1. We are following an ascending order (mostly for easier checking)
+	 * 2. There are no overlapping on the edges (Limits must be different values when both have equal conditions)
+	 * 3. There is no range overlapping (Each rule should contain a unique range)
+	 */
+	private void compareToPreviousRule(LabelingRule rule) {
+		LabelingRule oldRule = rules.get(rules.size() - 1);
+
+		if (!areRulesInAscendingOrder(oldRule, rule)) {
+			throw new InvalidLabelingRuleException(
+					rule.getOriginalRule(), "does not follow ascending order"
+			);
+		}
+		if (areRulesOverlappingOnEdges(oldRule, rule)) {
+			throw new InvalidLabelingRuleException(
+					oldRule.getOriginalRule(),
+					rule.getOriginalRule(),
+					String.valueOf(rule.lowLimit)
+			);
+		}
+		if (areRulesOverlappingOverRanges(oldRule, rule)) {
+			throw new InvalidLabelingRuleException(
+					oldRule.getOriginalRule(),
+					rule.getOriginalRule(),
+					String.valueOf(rule.lowLimit),
+					String.valueOf(oldRule.highLimit)
+			);
+		}
+	}
+
+	private boolean areRulesInAscendingOrder(LabelingRule oldRule, LabelingRule newRule) {
+		return oldRule.lowLimit < newRule.lowLimit;
+	}
+
+	/**
+	 * Check if the two rules contain an equal condition
+	 * (LESS_EQUAL & GREATER_EQUAL) and the high limit of the previous rule
+	 * equals the low limit of the new one.
+	 * @param oldRule The previous rule that was created.
+	 * @param newRule The current rule that is created.
+	 * @return Edge overlapping check result.
+	 */
+	private boolean areRulesOverlappingOnEdges(
+			LabelingRule oldRule, LabelingRule newRule) {
 		return oldRule.highCondition == LabelingRule.EdgeCondition.LESS_EQUAL &&
 				newRule.lowCondition == LabelingRule.EdgeCondition.GREATER_EQUAL &&
 				oldRule.highLimit == newRule.lowLimit;
 	}
 
+
+	/**
+	 * Check if the two rules contain overlapping ranges. <br>
+	 * Note: The second condition is used to avoid issues where the limits are
+	 * the same value. This check has already been done as part of the edge
+	 * overlapping assertion.
+	 * @param oldRule The previous rule that was created
+	 * @param newRule the current rule that is created
+	 * @return Range overlapping check result
+	 */
+	private boolean areRulesOverlappingOverRanges(
+			LabelingRule oldRule, LabelingRule newRule) {
+		return oldRule.containsValue(newRule.lowLimit)
+				&& oldRule.highLimit != newRule.lowLimit;
+	}
+
 	@Override
 	public String applyLabels(double value) {
+		// In the future we might be passing whole cubes?
 		for (LabelingRule rule : rules)
 			if (rule.containsValue(value))
 				return rule.label;
-		return null; // TODO: Throw not found exception?
+		return null;
 	}
 }
