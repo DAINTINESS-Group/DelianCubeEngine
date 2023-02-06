@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import analyze.AnalyzeOperator;
 import mainengine.nlq.ITranslator;
 import mainengine.nlq.ITranslatorFactory;
 import mainengine.nlq.NLQValidationResults;

@@ -22,7 +22,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	test.nlqueries.SimplifiedNLQueriesTest.class,
 	test.spark.SparkNLQueriesTest.class,
 	test.spark.SparkSQPTest.class,
-	test.SessionQueryProcessorEngineTest.class})
+	test.SessionQueryProcessorEngineTest.class,
+	test.analyzeOperator.AnalyzeInputValidationTest.class,
+	test.analyzeOperator.AnalyzeTranslationManagerTest.class})
 public class AllTests {
 
 }
