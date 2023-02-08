@@ -46,6 +46,15 @@ public class Cube {
 	public List<Level> getLevelsList(){
 		return cubeLevelsList;
 	}
+	public String findLevelByName(String levelName) {
+		for (Dimension dimension : cubeDimensionsList) {
+			Level level = dimension.getLevel(levelName);
+			if (level != null) {
+				return dimension.getName() + ".lvl" + level.getPositionInHierarchy();
+			}
+		}
+		throw new RuntimeException("Level not Found");
+	}
 	
 	public List<Measure> getMeasuresList(){
 		return cubeMeasuresList;

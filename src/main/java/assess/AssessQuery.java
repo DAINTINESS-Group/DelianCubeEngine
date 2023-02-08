@@ -1,42 +1,22 @@
 package assess;
 
-import java.util.List;
-
 import assess.deltas.AbstractDeltaClass;
 import assess.labelers.LabelingScheme;
+import cubemanager.cubebase.CubeQuery;
 
 public class AssessQuery {
-	//TODO
-	//Clearly shown original cube query, or cubequery parts
-	//Clearly shown benchmark cube query, or cubequery parts
-	//Clearly show delta
-	//Clearly show labeling scheme
-	
-	private String targetCube;
-	private List<String> parsedGammas;
-	private String measurement;
-	private String labelingMethod;
+	public final CubeQuery targetCube;
+	public final CubeQuery benchmarkCube;
+	public final AbstractDeltaClass deltaFunction;
+	public final LabelingScheme labelingScheme;
 
-	private LabelingScheme labelingScheme;
-	private AbstractDeltaClass deltaFunction;
-	
-	public AssessQuery(
-			String targetCube,
-			List<String> parsedGammas,
-			String measurement) {
-		
-		//CHECK CORRECTNESS OF PASSED PARAMETERS
+	public AssessQuery(CubeQuery targetCube,
+					   CubeQuery benchmarkCube,
+					   AbstractDeltaClass deltaFunction,
+					   LabelingScheme labelingScheme) {
 		this.targetCube = targetCube;
-		this.parsedGammas  = parsedGammas;
-		this.measurement = measurement; 
-
-		//validate();
-		
-		System.out.println("Target Cube: " + targetCube);
-		System.out.println("Group By: " + parsedGammas);
-		System.out.println("Measurement: " + measurement);
-
-		// TODO: Create a labeling System based on the data below
-		System.out.println(java.util.Optional.ofNullable(labelingMethod).orElse("Provided Custom System"));
+		this.benchmarkCube = benchmarkCube;
+		this.deltaFunction = deltaFunction;
+		this.labelingScheme = labelingScheme;
 	}
 }

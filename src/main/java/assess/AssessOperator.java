@@ -35,7 +35,7 @@ public class AssessOperator {
 
 	public int execute() throws RecognitionException {
 		//1. ask parser(lexer.tokenStream) to produce a AssessQuery
-		AssessQuery currentAssessQuery = parser.parse();
+		AssessQuery currentAssessQuery = parser.parse(new AssessQueryBuilder(cubeManager));
 
 		//2. execute queries, match results, compare and label
 		// ???

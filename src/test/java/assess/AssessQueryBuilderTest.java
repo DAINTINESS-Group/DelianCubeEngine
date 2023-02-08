@@ -112,8 +112,8 @@ public class AssessQueryBuilderTest {
 				"Name:sales_quantity\n" +
 				"AggrFunc:??\n" +
 				"Measure:quantity\n" +
-				"Gamma:date.lvl1, store.lvl0\n" +
-				"Sigma:date.lvl1='07/2019', store.lvl0='SmartMart'";
+				"Gamma:date.lvl1,store.lvl0\n" +
+				"Sigma:date.lvl1='07/2019',store.lvl0='SmartMart'";
 		assertEquals(expected, actual);
 	}
 	// Create a test for each benchmark type

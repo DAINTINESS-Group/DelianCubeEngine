@@ -20,20 +20,19 @@
 
 package cubemanager;
 
-import java.rmi.RemoteException;
-//import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
 import exctractionmethod.ExtractionMethod;
 import exctractionmethod.ExtractionMethodFactory;
 import result.Result;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CubeManager {
 
@@ -43,7 +42,8 @@ public class CubeManager {
 	private List<BasicStoredCube> registeredCubesList;
 	private List<Dimension> registeredDimensionsList;
 	//private HashMap<String, Dimension>
-	
+
+
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
 		cubeBase = new CubeBase(typeOfConnection, userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
@@ -60,7 +60,20 @@ public class CubeManager {
 		cubeQueryTranslator = result;
 		return result;
 	}
-	
+
+	/**
+	 * Search for a Cube based on its name
+	 * @param name the name of the Cube we want
+	 * @return the Cube, or null if not found
+	 */
+	public BasicStoredCube getCubeByName(String name) {
+		return registeredCubesList
+				.stream()
+				.filter(cube -> cube.getName().equals(name))
+				.findFirst()
+				.orElse(null);
+	}
+
 	public void createCubeBase(HashMap<String, String> userInputList) {
 		cubeBase.registerCubeBase(userInputList);
 	}
