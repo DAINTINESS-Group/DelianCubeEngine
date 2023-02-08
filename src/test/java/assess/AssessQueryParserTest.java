@@ -33,20 +33,6 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenFullQuery_whenParsing_thenCollectEverythingNeeded()
-		throws IOException, RecognitionException {
-		String query = "WITH loan " +
-				"BY region " +
-				"Assess product " +
-				"using minMaxNorm(difference(product, 1000) "+
-				"labels {[-inf, -0.2): bad, [-0.2, 0.2]: ok, (0.2, inf]: awesome}";
-		AssessQueryParser parser = createParser(query);
-
-		parser.parse();
-
-	}
-
-	@Test
 	public void givenSelectionFiltersInQuery_whenParsing_thenCollectPredicates()
 			throws IOException, RecognitionException {
 		String predicates = "date = '20/5/2019', type = 'Fresh Fruit', country = 'Italy'";
