@@ -14,19 +14,23 @@ import java.util.HashSet;
 import assess.AssessQueryBuilder;
 }
 
-parse returns [AssessQuery parsedQuery]
+@members {
+   AssessQueryBuilder builder;
+}
+
+parse [AssessQueryBuilder builder] returns [AssessQuery parsedQuery]
+    @init {this.builder = builder;}
     : result=query EOF {parsedQuery = result;};
 
 query returns [AssessQuery query]
     @init{
-    AssessQueryBuilder builder = new AssessQueryBuilder();
     List<String> comparisonMethods = new ArrayList<String>();
     }
-    : WITH targetCube = ID
-      (FOR predicates = selection_predicates)?
-      BY gammas = group_by_set
-      ASSESS measurement = ID
-      {builder.buildTargetCubeQuery($targetCube.text, $measurement.text, predicates, gammas);}
+    : WITH targetCube = ID {builder.setTargetName($targetCube.text);}
+      (FOR predicates = selection_predicates {builder.setSelectionPredicates(predicates);})?
+      BY gammas = group_by_set {builder.setGroupBySet(gammas);}
+      ASSESS measurement = ID {builder.setMeasurement($measurement.text);}
+      {builder.buildTargetCubeQueryTemplate();}
 
       (AGAINST parsedBenchmark = benchmark)?
       // Build the Benchmark Cube Here
