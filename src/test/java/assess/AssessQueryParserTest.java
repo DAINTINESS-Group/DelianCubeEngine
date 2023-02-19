@@ -33,7 +33,7 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenSelectionFiltersInQuery_whenParsing_thenCollectPredicates()
+	public void collectSelectionPredicatesTest()
 			throws IOException, RecognitionException {
 		String predicates = "date = '20/5/2019', type = 'Fresh Fruit', country = 'Italy'";
 		AssessQueryParser parser = createParser(predicates);
@@ -49,7 +49,7 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenGroupByPredicatesInQuery_whenParsing_thenCollectGroupByPredicates()
+	public void createGroupBySetTest()
 			throws IOException, RecognitionException {
 		String predicates = "country, product";
 		AssessQueryParser parser = createParser(predicates);
@@ -64,51 +64,46 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenConstantBenchmark_whenParsingQuery_thenInitializeConstantBenchmark()
+	public void identifyConstantBenchmarkTest()
 			throws IOException, RecognitionException {
 		String benchmark = "-1000";
-		AssessQueryParser parser = createParser(benchmark);
+		List<String> expected = new ArrayList<>(Arrays.asList("Constant", "-1000"));
 
-		String expected = "Constant -1000";
-		String actual = parser.benchmark();
+		AssessQueryParser parser = createParser(benchmark);
+		List<String> actual = parser.benchmark();
+
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void givenSiblingBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
+	public void identifySiblingBenchmarkTest() throws IOException, RecognitionException {
 		String benchmark = "country = 'France'";
-		AssessQueryParser parser = createParser(benchmark);
-		parser.benchmark(); // What should we check this for?
-	}
+		List<String> expected = new ArrayList<>(Arrays.asList("Sibling", "country", "France"));
 
-	@Test
-	public void givenExternalBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
-		String benchmark = "SALES.stores";
 		AssessQueryParser parser = createParser(benchmark);
-		parser.benchmark(); // What should we check this for?
-	}
-
-	@Test
-	public void givenPastBenchmark_whenParsingInput_thenIdentifyPastBenchmark() throws IOException, RecognitionException {
-		String benchmark = "past 4";
-		AssessQueryParser parser = createParser(benchmark);
-
-		String expected = "Past 4";
-		String actual = parser.benchmark();
+		List<String> actual = parser.benchmark();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void givenUsingStatement_whenParsingInput_thenIdentifyComparisonMethod()
-			throws IOException, RecognitionException {
-		String usingStatement = "ratio(storeSales,benchmark.storeSales)";
-		AssessQueryParser parser = createParser(usingStatement);
+	public void identifyExternalBenchmarkTest() throws IOException, RecognitionException {
+		String benchmark = "SALES.quantity";
+		List<String> expected = new ArrayList<>(Arrays.asList("External", "SALES", "quantity"));
 
-		List<String> expected = new ArrayList<>();
-		expected.add("ratio");
+		AssessQueryParser parser = createParser(benchmark);
+		List<String> actual = parser.benchmark();
 
-		List<String> actual = parser.comparison_scheme(new ArrayList<>());
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void identifyPastBenchmarkTest() throws IOException, RecognitionException {
+		String benchmark = "past 4";
+		List<String> expected = new ArrayList<>(Arrays.asList("Past", "4"));
+
+		AssessQueryParser parser = createParser(benchmark);
+		List<String> actual = parser.benchmark();
 
 		assertEquals(expected, actual);
 	}
@@ -143,5 +138,17 @@ public class AssessQueryParserTest {
 
 		List<List<String>> actual = parser.custom_labeling();
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	//TODO: Parser should be throwing RecognitionException
+	public void invalidQueryExceptionTest() throws IOException, RecognitionException {
+		String invalidQuery = "Assert storeSales against Sales.quantity";
+		AssessQueryParser parser = createParser(invalidQuery);
+		try {
+			parser.query();
+		} catch (RecognitionException e) {
+			e.printStackTrace();
+		}
 	}
 }

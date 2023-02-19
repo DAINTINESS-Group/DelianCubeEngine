@@ -26,11 +26,11 @@ query returns [AssessQuery query]
     @init{
     List<String> comparisonMethods = new ArrayList<String>();
     }
-    : WITH targetCube = ID {builder.setTargetName($targetCube.text);}
+    : WITH targetCube = ID {builder.setTargetCubeName($targetCube.text);}
       (FOR predicates = selection_predicates {builder.setSelectionPredicates(predicates);})?
       BY gammas = group_by_set {builder.setGroupBySet(gammas);}
       ASSESS measurement = ID {builder.setMeasurement($measurement.text);}
-      {builder.buildTargetCubeQueryTemplate();}
+      {builder.buildTargetCubeQueryString();}
 
       (AGAINST parsedBenchmark = benchmark)?
       // Build the Benchmark Cube Here
@@ -66,11 +66,26 @@ group_by_set returns [HashSet<String> groupBySet]
     : id=ID {$groupBySet.add($id.text);} (',' id=ID)* {$groupBySet.add($id.text);}
     ;
 
-benchmark returns [String parsedBenchmark]
-    : constant_benchmark {$parsedBenchmark = "Constant " + $constant_benchmark.text;}
-    | external_benchmark {System.out.println("External against cube " + $external_benchmark.cube + " measurement: " + $external_benchmark.measurement);}
-    | predicate {System.out.println("Sibling on " + $predicate.level + " being " +$predicate.value);}
-    | PAST INT {$parsedBenchmark = "Past " + $INT.text;}
+benchmark returns [List<String> parsedBenchmark]
+    @init{$parsedBenchmark = new ArrayList<>();}
+    : constant_benchmark
+    {$parsedBenchmark.add("Constant");
+    $parsedBenchmark.add($constant_benchmark.text);
+    }
+    | external_benchmark
+    {$parsedBenchmark.add("External");
+     $parsedBenchmark.add($external_benchmark.cube);
+     $parsedBenchmark.add($external_benchmark.measurement);
+     }
+    | predicate
+    {$parsedBenchmark.add("Sibling");
+     $parsedBenchmark.add($predicate.level);
+     $parsedBenchmark.add($predicate.value);
+    }
+    | PAST INT
+    {$parsedBenchmark.add("Past");
+    $parsedBenchmark.add($INT.text);
+    }
     ;
 
 constant_benchmark : (SIGN)? number = (INT|FLOAT) ;
