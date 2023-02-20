@@ -1,5 +1,6 @@
 package assess;
 
+import assess.deltas.DeltaScheme;
 import assess.labelers.CustomLabelingScheme;
 import assess.labelers.LabelingScheme;
 import cubemanager.CubeManager;
@@ -18,15 +19,20 @@ public class AssessQueryBuilder {
     //Clearly shown benchmark cube query, or cubequery parts
     //Clearly show delta
     //Clearly show labeling scheme
-    private CubeManager cubeManager;
+    private final CubeManager cubeManager;
 
+    // Fields gather by the parser
     private String targetCubeName;
     private String measurement;
     private Map<String, String> selectionPredicates;
     private Set<String> groupBySet;
-    private String benchmark;
+    private List<String> benchmark;
 
-    // TODO: Need a way to represent all of the comparison methods to be applied.
+    // Fields generated. If possible, remove them
+    private String targetCubeQuery;
+    private String benchmarkCubeQuery;
+
+    private DeltaScheme deltaScheme;
     private LabelingScheme labelingScheme;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
@@ -49,23 +55,28 @@ public class AssessQueryBuilder {
         this.groupBySet = groupBySet;
     }
 
-    public void setBenchmark(String benchmark) {
+    public void setBenchmark(List<String> benchmark) {
         this.benchmark = benchmark;
+    }
+
+    public void buildTargetCubeQueryString() {
+        targetCubeQuery = buildStringQueryTemplate();
     }
 
     /**
      * Call on the {@link cubemanager.CubeManager#createCubeQueryFromString(String, HashMap)}
      * method to create the CubeQuery.
      */
-    public String buildTargetCubeQueryTemplate() {
+    public String buildStringQueryTemplate() {
         String templateQuery = "CubeName:" + targetCubeName + "\n";
         templateQuery += "Name:" + targetCubeName + "_" + measurement + "\n";
-        templateQuery += "AggrFunc:" + "??" + "\n"; // Replace with what it should actually be
+        templateQuery += "AggrFunc:" + "??" + "\n"; // It should be defined along with the measures
         templateQuery += "Measure:" + measurement + "\n";
-        templateQuery += "Gamma:" + collectGammaLevels() + "\n"; // Ask the CubeManager to get the level(s)
-        templateQuery += "Sigma:" + collectSigmaLevels(); // Ask the CubeManager to get the level(s)
+        templateQuery += "Gamma:" + collectGammaLevels() + "\n";
+        templateQuery += "Sigma:" + collectSigmaLevels();
         return templateQuery;
     }
+
 
     private String collectSigmaLevels() {
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
@@ -81,10 +92,8 @@ public class AssessQueryBuilder {
     private String collectGammaLevels() {
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
         StringJoiner stringJoiner = new StringJoiner(",");
-        selectionPredicates.forEach((key, value) -> {
-            String result = targetCube.findLevelByName(key);
-            stringJoiner.add(result);
-        });
+        groupBySet.forEach(attribute ->
+                stringJoiner.add(targetCube.findLevelByName(attribute)));
         return stringJoiner.toString();
     }
 
@@ -111,7 +120,7 @@ public class AssessQueryBuilder {
 	}
 
     /**
-     * Builds a labeling scheme based on a predefined method
+     * FUTURE: Builds a labeling scheme based on a predefined method
      * @param method the predefined labeling method to be applied
      */
     public void buildLabelingScheme(String method) {
@@ -119,6 +128,6 @@ public class AssessQueryBuilder {
     }
 
     public AssessQuery build() {
-        return new AssessQuery(null, null, null, labelingScheme);
+        return new AssessQuery(targetCubeQuery, null, null, labelingScheme);
     }
 }

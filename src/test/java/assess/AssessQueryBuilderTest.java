@@ -106,7 +106,7 @@ public class AssessQueryBuilderTest {
 				.collect(Collectors.toCollection(HashSet::new));
 		builder.setGroupBySet(groupBySet);
 
-		String actual = builder.buildTargetCubeQueryTemplate();
+		String actual = builder.buildStringQueryTemplate();
 
 		String expected = "CubeName:sales\n" +
 				"Name:sales_quantity\n" +

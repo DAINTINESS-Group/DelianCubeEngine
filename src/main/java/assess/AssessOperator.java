@@ -38,6 +38,11 @@ public class AssessOperator {
 		AssessQuery currentAssessQuery = parser.parse(new AssessQueryBuilder(cubeManager));
 
 		//2. execute queries, match results, compare and label
+//		CubeQuery targetCube = cubeManager.createCubeQueryFromString(currentAssessQuery.targetCubeQuery, new HashMap<>());
+//		CubeQuery benchmarkCube = cubeManager.createCubeQueryFromString(currentAssessQuery.benchmarkCubeQuery, new HashMap<>());
+//
+//		Cube comparisonCube = currentAssessQuery.deltaFunction.compare(targetCube, benchmarkCube);
+//		currentAssessQuery.labelingScheme.applyLabels(comparisonCube);
 		// ???
 		return 1;
 	}

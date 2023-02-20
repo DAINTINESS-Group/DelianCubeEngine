@@ -23,7 +23,7 @@ package cubemanager.cubebase;
 import cubemanager.physicalschema.DimensionTable;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 public class Dimension {
 	/**
@@ -44,16 +44,15 @@ public class Dimension {
 		return name.equals(dimensionName);
 	}
 
-	public Level getLevel(String name) {
+	public Optional<Level> getLevel(String name) {
 		for (Hierarchy hierarchy : hierachyList) {
-			List<Level> levels = hierarchy.getLevels();
-			for (Level level : levels) {
+			for (Level level : hierarchy.getLevels()) {
 				if (level.getName().equals(name)) {
-					return level;
+					return Optional.of(level);
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	public String getTableName() {

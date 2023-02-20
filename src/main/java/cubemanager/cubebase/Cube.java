@@ -22,6 +22,7 @@ package cubemanager.cubebase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Cube {
 
@@ -48,9 +49,10 @@ public class Cube {
 	}
 	public String findLevelByName(String levelName) {
 		for (Dimension dimension : cubeDimensionsList) {
-			Level level = dimension.getLevel(levelName);
-			if (level != null) {
-				return dimension.getName() + ".lvl" + level.getPositionInHierarchy();
+			Optional<Level> optionalLevel = dimension.getLevel(levelName);
+			if(optionalLevel.isPresent()) {
+				return dimension.getName() + ".lvl" + optionalLevel.get()
+						.getPositionInHierarchy();
 			}
 		}
 		throw new RuntimeException("Level not Found");
