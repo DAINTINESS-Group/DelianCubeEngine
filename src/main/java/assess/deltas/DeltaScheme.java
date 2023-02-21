@@ -34,7 +34,7 @@ public class DeltaScheme {
 	}
 
 	public void compareCubes(Cube targetCube, Cube benchmarkCube) {
-		// Check if cubes are join able
-		// Apply each method to the cubes
+		// Check if cubes are join able?
+		// Iterate over both cubes measurements and apply deltaFunctions
 	}
 }

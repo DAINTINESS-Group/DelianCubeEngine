@@ -1,17 +1,17 @@
 package assess;
 
-import assess.deltas.AbstractDeltaClass;
+import assess.deltas.DeltaScheme;
 import assess.labelers.LabelingScheme;
 
 public class AssessQuery {
 	public final String targetCubeQuery;
 	public final String benchmarkCubeQuery;
-	public final AbstractDeltaClass deltaFunction;
+	public final DeltaScheme deltaFunction;
 	public final LabelingScheme labelingScheme;
 
 	public AssessQuery(String targetCubeQuery,
 					   String benchmarkCubeQuery,
-					   AbstractDeltaClass deltaFunction,
+					   DeltaScheme deltaFunction,
 					   LabelingScheme labelingScheme) {
 		this.targetCubeQuery = targetCubeQuery;
 		this.benchmarkCubeQuery = benchmarkCubeQuery;

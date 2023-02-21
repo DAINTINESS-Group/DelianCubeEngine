@@ -6,11 +6,16 @@ import assess.labelers.LabelingScheme;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.Cube;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * This class is used after we have parsed a query with the AssessQueryParser to
- * build the AssessQuery object.
+ * build the AssessQuery object. <br>
+ * TODO: Must follow pattern more closely (?)
  */
 public class AssessQueryBuilder {
 
@@ -20,20 +25,15 @@ public class AssessQueryBuilder {
     //Clearly show delta
     //Clearly show labeling scheme
     private final CubeManager cubeManager;
-
-    // Fields gather by the parser
     private String targetCubeName;
-    private String measurement;
     private Map<String, String> selectionPredicates;
+    private String aggregationFunction;
+    private String measurement;
     private Set<String> groupBySet;
-    private List<String> benchmark;
+    private List<String> benchmarkDetails;
+    private List<String> deltaFunctions;
+    private List<List<String>> labelingRules;
 
-    // Fields generated. If possible, remove them
-    private String targetCubeQuery;
-    private String benchmarkCubeQuery;
-
-    private DeltaScheme deltaScheme;
-    private LabelingScheme labelingScheme;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
@@ -41,6 +41,10 @@ public class AssessQueryBuilder {
 
     public void setTargetCubeName(String targetCubeName) {
         this.targetCubeName = targetCubeName.toLowerCase(); // Assuming cubes are stored in lowercase
+    }
+
+    public void setAggregationFunction(String aggregationFunction) {
+        this.aggregationFunction = aggregationFunction.toLowerCase();
     }
 
     public void setMeasurement(String measurement) {
@@ -55,28 +59,23 @@ public class AssessQueryBuilder {
         this.groupBySet = groupBySet;
     }
 
-    public void setBenchmark(List<String> benchmark) {
-        this.benchmark = benchmark;
-    }
-
-    public void buildTargetCubeQueryString() {
-        targetCubeQuery = buildStringQueryTemplate();
+    public void setBenchmarkDetails(List<String> benchmarkDetails) {
+        this.benchmarkDetails = benchmarkDetails;
     }
 
     /**
      * Call on the {@link cubemanager.CubeManager#createCubeQueryFromString(String, HashMap)}
      * method to create the CubeQuery.
      */
-    public String buildStringQueryTemplate() {
+    private String buildStringQueryTemplate() {
         String templateQuery = "CubeName:" + targetCubeName + "\n";
         templateQuery += "Name:" + targetCubeName + "_" + measurement + "\n";
-        templateQuery += "AggrFunc:" + "??" + "\n"; // It should be defined along with the measures
+        templateQuery += "AggrFunc:" + aggregationFunction + "\n";
         templateQuery += "Measure:" + measurement + "\n";
         templateQuery += "Gamma:" + collectGammaLevels() + "\n";
         templateQuery += "Sigma:" + collectSigmaLevels();
         return templateQuery;
     }
-
 
     private String collectSigmaLevels() {
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
@@ -97,26 +96,26 @@ public class AssessQueryBuilder {
         return stringJoiner.toString();
     }
 
-    public void buildBenchmarkCubeQuery() {
-        System.out.println(benchmark);
-        // TODO: Build the benchmark query
-        // What if a benchmark is not defined in the Query?
+    private String buildBenchmarkCubeQuery() {
+        // This will be a factory method
+        switch (benchmarkDetails.get(0)) {
+            case "Sibling": return "Sibling Benchmark";
+            case "Past": return "Past Benchmark";
+            case "External": return "External Benchmark";
+            case "Constant": return "Constant Benchmark";
+            default: throw new RuntimeException("Unrecognized Benchmark Type");
+        }
     }
 
-    /**
-     * This method accepts a list of comparison method names and
-     * initializes the delta scheme.
-     * @param methods The Comparison methods to be used
+    public void setDeltaFunctions(List<String> methods) {
+        deltaFunctions = methods;
+    }
+
+    /* FUTURE: Create a factory method that contains the overriding methods
+     * buildLabelingScheme.
      */
-    public void buildDeltaScheme(List<String> methods) {
-        System.out.println("Building the Comparison Scheme");
-        for (String method : methods)
-            System.out.println(method);
-    }
-
-    public void buildLabelingScheme(List<List<String>> rulesList) {
-        System.out.println("Building Custom Labeling Scheme...");
-        labelingScheme = new CustomLabelingScheme(rulesList);
+    public void setLabelingRules(List<List<String>> rulesList) {
+        labelingRules = rulesList;
 	}
 
     /**
@@ -124,10 +123,15 @@ public class AssessQueryBuilder {
      * @param method the predefined labeling method to be applied
      */
     public void buildLabelingScheme(String method) {
+        System.out.println("I am not currently implemented!");
         System.out.println("Labeling Method: " + method);
     }
 
     public AssessQuery build() {
-        return new AssessQuery(targetCubeQuery, null, null, labelingScheme);
+        String targetCubeQuery = buildStringQueryTemplate();
+        String benchmarkQuery = buildBenchmarkCubeQuery();
+        DeltaScheme deltaScheme = new DeltaScheme(deltaFunctions);
+        LabelingScheme labelingScheme = new CustomLabelingScheme(labelingRules);
+        return new AssessQuery(targetCubeQuery, benchmarkQuery, deltaScheme, labelingScheme);
     }
 }
