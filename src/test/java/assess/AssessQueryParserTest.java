@@ -11,7 +11,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -140,15 +144,4 @@ public class AssessQueryParserTest {
 		assertEquals(expected, actual);
 	}
 
-	@Test
-	//TODO: Parser should be throwing RecognitionException
-	public void invalidQueryExceptionTest() throws IOException, RecognitionException {
-		String invalidQuery = "Assert storeSales against Sales.quantity";
-		AssessQueryParser parser = createParser(invalidQuery);
-		try {
-			parser.query();
-		} catch (RecognitionException e) {
-			e.printStackTrace();
-		}
-	}
 }

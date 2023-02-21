@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +30,7 @@ public class AssessQueryBuilderTest {
 	@BeforeClass
 	public static void initializeBuilder() {
 		CubeManager mockedCubeManager = createMockedCubeManager();
-		builder = new AssessQueryBuilder(mockedCubeManager);
+		initializeBuilder(mockedCubeManager);
 	}
 
 	private static CubeManager createMockedCubeManager() {
@@ -84,37 +82,51 @@ public class AssessQueryBuilderTest {
 		return result;
 	}
 
-
-	/* A possible query
+	/* The original query:
 	with SALES
 	for month = ’7/2019’, store = ’SmartMart’ (Selection Predicates)
 	by month, store
-	assess storeSales against past 4
+	assess sum(storeSales) against past 4
 	using ratio(storeSales, benchmark.storeSales)
 	labels {[0, 0.9): worse, [0.9, 1.1]: fine, (1.1,inf): better}
 	 */
+	private static void initializeBuilder(CubeManager mockedCubeManager) {
+		builder = new AssessQueryBuilder(mockedCubeManager);
+		builder.setTargetCubeName("SaLeS");
+
+		builder.setSelectionPredicates(
+				Stream.of(new String[][]{
+						{"month", "07/2019"},
+						{"store", "SmartMart"}
+				}).collect(Collectors.toMap(data -> data[0], data -> data[1])));
+
+		builder.setGroupBySet(
+				Stream.of("month", "store")
+						.collect(Collectors.toCollection(HashSet::new)));
+
+		builder.setAggregationFunction("Sum");
+		builder.setMeasurement("storeSales");
+		builder.setBenchmarkDetails(Arrays.asList("Past", "4"));
+		builder.setDeltaFunctions(Arrays.asList("ratio"));
+
+		List<List<String>> rules = new ArrayList<>();
+		rules.add(Arrays.asList("(", "-inf", "-10.0", ")", "bad"));
+		rules.add(Arrays.asList("[", "-10.0", "10.0", "]", "average"));
+		rules.add(Arrays.asList("(", "10.0", "inf", "]", "good"));
+		builder.setLabelingRules(rules);
+	}
+
 	@Test
 	public void testBuildingTargetCubeQuery() {
-		builder.setTargetCubeName("SaLEs");
-		builder.setMeasurement("quantity");
-		Map<String, String> selectionPredicates = Stream.of(new String[][]{
-				{"month", "07/2019"},
-				{"store", "SmartMart"}
-		}).collect(Collectors.toMap(data -> data[0], data -> data[1]));
-		builder.setSelectionPredicates(selectionPredicates);
-		Set<String> groupBySet = Stream.of("month", "store")
-				.collect(Collectors.toCollection(HashSet::new));
-		builder.setGroupBySet(groupBySet);
-
-		String actual = builder.buildStringQueryTemplate();
+		AssessQuery query = builder.build();
 
 		String expected = "CubeName:sales\n" +
-				"Name:sales_quantity\n" +
-				"AggrFunc:??\n" +
-				"Measure:quantity\n" +
+				"Name:sales_storeSales\n" +
+				"AggrFunc:sum\n" +
+				"Measure:storeSales\n" +
 				"Gamma:date.lvl1,store.lvl0\n" +
 				"Sigma:date.lvl1='07/2019',store.lvl0='SmartMart'";
-		assertEquals(expected, actual);
+		assertEquals(expected, query.targetCubeQuery);
 	}
 	// Create a test for each benchmark type
 	// Sibling benchmark should identify what are the hierarchies that can define siblings
