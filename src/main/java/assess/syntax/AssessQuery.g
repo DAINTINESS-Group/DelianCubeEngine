@@ -29,21 +29,22 @@ query returns [AssessQuery query]
     : WITH targetCube = ID {builder.setTargetCubeName($targetCube.text);}
       (FOR predicates = selection_predicates {builder.setSelectionPredicates(predicates);})?
       BY gammas = group_by_set {builder.setGroupBySet(gammas);}
-      ASSESS measurement = ID {builder.setMeasurement($measurement.text);}
-      {builder.buildTargetCubeQueryString();}
+      ASSESS AGGREGATE {builder.setAggregationFunction($AGGREGATE.text);}
+      '(' measurement = ID {builder.setMeasurement($measurement.text);} ')'
 
-      (AGAINST parsedBenchmark = benchmark)?
-      // Build the Benchmark Cube Here
+      (AGAINST parsedBenchmark = benchmark
+      {builder.setBenchmarkDetails(parsedBenchmark);})?
 
       (USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
-      {builder.buildDeltaScheme(updatedComparisonMethods);})?
+      {builder.setDeltaFunctions(updatedComparisonMethods);})?
 
       // Build the Labeling Scheme Here
       LABELS (labelingMethod = ID
       {builder.buildLabelingScheme($labelingMethod.text);}
       | labelingSystem = custom_labeling
-      {builder.buildLabelingScheme(labelingSystem);}
+      {builder.setLabelingRules(labelingSystem);}
       )
+      {$query = builder.build();}
     ;
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
@@ -126,21 +127,30 @@ range_point : SIGN? (INT|FLOAT|'inf');
 // Fragments
 fragment A : ('A'|'a');
 fragment B : ('B'|'b');
+fragment C : ('C'|'c');
+fragment D : ('D'|'d');
 fragment E : ('E'|'e');
 fragment F : ('F'|'f');
 fragment G : ('G'|'g');
 fragment H : ('H'|'h');
 fragment I : ('I'|'i');
+fragment J : ('J'|'j');
+fragment K : ('K'|'k');
 fragment L : ('L'|'l');
+fragment M : ('M'|'m');
 fragment N : ('N'|'n');
 fragment O : ('O'|'o');
 fragment P : ('P'|'p');
+fragment Q : ('Q'|'q');
 fragment R : ('R'|'r');
 fragment S : ('S'|'s');
 fragment T : ('T'|'t');
 fragment U : ('U'|'u');
+fragment V : ('V'|'v');
 fragment W : ('W'|'w');
+fragment X : ('X'|'x');
 fragment Y : ('Y'|'y');
+fragment Z : ('Z'|'z');
 
 // Keywords (case-insensitive)
 AGAINST : A G A I N S T;
@@ -151,6 +161,11 @@ LABELS : L A B E L S;
 PAST : P A S T;
 USING : U S I N G;
 WITH : W I T H;
+
+AGGREGATE : (A V G | A V E R A G E
+          | M I N | M I N I M U M
+          | M A X | M A X I M U M
+          | S U M | C O U N T);
 
 // LEXICAL TOKENS
 SIGN : ('+' | '-');
