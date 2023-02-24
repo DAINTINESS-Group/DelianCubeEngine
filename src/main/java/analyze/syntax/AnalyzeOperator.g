@@ -4,7 +4,7 @@ options {
 	output = Java;
 }
 
-tokens{ANALYZE;AND;AGGRFUNC;FROM;FOR;GROUP;BY;COMMA;EQUAL;ENDANALYZE;TEXTVALUE;NUMBER;LETTER;WORD;WS;}
+tokens{ANALYZE;AND;AS;AGGRFUNC;FROM;FOR;GROUP;BY;COMMA;EQUAL;LPARENTHESIS;RPARENTHESIS;TEXTVALUE;NUMBER;LETTER;WORD;WS;}
 
 @header{
 	package analyze.syntax;
@@ -20,6 +20,7 @@ tokens{ANALYZE;AND;AGGRFUNC;FROM;FOR;GROUP;BY;COMMA;EQUAL;ENDANALYZE;TEXTVALUE;N
 	ArrayList<String> sigmaExpressions;
 	HashMap<String,String> sigmaExpressionsValues;
 	ArrayList<String> gammaExpressions;
+	String queryAlias;
 }
 
 @lexer::header {
@@ -32,7 +33,7 @@ start:{
 	gammaExpressions = new ArrayList<String>();
 }parse;
 
-parse: ANALYZE aggrfunc measure FROM cubeName FOR sigmaExpressions GROUP BY gammaExpressions ENDANALYZE;
+parse: ANALYZE aggrfunc LPARENTHESIS measure RPARENTHESIS FROM cubeName FOR sigmaExpressions GROUP BY gammaExpressions AS queryAlias;
 
 aggrfunc:AGGRFUNC{aggrFunc=$AGGRFUNC.text;};
 
@@ -48,14 +49,18 @@ sigmaExpressionNumberValue: WORD EQUAL NUMBER {sigmaExpressions.add($WORD.text);
 
 sigmaExpressionTextValue: WORD EQUAL TEXTVALUE {sigmaExpressions.add($WORD.text);sigmaExpressionsValues.put($WORD.text,$TEXTVALUE.text);};	
 
-gammaExpressions: gammaExpression COMMA gammaExpression;
+gammaExpressions: gammaExpression (COMMA gammaExpression)*;
 
 gammaExpression: WORD{gammaExpressions.add($WORD.text);};
+
+queryAlias: WORD{queryAlias=$WORD.text;};	
 
 
 ANALYZE: A N A L Y Z E;
 
 AND:A N D;
+
+AS: A S;	
 
 FROM: F R O M;
 
@@ -71,13 +76,15 @@ COMMA: ',';
 
 EQUAL: '=';
 
-ENDANALYZE: ';';
+LPARENTHESIS: '(';
 
-WORD: (LETTER | '_')+;
+RPARENTHESIS: ')';		 
 
-TEXTVALUE: '"'(LETTER|'_'|'/'|'-'|' ')+ '"';
+WORD: (LETTER | '_'|DIGIT)+;
 
-NUMBER: '"''-'?(DIGIT|'-')+('.'(DIGIT|'-')+)?'"' ;
+TEXTVALUE: '\''(LETTER|'_'|'/'|'-'|' ')+ '\'';
+
+NUMBER: '\'''-'?(DIGIT|'-')+('.'(DIGIT|'-')+)?'\'' ;
 
 fragment DIGIT :  '0'..'9';
 fragment LETTER :  'a'..'z' |  'A'..'Z';

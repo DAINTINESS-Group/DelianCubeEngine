@@ -15,11 +15,13 @@ public interface CubeQueryGenerator {
 															 String measure,
 															 String cubeName,
 															 ArrayList<String> sigmaExpressions,
-															 HashMap<String,String> sigmaExpressionsValues,
+															 HashMap<String,String> sigmaExpressionsToValues,
 															 ArrayList<String> gammaExpressions,
+															 String queryAlias,
 															 HashMap<String,String> dimensions,
-															 HashMap<String,String> childrenLevels,
-															 HashMap<String,String> parentLevels,
-															 HashMap<String,String> tableName,
-															 HashMap<String,String> currentLevelDescriptions);
+															 HashMap<String,String> childToLevel,
+															 HashMap<String,String> parentToLevel,
+															 HashMap<String,String> expressionToTableName,
+															 HashMap<String,String> currentLevelToDescriptions,
+															 String schemaName);
 }

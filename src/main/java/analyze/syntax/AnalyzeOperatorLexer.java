@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g 2023-01-27 13:24:40
+// $ANTLR 3.5.1 C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g 2023-02-22 13:25:59
 
 	package analyze.syntax;
 
@@ -15,14 +15,14 @@ public class AnalyzeOperatorLexer extends Lexer {
 	public static final int AGGRFUNC=5;
 	public static final int ANALYZE=6;
 	public static final int AND=7;
-	public static final int B=8;
-	public static final int BY=9;
-	public static final int C=10;
-	public static final int COMMA=11;
-	public static final int D=12;
-	public static final int DIGIT=13;
-	public static final int E=14;
-	public static final int ENDANALYZE=15;
+	public static final int AS=8;
+	public static final int B=9;
+	public static final int BY=10;
+	public static final int C=11;
+	public static final int COMMA=12;
+	public static final int D=13;
+	public static final int DIGIT=14;
+	public static final int E=15;
 	public static final int EQUAL=16;
 	public static final int F=17;
 	public static final int FOR=18;
@@ -35,24 +35,26 @@ public class AnalyzeOperatorLexer extends Lexer {
 	public static final int K=25;
 	public static final int L=26;
 	public static final int LETTER=27;
-	public static final int M=28;
-	public static final int N=29;
-	public static final int NUMBER=30;
-	public static final int O=31;
-	public static final int P=32;
-	public static final int Q=33;
-	public static final int R=34;
-	public static final int S=35;
-	public static final int T=36;
-	public static final int TEXTVALUE=37;
-	public static final int U=38;
-	public static final int V=39;
-	public static final int W=40;
-	public static final int WORD=41;
-	public static final int WS=42;
-	public static final int X=43;
-	public static final int Y=44;
-	public static final int Z=45;
+	public static final int LPARENTHESIS=28;
+	public static final int M=29;
+	public static final int N=30;
+	public static final int NUMBER=31;
+	public static final int O=32;
+	public static final int P=33;
+	public static final int Q=34;
+	public static final int R=35;
+	public static final int RPARENTHESIS=36;
+	public static final int S=37;
+	public static final int T=38;
+	public static final int TEXTVALUE=39;
+	public static final int U=40;
+	public static final int V=41;
+	public static final int W=42;
+	public static final int WORD=43;
+	public static final int WS=44;
+	public static final int X=45;
+	public static final int Y=46;
+	public static final int Z=47;
 
 	// delegates
 	// delegators
@@ -74,8 +76,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = ANALYZE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:56:8: ( A N A L Y Z E )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:56:10: A N A L Y Z E
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:59:8: ( A N A L Y Z E )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:59:10: A N A L Y Z E
 			{
 			mA(); 
 
@@ -107,8 +109,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = AND;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:58:4: ( A N D )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:58:5: A N D
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:61:4: ( A N D )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:61:5: A N D
 			{
 			mA(); 
 
@@ -127,13 +129,36 @@ public class AnalyzeOperatorLexer extends Lexer {
 	}
 	// $ANTLR end "AND"
 
+	// $ANTLR start "AS"
+	public final void mAS() throws RecognitionException {
+		try {
+			int _type = AS;
+			int _channel = DEFAULT_TOKEN_CHANNEL;
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:63:3: ( A S )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:63:5: A S
+			{
+			mA(); 
+
+			mS(); 
+
+			}
+
+			state.type = _type;
+			state.channel = _channel;
+		}
+		finally {
+			// do for sure before leaving
+		}
+	}
+	// $ANTLR end "AS"
+
 	// $ANTLR start "FROM"
 	public final void mFROM() throws RecognitionException {
 		try {
 			int _type = FROM;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:60:5: ( F R O M )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:60:7: F R O M
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:65:5: ( F R O M )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:65:7: F R O M
 			{
 			mF(); 
 
@@ -159,8 +184,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = FOR;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:62:4: ( F O R )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:62:6: F O R
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:67:4: ( F O R )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:67:6: F O R
 			{
 			mF(); 
 
@@ -184,8 +209,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = GROUP;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:64:6: ( G R O U P )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:64:7: G R O U P
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:69:6: ( G R O U P )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:69:7: G R O U P
 			{
 			mG(); 
 
@@ -213,8 +238,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = BY;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:66:3: ( B Y )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:66:5: B Y
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:71:3: ( B Y )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:71:5: B Y
 			{
 			mB(); 
 
@@ -236,10 +261,10 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = AGGRFUNC;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:9: ( ( M I N | M A X | S U M | A V G | C N T ) )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:10: ( M I N | M A X | S U M | A V G | C N T )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:9: ( ( M I N | M A X | S U M | A V G | C N T ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:10: ( M I N | M A X | S U M | A V G | C N T )
 			{
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:10: ( M I N | M A X | S U M | A V G | C N T )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:10: ( M I N | M A X | S U M | A V G | C N T )
 			int alt1=5;
 			switch ( input.LA(1) ) {
 			case 'M':
@@ -292,7 +317,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 			}
 			switch (alt1) {
 				case 1 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:11: M I N
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:11: M I N
 					{
 					mM(); 
 
@@ -303,7 +328,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 					}
 					break;
 				case 2 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:17: M A X
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:17: M A X
 					{
 					mM(); 
 
@@ -314,7 +339,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 					}
 					break;
 				case 3 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:23: S U M
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:23: S U M
 					{
 					mS(); 
 
@@ -325,7 +350,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 					}
 					break;
 				case 4 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:29: A V G
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:29: A V G
 					{
 					mA(); 
 
@@ -336,7 +361,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 					}
 					break;
 				case 5 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:68:35: C N T
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:73:35: C N T
 					{
 					mC(); 
 
@@ -365,8 +390,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = COMMA;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:70:6: ( ',' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:70:8: ','
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:75:6: ( ',' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:75:8: ','
 			{
 			match(','); 
 			}
@@ -385,8 +410,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = EQUAL;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:72:6: ( '=' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:72:8: '='
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:77:6: ( '=' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:77:8: '='
 			{
 			match('='); 
 			}
@@ -400,15 +425,15 @@ public class AnalyzeOperatorLexer extends Lexer {
 	}
 	// $ANTLR end "EQUAL"
 
-	// $ANTLR start "ENDANALYZE"
-	public final void mENDANALYZE() throws RecognitionException {
+	// $ANTLR start "LPARENTHESIS"
+	public final void mLPARENTHESIS() throws RecognitionException {
 		try {
-			int _type = ENDANALYZE;
+			int _type = LPARENTHESIS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:74:11: ( ';' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:74:13: ';'
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:79:13: ( '(' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:79:15: '('
 			{
-			match(';'); 
+			match('('); 
 			}
 
 			state.type = _type;
@@ -418,23 +443,43 @@ public class AnalyzeOperatorLexer extends Lexer {
 			// do for sure before leaving
 		}
 	}
-	// $ANTLR end "ENDANALYZE"
+	// $ANTLR end "LPARENTHESIS"
+
+	// $ANTLR start "RPARENTHESIS"
+	public final void mRPARENTHESIS() throws RecognitionException {
+		try {
+			int _type = RPARENTHESIS;
+			int _channel = DEFAULT_TOKEN_CHANNEL;
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:81:13: ( ')' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:81:15: ')'
+			{
+			match(')'); 
+			}
+
+			state.type = _type;
+			state.channel = _channel;
+		}
+		finally {
+			// do for sure before leaving
+		}
+	}
+	// $ANTLR end "RPARENTHESIS"
 
 	// $ANTLR start "WORD"
 	public final void mWORD() throws RecognitionException {
 		try {
 			int _type = WORD;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:76:5: ( ( LETTER | '_' )+ )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:76:7: ( LETTER | '_' )+
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:83:5: ( ( LETTER | '_' | DIGIT )+ )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:83:7: ( LETTER | '_' | DIGIT )+
 			{
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:76:7: ( LETTER | '_' )+
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:83:7: ( LETTER | '_' | DIGIT )+
 			int cnt2=0;
 			loop2:
 			while (true) {
 				int alt2=2;
 				int LA2_0 = input.LA(1);
-				if ( ((LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
+				if ( ((LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
 					alt2=1;
 				}
 
@@ -442,7 +487,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 				case 1 :
 					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 					{
-					if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 						input.consume();
 					}
 					else {
@@ -477,11 +522,11 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = TEXTVALUE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:78:10: ( '\"' ( LETTER | '_' | '/' | '-' | ' ' )+ '\"' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:78:12: '\"' ( LETTER | '_' | '/' | '-' | ' ' )+ '\"'
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:10: ( '\\'' ( LETTER | '_' | '/' | '-' | ' ' )+ '\\'' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:12: '\\'' ( LETTER | '_' | '/' | '-' | ' ' )+ '\\''
 			{
-			match('\"'); 
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:78:15: ( LETTER | '_' | '/' | '-' | ' ' )+
+			match('\''); 
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:16: ( LETTER | '_' | '/' | '-' | ' ' )+
 			int cnt3=0;
 			loop3:
 			while (true) {
@@ -514,7 +559,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 				cnt3++;
 			}
 
-			match('\"'); 
+			match('\''); 
 			}
 
 			state.type = _type;
@@ -531,11 +576,11 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = NUMBER;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:7: ( '\"' ( '-' )? ( DIGIT | '-' )+ ( '.' ( DIGIT | '-' )+ )? '\"' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:9: '\"' ( '-' )? ( DIGIT | '-' )+ ( '.' ( DIGIT | '-' )+ )? '\"'
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:7: ( '\\'' ( '-' )? ( DIGIT | '-' )+ ( '.' ( DIGIT | '-' )+ )? '\\'' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:9: '\\'' ( '-' )? ( DIGIT | '-' )+ ( '.' ( DIGIT | '-' )+ )? '\\''
 			{
-			match('\"'); 
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:12: ( '-' )?
+			match('\''); 
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:13: ( '-' )?
 			int alt4=2;
 			int LA4_0 = input.LA(1);
 			if ( (LA4_0=='-') ) {
@@ -543,7 +588,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 			}
 			switch (alt4) {
 				case 1 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:12: '-'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:13: '-'
 					{
 					match('-'); 
 					}
@@ -551,7 +596,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 
 			}
 
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:16: ( DIGIT | '-' )+
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:17: ( DIGIT | '-' )+
 			int cnt5=0;
 			loop5:
 			while (true) {
@@ -584,7 +629,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 				cnt5++;
 			}
 
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:28: ( '.' ( DIGIT | '-' )+ )?
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:29: ( '.' ( DIGIT | '-' )+ )?
 			int alt7=2;
 			int LA7_0 = input.LA(1);
 			if ( (LA7_0=='.') ) {
@@ -592,10 +637,10 @@ public class AnalyzeOperatorLexer extends Lexer {
 			}
 			switch (alt7) {
 				case 1 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:29: '.' ( DIGIT | '-' )+
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:30: '.' ( DIGIT | '-' )+
 					{
 					match('.'); 
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:80:32: ( DIGIT | '-' )+
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:33: ( DIGIT | '-' )+
 					int cnt6=0;
 					loop6:
 					while (true) {
@@ -633,7 +678,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 
 			}
 
-			match('\"'); 
+			match('\''); 
 			}
 
 			state.type = _type;
@@ -648,7 +693,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "DIGIT"
 	public final void mDIGIT() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:82:16: ( '0' .. '9' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:89:16: ( '0' .. '9' )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -671,7 +716,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "LETTER"
 	public final void mLETTER() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:83:17: ( 'a' .. 'z' | 'A' .. 'Z' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:90:17: ( 'a' .. 'z' | 'A' .. 'Z' )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -694,7 +739,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "A"
 	public final void mA() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:84:11: ( ( 'A' | 'a' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:91:11: ( ( 'A' | 'a' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
@@ -717,7 +762,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "B"
 	public final void mB() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:11: ( ( 'B' | 'b' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:92:11: ( ( 'B' | 'b' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='B'||input.LA(1)=='b' ) {
@@ -740,7 +785,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "C"
 	public final void mC() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:86:11: ( ( 'C' | 'c' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:93:11: ( ( 'C' | 'c' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
@@ -763,7 +808,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "D"
 	public final void mD() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:87:11: ( ( 'D' | 'd' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:94:11: ( ( 'D' | 'd' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
@@ -786,7 +831,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "E"
 	public final void mE() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:88:11: ( ( 'E' | 'e' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:95:11: ( ( 'E' | 'e' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
@@ -809,7 +854,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "F"
 	public final void mF() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:89:11: ( ( 'F' | 'f' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:96:11: ( ( 'F' | 'f' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
@@ -832,7 +877,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "G"
 	public final void mG() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:90:11: ( ( 'G' | 'g' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:97:11: ( ( 'G' | 'g' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='G'||input.LA(1)=='g' ) {
@@ -855,7 +900,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "H"
 	public final void mH() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:91:11: ( ( 'H' | 'h' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:98:11: ( ( 'H' | 'h' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='H'||input.LA(1)=='h' ) {
@@ -878,7 +923,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "I"
 	public final void mI() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:92:11: ( ( 'I' | 'i' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:99:11: ( ( 'I' | 'i' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
@@ -901,7 +946,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "J"
 	public final void mJ() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:93:11: ( ( 'J' | 'j' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:100:11: ( ( 'J' | 'j' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='J'||input.LA(1)=='j' ) {
@@ -924,7 +969,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "K"
 	public final void mK() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:94:11: ( ( 'K' | 'k' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:101:11: ( ( 'K' | 'k' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='K'||input.LA(1)=='k' ) {
@@ -947,7 +992,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "L"
 	public final void mL() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:95:11: ( ( 'L' | 'l' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:102:11: ( ( 'L' | 'l' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
@@ -970,7 +1015,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "M"
 	public final void mM() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:96:11: ( ( 'M' | 'm' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:103:11: ( ( 'M' | 'm' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
@@ -993,7 +1038,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "N"
 	public final void mN() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:97:11: ( ( 'N' | 'n' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:104:11: ( ( 'N' | 'n' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
@@ -1016,7 +1061,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "O"
 	public final void mO() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:98:11: ( ( 'O' | 'o' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:105:11: ( ( 'O' | 'o' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
@@ -1039,7 +1084,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "P"
 	public final void mP() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:99:11: ( ( 'P' | 'p' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:106:11: ( ( 'P' | 'p' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='P'||input.LA(1)=='p' ) {
@@ -1062,7 +1107,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "Q"
 	public final void mQ() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:100:11: ( ( 'Q' | 'q' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:107:11: ( ( 'Q' | 'q' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='Q'||input.LA(1)=='q' ) {
@@ -1085,7 +1130,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "R"
 	public final void mR() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:101:11: ( ( 'R' | 'r' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:108:11: ( ( 'R' | 'r' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
@@ -1108,7 +1153,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "S"
 	public final void mS() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:102:11: ( ( 'S' | 's' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:109:11: ( ( 'S' | 's' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
@@ -1131,7 +1176,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "T"
 	public final void mT() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:103:11: ( ( 'T' | 't' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:110:11: ( ( 'T' | 't' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
@@ -1154,7 +1199,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "U"
 	public final void mU() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:104:11: ( ( 'U' | 'u' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:11: ( ( 'U' | 'u' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
@@ -1177,7 +1222,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "V"
 	public final void mV() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:105:11: ( ( 'V' | 'v' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:112:11: ( ( 'V' | 'v' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='V'||input.LA(1)=='v' ) {
@@ -1200,7 +1245,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "W"
 	public final void mW() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:106:11: ( ( 'W' | 'w' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:113:11: ( ( 'W' | 'w' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='W'||input.LA(1)=='w' ) {
@@ -1223,7 +1268,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "X"
 	public final void mX() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:107:11: ( ( 'X' | 'x' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:114:11: ( ( 'X' | 'x' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -1246,7 +1291,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "Y"
 	public final void mY() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:108:11: ( ( 'Y' | 'y' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:115:11: ( ( 'Y' | 'y' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='Y'||input.LA(1)=='y' ) {
@@ -1269,7 +1314,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 	// $ANTLR start "Z"
 	public final void mZ() throws RecognitionException {
 		try {
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:109:11: ( ( 'Z' | 'z' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:116:11: ( ( 'Z' | 'z' ) )
 			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 			{
 			if ( input.LA(1)=='Z'||input.LA(1)=='z' ) {
@@ -1294,10 +1339,10 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = WS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:3: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' ) )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:3: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' ) )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
 			{
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
 			int alt8=6;
 			switch ( input.LA(1) ) {
 			case ' ':
@@ -1340,38 +1385,38 @@ public class AnalyzeOperatorLexer extends Lexer {
 			}
 			switch (alt8) {
 				case 1 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:6: ' '
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:6: ' '
 					{
 					match(' '); 
 					}
 					break;
 				case 2 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:12: '\\t'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:12: '\\t'
 					{
 					match('\t'); 
 					}
 					break;
 				case 3 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:19: '\\r'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:19: '\\r'
 					{
 					match('\r'); 
 					}
 					break;
 				case 4 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:25: '\\n'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:25: '\\n'
 					{
 					match('\n'); 
 					}
 					break;
 				case 5 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:30: '\\r\\n'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:30: '\\r\\n'
 					{
 					match("\r\n"); 
 
 					}
 					break;
 				case 6 :
-					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:111:37: '\\f'
+					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:118:37: '\\f'
 					{
 					match('\f'); 
 					}
@@ -1393,8 +1438,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 
 	@Override
 	public void mTokens() throws RecognitionException {
-		// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:8: ( ANALYZE | AND | FROM | FOR | GROUP | BY | AGGRFUNC | COMMA | EQUAL | ENDANALYZE | WORD | TEXTVALUE | NUMBER | WS )
-		int alt9=14;
+		// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:8: ( ANALYZE | AND | AS | FROM | FOR | GROUP | BY | AGGRFUNC | COMMA | EQUAL | LPARENTHESIS | RPARENTHESIS | WORD | TEXTVALUE | NUMBER | WS )
+		int alt9=16;
 		alt9 = dfa9.predict(input);
 		switch (alt9) {
 			case 1 :
@@ -1412,84 +1457,98 @@ public class AnalyzeOperatorLexer extends Lexer {
 				}
 				break;
 			case 3 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:22: FROM
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:22: AS
+				{
+				mAS(); 
+
+				}
+				break;
+			case 4 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:25: FROM
 				{
 				mFROM(); 
 
 				}
 				break;
-			case 4 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:27: FOR
+			case 5 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:30: FOR
 				{
 				mFOR(); 
 
 				}
 				break;
-			case 5 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:31: GROUP
+			case 6 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:34: GROUP
 				{
 				mGROUP(); 
 
 				}
 				break;
-			case 6 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:37: BY
+			case 7 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:40: BY
 				{
 				mBY(); 
 
 				}
 				break;
-			case 7 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:40: AGGRFUNC
+			case 8 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:43: AGGRFUNC
 				{
 				mAGGRFUNC(); 
 
 				}
 				break;
-			case 8 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:49: COMMA
+			case 9 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:52: COMMA
 				{
 				mCOMMA(); 
 
 				}
 				break;
-			case 9 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:55: EQUAL
+			case 10 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:58: EQUAL
 				{
 				mEQUAL(); 
 
 				}
 				break;
-			case 10 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:61: ENDANALYZE
+			case 11 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:64: LPARENTHESIS
 				{
-				mENDANALYZE(); 
+				mLPARENTHESIS(); 
 
 				}
 				break;
-			case 11 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:72: WORD
+			case 12 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:77: RPARENTHESIS
+				{
+				mRPARENTHESIS(); 
+
+				}
+				break;
+			case 13 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:90: WORD
 				{
 				mWORD(); 
 
 				}
 				break;
-			case 12 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:77: TEXTVALUE
+			case 14 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:95: TEXTVALUE
 				{
 				mTEXTVALUE(); 
 
 				}
 				break;
-			case 13 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:87: NUMBER
+			case 15 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:105: NUMBER
 				{
 				mNUMBER(); 
 
 				}
 				break;
-			case 14 :
-				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:94: WS
+			case 16 :
+				// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:1:112: WS
 				{
 				mWS(); 
 
@@ -1502,86 +1561,92 @@ public class AnalyzeOperatorLexer extends Lexer {
 
 	protected DFA9 dfa9 = new DFA9(this);
 	static final String DFA9_eotS =
-		"\1\uffff\7\13\6\uffff\5\13\1\41\4\13\3\uffff\1\13\1\51\1\52\1\13\1\54"+
-		"\1\13\1\uffff\4\52\2\uffff\1\13\2\uffff\1\57\1\uffff\2\13\1\uffff\1\62"+
-		"\1\13\1\uffff\1\64\1\uffff";
+		"\1\uffff\7\14\7\uffff\1\14\1\37\4\14\1\44\4\14\3\uffff\1\14\1\54\1\uffff"+
+		"\1\55\1\14\1\57\1\14\1\uffff\4\55\2\uffff\1\14\2\uffff\1\62\1\uffff\2"+
+		"\14\1\uffff\1\65\1\14\1\uffff\1\67\1\uffff";
 	static final String DFA9_eofS =
-		"\65\uffff";
+		"\70\uffff";
 	static final String DFA9_minS =
-		"\1\11\1\116\1\117\1\122\1\131\1\101\1\125\1\116\4\uffff\1\40\1\uffff\1"+
-		"\101\1\107\1\117\1\122\1\117\1\101\1\116\1\130\1\115\1\124\1\40\2\uffff"+
-		"\1\114\2\101\1\115\1\101\1\125\1\uffff\4\101\1\uffff\1\40\1\131\2\uffff"+
-		"\1\101\1\uffff\1\120\1\132\1\uffff\1\101\1\105\1\uffff\1\101\1\uffff";
+		"\1\11\1\116\1\117\1\122\1\131\1\101\1\125\1\116\5\uffff\1\40\1\uffff\1"+
+		"\101\1\60\1\107\1\117\1\122\1\117\1\60\1\116\1\130\1\115\1\124\1\40\2"+
+		"\uffff\1\114\1\60\1\uffff\1\60\1\115\1\60\1\125\1\uffff\4\60\1\uffff\1"+
+		"\40\1\131\2\uffff\1\60\1\uffff\1\120\1\132\1\uffff\1\60\1\105\1\uffff"+
+		"\1\60\1\uffff";
 	static final String DFA9_maxS =
-		"\1\172\1\166\2\162\1\171\1\151\1\165\1\156\4\uffff\1\172\1\uffff\1\144"+
-		"\1\147\1\157\1\162\1\157\1\172\1\156\1\170\1\155\1\164\1\172\2\uffff\1"+
-		"\154\2\172\1\155\1\172\1\165\1\uffff\4\172\1\uffff\1\172\1\171\2\uffff"+
-		"\1\172\1\uffff\1\160\1\172\1\uffff\1\172\1\145\1\uffff\1\172\1\uffff";
+		"\1\172\1\166\2\162\1\171\1\151\1\165\1\156\5\uffff\1\172\1\uffff\1\144"+
+		"\1\172\1\147\1\157\1\162\1\157\1\172\1\156\1\170\1\155\1\164\1\172\2\uffff"+
+		"\1\154\1\172\1\uffff\1\172\1\155\1\172\1\165\1\uffff\4\172\1\uffff\1\172"+
+		"\1\171\2\uffff\1\172\1\uffff\1\160\1\172\1\uffff\1\172\1\145\1\uffff\1"+
+		"\172\1\uffff";
 	static final String DFA9_acceptS =
-		"\10\uffff\1\10\1\11\1\12\1\13\1\uffff\1\16\13\uffff\1\14\1\15\6\uffff"+
-		"\1\6\4\uffff\1\14\2\uffff\1\2\1\7\1\uffff\1\4\2\uffff\1\3\2\uffff\1\5"+
-		"\1\uffff\1\1";
+		"\10\uffff\1\11\1\12\1\13\1\14\1\15\1\uffff\1\20\14\uffff\1\16\1\17\2\uffff"+
+		"\1\3\4\uffff\1\7\4\uffff\1\16\2\uffff\1\2\1\10\1\uffff\1\5\2\uffff\1\4"+
+		"\2\uffff\1\6\1\uffff\1\1";
 	static final String DFA9_specialS =
-		"\65\uffff}>";
+		"\70\uffff}>";
 	static final String[] DFA9_transitionS = {
-			"\2\15\1\uffff\2\15\22\uffff\1\15\1\uffff\1\14\11\uffff\1\10\16\uffff"+
-			"\1\12\1\uffff\1\11\3\uffff\1\1\1\4\1\7\2\13\1\2\1\3\5\13\1\5\5\13\1\6"+
-			"\7\13\4\uffff\1\13\1\uffff\1\1\1\4\1\7\2\13\1\2\1\3\5\13\1\5\5\13\1\6"+
-			"\7\13",
-			"\1\16\7\uffff\1\17\27\uffff\1\16\7\uffff\1\17",
-			"\1\21\2\uffff\1\20\34\uffff\1\21\2\uffff\1\20",
-			"\1\22\37\uffff\1\22",
-			"\1\23\37\uffff\1\23",
-			"\1\25\7\uffff\1\24\27\uffff\1\25\7\uffff\1\24",
-			"\1\26\37\uffff\1\26",
-			"\1\27\37\uffff\1\27",
+			"\2\16\1\uffff\2\16\22\uffff\1\16\6\uffff\1\15\1\12\1\13\2\uffff\1\10"+
+			"\3\uffff\12\14\3\uffff\1\11\3\uffff\1\1\1\4\1\7\2\14\1\2\1\3\5\14\1\5"+
+			"\5\14\1\6\7\14\4\uffff\1\14\1\uffff\1\1\1\4\1\7\2\14\1\2\1\3\5\14\1\5"+
+			"\5\14\1\6\7\14",
+			"\1\17\4\uffff\1\20\2\uffff\1\21\27\uffff\1\17\4\uffff\1\20\2\uffff\1"+
+			"\21",
+			"\1\23\2\uffff\1\22\34\uffff\1\23\2\uffff\1\22",
+			"\1\24\37\uffff\1\24",
+			"\1\25\37\uffff\1\25",
+			"\1\27\7\uffff\1\26\27\uffff\1\27\7\uffff\1\26",
+			"\1\30\37\uffff\1\30",
+			"\1\31\37\uffff\1\31",
 			"",
 			"",
 			"",
 			"",
-			"\1\31\14\uffff\1\30\1\uffff\1\31\12\32\7\uffff\32\31\4\uffff\1\31\1"+
-			"\uffff\32\31",
 			"",
-			"\1\33\2\uffff\1\34\34\uffff\1\33\2\uffff\1\34",
-			"\1\35\37\uffff\1\35",
-			"\1\36\37\uffff\1\36",
-			"\1\37\37\uffff\1\37",
+			"\1\33\14\uffff\1\32\1\uffff\1\33\12\34\7\uffff\32\33\4\uffff\1\33\1"+
+			"\uffff\32\33",
+			"",
+			"\1\35\2\uffff\1\36\34\uffff\1\35\2\uffff\1\36",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"\1\40\37\uffff\1\40",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
+			"\1\41\37\uffff\1\41",
 			"\1\42\37\uffff\1\42",
 			"\1\43\37\uffff\1\43",
-			"\1\44\37\uffff\1\44",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"\1\45\37\uffff\1\45",
-			"\1\31\1\uffff\1\46\12\uffff\1\47\1\32\1\31\12\32\7\uffff\32\31\4\uffff"+
-			"\1\31\1\uffff\32\31",
-			"",
-			"",
+			"\1\46\37\uffff\1\46",
+			"\1\47\37\uffff\1\47",
 			"\1\50\37\uffff\1\50",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
+			"\1\33\6\uffff\1\51\5\uffff\1\52\1\34\1\33\12\34\7\uffff\32\33\4\uffff"+
+			"\1\33\1\uffff\32\33",
+			"",
+			"",
 			"\1\53\37\uffff\1\53",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\1\55\37\uffff\1\55",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"",
-			"\1\31\1\uffff\1\46\12\uffff\1\47\1\32\1\31\12\32\7\uffff\32\31\4\uffff"+
-			"\1\31\1\uffff\32\31",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"\1\56\37\uffff\1\56",
-			"",
-			"",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"\1\60\37\uffff\1\60",
+			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"",
+			"\1\33\6\uffff\1\51\5\uffff\1\52\1\34\1\33\12\34\7\uffff\32\33\4\uffff"+
+			"\1\33\1\uffff\32\33",
 			"\1\61\37\uffff\1\61",
 			"",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
-			"\1\63\37\uffff\1\63",
 			"",
-			"\32\13\4\uffff\1\13\1\uffff\32\13",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"",
+			"\1\63\37\uffff\1\63",
+			"\1\64\37\uffff\1\64",
+			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\1\66\37\uffff\1\66",
+			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			""
 	};
 
@@ -1616,7 +1681,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 		}
 		@Override
 		public String getDescription() {
-			return "1:1: Tokens : ( ANALYZE | AND | FROM | FOR | GROUP | BY | AGGRFUNC | COMMA | EQUAL | ENDANALYZE | WORD | TEXTVALUE | NUMBER | WS );";
+			return "1:1: Tokens : ( ANALYZE | AND | AS | FROM | FOR | GROUP | BY | AGGRFUNC | COMMA | EQUAL | LPARENTHESIS | RPARENTHESIS | WORD | TEXTVALUE | NUMBER | WS );";
 		}
 	}
 

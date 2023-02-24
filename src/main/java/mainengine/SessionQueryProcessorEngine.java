@@ -89,6 +89,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private CubeManager cubeManager;
 	private Session session;
 	private String sessionId;
+	private String schemaName;
 	private QueryHistoryManager queryHistoryMng;
 	private CubeQuery currentCubeQuery;
 	private Result currentResult;
@@ -136,6 +137,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public void initializeConnection(String typeOfConnection, HashMap<String, String> userInputList)
 			throws RemoteException {
+		schemaName = userInputList.get("schemaName");
 		cubeManager = new CubeManager(typeOfConnection, userInputList);
 		session = new Session(cubeManager);
 		sessionId = session.initialize(typeOfConnection, userInputList);
@@ -147,6 +149,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+		schemaName = userInputList.get("schemaName");
 		cubeManager = new CubeManager(typeOfConnection, userInputList);
 		session = new Session(cubeManager);
 		sessionId = session.initialize(typeOfConnection, userInputList);
@@ -492,7 +495,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public ResultFileMetadata analyze(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AnalyzeOperator operator = new AnalyzeOperator(incomingExpression, cubeManager);
+		AnalyzeOperator operator = new AnalyzeOperator(incomingExpression, cubeManager,schemaName);
 		operator.execute();
 		return null;
 	}

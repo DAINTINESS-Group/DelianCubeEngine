@@ -20,10 +20,14 @@ public class AnalyzeOperator {
 	// A manager object that manages the whole translation process
 	private AnalyzeTranslationManager analyzeTranslationManager;
 	
+	// The name of the dataset loaded in Delian
+	private String schemaName;
 	
-	public AnalyzeOperator(String incomingExpression, CubeManager cubeManager) {
+	
+	public AnalyzeOperator(String incomingExpression, CubeManager cubeManager, String schemaName) {
 		this.cubeManager = cubeManager;
-		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager);
+		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName);
+		this.schemaName = schemaName;
 	}
 	
 	/** 

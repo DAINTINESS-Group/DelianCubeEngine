@@ -23,6 +23,7 @@ public class AnalyzeParserManager {
 	private ArrayList<String> sigmaExpressions;
 	private HashMap<String,String> sigmaExpressionsValues;
 	private ArrayList<String> gammaExpressions;
+	private String queryAlias;
 	
 	public AnalyzeParserManager() {
 		aggrFunc = null;
@@ -31,6 +32,7 @@ public class AnalyzeParserManager {
 		sigmaExpressions = new ArrayList<String>();
 		sigmaExpressionsValues = new HashMap<String,String>();
 		gammaExpressions = new ArrayList<String>();
+		queryAlias = null;
 	}
 	
 	/**
@@ -54,6 +56,7 @@ public class AnalyzeParserManager {
 			sigmaExpressions = parser.sigmaExpressions;
 			sigmaExpressionsValues = parser.sigmaExpressionsValues;
 			gammaExpressions= parser.gammaExpressions;
+			queryAlias = parser.queryAlias;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -84,5 +87,9 @@ public class AnalyzeParserManager {
 	
 	public ArrayList<String> getGammaExpressions(){
 		return this.gammaExpressions;
+	}
+
+	public String getQueryAlias() {
+		return this.queryAlias;
 	}
 }

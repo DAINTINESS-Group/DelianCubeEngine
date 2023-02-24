@@ -31,13 +31,15 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 													 String measure,
 													 String cubeName,
 													 ArrayList<String> sigmaExpressions,
-													 HashMap<String,String> sigmaExpressionsValues,
+													 HashMap<String,String> sigmaExpressionsToValues,
 													 ArrayList<String> gammaExpressions,
+													 String queryAlias,
 													 HashMap<String,String> dimensions,
-													 HashMap<String,String> childrenLevels,
-													 HashMap<String,String> parentLevels,
-													 HashMap<String,String> tableName,
-													 HashMap<String,String> currentLevelDescriptions) {
+													 HashMap<String,String> childToLevel,
+													 HashMap<String,String> parentToLevel,
+													 HashMap<String,String> expressionsToTableName,
+													 HashMap<String,String> currentLevelToDescriptions,
+													 String schemaName) {
 		
 		ArrayList<CubeQuery> baseQuery = new ArrayList<CubeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
@@ -45,7 +47,7 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		
 		// set-up the query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
-		String name = "Name:AnalyzeBaseQuery\n";
+		String name = "Name:" + queryAlias + "-AnalyzeBaseQuery\n";
 		aggrFunc = "AggrFunc:" + StringUtils.capitalize(aggrFunc) + "\n";
 		measure = "Measure:" + measure + "\n";
 		String gamma = "Gamma:";
@@ -60,7 +62,7 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		
 		// set-up sigma expressions
 		for(String s:sigmaExpressions) {
-			sigma += dimensions.get(s) + "." + s + "=" + sigmaExpressionsValues.get(s) + ",";
+			sigma += dimensions.get(s) + "." + s + "=" + sigmaExpressionsToValues.get(s) + ",";
 		}
 		// do this to erase the spare comma at the end of the expression
 		sigma = sigma.substring(0,sigma.length()-1) + "\n";

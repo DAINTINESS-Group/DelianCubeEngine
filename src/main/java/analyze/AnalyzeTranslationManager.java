@@ -24,6 +24,9 @@ public class AnalyzeTranslationManager {
 	// Manager object to manage the cube
 	private CubeManager cubeManager;
 	
+	// The name of the dataset loaded on Delian
+	private String schemaName;
+	
 	// An object that manages the parsing of the incoming expression 
 	private AnalyzeParserManager analyzeParserManager;
 	
@@ -36,11 +39,14 @@ public class AnalyzeTranslationManager {
 	// Cube that the analyze query uses
 	private String cubeName;
 	
+	// Alias to be used for naming the Cube Queries
+	private String queryAlias;
+	
 	// Sigma expressions of the analyze query
 	private ArrayList<String> sigmaExpressions;
 	
 	// The values of the sigma expressions
-	private HashMap<String,String> sigmaExpressionsValues;
+	private HashMap<String,String> sigmaExpressionsToValues;
 	
 	// Gamma expressions of the analyze query
 	private ArrayList<String> gammaExpressions;
@@ -49,31 +55,32 @@ public class AnalyzeTranslationManager {
 	private HashMap<String,String> dimensions;
 	
 	// A hashmap that maps each sigma and gamma level to its child level
-	private HashMap<String,String> childrenLevel;
+	private HashMap<String,String> childToLevel;
 	
 	// A hashmap that maps each sigma and gamma level to its parent level 
-	private HashMap<String,String> parentLevel;
+	private HashMap<String,String> parentToLevel;
 	
 	// A hashmap that maps each sigma and gamma level to its table name in the relational schema
-	private HashMap<String,String> tableName;
+	private HashMap<String,String> expressionToTableName;
 	
 	// A hashmap that maps each sigma and gamma level to its description
-	private HashMap<String,String> currentLevelDescriptions;
+	private HashMap<String,String> currentLevelToDescriptions;
 	
 	/**
 	 * Constructor method that initializes the AnalyzeTranslationManager fields
 	 * @param incomingExpression
 	 * @param cubeManager
 	 */
-	public AnalyzeTranslationManager(String incomingExpression,CubeManager cubeManager) {
+	public AnalyzeTranslationManager(String incomingExpression,CubeManager cubeManager, String schemaName) {
 		this.incomingExpression = incomingExpression;
 		this.cubeManager = cubeManager;
+		this.schemaName = schemaName;
 		this.analyzeParserManager = new AnalyzeParserManager();
 		this.dimensions = new HashMap<String,String>();
-		this.childrenLevel = new HashMap<String,String>();
-		this.parentLevel = new HashMap<String,String>();
-		this.tableName = new HashMap<String,String>();
-		this.currentLevelDescriptions = new HashMap<String,String>();
+		this.childToLevel = new HashMap<String,String>();
+		this.parentToLevel = new HashMap<String,String>();
+		this.expressionToTableName = new HashMap<String,String>();
+		this.currentLevelToDescriptions = new HashMap<String,String>();
 	}
 	
 	/**
@@ -84,8 +91,9 @@ public class AnalyzeTranslationManager {
 		this.measure = analyzeParserManager.getMeasure();
 		this.cubeName = analyzeParserManager.getCubeName();
 		this.sigmaExpressions = analyzeParserManager.getSigmaExpressions();
-		this.sigmaExpressionsValues = analyzeParserManager.getSigmaExpressionsValues();
+		this.sigmaExpressionsToValues = analyzeParserManager.getSigmaExpressionsValues();
 		this.gammaExpressions = analyzeParserManager.getGammaExpressions();
+		this.queryAlias = analyzeParserManager.getQueryAlias();
 	}
 	
 	/**
@@ -103,7 +111,7 @@ public class AnalyzeTranslationManager {
 		expressions.addAll(sigmaExpressions);
 		expressions.addAll(gammaExpressions);
 		
-		// for each expression parse the cube and get its dimension, currentLevelDescription, child, parent and tableName
+		// for each expression parse the cube and get its dimension, currentLevelDescription, child, parent and expressionToTableName
 		for(int i = 0;i < expressions.size();i++) {
 			for(int j = 0;j < cubeManager.getDimensions().size();j++) {
 				for(int k = 0;k < cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().size();k++) {
@@ -129,10 +137,10 @@ public class AnalyzeTranslationManager {
 							parent = expressions.get(i);
 						}
 						dimensions.put(expressions.get(i), dimension);
-						childrenLevel.put(expressions.get(i), child);
-						parentLevel.put(expressions.get(i), parent);
-						tableName.put(expressions.get(i), table);
-						currentLevelDescriptions.put(expressions.get(i), currentLevelDescription);
+						childToLevel.put(expressions.get(i), child);
+						parentToLevel.put(expressions.get(i), parent);
+						expressionToTableName.put(expressions.get(i), table);
+						currentLevelToDescriptions.put(expressions.get(i), currentLevelDescription);
 					}
 				}
 			}
@@ -179,13 +187,15 @@ public class AnalyzeTranslationManager {
 																				 measure,
 																				 cubeName,
 																				 sigmaExpressions,
-																				 sigmaExpressionsValues,
+																				 sigmaExpressionsToValues,
 																				 gammaExpressions,
+																				 queryAlias,
 																				 dimensions,
-																				 childrenLevel,
-																				 parentLevel,
-																				 tableName,
-																				 currentLevelDescriptions);
+																				 childToLevel,
+																				 parentToLevel,
+																				 expressionToTableName,
+																				 currentLevelToDescriptions,
+																				 schemaName);
 		
 		analyzeCubeQueries.addAll(baseQueries);
 		
@@ -195,13 +205,15 @@ public class AnalyzeTranslationManager {
 																				 measure, 
 																				 cubeName, 
 																				 sigmaExpressions, 
-																				 sigmaExpressionsValues, 
-																				 gammaExpressions, 
-																				 dimensions, 
-																				 childrenLevel, 
-																				 parentLevel, 
-																				 tableName,
-																				 currentLevelDescriptions);
+																				 sigmaExpressionsToValues, 
+																				 gammaExpressions,
+																				 queryAlias,
+																				 dimensions,
+																				 childToLevel, 
+																				 parentToLevel, 
+																				 expressionToTableName,
+																				 currentLevelToDescriptions,
+																				 schemaName);
 		analyzeCubeQueries.addAll(siblingQueries);
 		
 		// translate to Drill-Down queries
@@ -210,13 +222,15 @@ public class AnalyzeTranslationManager {
 																				 measure, 
 																				 cubeName, 
 																				 sigmaExpressions, 
-																				 sigmaExpressionsValues, 
-																				 gammaExpressions, 
-																				 dimensions, 
-																				 childrenLevel, 
-																				 parentLevel, 
-																				 tableName,
-																				 currentLevelDescriptions);
+																				 sigmaExpressionsToValues, 
+																				 gammaExpressions,
+																				 queryAlias,
+																				 dimensions,
+																				 childToLevel, 
+																				 parentToLevel, 
+																				 expressionToTableName,
+																				 currentLevelToDescriptions,
+																				 schemaName);
 		// concatenate the results to one ArrayList
 		analyzeCubeQueries.addAll(drillDownQueries);
 		return analyzeCubeQueries;

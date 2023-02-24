@@ -31,15 +31,15 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 	 * @param currentLevelValue
 	 * @return A String[][] that contains the child values of a given current level
 	 */
-	private String getParentValue(String tableName,String parent,String currentLevel,String currentLevelValue) {
+	private String getParentValue(String schemaName,String tableName,String parent,String currentLevel,String currentLevelValue) {
 		Result queryResult = new Result();
 		String retString;
 		
 		// set-up tableName and WHERE clause expression
-		tableName = "pkdd99_star." + tableName;
+		tableName = schemaName + "." + tableName;
 		String whereClauseExpression = currentLevel + "=" + currentLevelValue;
 		
-		// if the parant is at the top of the hierarchy do not bother quering just return ALL value
+		// if the parent is at the top of the hierarchy do not bother quering just return ALL value
 		if(parent.contains("All")) {
 			retString = "ALL";
 			return retString;
@@ -62,69 +62,83 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 													String measure, 
 													String cubeName,
 													ArrayList<String> sigmaExpressions, 
-													HashMap<String, String> sigmaExpressionsValues,
-													ArrayList<String> gammaExpressions, 
+													HashMap<String, String> sigmaExpressionsToValues,
+													ArrayList<String> gammaExpressions,
+													String queryAlias,
 													HashMap<String, String> dimensions,
-													HashMap<String, String> childrenLevels,
-													HashMap<String, String> parentLevels,
-													HashMap<String, String> tableNames,
-													HashMap<String,String> currentLevelDescriptions) {
+													HashMap<String, String> childToLevel,
+													HashMap<String, String> parentToLevel,
+													HashMap<String, String> expressionToTableName,
+													HashMap<String,String> currentLevelToDescriptions,
+													String schemaName) {
 		
 		ArrayList<CubeQuery> siblingQueries = new ArrayList<CubeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
 		CubeQuery analyzeSiblingQuery = null;
-		int counter = 1;
-		int indexGammaExpressions = gammaExpressions.size() - 1;
 		
 		// set-up query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
 		aggrFunc = "AggrFunc:" + StringUtils.capitalize(aggrFunc) + "\n";
 		measure = "Measure:" + measure + "\n";
-		ArrayList<String> gammas = new ArrayList<String>();
-		ArrayList<String> sigmas = new ArrayList<String>();
 		
-		// for each gamma expression, create the gamma expression string and check
-		// the sigma expressions to see if any of them belongs to the same dimension
-		// if a sigma expression belongs to the same dimension as the current gamma expression
-		// then find its parent value and create the sigma expression string
-		for(String g: gammaExpressions) {
-			String gammaDimension = dimensions.get(g);
-			String gamma = "Gamma:" + gammaDimension + "." + parentLevels.get(g) + "," +dimensions.get(gammaExpressions.get(indexGammaExpressions)) + "." + gammaExpressions.get(indexGammaExpressions) + "\n";
-			String sigma = "Sigma:";
-			gammas.add(gamma);
-			indexGammaExpressions--;
-			for(int i = 0;i < sigmaExpressions.size();i++) {
-				String expression = sigmaExpressions.get(i);
-				String sigmaDimension = dimensions.get(expression);
+		// for each sigma expression, get its parent level values and if
+		// there is a gamma expression that belongs to the same dimension
+		// create the gamma and sigma expressions and then the cube queries
+		for(int i = 0;i < sigmaExpressions.size();i++) {
+			boolean createSibling = false;
+			String gamma = "Gamma:";
+			String expression = sigmaExpressions.get(i);
+			String sigmaDimension = dimensions.get(expression);
+			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression));
+					
+			// if the sigma expression dimension is the same with the dimension of some
+			// gamma dimension, create the gamma expression
+			// if there is no gamma dimension equal to the sigma dimension then we create no siblings
+			// for that sigma expression
+			for(int j = 0;j < gammaExpressions.size();j++) {
+				String gammaExpression = gammaExpressions.get(j);
+				String gammaDimension = dimensions.get(gammaExpression);
 				if(gammaDimension.equals(sigmaDimension)) {
-					String parentValue = getParentValue(tableNames.get(expression),parentLevels.get(expression),currentLevelDescriptions.get(expression),sigmaExpressionsValues.get(expression));
-					sigma += sigmaDimension + "." + parentLevels.get(expression) + "=" + "\"" + parentValue + "\"" + ",";
+					createSibling = true;
+					gamma += gammaDimension + "." + parentToLevel.get(gammaExpression) + ",";
 				}else {
-					sigma += sigmaDimension + "." + expression + "=" + sigmaExpressionsValues.get(expression) + ",";
+					gamma +=  gammaDimension + "." + gammaExpression + ",";
 				}
 			}
+					
 			// do this to erase the spare comma at the end of the expression
-			sigmas.add(sigma.substring(0,sigma.length()-1) + "\n");
-		}
-		
-		// finally, create the cube queries with the gamma and sigma expressions created above
-		for(int i = 0;i < gammas.size();i++) {
-			String name = "Name:AnalyzeSiblingQuery-" + counter + "\n";
-			String cubeQString = cubeName + name + aggrFunc + measure + gammas.get(i) + sigmas.get(i);
-			queryParams.put("CubeName", cubeName);
-			queryParams.put("Name", name);
-			queryParams.put("AggrFunc", aggrFunc);
-			queryParams.put("Measure", measure);
-			queryParams.put("Gamma", gammas.get(i));
-			queryParams.put("Sigma", sigmas.get(i));
+			gamma = gamma.substring(0,gamma.length()-1) + "\n";
+					
+			// then create the sigma expression string by adding the child level values and then pace it to a temp collection
+			// with the correct string format. Then add the rest of the sigma expression to the items 
+			// of the temp collection to create the sigma expressions. Note that the j counter starts from 2
+			// because the result's first 2 rows contains the field name of the result.
+			if(createSibling == true) {
+				String sigma = "Sigma:" + sigmaDimension + "." + parentToLevel.get(expression) + "=" + "\'" + parentValue + "\'";
+
+				for(int j = 0;j < sigmaExpressions.size();j++) {
+					if(i!=j) {
+						sigma += "," + dimensions.get(sigmaExpressions.get(j)) + "." + sigmaExpressions.get(j) + "=" + sigmaExpressionsToValues.get(sigmaExpressions.get(j));
+					}
+				}
+				
+				// finally, create the cube queries with the gamma and sigma expressions created above
+				String name = "Name:" + queryAlias + "-AnalyzeSiblingQuery_" + dimensions.get(expression) + "\n";
+				String cubeQString = cubeName + name + aggrFunc + measure + gamma + sigma;
+				queryParams.put("CubeName", cubeName);
+				queryParams.put("Name", name);
+				queryParams.put("AggrFunc", aggrFunc);
+				queryParams.put("Measure", measure);
+				queryParams.put("Gamma", gamma);
+				queryParams.put("Sigma", sigma);
 	
-			try {
-				analyzeSiblingQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+				try {
+					analyzeSiblingQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				siblingQueries.add(analyzeSiblingQuery);
 			}
-			siblingQueries.add(analyzeSiblingQuery);
-			counter++;
 		}
 		return siblingQueries;
 	}
