@@ -39,28 +39,34 @@ public class AssessQueryBuilder {
         this.cubeManager = cubeManager;
     }
 
-    public void setTargetCubeName(String targetCubeName) {
+    public AssessQueryBuilder setTargetCubeName(String targetCubeName) {
         this.targetCubeName = targetCubeName.toLowerCase(); // Assuming cubes are stored in lowercase
+        return this;
     }
 
-    public void setAggregationFunction(String aggregationFunction) {
+    public AssessQueryBuilder setAggregationFunction(String aggregationFunction) {
         this.aggregationFunction = aggregationFunction.toLowerCase();
+        return this;
     }
 
-    public void setMeasurement(String measurement) {
+    public AssessQueryBuilder setMeasurement(String measurement) {
         this.measurement = measurement;
+        return this;
     }
 
-    public void setSelectionPredicates(Map<String, String> selectionPredicates) {
+    public AssessQueryBuilder setSelectionPredicates(Map<String, String> selectionPredicates) {
         this.selectionPredicates = selectionPredicates;
+        return this;
     }
 
-    public void setGroupBySet(Set<String> groupBySet) {
+    public AssessQueryBuilder setGroupBySet(Set<String> groupBySet) {
         this.groupBySet = groupBySet;
+        return this;
     }
 
-    public void setBenchmarkDetails(List<String> benchmarkDetails) {
+    public AssessQueryBuilder setBenchmarkDetails(List<String> benchmarkDetails) {
         this.benchmarkDetails = benchmarkDetails;
+        return this;
     }
 
     /**
@@ -107,8 +113,9 @@ public class AssessQueryBuilder {
         }
     }
 
-    public void setDeltaFunctions(List<String> methods) {
+    public AssessQueryBuilder setDeltaFunctions(List<String> methods) {
         deltaFunctions = methods;
+        return this;
     }
 
     /* FUTURE: Create a factory method that contains the overriding methods

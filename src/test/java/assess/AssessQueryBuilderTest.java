@@ -71,7 +71,8 @@ public class AssessQueryBuilderTest {
 		return salesCube;
 	}
 
-	private static Dimension createDimension(String dimensionName, List<String> levelNames) {
+	private static Dimension createDimension(
+			String dimensionName, List<String> levelNames) {
 		LinearHierarchy hierarchy = new LinearHierarchy();
 		for (String levelName : levelNames) {
 			Level level = new Level(levelNames.indexOf(levelName), levelName);
@@ -104,10 +105,10 @@ public class AssessQueryBuilderTest {
 				Stream.of("month", "store")
 						.collect(Collectors.toCollection(HashSet::new)));
 
-		builder.setAggregationFunction("Sum");
-		builder.setMeasurement("storeSales");
-		builder.setBenchmarkDetails(Arrays.asList("Past", "4"));
-		builder.setDeltaFunctions(Arrays.asList("ratio"));
+		builder.setAggregationFunction("Sum")
+				.setMeasurement("storeSales")
+				.setBenchmarkDetails(Arrays.asList("Past", "4"))
+				.setDeltaFunctions(Arrays.asList("ratio"));
 
 		List<List<String>> rules = new ArrayList<>();
 		rules.add(Arrays.asList("(", "-inf", "-10.0", ")", "bad"));
