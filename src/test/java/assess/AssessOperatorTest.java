@@ -20,9 +20,9 @@ public class AssessOperatorTest {
 
 	@Test
 	public void runSimpleQuery() {
-		AssessOperator testedOperator = new AssessOperator(simpleQuery, null);
+		AssessOperator testedOperator = new AssessOperator(null);
 		try {
-			testedOperator.execute();
+			testedOperator.execute(simpleQuery);
 		} catch (RecognitionException re) {
 			System.out.println("Invalid query");
 			re.printStackTrace();
@@ -31,9 +31,9 @@ public class AssessOperatorTest {
 
 	@Test
 	public void runComplexQuery() {
-		AssessOperator testedOperator = new AssessOperator(complexQuery, null);
+		AssessOperator testedOperator = new AssessOperator(null);
 		try {
-			testedOperator.execute();
+			testedOperator.execute(complexQuery);
 		} catch (RecognitionException re) {
 			System.out.println("Invalid query");
 			re.printStackTrace();

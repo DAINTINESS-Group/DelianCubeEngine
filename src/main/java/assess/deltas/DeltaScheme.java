@@ -1,5 +1,6 @@
 package assess.deltas;
 
+import assess.benchmarks.AssessBenchmark;
 import cubemanager.cubebase.Cube;
 
 import java.util.ArrayList;
@@ -33,8 +34,10 @@ public class DeltaScheme {
 		}
 	}
 
-	public void compareCubes(Cube targetCube, Cube benchmarkCube) {
+	public void compareTargetToBenchmark(Cube targetCube, AssessBenchmark benchmark) {
 		// Check if cubes are join able?
-		// Iterate over both cubes measurements and apply deltaFunctions
+		for (ComparisonFunction function : appliedMethods) {
+			// Iterate over both cubes measurements and apply deltaFunctions
+		}
 	}
 }

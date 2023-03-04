@@ -62,16 +62,16 @@ public class CubeManager {
 	}
 
 	/**
-	 * Search for a Cube based on its name
+	 * Search for a Cube based on its name. If not found throws exception
 	 * @param name the name of the Cube we want
-	 * @return the Cube, or null if not found
+	 * @return the requested cube
 	 */
 	public BasicStoredCube getCubeByName(String name) {
 		return registeredCubesList
 				.stream()
 				.filter(cube -> cube.getName().equals(name))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow(() -> new RuntimeException("Cube not found: " + name));
 	}
 
 	public void createCubeBase(HashMap<String, String> userInputList) {

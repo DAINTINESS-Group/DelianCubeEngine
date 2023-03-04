@@ -47,15 +47,15 @@ public class Cube {
 	public List<Level> getLevelsList(){
 		return cubeLevelsList;
 	}
+
 	public String findLevelByName(String levelName) {
 		for (Dimension dimension : cubeDimensionsList) {
 			Optional<Level> optionalLevel = dimension.getLevel(levelName);
 			if(optionalLevel.isPresent()) {
-				return dimension.getName() + ".lvl" + optionalLevel.get()
-						.getPositionInHierarchy();
+				return dimension.getName() + "." + levelName;
 			}
 		}
-		throw new RuntimeException("Level not Found");
+		throw new RuntimeException(String.format("Level %s not found", levelName));
 	}
 	
 	public List<Measure> getMeasuresList(){

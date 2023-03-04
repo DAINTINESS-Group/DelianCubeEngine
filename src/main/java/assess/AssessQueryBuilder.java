@@ -1,11 +1,14 @@
 package assess;
 
+import assess.benchmarks.AssessBenchmark;
+import assess.benchmarks.BenchmarkFactory;
 import assess.deltas.DeltaScheme;
 import assess.labelers.CustomLabelingScheme;
 import assess.labelers.LabelingScheme;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.Cube;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +18,6 @@ import java.util.StringJoiner;
 /**
  * This class is used after we have parsed a query with the AssessQueryParser to
  * build the AssessQuery object. <br>
- * TODO: Must follow pattern more closely (?)
  */
 public class AssessQueryBuilder {
 
@@ -26,11 +28,11 @@ public class AssessQueryBuilder {
     //Clearly show labeling scheme
     private final CubeManager cubeManager;
     private String targetCubeName;
-    private Map<String, String> selectionPredicates;
+    private Map<String, String> selectionPredicates = new HashMap<>(); // Empty value, as selection predicates are optional
     private String aggregationFunction;
     private String measurement;
     private Set<String> groupBySet;
-    private List<String> benchmarkDetails;
+    private List<String> benchmarkDetails = new ArrayList<>(); // Default, as it can be empty
     private List<String> deltaFunctions;
     private List<List<String>> labelingRules;
 
@@ -78,12 +80,13 @@ public class AssessQueryBuilder {
         templateQuery += "Name:" + targetCubeName + "_" + measurement + "\n";
         templateQuery += "AggrFunc:" + aggregationFunction + "\n";
         templateQuery += "Measure:" + measurement + "\n";
-        templateQuery += "Gamma:" + collectGammaLevels() + "\n";
-        templateQuery += "Sigma:" + collectSigmaLevels();
+        templateQuery += "Gamma:" + collectGammaLevels(targetCubeName + "_cube") + "\n";
+        templateQuery += "Sigma:" + collectSigmaLevels(targetCubeName + "_cube");
         return templateQuery;
     }
 
-    private String collectSigmaLevels() {
+    private String collectSigmaLevels(String targetCubeName) {
+        // For some reason cubes are stored with the _cube suffix in memory
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
         StringJoiner stringJoiner = new StringJoiner(",");
         selectionPredicates.forEach((key, value) -> {
@@ -94,7 +97,8 @@ public class AssessQueryBuilder {
         return stringJoiner.toString();
     }
 
-    private String collectGammaLevels() {
+    private String collectGammaLevels(String targetCubeName) {
+        // For some reason cubes are stored with the _cube suffix in memory
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
         StringJoiner stringJoiner = new StringJoiner(",");
         groupBySet.forEach(attribute ->
@@ -102,15 +106,9 @@ public class AssessQueryBuilder {
         return stringJoiner.toString();
     }
 
-    private String buildBenchmarkCubeQuery() {
-        // This will be a factory method
-        switch (benchmarkDetails.get(0)) {
-            case "Sibling": return "Sibling Benchmark";
-            case "Past": return "Past Benchmark";
-            case "External": return "External Benchmark";
-            case "Constant": return "Constant Benchmark";
-            default: throw new RuntimeException("Unrecognized Benchmark Type");
-        }
+    private AssessBenchmark buildBenchmark() {
+        return new BenchmarkFactory(benchmarkDetails)
+                .createBenchmarkQuery();
     }
 
     public AssessQueryBuilder setDeltaFunctions(List<String> methods) {
@@ -136,9 +134,9 @@ public class AssessQueryBuilder {
 
     public AssessQuery build() {
         String targetCubeQuery = buildStringQueryTemplate();
-        String benchmarkQuery = buildBenchmarkCubeQuery();
+        AssessBenchmark benchmark = buildBenchmark();
         DeltaScheme deltaScheme = new DeltaScheme(deltaFunctions);
         LabelingScheme labelingScheme = new CustomLabelingScheme(labelingRules);
-        return new AssessQuery(targetCubeQuery, benchmarkQuery, deltaScheme, labelingScheme);
+        return new AssessQuery(targetCubeQuery, benchmark, deltaScheme, labelingScheme);
     }
 }

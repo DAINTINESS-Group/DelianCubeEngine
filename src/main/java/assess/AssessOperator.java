@@ -12,12 +12,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The top layer class for any assessments done in the intentional model.
+ * Given that the CubeManager handles only one cube at a time, instances
+ * of this class are created everytime we wish to change cubes.
+ */
 public class AssessOperator {
 	private final CubeManager cubeManager;
-	private final AssessQueryParser parser;
-	
-	public AssessOperator(String incomingExpression, CubeManager cubeManager) {
-		parser = createParser(incomingExpression);
+
+	public AssessOperator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 
@@ -33,12 +36,20 @@ public class AssessOperator {
 		}
 	}
 
-	public int execute() throws RecognitionException {
-		//1. ask parser(lexer.tokenStream) to produce a AssessQuery
-		AssessQuery currentAssessQuery = parser.parse(new AssessQueryBuilder(cubeManager));
+	/**
+	 * Executes the provided query. Returns ?
+	 * @param assessQuery The user-provided query for assessment reasons
+	 * @return
+	 * @throws RecognitionException If the query does not follow the defined syntax
+	 */
+	public int execute(String assessQuery) throws RecognitionException {
+		AssessQuery currentAssessQuery = createParser(assessQuery)
+				.parse(new AssessQueryBuilder(cubeManager));
 		System.out.println(currentAssessQuery.targetCubeQuery);
 
-		//2. execute queries, match results, compare and label
+		// 2. Compare the targetCube to the Benchmark
+		// 3. Label the results
+		// 4. Figure out what this method should return
 //		CubeQuery targetCube = cubeManager.createCubeQueryFromString(currentAssessQuery.targetCubeQuery, new HashMap<>());
 //		CubeQuery benchmarkCube = cubeManager.createCubeQueryFromString(currentAssessQuery.benchmarkCubeQuery, new HashMap<>());
 //

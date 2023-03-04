@@ -20,6 +20,23 @@
 
 package mainengine;
 
+import assess.AssessOperator;
+import cubemanager.CubeManager;
+import cubemanager.cubebase.*;
+import interestingnessengine.InterestingnessManager;
+import mainengine.nlq.ITranslator;
+import mainengine.nlq.ITranslatorFactory;
+import mainengine.nlq.NLQValidationResults;
+import mainengine.rmiTransfer.RMIInputStream;
+import mainengine.rmiTransfer.RMIInputStreamImpl;
+import mainengine.rmiTransfer.RMIOutputStream;
+import mainengine.rmiTransfer.RMIOutputStreamImpl;
+import org.antlr.runtime.RecognitionException;
+import result.Result;
+import setup.ModeOfWork;
+import setup.ModeOfWork.WorkMode;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,51 +44,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.Duration;
 import java.time.Instant;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
-import assess.AssessOperator;
-import mainengine.nlq.ITranslator;
-import mainengine.nlq.ITranslatorFactory;
-import mainengine.nlq.NLQValidationResults;
-import mainengine.rmiTransfer.RMIInputStream;
-import mainengine.rmiTransfer.RMIOutputStream;
-import mainengine.rmiTransfer.RMIInputStreamImpl;
-import mainengine.rmiTransfer.RMIOutputStreamImpl;
-
-import cubemanager.CubeManager;
-import cubemanager.cubebase.CubeQuery;
-import cubemanager.cubebase.Dimension;
-import cubemanager.cubebase.Level;
-import cubemanager.cubebase.QueryHistoryManager;
-import cubemanager.cubebase.BasicStoredCube;
-//import exctractionmethod.SqlQuery;
-/*
-import filecreation.FileMgr;
-import filecreation.PptxFile;
-import filecreation.WordFile;
-*/
-//import storymgr.FinResult;
-//import storymgr.StoryMgr;
-import org.antlr.runtime.RecognitionException;
-import result.Result;
-import setup.ModeOfWork;
-import setup.ModeOfWork.WorkMode;
-
-
-
-import interestingnessengine.InterestingnessManager;
 
 
 
@@ -501,9 +478,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AssessOperator operator = new AssessOperator(incomingExpression, cubeManager);
+		AssessOperator operator = new AssessOperator(cubeManager);
 		try {
-			operator.execute();
+			operator.execute(incomingExpression);
 		} catch (RecognitionException e) {
 			throw new RuntimeException(e);
 		}
