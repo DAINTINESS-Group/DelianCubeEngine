@@ -2,6 +2,8 @@ package analyze.cubeQueryGenerator;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,17 +33,48 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 	 * @param currentLevelValue
 	 * @return A String[][] that contains the child values of a given current level
 	 */
-	private String[][] getChildrenValues(String schemaName,String tableName,String child,String currentLevel,String currentLevelValue) {
+	private String[][] getChildrenValues(String schemaName,String tableName,String child,String currentLevel,String currentLevelValue,String connectionType) {
 		Result queryResult = new Result();
 		
 		// set-up tableName and WHERE clause expression
-		tableName = schemaName + "." + tableName;
+		// if RDBMS is used, add schemaName to the tableName
+		if(connectionType.equals("RDBMS")){
+			tableName = schemaName + "." + tableName;
+		}
 		String whereClauseExpression = currentLevel + "=" + currentLevelValue;
 		
 		// create SQL query, execute it and get the result
 		String SQLQuery = "SELECT DISTINCT " + child + " FROM " + tableName + " WHERE " + whereClauseExpression + ";";
 		queryResult = cubeManager.getCubeBase().executeQueryToProduceResult(SQLQuery, queryResult);
 		String[][] result = queryResult.getResultArray();
+		
+		// if spark connection is used, sort the result to make testing easier
+		// and modify the array so as the bottom 2 values that contain the attribute
+		// info to be on top of the array in order to be processed later
+		if(connectionType.equals("Spark")) {
+			Arrays.sort(result ,new Comparator<String[]>(){
+			    @Override
+			    public int compare(String[] first, String[] second){
+			    	int comparedTo = 0;
+			        // compare the first element
+			    	if(first[0] != null && second[0] != null) {
+			    		comparedTo = first[0].compareTo(second[0]);
+			    	}
+			 
+			        return comparedTo;
+			    }
+			});
+			
+			String lastElement = result[result.length-1][0];
+			String secondLastElement = result[result.length-2][0];
+			
+			for(int i = result.length-1;i > 1;i--) {
+				result[i][0] = result[i-2][0];
+			}
+			
+			result[0][0] = lastElement;
+			result[1][0] = secondLastElement;
+		}
 		return result;
 	}
 
@@ -62,7 +95,8 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			                                        HashMap<String, String> parentToLevel,
 			                                        HashMap<String, String> expressionToTableName,
 			                                        HashMap<String, String> currentLevelToDescriptions,
-			                                        String schemaName) {
+			                                        String schemaName,
+			                                        String connectionType) {
 		ArrayList<CubeQuery> drillDownQueries = new ArrayList<CubeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
 		CubeQuery analyzeDrillDownQuery = null;
@@ -82,7 +116,7 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			String gamma = "Gamma:";
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
-			String[][] childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression));
+			String[][] childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
 			
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression

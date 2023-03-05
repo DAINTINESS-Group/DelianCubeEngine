@@ -23,11 +23,15 @@ public class AnalyzeOperator {
 	// The name of the dataset loaded in Delian
 	private String schemaName;
 	
+	// Spark or RDMS connection
+	private String connectionType;
 	
-	public AnalyzeOperator(String incomingExpression, CubeManager cubeManager, String schemaName) {
+	
+	public AnalyzeOperator(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
 		this.cubeManager = cubeManager;
-		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName);
+		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
 		this.schemaName = schemaName;
+		this.connectionType = connectionType;
 	}
 	
 	/** 

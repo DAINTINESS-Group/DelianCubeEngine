@@ -31,12 +31,15 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 	 * @param currentLevelValue
 	 * @return A String[][] that contains the child values of a given current level
 	 */
-	private String getParentValue(String schemaName,String tableName,String parent,String currentLevel,String currentLevelValue) {
+	private String getParentValue(String schemaName,String tableName,String parent,String currentLevel,String currentLevelValue,String connectionType) {
 		Result queryResult = new Result();
 		String retString;
 		
 		// set-up tableName and WHERE clause expression
-		tableName = schemaName + "." + tableName;
+		// if RDBMS is used, add schemaName to the tableName
+		if(connectionType.equals("RDBMS")) {
+			tableName = schemaName + "." + tableName;
+		}
 		String whereClauseExpression = currentLevel + "=" + currentLevelValue;
 		
 		// if the parent is at the top of the hierarchy do not bother quering just return ALL value
@@ -49,6 +52,22 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 		String SQLQuery = "SELECT DISTINCT " + parent + " FROM " + tableName + " WHERE " + whereClauseExpression + ";";
 		queryResult = cubeManager.getCubeBase().executeQueryToProduceResult(SQLQuery, queryResult);
 		String[][] result = queryResult.getResultArray();
+		
+		// if spark connection is used modify the result so as the last 2 values of it 
+		// that are the attribute info to be on top of the array and not in the bottom
+		// in order to be processed later
+		if(connectionType.equals("Spark")) {
+			
+			String lastElement = result[result.length-1][0];
+			String secondLastElement = result[result.length-2][0];
+			
+			for(int i = result.length-1;i > 1;i--) {
+				result[i][0] = result[i-2][0];
+			}
+			
+			result[0][0] = lastElement;
+			result[1][0] = secondLastElement;
+		}
 		retString = result[2][0];
 		return retString;
 	}
@@ -70,7 +89,8 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 													HashMap<String, String> parentToLevel,
 													HashMap<String, String> expressionToTableName,
 													HashMap<String,String> currentLevelToDescriptions,
-													String schemaName) {
+													String schemaName,
+													String connectionType) {
 		
 		ArrayList<CubeQuery> siblingQueries = new ArrayList<CubeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
@@ -89,7 +109,7 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 			String gamma = "Gamma:";
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
-			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression));
+			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
 					
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression

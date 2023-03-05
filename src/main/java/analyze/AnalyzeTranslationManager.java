@@ -27,6 +27,9 @@ public class AnalyzeTranslationManager {
 	// The name of the dataset loaded on Delian
 	private String schemaName;
 	
+	// Spark or RDBMS connection
+	private String connectionType;
+	
 	// An object that manages the parsing of the incoming expression 
 	private AnalyzeParserManager analyzeParserManager;
 	
@@ -71,10 +74,11 @@ public class AnalyzeTranslationManager {
 	 * @param incomingExpression
 	 * @param cubeManager
 	 */
-	public AnalyzeTranslationManager(String incomingExpression,CubeManager cubeManager, String schemaName) {
+	public AnalyzeTranslationManager(String incomingExpression,CubeManager cubeManager, String schemaName, String connectionType) {
 		this.incomingExpression = incomingExpression;
 		this.cubeManager = cubeManager;
 		this.schemaName = schemaName;
+		this.connectionType = connectionType;
 		this.analyzeParserManager = new AnalyzeParserManager();
 		this.dimensions = new HashMap<String,String>();
 		this.childToLevel = new HashMap<String,String>();
@@ -195,7 +199,8 @@ public class AnalyzeTranslationManager {
 																				 parentToLevel,
 																				 expressionToTableName,
 																				 currentLevelToDescriptions,
-																				 schemaName);
+																				 schemaName,
+																				 connectionType);
 		
 		analyzeCubeQueries.addAll(baseQueries);
 		
@@ -213,7 +218,8 @@ public class AnalyzeTranslationManager {
 																				 parentToLevel, 
 																				 expressionToTableName,
 																				 currentLevelToDescriptions,
-																				 schemaName);
+																				 schemaName,
+																				 connectionType);
 		analyzeCubeQueries.addAll(siblingQueries);
 		
 		// translate to Drill-Down queries
@@ -230,7 +236,8 @@ public class AnalyzeTranslationManager {
 																				 parentToLevel, 
 																				 expressionToTableName,
 																				 currentLevelToDescriptions,
-																				 schemaName);
+																				 schemaName,
+																				 connectionType);
 		// concatenate the results to one ArrayList
 		analyzeCubeQueries.addAll(drillDownQueries);
 		return analyzeCubeQueries;

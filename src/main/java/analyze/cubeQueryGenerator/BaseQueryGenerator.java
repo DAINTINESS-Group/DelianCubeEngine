@@ -39,7 +39,8 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 													 HashMap<String,String> parentToLevel,
 													 HashMap<String,String> expressionsToTableName,
 													 HashMap<String,String> currentLevelToDescriptions,
-													 String schemaName) {
+													 String schemaName,
+													 String connectionType) {
 		
 		ArrayList<CubeQuery> baseQuery = new ArrayList<CubeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();

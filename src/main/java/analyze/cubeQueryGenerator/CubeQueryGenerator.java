@@ -23,5 +23,6 @@ public interface CubeQueryGenerator {
 															 HashMap<String,String> parentToLevel,
 															 HashMap<String,String> expressionToTableName,
 															 HashMap<String,String> currentLevelToDescriptions,
-															 String schemaName);
+															 String schemaName,
+															 String connectionType);
 }

@@ -21,6 +21,7 @@ public class AnalyzeInputValidationTest {
 	private static CubeManager testCubeManager;
 	private static Session testSession;
 	private static String testSchemaName;
+	private static String testTypeOfConnection;
 	
 	// set up SQP and CubeManager
 	@BeforeClass
@@ -37,6 +38,7 @@ public class AnalyzeInputValidationTest {
 		testCubeManager = new CubeManager(typeOfConnection, userInputList);
 		testSession = new Session(testCubeManager);
 		testSession.initialize(typeOfConnection, userInputList);
+		testTypeOfConnection = typeOfConnection;
 	}
 	
 	// test incoming expression without FROM and AND keywords
@@ -44,7 +46,7 @@ public class AnalyzeInputValidationTest {
 	public final void testMissingKeywords() {
 		String incomingExpression = "ANALYZE min(amount) loan FOR region='Prague'  year='1998' GROUP BY district_name, month AS query";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
@@ -56,7 +58,7 @@ public class AnalyzeInputValidationTest {
 	public final void testMissingDoubleQuotes() {
 		String incomingExpression = "ANALYZE min(amount) FROM loan FOR region=Prague AND year=1998 GROUP BY district_name, month AS query";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
@@ -68,7 +70,7 @@ public class AnalyzeInputValidationTest {
 	public final void testMissingStatements() {
 		String incomingExpression = "ANALYZE (amount) FROM FOR region='Prague' AND year='1998' GROUP BY district_name AS query";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
@@ -80,7 +82,7 @@ public class AnalyzeInputValidationTest {
 	public final void testMissingComma() {
 		String incomingExpression = "ANALYZE min(amount) FROM loan FOR region=\"Prague\" AND year=\"1998\" GROUP BY district_name month AS query";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
@@ -92,7 +94,7 @@ public class AnalyzeInputValidationTest {
 	public final void testMissingAlias() {
 		String incomingExpression = "ANALYZE min(amount) FROM loan FOR region= 'Prague' AND year='1998' GROUP BY district_name,month";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
@@ -104,7 +106,7 @@ public class AnalyzeInputValidationTest {
 	public final void testCorrectSyntax() {
 		String incomingExpression = "ANALYZE min(amount) FROM loan FOR region= 'Prague' AND year='1998' GROUP BY district_name,month AS query";
 		
-		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
