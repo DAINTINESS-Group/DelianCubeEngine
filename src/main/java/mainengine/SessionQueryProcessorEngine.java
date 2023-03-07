@@ -32,6 +32,8 @@ import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import org.antlr.runtime.RecognitionException;
+
+import analyze.AnalyzeOperator;
 import result.Result;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
