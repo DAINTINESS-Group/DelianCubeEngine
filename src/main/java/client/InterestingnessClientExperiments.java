@@ -79,6 +79,20 @@ public class InterestingnessClientExperiments {
 							"Gamma:account_dim.district_name,date_dim.month\n" + 
 							"Sigma:account_dim.region='north Moravia'", measures);
 					break;
+				case 2:
+					service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+							"Name: LoanQuery11_S1_CG-Prtl\n" + 
+							"AggrFunc:Avg\n" + 
+							"Measure:amount\n" + 
+							"Gamma:account_dim.district_name,date_dim.month\n" + 
+							"Sigma:account_dim.region='north Moravia'", measures);
+					service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+							"Name: LoanQuery12_S1_CG-Dsjnt\n" + 
+							"AggrFunc:Max\n" + 
+							"Measure:amount\n" + 
+							"Gamma:account_dim.district_name,date_dim.month\n" + //"Gamma:account_dim.district_name, status_dim.status\n" + 
+							"Sigma:date_dim.month='1998-01'", measures);
+					break;
 				case 5:
 					service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 							"Name: LoanQuery11_S1_CG-Prtl\n" + 
@@ -320,7 +334,7 @@ public class InterestingnessClientExperiments {
 			measures = new ArrayList<String>(Arrays.asList(/*"Direct Novelty", 
 					"Indirect Novelty", "Partial Detailed Extensional Relevance", "Value Peculiarity", "Label Surprise", 
 					"Label Surprise Strict", "Partial Detailed Extensional Jaccard Based Peculiarity","Partial Detailed Extensional Novelty", "Partial Syntactic Average Peculiarity",
-					*/"Belief Based Novelty"/*, "Partial Same Level Extensional Relevance", "Partial Extensional Value Based Surprise"*/));
+					*/"Partial Detailed Extensional Belief Based Novelty"/*, "Partial Same Level Extensional Relevance", "Partial Extensional Value Based Surprise"*/));
 
 			//theloyme result size experiments gia tous goal based kai value surprise
 			
@@ -369,7 +383,7 @@ public class InterestingnessClientExperiments {
 			 * Experiments for 100K db
 			 * 
 			 */
-			
+			/*
 			experimentCounter++;
 			for(int i=0; i<5; i++) {
 				historySize = 1;
@@ -414,7 +428,7 @@ public class InterestingnessClientExperiments {
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
 			}
-			
+			*/
 			/*
 			 * 
 			 * Experiments for 1M db
@@ -439,8 +453,23 @@ public class InterestingnessClientExperiments {
 			*/
 			
 			experimentCounter++;
+			/*
 			for(int i=0; i<5; i++) {
 				historySize = 1;
+				database = "pkdd99_star_1M";
+				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
+				createHistory(service,historySize);
+				runExperiment(service,"\n\n########################################\n"+
+	    				"EXPERIMENT:\t"+experimentCounter+"\n"+
+						"LOOP NUMBER:\t " + i +" \n"+
+		    			"EXPERIMENT PARAMETERS\n"+
+		    			"DATABASE:\t" + database + "\n"+
+		    			"HISTORY_SIZE:\t"+historySize+"\n"+
+		    			"########################################\n\n\n");
+			}
+			
+			for(int i=0; i<5; i++) {
+				historySize = 2;
 				database = "pkdd99_star_1M";
 				IMainEngine service = initializeConnection(database,"CinecubesUser","Cinecubes","loan",database);
 				createHistory(service,historySize);
@@ -466,7 +495,7 @@ public class InterestingnessClientExperiments {
 		    			"DATABASE:\t" + database + "\n"+
 		    			"HISTORY_SIZE:\t"+historySize+"\n"+
 		    			"########################################\n\n\n");
-			}
+			}*/
 			
 			experimentCounter++;
 			for(int i=0; i<5; i++) {

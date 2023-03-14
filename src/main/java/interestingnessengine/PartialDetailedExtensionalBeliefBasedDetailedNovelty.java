@@ -18,7 +18,8 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 	private HashMap<String, Float> beliefs;
 	private HashMap<String, Integer> timesVisitedCell;
 	private float threshold;
-	private float pastQuerySize;
+	private float pastQueriesResultCellsNumber;
+	private int historySize;
 	
 	
 	/** Computes the belief based novelty of the current query according to the user's beliefs,
@@ -30,6 +31,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 
 	public double computeMeasure(IHistoryInput inputManager) {
 		allCellsVisited = inputManager.getAllCellsVisited();
+		historySize = inputManager.getQueryHistory().size();
 		timesVisitedCell = new HashMap<String, Integer>();
 		
 		
@@ -50,7 +52,8 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 
 		// set threshold (0,05 means that if the user has seen the cell in more than 5% of his queries, 
 		// then it's value is probably not novel to him because his beliefs are close to the actual value)
-		threshold = (float)0.05;
+		threshold = (float)0.05*historySize;
+		//System.out.println("TO THRESHOLD EINAI:" +threshold );
 		
 		ArrayList<Cell> knownCells = new ArrayList<Cell>();
 	
@@ -60,6 +63,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 				if(beliefs.get(signature)>=threshold) {
 					knownCells.add(c);
 					removeSpecificCellFromArrayList(c);
+					
 				}
 			}
 		}
@@ -89,7 +93,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 		// Assigning beliefs based on % of cell's appearance in previous searches
 		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
 
-		pastQuerySize = allCellsVisited.size();
+		pastQueriesResultCellsNumber = allCellsVisited.size();
 		
 		for(Cell c: allCellsVisited) {
 			String key = c.getDimensionMembers().toString();
@@ -99,8 +103,10 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 		}
 		
 		beliefs = new HashMap<String, Float>();
+		
 		for(Entry<String, Integer> entry : timesVisitedCell.entrySet()) {
-			beliefs.put(entry.getKey(), entry.getValue()/pastQuerySize);
+			beliefs.put(entry.getKey(), (float)entry.getValue()/historySize);
+			
 		}
 	}
 	

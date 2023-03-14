@@ -62,6 +62,13 @@ public class InterestingnessClient {
 			System.out.println("Unable to commence server, exiting");
 			System.exit(-100);
 		}
+		
+		IMainEngine service2 = (IMainEngine)registry.lookup(IMainEngine.class
+				.getSimpleName());
+		if(service2 == null) {
+			System.out.println("Unable to commence server, exiting");
+			System.exit(-100);
+		}
 		//Clear history files
 		clearOldHistory();
 		
@@ -77,6 +84,9 @@ public class InterestingnessClient {
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions1", "InputFiles/UserProfile/ExpectedValues/predictions1", 1);
 		System.out.println("Completed connection initialization");
 		
+		
+		
+		
 		//create history to be able to compute every measure
 		List<String> measures = new ArrayList<String>();
 		
@@ -86,20 +96,28 @@ public class InterestingnessClient {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='north Moravia'", measures);
+		
 		service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery31_S3_CG-Prtl\n" + 
 				"AggrFunc:Sum\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
+		
+		
 		
 		
 		//compute all measures
 		
-		measures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-				"Indirect Novelty", "Partial Detailed Extensional Relevance", "Value Peculiarity", "Label Surprise", 
-				"Label Surprise Strict", "Value Surprise"));
+		measures = new ArrayList<String>(Arrays.asList( "Partial Detailed Extensional Novelty",
+				"Partial Detailed Extensional Belief Based Novelty", "Partial Detailed Extensional Relevance",
+				"Partial Same Level Extensional Relevance", "Partial Detailed Extensional Jaccard Based Peculiarity",
+				"Partial Syntactic Average Peculiarity", "Partial Extensional Value Based Surprise"
+				));
+		
+		
 		// New query with predictions available
+		
 		String[] answers = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
@@ -111,24 +129,26 @@ public class InterestingnessClient {
 			System.out.println(measures.get(i) + ":    " + answers[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		
 		// Partly new query
 		String[] answers2 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers2.length; i++) {
 			System.out.println(measures.get(i) + ":    " + answers2[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		// Old query
+		
 		String[] answers3 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery31_S3_CG-Prtl\n" + 
 				"AggrFunc:Sum\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3='1996'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers3.length; i++) {
@@ -136,6 +156,32 @@ public class InterestingnessClient {
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
+		
+		String[] answers4 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl3='ALL', date_dim.lvl3='1996'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < answers4.length; i++) {
+			System.out.println(measures.get(i) + ":    " + answers4[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		/*
+		String[] answers5= service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery31_S3_CG-Prtl\n" + 
+				"AggrFunc:Sum\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3='1996'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < answers5.length; i++) {
+			System.out.println(measures.get(i) + ":    " + answers5[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");*/
+				
 		//Delete history files created
 		clearOldHistory();
 		//Create .gitignore files
