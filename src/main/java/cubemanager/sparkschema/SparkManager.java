@@ -236,7 +236,10 @@ public class SparkManager {
 			 * VERY IMPORTANT: here is where cells are created!
 			 * We need them to be in a List, so that they are ordered!
 			 */
-			result.getCells().add(new Cell(values));
+			// if the result has more than one columns create cells
+			if(values.length > 1) {
+				result.getCells().add(new Cell(values));
+			}
 
 			result.setResultArray(resultArray);
 		}

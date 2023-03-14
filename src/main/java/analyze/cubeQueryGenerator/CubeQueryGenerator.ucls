@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
+  <interface id="1" language="java" name="analyze.cubeQueryGenerator.CubeQueryGenerator" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/analyze/cubeQueryGenerator/CubeQueryGenerator.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="88" width="724" x="371" y="231"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" language="java" name="analyze.cubeQueryGenerator.BaseQueryGenerator" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/analyze/cubeQueryGenerator/BaseQueryGenerator.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="124" width="608" x="-212" y="430"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="analyze.cubeQueryGenerator.DrillDownsQueryGenerator" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/analyze/cubeQueryGenerator/DrillDownsQueryGenerator.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="142" width="554" x="461" y="428"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="analyze.cubeQueryGenerator.CubeQueryGeneratorFactory" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/analyze/cubeQueryGenerator/CubeQueryGeneratorFactory.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="106" width="418" x="-434" y="61"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="analyze.cubeQueryGenerator.SiblingsQueryGenerator" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/analyze/cubeQueryGenerator/SiblingsQueryGenerator.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="142" width="468" x="1155" y="430"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <dependency id="6">    
+    <bendpoint x="734" y="114"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <realization id="7">    
+    <bendpoint x="1387" y="283"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <dependency id="8">    
+    <bendpoint x="-221" y="1"/>    
+    <bendpoint x="740" y="7"/>    
+    <bendpoint x="1556" y="5"/>    
+    <bendpoint x="1662" y="4"/>    
+    <bendpoint x="1670" y="502"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <realization id="9">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="10">    
+    <bendpoint x="91" y="270"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <dependency id="11">    
+    <bendpoint x="-225" y="712"/>    
+    <bendpoint x="737" y="716"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="12">    
+    <bendpoint x="-71" y="284"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

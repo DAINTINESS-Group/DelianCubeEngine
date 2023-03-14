@@ -20,9 +20,30 @@
 
 package mainengine;
 
-import assess.AssessOperator;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+
+import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
+import cubemanager.cubebase.Level;
+import cubemanager.cubebase.QueryHistoryManager;
+import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.CubeManager;
-import cubemanager.cubebase.*;
+
+import assess.AssessOperator;
+
 import interestingnessengine.InterestingnessManager;
 import mainengine.nlq.ITranslator;
 import mainengine.nlq.ITranslatorFactory;
@@ -38,19 +59,6 @@ import result.Result;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
 
 
@@ -912,8 +920,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	}//end answerCubeQueryWithInterestMeasures
 
-
 	
-
 	
 }//end class

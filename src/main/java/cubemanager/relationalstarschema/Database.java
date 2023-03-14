@@ -309,6 +309,21 @@ public class Database extends DataSourceDescription{
 				//unclear what this little check does, for the case the result has a single column
 				if(columnCount==1) {
 					resultSet.beforeFirst();
+					
+					String resultArray [][] = new String[rowCount+2][columnCount];
+					resultArray[0][0]=resultSet.getMetaData().getColumnName(1);
+					result.getColumnNames().add(resultSet.getMetaData().getColumnName(1));
+					resultArray[1][0]=resultSet.getMetaData().getColumnLabel(1);
+					result.getColumnLabels().add(resultSet.getMetaData().getColumnLabel(1));
+					
+					while(resultSet.next()){
+						for(int i=0;i<columnCount;i++){
+							String value = resultSet.getString(i+1);
+							resultArray[resultSet.getRow()+1][i]=value;
+						}
+						result.setResultArray(resultArray);
+					}
+
 					//while(resultSet.next()) titleOfColumns=resultSet.getString(1);
 					return ret_value;
 				}
