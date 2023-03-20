@@ -39,11 +39,11 @@ public class AssessQueryParserTest {
 	@Test
 	public void collectSelectionPredicatesTest()
 			throws IOException, RecognitionException {
-		String predicates = "date = '20/5/2019', type = 'Fresh Fruit', country = 'Italy'";
+		String predicates = "date = '2019-5-20', type = 'Fresh Fruit', country = 'Italy'";
 		AssessQueryParser parser = createParser(predicates);
 
 		HashMap<String, String> expected = new HashMap<>();
-		expected.put("date", "20/5/2019");
+		expected.put("date", "2019-5-20");
 		expected.put("type", "Fresh Fruit");
 		expected.put("country", "Italy");
 

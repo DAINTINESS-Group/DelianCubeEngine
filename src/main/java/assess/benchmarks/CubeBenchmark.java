@@ -1,16 +1,21 @@
 package assess.benchmarks;
 
-import cubemanager.cubebase.BasicStoredCube;
+import result.Cell;
+import result.Result;
+
+import java.util.List;
 
 public class CubeBenchmark implements AssessBenchmark {
-	private final BasicStoredCube cube;
+	private final Result cubeResult;
+	private int currentIndex = 0;
 
-	public CubeBenchmark(BasicStoredCube cube) { this.cube = cube; }
+	public CubeBenchmark(Result cubeResult) { this.cubeResult = cubeResult; }
 
 	@Override
 	public double getCellValue() {
-		// Must create an iterator over the cube's measurements
-		System.out.println(cube.getMeasuresList());
-		return 0;
+		List<Cell> cells = cubeResult.getCells();
+		double result = cells.get(currentIndex).toDouble();
+		currentIndex++;
+		return result;
 	}
 }

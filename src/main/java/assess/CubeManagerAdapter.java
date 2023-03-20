@@ -3,6 +3,7 @@ package assess;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.Cube;
 import cubemanager.cubebase.CubeQuery;
+import result.Result;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -57,20 +58,24 @@ public class CubeManagerAdapter {
 		this.groupBySet = groupBySet;
 	}
 
-	public CubeQuery issueQuery() {
+	public CubeQuery translateToCubeQuery() {
 		try {
 			return cubeManager.createCubeQueryFromString(generateQuery(), new HashMap<>());
 		} catch (RemoteException re) {
 			throw new RuntimeException(
-					"Failed to issue AssessQuery to the CubeManager\n" + re.toString());
+					"Failed to issue AssessQuery to the CubeManager\n" + re);
 		}
+	}
+
+	public Result executeCubeQuery(CubeQuery cb) {
+		return cubeManager.executeQuery(cb);
 	}
 
 	/**
 	 * Creates the query for the CubeManager
 	 * @return the formatted query
 	 */
-	public String generateQuery() {
+	private String generateQuery() {
         return new StringJoiner("\n")
 				.add("CubeName:" + targetCubeName)
 				.add("Name:" + targetCubeName + "_" + measurement)

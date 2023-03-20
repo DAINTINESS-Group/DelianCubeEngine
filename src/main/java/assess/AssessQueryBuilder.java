@@ -86,7 +86,7 @@ public class AssessQueryBuilder {
 
     public AssessQuery build() {
         return new AssessQuery(
-                queryGenerator.generateQuery(),
+                queryGenerator.translateToCubeQuery(),
                 buildBenchmark(),
                 new DeltaScheme(deltaFunctions),
                 new CustomLabelingScheme(labelingRules));

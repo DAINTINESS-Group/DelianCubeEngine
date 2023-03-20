@@ -42,11 +42,10 @@ public class BenchmarkFactory {
 	private AssessBenchmark createSiblingBenchmark(String siblingKey, String siblingValue) {
 		Map<String, String> predicates = queryStringGenerator.getSelectionPredicates();
 		if (predicates.get(siblingKey) == null) {
-			throw new RuntimeException(siblingKey +
-					" was not defined in original predicates");
+			throw new RuntimeException(siblingKey + " was not defined in original predicates");
 		}
 		queryStringGenerator.updateSelectionPredicate(siblingKey, siblingValue);
-		return new CubeBenchmark(queryStringGenerator.issueQuery().getReferCube());
+		return new CubeBenchmark(queryStringGenerator.executeCubeQuery(queryStringGenerator.translateToCubeQuery()));
 	}
 
 	private AssessBenchmark createPastBenchmark() {

@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * The top layer class for any assessments done in the intentional model.
@@ -18,44 +19,54 @@ import java.nio.charset.StandardCharsets;
  * of this class are created everytime we wish to change cubes.
  */
 public class AssessOperator {
-	private final CubeManager cubeManager;
+    private final CubeManager cubeManager;
 
-	public AssessOperator(CubeManager cubeManager) {
-		this.cubeManager = cubeManager;
-	}
+    public AssessOperator(CubeManager cubeManager) {
+        this.cubeManager = cubeManager;
+    }
 
-	private AssessQueryParser createParser(String incomingExpression) {
-		try {
-			InputStream stream = new ByteArrayInputStream(incomingExpression.getBytes(StandardCharsets.UTF_8));
-			ANTLRInputStream input = new ANTLRInputStream(stream);
-			AssessQueryLexer lexer = new AssessQueryLexer(input);
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			return new AssessQueryParser(tokens);
-		} catch (IOException e) {
-			throw new RuntimeException("There was an error while creating the parser");
-		}
-	}
+    /* Executes the provided query. Returns ?
+     * @param assessQuery The user-provided query for assessment reasons
+     * @return
+     * @throws RecognitionException If the query does not follow the defined syntax
+     */
+    public int execute(String assessQuery) throws RecognitionException {
+        AssessQuery parsedQuery = parseQuery(assessQuery);
+        List<Double> comparisonResults = executeComparison(parsedQuery);
+        // 3. Label the results
+        labelResults(parsedQuery, comparisonResults);
+        // 4. Figure out what this method should return
+        return 1;
+    }
 
-	/**
-	 * Executes the provided query. Returns ?
-	 * @param assessQuery The user-provided query for assessment reasons
-	 * @return
-	 * @throws RecognitionException If the query does not follow the defined syntax
-	 */
-	public int execute(String assessQuery) throws RecognitionException {
-		AssessQuery currentAssessQuery = createParser(assessQuery)
-				.parse(new AssessQueryBuilder(cubeManager));
-		System.out.println(currentAssessQuery.targetCubeQuery);
+    private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
+        AssessQueryParser parser = createParser(assessQuery);
+        return parser.parse(new AssessQueryBuilder(cubeManager));
+    }
 
-		// 2. Compare the targetCube to the Benchmark
-		// 3. Label the results
-		// 4. Figure out what this method should return
-//		CubeQuery targetCube = cubeManager.createCubeQueryFromString(currentAssessQuery.targetCubeQuery, new HashMap<>());
-//		CubeQuery benchmarkCube = cubeManager.createCubeQueryFromString(currentAssessQuery.benchmarkCubeQuery, new HashMap<>());
-//
-//		Cube comparisonCube = currentAssessQuery.deltaFunction.compare(targetCube, benchmarkCube);
-//		currentAssessQuery.labelingScheme.applyLabels(comparisonCube);
-		// ???
-		return 1;
-	}
+    private AssessQueryParser createParser(String incomingExpression) {
+        try {
+            InputStream stream = new ByteArrayInputStream(incomingExpression.getBytes(StandardCharsets.UTF_8));
+            ANTLRInputStream input = new ANTLRInputStream(stream);
+            AssessQueryLexer lexer = new AssessQueryLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            return new AssessQueryParser(tokens);
+        } catch (IOException e) {
+            // No idea what could go wrong here.
+            throw new RuntimeException("There was an error while creating the Assess Query parser");
+        }
+    }
+
+    private List<Double> executeComparison(AssessQuery parsedQuery) {
+        return parsedQuery.deltaFunction.compareTargetToBenchmark(
+                cubeManager.executeQuery(parsedQuery.targetCubeQuery),
+                parsedQuery.benchmark);
+    }
+
+    private void labelResults(AssessQuery parsedQuery, List<Double> comparisonResults) {
+        for(Double value: comparisonResults) {
+            String label = parsedQuery.labelingScheme.applyLabels(value);
+            System.out.println(value + ":" + label);
+        }
+    }
 }

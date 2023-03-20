@@ -1,4 +1,4 @@
-// $ANTLR 3.5.3 AssessQuery.g 2023-03-20 18:13:28
+// $ANTLR 3.5.3 AssessQuery.g 2023-03-20 19:13:27
 
 package assess.syntax;
 
@@ -1498,16 +1498,16 @@ public class AssessQueryLexer extends Lexer {
 		try {
 			int _type = ID;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// AssessQuery.g:172:4: ( ( 'a' .. 'z' | 'A' .. 'Z' )+ )
-			// AssessQuery.g:172:6: ( 'a' .. 'z' | 'A' .. 'Z' )+
+			// AssessQuery.g:172:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+ )
+			// AssessQuery.g:172:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+
 			{
-			// AssessQuery.g:172:6: ( 'a' .. 'z' | 'A' .. 'Z' )+
+			// AssessQuery.g:172:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+
 			int cnt2=0;
 			loop2:
 			while (true) {
 				int alt2=2;
 				int LA2_0 = input.LA(1);
-				if ( ((LA2_0 >= 'A' && LA2_0 <= 'Z')||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
+				if ( ((LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
 					alt2=1;
 				}
 
@@ -1515,7 +1515,7 @@ public class AssessQueryLexer extends Lexer {
 				case 1 :
 					// AssessQuery.g:
 					{
-					if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 						input.consume();
 					}
 					else {
@@ -1894,8 +1894,9 @@ public class AssessQueryLexer extends Lexer {
 			"\2\34\2\uffff\1\34\22\uffff\1\34\6\uffff\1\11\1\1\1\2\1\uffff\1\31\1"+
 			"\3\1\4\1\5\1\uffff\12\33\1\6\2\uffff\1\7\3\uffff\1\17\1\20\1\30\2\32"+
 			"\1\21\5\32\1\22\1\26\2\32\1\23\2\32\1\27\1\32\1\24\1\32\1\25\3\32\1\10"+
-			"\1\uffff\1\12\3\uffff\1\17\1\13\1\30\2\32\1\21\2\32\1\14\2\32\1\22\1"+
-			"\26\2\32\1\23\2\32\1\27\1\32\1\24\1\32\1\25\3\32\1\15\1\uffff\1\16",
+			"\1\uffff\1\12\1\uffff\1\32\1\uffff\1\17\1\13\1\30\2\32\1\21\2\32\1\14"+
+			"\2\32\1\22\1\26\2\32\1\23\2\32\1\27\1\32\1\24\1\32\1\25\3\32\1\15\1\uffff"+
+			"\1\16",
 			"",
 			"",
 			"",
@@ -1927,7 +1928,7 @@ public class AssessQueryLexer extends Lexer {
 			"",
 			"",
 			"\1\57",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\61",
 			"\1\62\37\uffff\1\62",
 			"\1\63\37\uffff\1\63",
@@ -1945,19 +1946,19 @@ public class AssessQueryLexer extends Lexer {
 			"",
 			"\1\77",
 			"",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\101\37\uffff\1\101",
 			"\1\102\37\uffff\1\102",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\104\37\uffff\1\104",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\106\37\uffff\1\106",
 			"\1\107\37\uffff\1\107",
 			"\1\110\37\uffff\1\110",
 			"\1\111\37\uffff\1\111",
-			"\10\32\1\112\21\32\6\uffff\10\32\1\112\21\32",
-			"\10\32\1\113\21\32\6\uffff\10\32\1\113\21\32",
-			"\32\32\6\uffff\32\32",
+			"\10\32\1\112\21\32\4\uffff\1\32\1\uffff\10\32\1\112\21\32",
+			"\10\32\1\113\21\32\4\uffff\1\32\1\uffff\10\32\1\113\21\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\114\37\uffff\1\114",
 			"\1\115",
 			"",
@@ -1967,9 +1968,9 @@ public class AssessQueryLexer extends Lexer {
 			"\1\120\37\uffff\1\120",
 			"",
 			"\1\121\37\uffff\1\121",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\123\37\uffff\1\123",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\125\37\uffff\1\125",
 			"\1\126\37\uffff\1\126",
 			"\1\127\37\uffff\1\127",
@@ -1979,26 +1980,26 @@ public class AssessQueryLexer extends Lexer {
 			"\1\133\37\uffff\1\133",
 			"\1\134\37\uffff\1\134",
 			"",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"",
 			"\1\136\37\uffff\1\136",
 			"\1\137\37\uffff\1\137",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\140",
 			"\1\141\37\uffff\1\141",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\143\37\uffff\1\143",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"",
 			"\1\145\37\uffff\1\145",
 			"\1\146\37\uffff\1\146",
 			"\1\147",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"",
-			"\32\32\6\uffff\32\32",
-			"\32\32\6\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
+			"\32\32\4\uffff\1\32\1\uffff\32\32",
 			"\1\151",
 			"",
 			"\1\152",

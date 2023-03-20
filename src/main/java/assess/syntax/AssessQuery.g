@@ -169,7 +169,7 @@ AGGREGATE : (A V G | A V E R A G E
 
 // LEXICAL TOKENS
 SIGN : ('+' | '-');
-ID : ('a'..'z'|'A'..'Z')+;
+ID : ('a'..'z'|'A'..'Z'|'_')+;
 
 INT : '0'..'9'+;
 FLOAT : INT '.' INT;
