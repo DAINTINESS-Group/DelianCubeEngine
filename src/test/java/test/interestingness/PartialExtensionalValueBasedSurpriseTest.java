@@ -61,7 +61,7 @@ public class PartialExtensionalValueBasedSurpriseTest {
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-					"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
+					"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
 		measures.add("Partial Extensional Value Based Surprise");
 
 	}

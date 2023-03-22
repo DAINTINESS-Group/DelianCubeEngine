@@ -3,7 +3,6 @@ package interestingnessengine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +10,11 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
+import interestingnessengine.expectedvaluesbased.IExpectedValuesInput;
+import interestingnessengine.historybased.IHistoryInput;
 import result.Cell;
+import result.CellBelief;
+import result.CellComparator;
 import result.Result;
 
 import java.io.*;
@@ -33,6 +36,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	private ArrayList<Cell> labelPredictions = new ArrayList<Cell>();
 	private ArrayList<Result> historyResults = new ArrayList<Result>();
 	private ArrayList<CubeQuery> historyQueries = new ArrayList<CubeQuery>();
+	private ArrayList<CellBelief> cellBeliefs = new ArrayList<CellBelief>();
 	private FileInputStream fis;
 	private Scanner sc;
 	private CubeQuery currentQuery;
@@ -66,7 +70,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	 * @param k               The kth neighbor
 	 * @throws RemoteException
 	 */
-	public InputManager(String historyFolder, String expValuesFolder, String expLabelsFolder, CubeManager cubeMng, int k) throws RemoteException{
+	public InputManager(String historyFolder, String expValuesFolder, String expLabelsFolder, String beliefFolder, CubeManager cubeMng, int k) throws RemoteException{
 		
 		this.cubeMng = cubeMng;
 		if(!expValuesFolder.equals("")) {
@@ -77,6 +81,9 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		if(!expLabelsFolder.equals("")) {
 			parseExpectedLabels(expLabelsFolder);
 		}
+		if(!beliefFolder.equals("")) {
+			parseCellBeliefs(beliefFolder);
+		}
 		if(!historyFolder.equals("")) {
 			parseQueryHistoryResults(historyFolder + "/Results"); 
 			parseQueryHistory(historyFolder + "/Queries");	
@@ -85,6 +92,8 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 			setKthNeighbor(k);
 		}
 	}
+	
+
 	/**
 	 * Parses the user's expected values. 
 	 * <p>
@@ -167,6 +176,57 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	public ArrayList<Cell> getExpectedLabels() {
 		return labelPredictions;
 	}
+	
+	
+	
+	/**
+	 * Parses the user's cell beliefs.
+	 * Goes through the given file, creates the {@link CellBeliefs}s with the beliefs it contains 
+	 * and populates the appropriate list.
+	 * 
+	 * @param filePath The path to the file containing the user's value predictions
+	 * @return The size of the list with the beliefs
+	 */
+	private int parseCellBeliefs(String filePath) {
+		try {
+			fis = new FileInputStream(filePath);
+			sc = new Scanner(fis);
+			CellBelief nextCellBelief = null;
+			
+			//skip header row
+			sc.nextLine();
+			
+			while(sc.hasNextLine()){ 
+				String[] values = sc.nextLine().split("\t");
+								
+				nextCellBelief= new CellBelief(values);
+				
+				if(nextCellBelief != null) {
+					cellBeliefs.add(nextCellBelief);
+				}
+			} 
+			
+			sc.close();  
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}       
+		
+		if(cellBeliefs.size() == 0) {
+			System.out.println("No cell beliefs found.");
+			return 0;
+		}
+		return cellBeliefs.size();
+	}
+	
+	
+	public ArrayList<CellBelief> getCellBeliefs() {
+		return cellBeliefs;
+	}
+	
+	
+	
+	
+	
 	/** 
 	 * Parses the user's query history results
 	 * <p>
@@ -317,7 +377,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 
 	public ArrayList<Cell> computeDetailedAreaOfInterest() {
 		
-		TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComp());
+		TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComparator());
 		ArrayList<Cell> res;
 		for(int i = 0; i < historyQueries.size(); i++) {
 			res = computeDetailedQueryCube(historyQueries.get(i));
@@ -395,7 +455,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	
 	public ArrayList<Cell> computeDetailedAreaOfInterestOfPreviousQueries() {
 			
-			TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComp());
+			TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComparator());
 			ArrayList<Cell> res;
 			for(int i = 0; i < historyQueries.size()-1; i++) {
 				res = computeDetailedQueryCube(historyQueries.get(i));
@@ -459,21 +519,4 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	 * 
 	 */
 }
-/**
- * 
- * A Comparator implementation for the {@code TreeSet<Cell>} set needed in the 
- * computeDetailedAreaOfInterest() method
- *
- */
-class CellComp implements Comparator<Cell>{
 
-	/**
-	 * Compares the dimension members of two cells.
-	 * @param o1 First cell
-	 * @param 02 Second cell
-	 */
-	public int compare(Cell o1, Cell o2) {
-		return o1.getDimensionMembers().toString().compareTo(o2.getDimensionMembers().toString());	
-	}	
-	
-}

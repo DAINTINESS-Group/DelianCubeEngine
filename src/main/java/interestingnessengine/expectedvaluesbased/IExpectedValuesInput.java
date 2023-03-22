@@ -1,4 +1,4 @@
-package interestingnessengine;
+package interestingnessengine.expectedvaluesbased;
 
 import java.util.ArrayList;
 

@@ -58,7 +58,7 @@ public class PartialSyntacticAveragePeculiarityTest {
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
 		//measures.add("Direct Novelty");
 
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 

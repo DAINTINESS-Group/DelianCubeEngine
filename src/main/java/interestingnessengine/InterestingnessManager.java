@@ -6,6 +6,10 @@ import java.util.Arrays;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
+import interestingnessengine.expectedvaluesbased.IInterestingnessMeasureWithExpectedValues;
+import interestingnessengine.expectedvaluesbased.InterestingnessMeasureEVFactory;
+import interestingnessengine.historybased.IInterestingnessMeasureWithHistory;
+import interestingnessengine.historybased.InterestingnessMeasureHFactory;
 import result.Result;
 /**
  * 
@@ -41,9 +45,9 @@ public class InterestingnessManager {
 	 * @param k               The kth neighbor, to be passed to {@link InputManager} constructor
 	 * @throws RemoteException
 	 */
-	public InterestingnessManager(String historyFolder, String expValuesFolder, String expLabelsFolder, CubeManager cubeMng, int k) throws RemoteException{
+	public InterestingnessManager(String historyFolder, String expValuesFolder, String expLabelsFolder, String beliefFolder, CubeManager cubeMng, int k) throws RemoteException{
 		
-		this.inputManager = new InputManager(historyFolder, expValuesFolder, expLabelsFolder, cubeMng, k);
+		this.inputManager = new InputManager(historyFolder, expValuesFolder, expLabelsFolder, beliefFolder, cubeMng, k);
 		this.evMeasureFactory = new InterestingnessMeasureEVFactory();
 		this.hMeauseFactory = new InterestingnessMeasureHFactory();
 	}

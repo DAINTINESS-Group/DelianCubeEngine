@@ -85,13 +85,14 @@ public interface IMainEngine extends IServer {
 	 * @param historyFolder   Path to the History folder
 	 * @param expValuesFolder Path to the Expected Values folder
 	 * @param expLabelsFolder Path to the Expected Labels folder
+	 * @param BeliefFolder	  Path to the Cell Beliefs folder
 	 * @param k               The kth neighbor
 	 * 
 	 * @throws RemoteException
 	 * @see initializeConnection
 	 */
 	void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder, 
-			  String expValuesFolder, String expLabelsFolder,int k) throws RemoteException;
+			  String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException;
 	
 	
 	/**

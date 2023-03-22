@@ -1,4 +1,5 @@
-package interestingnessengine;
+package interestingnessengine.expectedvaluesbased;
+
 /**
  * 
  * @author eiriniMouselli

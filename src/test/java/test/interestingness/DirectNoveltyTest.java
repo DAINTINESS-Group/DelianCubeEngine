@@ -61,7 +61,7 @@ public class DirectNoveltyTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
 		measures.add("Direct Novelty");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 

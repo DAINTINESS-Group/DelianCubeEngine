@@ -1,4 +1,4 @@
-package interestingnessengine;
+package interestingnessengine.expectedvaluesbased;
 
 import java.io.IOException;
 import java.nio.file.Files;

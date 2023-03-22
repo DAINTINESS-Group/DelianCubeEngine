@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +61,7 @@ public class LabelSurpriseStrictTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", -1);
+				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
 		measures.add("Label Surprise Strict");
 	}
 	

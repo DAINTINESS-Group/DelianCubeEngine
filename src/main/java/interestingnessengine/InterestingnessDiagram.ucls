@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
   realizations="true" associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
-  <interface id="1" language="java" name="interestingnessengine.IInterestingnessMeasureWithHistory" 
+  <interface id="1" language="java" name="interestingnessengine.historybased.IInterestingnessMeasureWithHistory" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/IInterestingnessMeasureWithHistory.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/IInterestingnessMeasureWithHistory.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="302" y="910"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -12,9 +12,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="2" language="java" name="interestingnessengine.PartialDetailedExtensionalJaccardBasedPeculiarity" 
+  <class id="2" language="java" 
+    name="interestingnessengine.historybased.PartialDetailedExtensionalJaccardBasedPeculiarity" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialDetailedExtensionalJaccardBasedPeculiarity.java" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/PartialDetailedExtensionalJaccardBasedPeculiarity.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1938" y="1900"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -23,8 +24,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="interestingnessengine.ValueSurprise" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/ValueSurprise.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="3" language="java" name="interestingnessengine.expectedvaluesbased.ValueSurprise" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/ValueSurprise.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="207" width="255" x="3419" y="387"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -32,9 +35,9 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="interestingnessengine.PartialExtensionalValueBasedSurprise" 
+  <class id="4" language="java" name="interestingnessengine.expectedvaluesbased.PartialExtensionalValueBasedSurprise" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialExtensionalValueBasedSurprise.java" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/PartialExtensionalValueBasedSurprise.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="3303" y="974"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -43,9 +46,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="interestingnessengine.InterestingnessMeasureEVFactory" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/InterestingnessMeasureEVFactory.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="interestingnessengine.expectedvaluesbased.InterestingnessMeasureEVFactory" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/InterestingnessMeasureEVFactory.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="4011" y="625"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -53,9 +57,9 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="interestingnessengine.PartialSameLevelExtensionalRelevance" 
+  <class id="6" language="java" name="interestingnessengine.expectedvaluesbased.PartialSameLevelExtensionalRelevance" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialSameLevelExtensionalRelevance.java" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/PartialSameLevelExtensionalRelevance.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1020" y="589"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -64,8 +68,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="interestingnessengine.LabelSurprise" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/LabelSurprise.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="7" language="java" name="interestingnessengine.expectedvaluesbased.LabelSurprise" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/LabelSurprise.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="3435" y="760"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -82,9 +88,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <interface id="9" language="java" name="interestingnessengine.IInterestingnessMeasureWithExpectedValues" 
+  <interface id="9" language="java" 
+    name="interestingnessengine.expectedvaluesbased.IInterestingnessMeasureWithExpectedValues" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/IInterestingnessMeasureWithExpectedValues.java" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/IInterestingnessMeasureWithExpectedValues.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="3032" y="312"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -93,18 +100,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="10" language="java" name="interestingnessengine.CellComp" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/InputManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2147" y="1487"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="11" language="java" name="interestingnessengine.InterestingnessMeasureHFactory" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/InterestingnessMeasureHFactory.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="10" language="java" name="interestingnessengine.historybased.InterestingnessMeasureHFactory" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/InterestingnessMeasureHFactory.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1635" y="288"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -112,9 +111,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="12" language="java" name="interestingnessengine.PartialDetailedExtensionalBeliefBasedDetailedNovelty" 
+  <class id="11" language="java" 
+    name="interestingnessengine.historybased.PartialDetailedExtensionalBeliefBasedDetailedNovelty" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialDetailedExtensionalBeliefBasedDetailedNovelty.java" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/PartialDetailedExtensionalBeliefBasedDetailedNovelty.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1388" y="1022"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -123,8 +123,9 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="13" language="java" name="interestingnessengine.DirectNovelty" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/DirectNovelty.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="12" language="java" name="interestingnessengine.historybased.DirectNovelty" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/DirectNovelty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1819" y="1558"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -132,7 +133,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="interestingnessengine.InterestingnessManager" project="DelianCubeEngine" 
+  <class id="13" language="java" name="interestingnessengine.InterestingnessManager" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/interestingnessengine/InterestingnessManager.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="153" width="323" x="2435" y="37"/>    
@@ -142,9 +143,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="15" language="java" name="interestingnessengine.IExpectedValuesInput" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/IExpectedValuesInput.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <interface id="14" language="java" name="interestingnessengine.expectedvaluesbased.IExpectedValuesInput" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/IExpectedValuesInput.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="3304" y="1550"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -152,10 +154,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="16" language="java" name="interestingnessengine.PartialDetailedExtensionalRelevance" 
+  <class id="15" language="java" name="interestingnessengine.historybased.PartialDetailedExtensionalRelevance" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialDetailedExtensionalRelevance.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/PartialDetailedExtensionalRelevance.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1298" y="778"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -163,8 +165,9 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="17" language="java" name="interestingnessengine.IHistoryInput" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/IHistoryInput.java" binary="false" corner="BOTTOM_RIGHT">    
+  <interface id="16" language="java" name="interestingnessengine.historybased.IHistoryInput" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/IHistoryInput.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="629" y="2155"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -172,9 +175,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="18" language="java" name="interestingnessengine.LabelSurpriseStrict" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/LabelSurpriseStrict.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="17" language="java" name="interestingnessengine.expectedvaluesbased.LabelSurpriseStrict" 
+    project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/expectedvaluesbased/LabelSurpriseStrict.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="3125" y="1145"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -182,7 +186,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="19" language="java" name="interestingnessengine.InputManager" project="DelianCubeEngine" 
+  <class id="18" language="java" name="interestingnessengine.InputManager" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/interestingnessengine/InputManager.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="747" width="354" x="2435" y="387"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -191,8 +195,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="20" language="java" name="interestingnessengine.IndirectNovelty" project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/IndirectNovelty.java" binary="false" 
+  <class id="19" language="java" name="interestingnessengine.historybased.IndirectNovelty" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/IndirectNovelty.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="986" y="340"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -201,10 +205,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="21" language="java" name="interestingnessengine.PartialDetailedExtensionalNovelty" 
+  <class id="20" language="java" name="interestingnessengine.historybased.PartialDetailedExtensionalNovelty" 
     project="DelianCubeEngine" 
-    file="/DelianCubeEngine/src/main/java/interestingnessengine/PartialDetailedExtensionalNovelty.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+    file="/DelianCubeEngine/src/main/java/interestingnessengine/historybased/PartialDetailedExtensionalNovelty.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1588" y="1331"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -212,252 +216,252 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <dependency id="22">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <dependency id="23">    
-    <bendpoint x="3381" y="1218"/>    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <dependency id="24">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="12"/>  
-  </dependency>  
-  <dependency id="25">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <realization id="26">    
-    <bendpoint x="2200" y="2092"/>    
-    <end type="SOURCE" refId="19"/>    
-    <end type="TARGET" refId="17"/>  
-  </realization>  
-  <realization id="27">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="1"/>  
-  </realization>  
-  <realization id="28">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="9"/>  
-  </realization>  
-  <realization id="29">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="9"/>  
-  </realization>  
-  <dependency id="30">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="20"/>  
-  </dependency>  
-  <realization id="31">    
-    <bendpoint x="2788" y="1174"/>    
-    <end type="SOURCE" refId="19"/>    
-    <end type="TARGET" refId="15"/>  
-  </realization>  
-  <realization id="32">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="9"/>  
-  </realization>  
-  <association id="33">    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="34" name="inputManager">        
+  <association id="21">    
+    <bendpoint x="3600" y="313"/>    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="22" name="measure">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="19" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="36">    
-    <bendpoint x="594" y="184"/>    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="37" name="hMeasure">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="38" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="39">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <dependency id="40">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="6"/>  
-  </dependency>  
-  <dependency id="41">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <association id="42">    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="43" name="evMeasure">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="44" minimum="0" maximum="1">        
+      <multiplicity id="23" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="45">    
-    <end type="SOURCE" refId="21"/>    
+  <realization id="24">    
+    <end type="SOURCE" refId="19"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
-  <association id="46">    
+  <dependency id="25">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="20"/>  
+  </dependency>  
+  <dependency id="26">    
+    <bendpoint x="2000" y="1056"/>    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="28">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <realization id="29">    
+    <bendpoint x="2788" y="1174"/>    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="14"/>  
+  </realization>  
+  <association id="30">    
     <bendpoint x="666" y="242"/>    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="47" name="measure">        
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="31" name="measure">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="48" minimum="0" maximum="1">        
+      <multiplicity id="32" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="49">    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="9"/>  
-  </realization>  
-  <dependency id="50">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="15"/>  
+  <dependency id="33">    
+    <bendpoint x="3381" y="1218"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="14"/>  
   </dependency>  
-  <dependency id="51">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="10"/>  
-  </dependency>  
-  <dependency id="52">    
+  <association id="34">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="35" name="inputManager">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="36" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="37">    
+    <bendpoint x="540" y="808"/>    
     <end type="SOURCE" refId="19"/>    
-    <end type="TARGET" refId="10"/>  
+    <end type="TARGET" refId="16"/>  
   </dependency>  
-  <dependency id="53">    
-    <bendpoint x="322" y="1070"/>    
-    <end type="SOURCE" refId="1"/>    
+  <dependency id="38">    
+    <bendpoint x="3766" y="1005"/>    
+    <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="17"/>  
   </dependency>  
-  <realization id="54">    
-    <end type="SOURCE" refId="20"/>    
+  <association id="39">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="40" name="hMeauseFactory">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="41" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="42">    
+    <bendpoint x="322" y="1070"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="43">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <realization id="44">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
+  <dependency id="45">    
+    <bendpoint x="2989" y="820"/>    
+    <bendpoint x="2950" y="1197"/>    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="14"/>  
+  </dependency>  
+  <dependency id="46">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <realization id="47">    
+    <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
-  <dependency id="55">    
+  <dependency id="48">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <realization id="49">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <dependency id="50">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="4"/>  
   </dependency>  
+  <dependency id="51">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <association id="52">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="53" name="evMeasure">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="54" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="55">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
   <dependency id="56">    
-    <bendpoint x="3693" y="613"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="7"/>  
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="19"/>  
   </dependency>  
   <dependency id="57">    
-    <bendpoint x="3766" y="1005"/>    
     <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="18"/>  
+    <end type="TARGET" refId="6"/>  
   </dependency>  
-  <dependency id="58">    
-    <end type="SOURCE" refId="21"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
+  <realization id="58">    
+    <bendpoint x="2200" y="2092"/>    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="16"/>  
+  </realization>  
   <realization id="59">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
+  <association id="60">    
+    <bendpoint x="594" y="184"/>    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="61" name="hMeasure">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="62" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="63">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
+  <dependency id="64">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <realization id="65">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="66">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="9"/>  
   </realization>  
-  <dependency id="60">    
-    <bendpoint x="2000" y="1056"/>    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="2"/>  
+  <dependency id="67">    
+    <bendpoint x="3620" y="976"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="14"/>  
   </dependency>  
-  <dependency id="61">    
-    <end type="SOURCE" refId="13"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <realization id="62">    
-    <end type="SOURCE" refId="2"/>    
+  <realization id="68">    
+    <end type="SOURCE" refId="15"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
-  <dependency id="63">    
-    <bendpoint x="540" y="808"/>    
-    <end type="SOURCE" refId="20"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <realization id="64">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="1"/>  
-  </realization>  
-  <dependency id="65">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="21"/>  
-  </dependency>  
-  <association id="66">    
+  <association id="69">    
     <bendpoint x="3612" y="237"/>    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="67" name="evMeasureFactory">        
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="70" name="evMeasureFactory">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="68" minimum="0" maximum="1">        
+      <multiplicity id="71" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="69">    
-    <end type="SOURCE" refId="13"/>    
+  <dependency id="72">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <realization id="73">    
+    <end type="SOURCE" refId="11"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
-  <dependency id="70">    
-    <bendpoint x="2989" y="820"/>    
-    <bendpoint x="2950" y="1197"/>    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="15"/>  
+  <dependency id="74">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="14"/>  
   </dependency>  
-  <dependency id="71">    
-    <bendpoint x="3620" y="976"/>    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <association id="72">    
-    <bendpoint x="3600" y="313"/>    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="73" name="measure">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="74" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
   <dependency id="75">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="16"/>  
+    <bendpoint x="3693" y="613"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
   </dependency>  
-  <association id="76">    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="77" name="hMeauseFactory">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="78" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="79">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="13"/>  
+  <dependency id="76">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="77">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="14"/>  
+  </dependency>  
+  <dependency id="78">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="14"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

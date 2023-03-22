@@ -32,9 +32,6 @@ public class Cell {
 	private String measure;
 	private Integer countOfDetailedCells;
 
-	public Cell() {
-		dimensionMembers = new ArrayList<String>();
-	}
 
 	public Cell(String[] values) {
 		int numFields = values.length;

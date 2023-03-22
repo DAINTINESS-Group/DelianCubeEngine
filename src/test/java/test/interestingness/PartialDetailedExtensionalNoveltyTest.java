@@ -58,7 +58,7 @@ public class PartialDetailedExtensionalNoveltyTest {
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 

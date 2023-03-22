@@ -1,4 +1,4 @@
-package interestingnessengine;
+package interestingnessengine.historybased;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,16 +9,17 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import result.Cell;
+import result.CellBelief;
 
 public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
 
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> unknownCells;
 	private ArrayList<Cell> allCellsVisited;
+	private ArrayList<CellBelief> beliefss;
 	private HashMap<String, Float> beliefs;
 	private HashMap<String, Integer> timesVisitedCell;
 	private float threshold;
-	private float pastQueriesResultCellsNumber;
 	private int historySize;
 	
 	
@@ -30,6 +31,9 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 	 */
 
 	public double computeMeasure(IHistoryInput inputManager) {
+		beliefss=inputManager.getCellBeliefs();
+		
+		
 		allCellsVisited = inputManager.getAllCellsVisited();
 		historySize = inputManager.getQueryHistory().size();
 		timesVisitedCell = new HashMap<String, Integer>();
@@ -93,8 +97,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 		// Assigning beliefs based on % of cell's appearance in previous searches
 		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
 
-		pastQueriesResultCellsNumber = allCellsVisited.size();
-		
+			
 		for(Cell c: allCellsVisited) {
 			String key = c.getDimensionMembers().toString();
 			if(timesVisitedCell.containsKey(key)) {

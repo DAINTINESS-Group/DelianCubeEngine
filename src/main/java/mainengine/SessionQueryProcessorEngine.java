@@ -138,7 +138,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}
 	
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
-			String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+			String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException {
 		schemaName = userInputList.get("schemaName");
 		this.connectionType = typeOfConnection;
 		cubeManager = new CubeManager(typeOfConnection, userInputList);
@@ -147,14 +147,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		registeredDimensions = cubeManager.getDimensions();
 		registeredCubesList = cubeManager.getCubes();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
-		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, k);
+		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, beliefFolder, k);
 		System.out.println("DONE WITH INIT");
 	}
-	private void initializeInterestMgr(String historyFolder, String expValuesFolder, String expLabelsFolder, int k) throws RemoteException {
+	private void initializeInterestMgr(String historyFolder, String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException {
 		if(historyFolder.equals("") && expValuesFolder.equals("") && expLabelsFolder.equals("")) {
 			interestMng = new InterestingnessManager(session.getCubeManager(), k);
 		}else {
-			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, session.getCubeManager(), k);
+			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, beliefFolder, session.getCubeManager(), k);
 		}
 	}
 	

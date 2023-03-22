@@ -81,7 +81,8 @@ public class InterestingnessClient {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		service.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions1", "InputFiles/UserProfile/ExpectedValues/predictions1", 1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions1", 
+				"InputFiles/UserProfile/ExpectedValues/predictions1","InputFiles/UserProfile/ExpectedValues/predictionsWithProbabilities1", 1);
 		System.out.println("Completed connection initialization");
 		
 		

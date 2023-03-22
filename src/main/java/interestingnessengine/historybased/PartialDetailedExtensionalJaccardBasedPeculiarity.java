@@ -1,4 +1,4 @@
-package interestingnessengine;
+package interestingnessengine.historybased;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeSet;
+
 import cubemanager.cubebase.CubeQuery;
 import result.Cell;
+import result.CellComparator;
 /**
  * 
  * @author eiriniMouselli
@@ -32,7 +34,7 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 	 * @return the peculiarity value
 	 */
 	public double computeMeasure(IHistoryInput inputManager) {
-		TreeSet<Cell> union = new TreeSet<Cell>(new CellComp());
+		TreeSet<Cell> union = new TreeSet<Cell>(new CellComparator());
 		ArrayList<Cell> intersection = new ArrayList<Cell>();
 		long startIntersection, endIntersection, startDetailedQuery, endDetailedQuery;
 		long durationIntersection, totalIntersection = 0, durationDetailedQuery, totalDetailedQuery = 0;
@@ -47,7 +49,7 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 		totalDetailedQuery += durationDetailedQuery;
 		
 		for(CubeQuery query: inputManager.getQueryHistory()) {
-			union = new TreeSet<Cell>(new CellComp());
+			union = new TreeSet<Cell>(new CellComparator());
 			for(int j = 0; j < detailedCurrentQueryCube.size(); j++) {
 				union.add(detailedCurrentQueryCube.get(j));
 			}

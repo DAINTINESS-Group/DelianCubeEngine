@@ -60,7 +60,7 @@ public class ValueSurpriseTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
+				"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
 		measures.add("Value Surprise");
 
 	}

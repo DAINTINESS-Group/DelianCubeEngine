@@ -58,7 +58,7 @@ public class FamilyBasedRelevanceTest {
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", -1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
 		measures.clear();
 		measures.add("FamilyBasedRelevance");
 
