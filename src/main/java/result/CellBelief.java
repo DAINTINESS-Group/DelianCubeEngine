@@ -18,12 +18,12 @@ public class CellBelief {
 		aux = Arrays.copyOfRange(values, 0, numFields-1);
 		
 		cell = new Cell(aux);
-		System.out.println(cell.getMeasure());
-		System.out.println(cell.getDimensionMembers());
-		System.out.println(cell.getCountOfDetailedCells());
+		//System.out.println(cell.getMeasure());
+		//System.out.println(cell.getDimensionMembers());
+		//System.out.println(cell.getCountOfDetailedCells());
 		
 		belief = Double.parseDouble(values[numFields-1]);
-		System.out.println(belief);
+		//System.out.println(belief);
 	}
 	
 	public Double getBelief() {

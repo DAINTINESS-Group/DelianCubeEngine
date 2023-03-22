@@ -1,4 +1,4 @@
-package test.interestingness;
+package test.interestingnessengine.historybased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class PartialDetailedExtensionalRelevanceTest {
+public class IndirectNoveltyTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class PartialDetailedExtensionalRelevanceTest {
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		measures.add("Partial Detailed Extensional Relevance");
+		//measures.add("Direct Novelty");
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
@@ -75,7 +75,9 @@ public class PartialDetailedExtensionalRelevanceTest {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
-
+		measures.clear();
+		measures.add("Indirect Novelty");
+		
 	}
 
 	@Test
@@ -88,7 +90,8 @@ public class PartialDetailedExtensionalRelevanceTest {
 				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.21428571428571427", answer[0]);	
+		assertEquals("0.7857142857142857", answer[0]);	
 	}
+	
 
 }

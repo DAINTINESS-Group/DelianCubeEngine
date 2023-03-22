@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cubemanager.cubebase.CubeQuery;
 import result.Cell;
+import result.CellBelief;
 import result.Result;
 /**
  * 
@@ -59,6 +60,12 @@ public interface IExpectedValuesInput {
 	 * @return the user's goals for a specific query
 	 */
 	public ArrayList<Cell> getQueryGoals();
+	
+	/**
+	 * 
+	 * @return the user's cell beliefs
+	 */
+	public ArrayList<CellBelief> getCellBeliefs();
 	
 	// --------------------- MADE PRIVATE IN INPUT MANAGER CLASS --------------------
 	/**

@@ -1,4 +1,4 @@
-package test.interestingness;
+package test.interestingnessengine.expectedvaluesbased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class LabelSurpriseStrictTest {
+public class LabelSurpriseTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -62,9 +62,9 @@ public class LabelSurpriseStrictTest {
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
-		measures.add("Label Surprise Strict");
+		measures.add("Label Surprise");
 	}
-	
+
 	@Test
 	public void test() throws IOException {
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
@@ -75,7 +75,7 @@ public class LabelSurpriseStrictTest {
 				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("1.0", answer[0]);
+		assertEquals("0.25", answer[0]);
 	}
 
 }

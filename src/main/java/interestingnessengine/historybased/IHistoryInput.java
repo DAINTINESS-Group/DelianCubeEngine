@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import result.Result;
 import result.Cell;
-import result.CellBelief;
 import cubemanager.cubebase.CubeQuery;
 /**
  * 
@@ -116,6 +115,4 @@ public interface IHistoryInput {
 	 */
 	public ArrayList<Cell> getQueryGoals();
 	public ArrayList<Cell> getAllCellsVisited();
-	public ArrayList<CellBelief> getCellBeliefs();
-
 }

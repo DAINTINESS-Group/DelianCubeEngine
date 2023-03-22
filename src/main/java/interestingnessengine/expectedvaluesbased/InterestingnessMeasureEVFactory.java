@@ -21,6 +21,8 @@ public class InterestingnessMeasureEVFactory {
 								break;
 		case "Partial Same Level Extensional Relevance" : measure = new PartialSameLevelExtensionalRelevance();
 								break;
+		case "Partial Detailed Extensional Belief Based Novelty" : measure = new PartialDetailedExtensionalBeliefBasedDetailedNovelty();
+								break;		
 		}
 		if(measure == null) {
 			System.err.println("Did not manage to create the desired measure. Exiting");

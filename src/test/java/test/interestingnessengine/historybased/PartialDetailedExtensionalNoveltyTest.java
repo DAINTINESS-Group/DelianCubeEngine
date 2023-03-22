@@ -1,4 +1,4 @@
-package test.interestingness;
+package test.interestingnessengine.historybased;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-public class PartialSyntacticAveragePeculiarityTest {
+public class PartialDetailedExtensionalNoveltyTest {
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -59,44 +59,35 @@ public class PartialSyntacticAveragePeculiarityTest {
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		//measures.add("Direct Novelty");
-
+		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague'", measures);
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
+				"Name: LoanQuery31_S3_CG-Prtl\n" + 
+				"AggrFunc:Sum\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague'", measures);
-
+				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
 		measures.clear();
-		measures.add("Partial Syntactic Average Peculiarity");
+		measures.add("Partial Detailed Extensional Novelty");
 
 	}
 	@Test
-	public void testSyntacticPeculiarityTest() throws Exception {
-		String q1 = "CubeName:loan\n" + 
+	public void test() throws Exception {
+		
+		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'";
-		String q = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Max\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague'";
-		
-		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures(q1, measures);
+				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.6583333333333333", answer[0]);	
+		assertEquals("0.7857142857142857", answer[0]);	
 	}
 
  

@@ -66,6 +66,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 	 * @param historyFolder   Path to the History folder
 	 * @param expValuesFolder Path to the Expected Values folder
 	 * @param expLabelsFolder Path to the Expected Labels folder
+	 * @param beliefFolder	  Path to the cell beliefs folder
 	 * @param cubeMng         The current {@link CubeManager} object
 	 * @param k               The kth neighbor
 	 * @throws RemoteException

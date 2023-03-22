@@ -1,4 +1,4 @@
-package test.interestingness;
+package test.interestingnessengine.historybased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class LabelSurpriseTest {
+public class PartialDetailedExtensionalRelevanceTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -34,7 +34,6 @@ public class LabelSurpriseTest {
         .map(Path::toFile)
         .forEach(File::delete);
 	}
-	
 	static void createGitignoreFiles() {
 		try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/.gitignore", true);
 			    BufferedWriter bw = new BufferedWriter(fw);
@@ -61,8 +60,22 @@ public class LabelSurpriseTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
-		measures.add("Label Surprise");
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
+		measures.add("Partial Detailed Extensional Relevance");
+		
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery31_S3_CG-Prtl\n" + 
+				"AggrFunc:Sum\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
+
 	}
 
 	@Test
@@ -72,10 +85,10 @@ public class LabelSurpriseTest {
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
+				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.25", answer[0]);
+		assertEquals("0.21428571428571427", answer[0]);	
 	}
 
 }

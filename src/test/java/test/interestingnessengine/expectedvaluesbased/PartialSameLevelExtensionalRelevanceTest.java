@@ -1,4 +1,4 @@
-package test.interestingness;
+package test.interestingnessengine.expectedvaluesbased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class PartialExtensionalValueBasedSurpriseTest {
+public class PartialSameLevelExtensionalRelevanceTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -60,14 +60,14 @@ public class PartialExtensionalValueBasedSurpriseTest {
 
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
-		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-					"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
-		measures.add("Partial Extensional Value Based Surprise");
+		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,"", 
+					"InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
+		measures.add("Partial Same Level Extensional Relevance");
 
 	}
 	
 	@Test
-	public void testBasicValueSurprise() throws Exception {
+	public void test() throws Exception {
 
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
@@ -75,9 +75,16 @@ public class PartialExtensionalValueBasedSurpriseTest {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
+		String[] answer1 = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.12502928257686677", answer[0]);
+		assertEquals("1.0", answer[0]);
+		assertEquals("0.17777777777777778", answer1[0]);
 
 	}
 

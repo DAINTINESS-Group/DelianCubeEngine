@@ -24,7 +24,7 @@ public class InterestingnessManager {
 	private IInterestingnessMeasureWithHistory hMeasure;
 	private InputManager inputManager;
 	private ArrayList<String> historyMeasures = new ArrayList<String>(Arrays.asList("Direct Novelty", 
-			"Indirect Novelty", "Partial Detailed Extensional Relevance", "Partial Detailed Extensional Jaccard Based Peculiarity", "Partial Detailed Extensional Novelty","Partial Detailed Extensional Belief Based Novelty", "Partial Syntactic Average Peculiarity"));
+			"Indirect Novelty", "Partial Detailed Extensional Relevance", "Partial Detailed Extensional Jaccard Based Peculiarity", "Partial Detailed Extensional Novelty", "Partial Syntactic Average Peculiarity"));
 	
 	/**
 	 * Constructor to be used when there is no history stored and no expected values/labels.
@@ -77,7 +77,7 @@ public class InterestingnessManager {
 	 */
 	public double computeMeasure(String chosenMeasure, CubeQuery currentQuery, Result currentResult) {
 		double result;
-				
+		
 		if(this.historyMeasures.contains(chosenMeasure)) {
 			this.hMeasure = this.hMeauseFactory.createInterestingnessMeasureWithHistory(chosenMeasure);
 			result = this.hMeasure.computeMeasure(inputManager);

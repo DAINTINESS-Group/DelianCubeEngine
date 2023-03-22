@@ -20,8 +20,7 @@ public class InterestingnessMeasureHFactory {
 									break;
 			case "Partial Detailed Extensional Novelty" : measure = new PartialDetailedExtensionalNovelty();
 									break;
-			case "Partial Detailed Extensional Belief Based Novelty" : measure = new PartialDetailedExtensionalBeliefBasedDetailedNovelty();
-									break;		
+			
 			//case "Goal Based Relevance" : measure = new GoalBasedIntentionalRelevance();
 				//					break;
 			case "Partial Syntactic Average Peculiarity" : measure = new PartialSyntacticAveragePeculiarity();

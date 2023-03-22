@@ -1,4 +1,4 @@
-package interestingnessengine.historybased;
+package interestingnessengine.expectedvaluesbased;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,68 +6,61 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import result.Cell;
 import result.CellBelief;
 
-public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IInterestingnessMeasureWithHistory{
+public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IInterestingnessMeasureWithExpectedValues{
 
 	private ArrayList<Cell> detailedQueryCube;
 	private ArrayList<Cell> unknownCells;
-	private ArrayList<Cell> allCellsVisited;
-	private ArrayList<CellBelief> beliefss;
-	private HashMap<String, Float> beliefs;
-	private HashMap<String, Integer> timesVisitedCell;
-	private float threshold;
-	private int historySize;
+	private HashMap<String, Double> beliefs;
+	private Double threshold;
 	
 	
 	/** Computes the belief based novelty of the current query according to the user's beliefs,
 	 * where beliefs are extracted by analyzing the user's query history.
 	 * @param inputManager The current {@link InputManager} object.
-	 * @return the belief based novelty value in the range of [0.0 , 1.0].
+	 * @return the belief based novelty value in the range of [0.0 - 1.0].
 	 * @author SpyridonKaloudis
 	 */
 
-	public double computeMeasure(IHistoryInput inputManager) {
-		beliefss=inputManager.getCellBeliefs();
+	public double computeMeasure(IExpectedValuesInput inputManager) {
+		ArrayList<CellBelief> aux = inputManager.getCellBeliefs();
+		beliefs = new HashMap<String, Double>();
 		
 		
-		allCellsVisited = inputManager.getAllCellsVisited();
-		historySize = inputManager.getQueryHistory().size();
-		timesVisitedCell = new HashMap<String, Integer>();
+		for(CellBelief belief: aux) {
+			Cell c = belief.getCell();
+			String signature = c.getDimensionMembers().toString();
+			beliefs.put(signature, belief.getBelief());
+		}
 		
 		
 		long startDetailedQuery = System.nanoTime();
 		detailedQueryCube = inputManager.computeDetailedQueryCube(inputManager.getCurrentQuery());
-		for(Cell c: detailedQueryCube){
-			String key = c.getDimensionMembers().toString();
-			timesVisitedCell.put(key, 0);
-		}
+		
+
 		long endDetailedQuery = System.nanoTime();
 		long durationDetailedQuery = endDetailedQuery - startDetailedQuery;
 		
-		assignBeliefs(allCellsVisited);
+		//assignBeliefs(allCellsVisited);
 		
 		long startAlgorithm = System.nanoTime();
 		unknownCells = new ArrayList<Cell>();
 		unknownCells.addAll(detailedQueryCube);
 
-		// set threshold (0,05 means that if the user has seen the cell in more than 5% of his queries, 
-		// then it's value is probably not novel to him because his beliefs are close to the actual value)
-		threshold = (float)0.05*historySize;
-		//System.out.println("TO THRESHOLD EINAI:" +threshold );
+		// set threshold, which means that cells with belief probability above or equal to 0.5, are considered known) 
+		threshold = 0.5;
 		
 		ArrayList<Cell> knownCells = new ArrayList<Cell>();
 	
 		for(Cell c: detailedQueryCube) {
 			String signature = c.getDimensionMembers().toString();
 			if(beliefs.containsKey(signature)) {
-				if(beliefs.get(signature)>=threshold) {
+					if(beliefs.get(signature)>=threshold) {
 					knownCells.add(c);
 					removeSpecificCellFromArrayList(c);
-					
 				}
 			}
 		}
@@ -86,13 +79,16 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 		return (double) unknownCells.size() / ( (double) knownCells.size() + (double) unknownCells.size() );
 	}
 
-	/** Assigns the user's beliefs to each cell of the current query,
+	
+	
+	// Method for assigning beliefs.
+	/*
+	 /** Assigns the user's beliefs to each cell of the current query,
 	 * based on the percentage of each cell's appearance in past queries.
 	 * @param allCellsVisited an ArrayList of all cells visited by the user in past queries.
 	 * @author SpyridonKaloudis
 	 */
-	
-	// Method for assigning beliefs.
+	/*
 	private void assignBeliefs(ArrayList<Cell> allCellsVisited) {
 		// Assigning beliefs based on % of cell's appearance in previous searches
 		// E.G. the more times the user encountered a cell, the more likely they have a belief close to their values => Not novel
@@ -111,7 +107,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 			beliefs.put(entry.getKey(), (float)entry.getValue()/historySize);
 			
 		}
-	}
+	}*/
 	
 	/** Removes a specific cell from the novelAreaOfInterest ArrayList
 	 * @param cell The cell we want to remove
@@ -140,5 +136,7 @@ public class PartialDetailedExtensionalBeliefBasedDetailedNovelty implements IIn
 			return false;
 		}
 	}
+
+
 
 }

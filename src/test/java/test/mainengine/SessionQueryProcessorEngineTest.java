@@ -22,7 +22,7 @@
  * 
  *  @author pvassil
  */
-package test;
+package test.mainengine;
 
 
 

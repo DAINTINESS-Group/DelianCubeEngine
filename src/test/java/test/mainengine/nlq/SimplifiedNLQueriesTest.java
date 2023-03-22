@@ -1,4 +1,4 @@
-package test.nlqueries;
+package test.mainengine.nlq;
 
 import static org.junit.Assert.*;
 
