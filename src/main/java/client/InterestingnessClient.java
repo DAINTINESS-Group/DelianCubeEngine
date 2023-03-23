@@ -82,7 +82,7 @@ public class InterestingnessClient {
 		userInputList.put("inputFolder", "pkdd99");
 		service.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/predictions1", 
-				"InputFiles/UserProfile/ExpectedValues/predictions1","InputFiles/UserProfile/ExpectedValues/predictionsWithProbabilities1", 1);
+				"InputFiles/UserProfile/ExpectedValues/predictions1","InputFiles/UserProfile/ExpectedValues/predictionsWithProbabilitiesAvg", 1);
 		System.out.println("Completed connection initialization");
 		
 		
@@ -100,11 +100,24 @@ public class InterestingnessClient {
 		
 		service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery31_S3_CG-Prtl\n" + 
-				"AggrFunc:Sum\n" + 
+				"AggrFunc:Avg\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
 		
+		service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl2,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1996'", measures );
+		
+		service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl2,date_dim.lvl3\n" + 
+				"Sigma:date_dim.lvl3='1996'", measures );
 		
 		
 		
@@ -116,15 +129,15 @@ public class InterestingnessClient {
 				"Partial Syntactic Average Peculiarity", "Partial Extensional Value Based Surprise"
 				));
 		
-		
+
 		// New query with predictions available
-		
+		//Same Level relevance win
 		String[] answers = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures );
+				"Sigma:account_dim.lvl2='Prague'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers.length; i++) {
 			System.out.println(measures.get(i) + ":    " + answers[i]);
@@ -132,25 +145,13 @@ public class InterestingnessClient {
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		
-		// Partly new query
-		String[] answers2 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague'", measures );
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		for(int i = 0; i < answers2.length; i++) {
-			System.out.println(measures.get(i) + ":    " + answers2[i]);
-		}
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		String[] answers3 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery31_S3_CG-Prtl\n" + 
 				"AggrFunc:Sum\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3='1996'", measures );
+				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl2='west Bohemia'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers3.length; i++) {
 			System.out.println(measures.get(i) + ":    " + answers3[i]);
@@ -158,30 +159,20 @@ public class InterestingnessClient {
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		
+		//syntactic Peculiarity wins the value Peculiarity
 		String[] answers4 = service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl3='ALL', date_dim.lvl3='1996'", measures );
+				"Gamma:account_dim.lvl2,date_dim.lvl3\n" + 
+				"Sigma:account_dim.lvl3='ALL', date_dim.lvl3='1997'", measures );
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for(int i = 0; i < answers4.length; i++) {
 			System.out.println(measures.get(i) + ":    " + answers4[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
-		/*
-		String[] answers5= service.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery31_S3_CG-Prtl\n" + 
-				"AggrFunc:Sum\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3='1996'", measures );
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		for(int i = 0; i < answers5.length; i++) {
-			System.out.println(measures.get(i) + ":    " + answers5[i]);
-		}
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");*/
+		
 				
 		//Delete history files created
 		clearOldHistory();
