@@ -1,4 +1,4 @@
-package test.mainengine.nlq;
+package mainengine.nlq;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

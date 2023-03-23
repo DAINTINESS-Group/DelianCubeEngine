@@ -283,8 +283,7 @@ public class Database extends DataSourceDescription{
 		
 		//2. Populate Result with the ResultSet's data via ExtractionMethod method calls
 		if (populateResult(resultSet, result) == false) {
-			System.out.println("Exiting due to failure to populate the result");
-			System.exit(-100);
+			System.err.println("The result of the query is empty.");
 		}
 		else
 			System.out.println("\n\n"+ "Result produced"+"\n");

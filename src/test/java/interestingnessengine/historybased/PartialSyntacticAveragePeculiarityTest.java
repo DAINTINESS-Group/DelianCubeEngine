@@ -1,4 +1,4 @@
-package test.interestingnessengine.historybased;
+package interestingnessengine.historybased;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-public class PartialDetailedExtensionalNoveltyTest {
+public class PartialSyntacticAveragePeculiarityTest {
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -59,35 +59,44 @@ public class PartialDetailedExtensionalNoveltyTest {
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery31_S3_CG-Prtl\n" + 
-				"AggrFunc:Sum\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
-		measures.clear();
-		measures.add("Partial Detailed Extensional Novelty");
+		//measures.add("Direct Novelty");
 
-	}
-	@Test
-	public void test() throws Exception {
-		
-		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures);
+		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague'", measures);
+
+		measures.clear();
+		measures.add("Partial Syntactic Average Peculiarity");
+
+	}
+	@Test
+	public void testSyntacticPeculiarityTest() throws Exception {
+		String q1 = "CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'";
+		String q = "CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Max\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague'";
+		
+		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures(q1, measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.7857142857142857", answer[0]);	
+		assertEquals("0.6583333333333333", answer[0]);	
 	}
 
  

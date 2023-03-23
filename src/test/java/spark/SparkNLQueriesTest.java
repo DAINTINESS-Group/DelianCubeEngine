@@ -1,4 +1,5 @@
-package test.mainengine.nlq;
+package spark;
+
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,7 @@ import mainengine.ResultFileMetadata;
 import mainengine.SessionQueryProcessorEngine;
 
 
-public class SimplifiedNLQueriesTest {
+public class SparkNLQueriesTest {
 	
 	private static IMainEngine testedQPEngine;
 	private static IMainEngine testedQPEngine2;
@@ -30,7 +31,7 @@ public class SimplifiedNLQueriesTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		String typeOfConnection = "RDBMS";
+		String typeOfConnection = "Spark";
 		HashMap<String, String>userInputList = new HashMap<>();
 		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
@@ -255,3 +256,4 @@ public class SimplifiedNLQueriesTest {
 */
 
 }
+

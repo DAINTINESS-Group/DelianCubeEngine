@@ -1,4 +1,4 @@
-package test.interestingnessengine.historybased;
+package interestingnessengine.historybased;
 
 import static org.junit.Assert.*;
 
@@ -19,8 +19,8 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class IndirectNoveltyTest {
-
+public class PartialDetailedExtensionalJaccardBasedPeculiarityTest {
+	
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -50,6 +50,7 @@ public class IndirectNoveltyTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		clearOldHistory();
+
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		String typeOfConnection = "RDBMS";
@@ -60,9 +61,8 @@ public class IndirectNoveltyTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		//measures.add("Direct Novelty");
-		
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", 1);
+		measures.add("Partial Detailed Extensional Jaccard Based Peculiarity");
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
@@ -75,9 +75,7 @@ public class IndirectNoveltyTest {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
-		measures.clear();
-		measures.add("Indirect Novelty");
-		
+
 	}
 
 	@Test
@@ -87,11 +85,18 @@ public class IndirectNoveltyTest {
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
+		assertEquals("0.0", answer[0]);
+		
+		String[] newAnswer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.7857142857142857", answer[0]);	
+		assertEquals("0.7857142857142857", newAnswer[0]);
 	}
-	
 
 }

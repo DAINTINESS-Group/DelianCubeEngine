@@ -1,4 +1,4 @@
-package test.interestingnessengine.expectedvaluesbased;
+package interestingnessengine.expectedvaluesbased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class LabelSurpriseTest {
+public class ValueSurpriseTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -34,7 +34,6 @@ public class LabelSurpriseTest {
         .map(Path::toFile)
         .forEach(File::delete);
 	}
-	
 	static void createGitignoreFiles() {
 		try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/.gitignore", true);
 			    BufferedWriter bw = new BufferedWriter(fw);
@@ -61,12 +60,14 @@ public class LabelSurpriseTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
-		measures.add("Label Surprise");
-	}
+				"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
+		measures.add("Value Surprise");
 
+	}
+	
 	@Test
-	public void test() throws IOException {
+	public void test() throws Exception {
+
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
@@ -75,7 +76,8 @@ public class LabelSurpriseTest {
 				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.25", answer[0]);
+		assertEquals("4269.75", answer[0]);
+		
 	}
 
 }

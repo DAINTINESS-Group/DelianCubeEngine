@@ -1,4 +1,4 @@
-package test.interestingnessengine;
+package interestingnessengine.expectedvaluesbased;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
-public class FamilyBasedRelevanceTest {
+
+public class PartialExtensionalValueBasedSurpriseTest {
+
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
 	
@@ -55,67 +57,28 @@ public class FamilyBasedRelevanceTest {
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
+
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		measures.clear();
-		measures.add("FamilyBasedRelevance");
+					"", "InputFiles/UserProfile/ExpectedValues/predictions1", "", "", -1);
+		measures.add("Partial Extensional Value Based Surprise");
 
 	}
+	
 	@Test
-	public void testFamilyBasedRelevance() throws Exception {
-		String q1 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:date_dim.lvl2,account_dim.lvl1\n" + 
-				"Sigma:account_dim.lvl2='Prague',date_dim.lvl3 = '1997'";
-		String q2 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:date_dim.lvl3 = '1998',account_dim.lvl2='Prague'";
-		String q3 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:date_dim.lvl3 = '1998',account_dim.lvl2='Prague'";
-		String q4 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:date_dim.lvl3 = '1998',account_dim.lvl1='Hl.m. Praha'";
-		String q5 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:date_dim.lvl3 = '1998',account_dim.lvl1='Pisek'";
-		String q6 = "CubeName:loan\n" + 
-				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:date_dim.lvl3 = '1997',account_dim.lvl1='Hl.m. Praha'";
+	public void testBasicValueSurprise() throws Exception {
 
-		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures(q1,q2,measures);
-		String[] answer1 = queryEngine.answerCubeQueryWithInterestMeasures(q3,q4,measures);
-		String[] answer2 = queryEngine.answerCubeQueryWithInterestMeasures(q3,q5,measures);
-		String[] answer3 = queryEngine.answerCubeQueryWithInterestMeasures(q5,q6,measures);
-
+		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
+				"AggrFunc:Min\n" + 
+				"Measure:amount\n" + 
+				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.0", answer[0]);	
-		assertEquals("0.0", answer1[0]);	
-		assertEquals("1.0", answer2[0]);	
-		assertEquals("1.0", answer3[0]);	
+		assertEquals("0.12502928257686677", answer[0]);
 
 	}
 
- 
 }
-

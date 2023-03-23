@@ -1,30 +1,4 @@
-/*
-*    DelianCubeEngine. A simple cube query engine.
-*    Copyright (C) 2018  Panos Vassiliadis
-*
-*    This program is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU Affero General Public License as published
-*    by the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU Affero General Public License for more details.
-*
-*    You should have received a copy of the GNU Affero General Public License
-*    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*
-*/
-
-
-/**
- * 
- *  @author pvassil
- */
-package test.mainengine;
-
-
+package spark;
 
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
@@ -45,16 +18,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
 import mainengine.SessionQueryProcessorEngine;
-
 
 /**
  * Test class for SimpleQueryProcessorEngine AND for the ENTIRE ENGINE
- * Main test to be checked: AnswerCubeQueriesFromFile()
+ * using Spark connection
  *
  */
-public class SessionQueryProcessorEngineTest {
+public class SparkSQPTest {
 	
 	private static IMainEngine testedQPEngine;
 	
@@ -66,7 +37,7 @@ public class SessionQueryProcessorEngineTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		testedQPEngine = new SessionQueryProcessorEngine(); 
-		String typeOfConnection = "RDBMS";
+		String typeOfConnection = "Spark";
 		HashMap<String, String>userInputList = new HashMap<>();
 		userInputList.put("schemaName", "pkdd99");
 		userInputList.put("username", "CinecubesUser");
@@ -80,8 +51,7 @@ public class SessionQueryProcessorEngineTest {
 		//TODO: currently, the result goes to the DelianCubeEngine/OutputFiles, i.e., it is mixed with the output of the regular execution. can we isolate the output of the tests, within the test folder?
 		//TODO:  Basically needs to invoke the answerQueriesFromFile to get an OutputFolder parameter.
 	}
-
-
+	
 	/**
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueriesFromFile(java.io.File)}.
 	 * @throws IOException 
@@ -117,6 +87,10 @@ public class SessionQueryProcessorEngineTest {
 		
 		String fileProduced03 = getContents("OutputFiles/CubeQueryLoan3.tab");
 		String fileReference03 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan3.tab");
+//		System.out.println("#################################################################################################");
+//		System.out.println(fileProduced03);
+//		System.out.println(fileReference03);
+//		System.out.println("#################################################################################################");
         comparison03 = fileProduced03.equals(fileReference03);
         assertEquals((comparison01 && comparison02 && comparison03), true);/**/
 
@@ -126,10 +100,10 @@ public class SessionQueryProcessorEngineTest {
          * S<k>: k stands for how many atoms the sigma selection condition has
          * CG-<xxx>: whether the group-by dimensions and the sigma dimensions have a partial coverage, are common, or are disjoint  
          */ 
-	/*
+	
         File inputFile = new File("src/test/resources/InputFiles/pkdd99/_loanQueriesPrincipled.txt");
         testedQPEngine.answerCubeQueriesFromFile(inputFile);
-
+/*
 		File fileProduced11 = new File("OutputFiles/LoanQuery11_S1_CG-Prtl.tab");
 		File fileReference11 = new File("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv");
         boolean comparison11 = FileUtils.contentEquals(fileProduced11, fileReference11);
@@ -138,12 +112,12 @@ public class SessionQueryProcessorEngineTest {
         //So sometimes the output has Bruntal first and sometimes it has Brenov first :P
         //diff OutputFiles/LoanQuery11_S1_CG-Prtl.tab src/test/OutputFiles/pkdd99/Reference_LoanQuery11_S1_CG-Prtl.tsv
      
-        
+  */      
         String fileProduced12 = getContents("OutputFiles/LoanQuery12_S1_CG-Dsjnt.tab");
 		String fileReference12 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery12_S1_CG-Dsjnt.tsv");
 		boolean comparison12 = fileProduced12.equals(fileReference12);
         assertEquals(comparison12, true);
-        */
+        
 		String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
 		String fileReference21 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
 		boolean comparison21 = fileProduced21.equals(fileReference21);
@@ -230,122 +204,7 @@ public class SessionQueryProcessorEngineTest {
         assertEquals(fileInfoProduced2 , fileInfoReference2);/**/
 	}//end method testanswerCubeQueryFromStringWithMetadata
 
-	
-	/**
-	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#rollUp(String,String,String,String)}.
-	 * @throws RemoteException
-	 */
-	@Test
-	public final void testrollUp() throws RemoteException {
-		
-		String testQueryString2 = 
-				"CubeName:loan" + " \n" +
-				"Name:CubeQueryLoan2_Copy" + " \n" +
-				"AggrFunc:Avg" + " \n" +
-				"Measure:amount" + " \n" +
-				"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
-				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
-		
-		testedQPEngine.answerCubeQueryFromString(testQueryString2);
-		ResultFileMetadata resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl3");
-		
-		
-		String fileInfoProduced2 = getContents("OutputFiles/CubeQueryLoan2_RollUp_Info.txt");
-		String fileInfoReference2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2_RollUp_Info.txt");
-	
-		if(resMetadata.getErrorCheckingStatus()==null) {
-			assertEquals(fileInfoProduced2, fileInfoReference2);
-		}
-		/*
-		else {
-			System.out.println(resMetadata.getErrorCheckingStatus());
-			assertEquals(resMetadata.getErrorCheckingStatus(), null);
-		}*/
-		
-		
-		
-		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "accunt_dim", "lvl3");
-		assertEquals("Dimension not found", resMetadata.getErrorCheckingStatus());
-		
-		
-		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl1");
-		assertEquals("Target level is not higher than the current level in the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
-		
-		
-		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy", "CubeQueryLoan2_RollUp", "account_dim", "lvl");
-		assertEquals("Level not found", resMetadata.getErrorCheckingStatus());
-		
-		
-		testQueryString2 = 
-				"CubeName:loan" + " \n" +
-				"Name:CubeQueryLoan2_Copy2" + " \n" +
-				"AggrFunc:Avg" + " \n" +
-				"Measure:amount" + " \n" +
-				"Gamma:account_dim.lvl3,date_dim.lvl2" + " \n" +
-				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
-		testedQPEngine.answerCubeQueryFromString(testQueryString2);
-		resMetadata = testedQPEngine.rollUp("CubeQueryLoan2_Copy2", "CubeQueryLoan2_RollUp", "account_dim", "lvl3");
-		assertEquals("Already at the top of the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
-	}
 
-	
-	/**
-	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#drillDown(String,String,String,String)}.
-	 * @throws RemoteException
-	 */
-	@Test
-	public final void testdrillDown() throws RemoteException {
-		
-		String testQueryString2 = 
-				"CubeName:loan" + " \n" +
-				"Name:CubeQueryLoan2_Copy" + " \n" +
-				"AggrFunc:Avg" + " \n" +
-				"Measure:amount" + " \n" +
-				"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
-				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
-		
-		testedQPEngine.answerCubeQueryFromString(testQueryString2);
-		ResultFileMetadata resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl0");
-		
-		
-		String fileInfoProduced2 = getContents("OutputFiles/CubeQueryLoan2_DrillDown_Info.txt");
-		String fileInfoReference2 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2_DrillDown_Info.txt");
-		System.out.println(resMetadata.getErrorCheckingStatus());
-		if(resMetadata.getErrorCheckingStatus()==null) {
-			assertEquals(fileInfoProduced2, fileInfoReference2);
-		}
-		else {
-			System.out.println(resMetadata.getErrorCheckingStatus());
-			assertEquals(resMetadata.getErrorCheckingStatus(), null);
-		}
-		
-		
-		
-		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "accunt_dim", "lvl3");
-		assertEquals("Dimension not found", resMetadata.getErrorCheckingStatus());
-		
-		
-		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl3");
-		assertEquals("Target level is not lower than the current level in the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
-		
-		
-		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy", "CubeQueryLoan2_DrillDown", "account_dim", "lvl");
-		assertEquals("Level not found", resMetadata.getErrorCheckingStatus());
-		
-		
-		testQueryString2 = 
-				"CubeName:loan" + " \n" +
-				"Name:CubeQueryLoan2_Copy3" + " \n" +
-				"AggrFunc:Avg" + " \n" +
-				"Measure:amount" + " \n" +
-				"Gamma:account_dim.lvl0,date_dim.lvl2" + " \n" +
-				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
-		testedQPEngine.answerCubeQueryFromString(testQueryString2);
-		resMetadata = testedQPEngine.drillDown("CubeQueryLoan2_Copy3", "CubeQueryLoan2_DrillDown", "account_dim", "lvl0");
-		assertEquals("Already at the bottom of the dimension hierarchy.", resMetadata.getErrorCheckingStatus());
-	}
-	
-	
 	/**
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueryFromStringWithModels(String, String [])}.
 	 * @throws IOException 
@@ -485,3 +344,5 @@ public class SessionQueryProcessorEngineTest {
 	}//end method
 	
 }//end class
+
+

@@ -1,4 +1,4 @@
-package test.interestingnessengine.historybased;
+package interestingnessengine.expectedvaluesbased;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import mainengine.SessionQueryProcessorEngine;
 
-public class DirectNoveltyTest {
+public class LabelSurpriseStrictTest {
 
 	private static SessionQueryProcessorEngine queryEngine;
 	private static List<String> measures = new ArrayList<String>();
@@ -34,6 +34,7 @@ public class DirectNoveltyTest {
         .map(Path::toFile)
         .forEach(File::delete);
 	}
+	
 	static void createGitignoreFiles() {
 		try(FileWriter fw = new FileWriter("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/.gitignore", true);
 			    BufferedWriter bw = new BufferedWriter(fw);
@@ -50,7 +51,6 @@ public class DirectNoveltyTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		clearOldHistory();
-		
 		queryEngine = new SessionQueryProcessorEngine(); 
 		
 		String typeOfConnection = "RDBMS";
@@ -61,44 +61,21 @@ public class DirectNoveltyTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
-		measures.add("Direct Novelty");
-		
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery11_S1_CG-Prtl\n" + 
-				"AggrFunc:Avg\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='north Moravia'", measures);
-		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery31_S3_CG-Prtl\n" + 
-				"AggrFunc:Sum\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
-				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
-
+				"", "", "InputFiles/UserProfile/ExpectedValues/predictions1", "", -1);
+		measures.add("Label Surprise Strict");
 	}
+	
 	@Test
-	public void test() throws Exception {
-		
-		String[] notNovelAnswer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
-				"Name: LoanQuery11_S1_CG-Prtl\n" + 
-				"AggrFunc:Avg\n" + 
-				"Measure:amount\n" + 
-				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='north Moravia'", measures);
-		assertEquals("0.0", notNovelAnswer[0]);
-		
-		String[] novelAnswer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
+	public void test() throws IOException {
+		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
 				"AggrFunc:Min\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
-				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1997'", measures);
+				"Sigma:account_dim.lvl2='Prague', date_dim.lvl3 = '1998'", measures);
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("1.0", novelAnswer[0]);
+		assertEquals("1.0", answer[0]);
 	}
 
- 
 }

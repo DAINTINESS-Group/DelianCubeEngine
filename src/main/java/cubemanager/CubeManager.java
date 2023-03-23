@@ -149,13 +149,21 @@ public class CubeManager {
 					gamma[j][1] = split_gamma[1];
 				}
 			} else if (temp[0].equals("Sigma")) {
-				String[] tmp_sigma = temp[1].split(",");
-				sigma = new String[tmp_sigma.length][3];
-				for (int j = 0; j < tmp_sigma.length; j++) {
-					String[] split_sigma = tmp_sigma[j].trim().split("=");
-					sigma[j][0] = split_sigma[0];
-					sigma[j][1] = "=";
-					sigma[j][2] = split_sigma[1];
+				
+				if(temp.length==1) {
+					sigma = new String[1][3];
+					sigma[0][0] = "1";
+					sigma[0][1] = ">";
+					sigma[0][2] = "0";
+				} else {
+					String[] tmp_sigma = temp[1].split(",");
+					sigma = new String[tmp_sigma.length][3];
+					for (int j = 0; j < tmp_sigma.length; j++) {
+						String[] split_sigma = tmp_sigma[j].trim().split("=");
+						sigma[j][0] = split_sigma[0];
+						sigma[j][1] = "=";
+						sigma[j][2] = split_sigma[1];
+					}
 				}
 			}
 		}
