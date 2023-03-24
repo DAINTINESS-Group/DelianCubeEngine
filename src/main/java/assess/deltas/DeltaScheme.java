@@ -42,11 +42,11 @@ public class DeltaScheme {
         ArrayList<Double> comparisonResults = new ArrayList<>();
         for (Cell cell : targetCube.getCells()) {
             double expectedValue = benchmark.getCellValue();
-            double actualValue = cell.toDouble();
+            double resultValue = cell.toDouble();
             for (ComparisonFunction function : appliedMethods) {
-                actualValue = function.compare(actualValue, expectedValue);
+                resultValue = function.compare(resultValue, expectedValue);
             }
-            comparisonResults.add(actualValue);
+            comparisonResults.add(resultValue);
         }
         return comparisonResults;
     }

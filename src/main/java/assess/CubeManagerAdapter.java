@@ -87,6 +87,11 @@ public class CubeManagerAdapter {
 	}
 
 	private String collectSigmaLevels(String targetCubeName) {
+		// Early return when there are no selection predicates
+		if (selectionPredicates == null) {
+			return "";
+		}
+
 		Cube targetCube = cubeManager.getCubeByName(targetCubeName);
 		StringJoiner stringJoiner = new StringJoiner(",");
 		selectionPredicates.forEach((key, value) -> {

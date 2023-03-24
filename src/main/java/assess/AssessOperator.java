@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,13 +31,10 @@ public class AssessOperator {
      * @return
      * @throws RecognitionException If the query does not follow the defined syntax
      */
-    public int execute(String assessQuery) throws RecognitionException {
+    public HashMap<Double, String> execute(String assessQuery) throws RecognitionException {
         AssessQuery parsedQuery = parseQuery(assessQuery);
         List<Double> comparisonResults = executeComparison(parsedQuery);
-        // 3. Label the results
-        labelResults(parsedQuery, comparisonResults);
-        // 4. Figure out what this method should return
-        return 1;
+        return labelResults(parsedQuery, comparisonResults);
     }
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
@@ -63,10 +61,12 @@ public class AssessOperator {
                 parsedQuery.benchmark);
     }
 
-    private void labelResults(AssessQuery parsedQuery, List<Double> comparisonResults) {
+    private HashMap<Double, String> labelResults(AssessQuery parsedQuery, List<Double> comparisonResults) {
+        HashMap<Double, String> labeledResults = new HashMap<>();
         for(Double value: comparisonResults) {
             String label = parsedQuery.labelingScheme.applyLabels(value);
-            System.out.println(value + ":" + label);
+            labeledResults.put(value, label);
         }
+        return labeledResults;
     }
 }

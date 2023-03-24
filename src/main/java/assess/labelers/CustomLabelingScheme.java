@@ -58,7 +58,7 @@ public class CustomLabelingScheme implements LabelingScheme {
 		private double parseLimitValue(String value) {
 			if (value.equals("-inf")) {
 				return -Double.MAX_VALUE;
-			} else if (value.equals("inf")) {
+			} else if (value.equals("inf") || value.equals("+inf")) {
 				return Double.MAX_VALUE;
 			}
 			return Double.parseDouble(value);
@@ -186,6 +186,7 @@ public class CustomLabelingScheme implements LabelingScheme {
 		for (LabelingRule rule : rules)
 			if (rule.containsValue(value))
 				return rule.label;
-		return null;
+		// If there are no matching rules, return default value
+		return "no match";
 	}
 }

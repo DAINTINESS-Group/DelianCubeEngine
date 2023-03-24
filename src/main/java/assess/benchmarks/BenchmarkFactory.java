@@ -41,7 +41,7 @@ public class BenchmarkFactory {
 	 */
 	private AssessBenchmark createSiblingBenchmark(String siblingKey, String siblingValue) {
 		Map<String, String> predicates = queryStringGenerator.getSelectionPredicates();
-		if (predicates.get(siblingKey) == null) {
+		if (predicates == null || predicates.get(siblingKey) == null) {
 			throw new RuntimeException(siblingKey + " was not defined in original predicates");
 		}
 		queryStringGenerator.updateSelectionPredicate(siblingKey, siblingValue);

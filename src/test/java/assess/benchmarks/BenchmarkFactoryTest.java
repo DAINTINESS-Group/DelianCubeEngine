@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class BenchmarkFactoryTest {
 
@@ -81,6 +82,35 @@ public class BenchmarkFactoryTest {
 		AssessBenchmark benchmark = benchmarkFactory.createBenchmark(
 				Arrays.asList("Sibling", "region", "north Moravia"));
 
-		benchmark.getCellValue();
+		assertEquals(17508.0, benchmark.getCellValue(), 0.001);
+	}
+	@Test
+	public void createSiblingWhenSigmaNotDefined() {
+		CubeManagerAdapter cubeManagerAdapter = new CubeManagerAdapter(initializeCubeManager());
+		cubeManagerAdapter.setTargetCubeName("loan");
+		cubeManagerAdapter.setMeasurement("amount");
+		cubeManagerAdapter.setAggregationFunction("Avg");
+		cubeManagerAdapter.setGroupBySet(
+				Stream.of("district_name", "month")
+						.collect(Collectors.toCollection(HashSet::new))
+		);
+		cubeManagerAdapter.setSelectionPredicates(
+				Stream.of(new String[][] {{"region", "south Moravia"}})
+						.collect(Collectors.toMap(predicate -> predicate[0],
+								predicate -> predicate[1]))
+		);
+
+		BenchmarkFactory benchmarkFactory = new BenchmarkFactory(cubeManagerAdapter);
+
+		String expectedMessage = "company was not defined in original predicates";
+
+		RuntimeException actualException =
+				assertThrows(RuntimeException.class, () ->
+						benchmarkFactory.createBenchmark(
+								Arrays.asList("Sibling", "company", "Toyota")
+						)
+				);
+
+		assertEquals(expectedMessage, actualException.getMessage());
 	}
 }
