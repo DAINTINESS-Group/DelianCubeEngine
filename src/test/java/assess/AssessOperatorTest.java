@@ -35,7 +35,7 @@ public class AssessOperatorTest {
     @Test
     public void executeIncompleteQuery() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
-        String query = "with loan for month = '5/2019', region = 'south Moravia'\n" +
+        String query = "with loan for month = '2019-05', region = 'south Moravia'\n" +
                 "by region, month assess avg(amount) against region = 'north Moravia'";
 
         operator.execute(query);
@@ -46,7 +46,7 @@ public class AssessOperatorTest {
     @Test
     public void executeQuery() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
-        String query = "with loan for month = '1998-02', region = 'South Moravia'\n" +
+        String query = "with loan for month = '02/1998', region = 'South Moravia'\n" +
                 "by month assess avg(amount) against region = 'North Moravia'\n" +
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";

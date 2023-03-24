@@ -60,7 +60,10 @@ predicate returns [String level, String value]
 
 level_value : ID+ | date ;
 
-date : INT ('-' INT ('-' INT)?)?  ;
+date :
+    INT
+    | INT '/' INT
+    | INT '/' INT '/' INT;
 
 group_by_set returns [HashSet<String> groupBySet]
     @init{$groupBySet = new HashSet<>();}

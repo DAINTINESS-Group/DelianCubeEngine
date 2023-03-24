@@ -6,10 +6,7 @@ import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 
 // Author Note: I hate myself for the amount of mutators on this class
 
@@ -96,10 +93,37 @@ public class CubeManagerAdapter {
 		StringJoiner stringJoiner = new StringJoiner(",");
 		selectionPredicates.forEach((key, value) -> {
 			String result = targetCube.findLevelByName(key);
+			if(isDate(key)) {
+				value = formatDates(value);
+			}
 			result += "='" + value + "'";
 			stringJoiner.add(result);
 		});
 		return stringJoiner.toString();
+	}
+
+	private boolean isDate(String key) {
+		return key.equals("date") ||
+				key.equals("day") ||
+				key.equals("month") ||
+				key.equals("year");
+	}
+
+	/**
+	 * SQL is set up to read dates as "YY-MM-DD", while ANLTR reads "DD/MM/YY" <br>
+	 * Note that this probably introduces an additional load (use better term)
+	 * @param date
+	 * @return
+	 */
+	private String formatDates(String date) {
+		List<String> dates = Arrays.asList(date.split("/"));
+		if (dates.size() > 1) {
+			Collections.reverse(dates);
+			StringJoiner stringJoiner = new StringJoiner("-");
+			dates.forEach(stringJoiner::add);
+			return stringJoiner.toString();
+		}
+		return date;
 	}
 
 	private String collectGammaLevels(String targetCubeName) {

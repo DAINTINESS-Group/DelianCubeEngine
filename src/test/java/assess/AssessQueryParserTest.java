@@ -37,19 +37,37 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void collectSelectionPredicatesTest()
-			throws IOException, RecognitionException {
-		String predicates = "date = '2019-5-20', type = 'Fresh Fruit', country = 'Italy'";
+	public void collectSelectionPredicatesTest() throws IOException, RecognitionException {
+		String predicates = "date = '20/05/2019', type = 'Fresh Fruit', country = 'Italy'";
 		AssessQueryParser parser = createParser(predicates);
 
 		HashMap<String, String> expected = new HashMap<>();
-		expected.put("date", "2019-5-20");
+		expected.put("date", "20/05/2019");
 		expected.put("type", "Fresh Fruit");
 		expected.put("country", "Italy");
 
 		HashMap<String, String> actual = parser.selection_predicates();
 
 		assertEquals(expected, actual);
+	}
+	@Test
+	public void collectDates() throws IOException, RecognitionException {
+		HashMap<String, String> actual;
+
+		HashMap<String, String> expectedFirstDate = new HashMap<>();
+		expectedFirstDate.put("date", "20/05/2019");
+		actual = createParser("date = '20/05/2019'").selection_predicates();
+		assertEquals(expectedFirstDate.get("date"), actual.get("date"));
+
+		HashMap<String, String> expectedSecondDate = new HashMap<>();
+		expectedSecondDate.put("date", "05/2019");
+		actual = createParser("date = '05/2019'").selection_predicates();
+		assertEquals(expectedSecondDate.get("date"), actual.get("date"));
+
+		HashMap<String, String> expectedThirdDate = new HashMap<>();
+		expectedThirdDate.put("date", "2019");
+		actual = createParser("date = '2019'").selection_predicates();
+		assertEquals(expectedThirdDate.get("date"), actual.get("date"));
 	}
 
 	@Test
