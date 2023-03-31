@@ -51,14 +51,6 @@ public class BenchmarkFactoryTest {
 		assertEquals(expected, constantBenchmark.getCellValue(), 0.001);
 	}
 
-	/*
-		CubeName:loan
-		Name: LoanQuery11_S1_CG-Prtl
-		AggrFunc:Avg
-		Measure:amount
-		Gamma:account_dim.district_name,date_dim.month
-		Sigma:account_dim.region='north Moravia'
-	 */
 	@Test
 	public void createSiblingBenchmark() {
 		CubeManagerAdapter cubeManagerAdapter = new CubeManagerAdapter(initializeCubeManager());
@@ -99,9 +91,7 @@ public class BenchmarkFactoryTest {
 						.collect(Collectors.toMap(predicate -> predicate[0],
 								predicate -> predicate[1]))
 		);
-
 		BenchmarkFactory benchmarkFactory = new BenchmarkFactory(cubeManagerAdapter);
-
 		String expectedMessage = "company was not defined in original predicates";
 
 		RuntimeException actualException =
@@ -110,7 +100,33 @@ public class BenchmarkFactoryTest {
 								Arrays.asList("Sibling", "company", "Toyota")
 						)
 				);
+		assertEquals(expectedMessage, actualException.getMessage());
+	}
 
+	@Test
+	public void createPastBenchmarkWhenDateIsNotDefined() {
+		CubeManagerAdapter cubeManagerAdapter = new CubeManagerAdapter(initializeCubeManager());
+		cubeManagerAdapter.setTargetCubeName("loan");
+		cubeManagerAdapter.setMeasurement("amount");
+		cubeManagerAdapter.setAggregationFunction("Avg");
+		cubeManagerAdapter.setGroupBySet(
+				Stream.of("district_name", "month")
+						.collect(Collectors.toCollection(HashSet::new))
+		);
+		cubeManagerAdapter.setSelectionPredicates(
+				Stream.of(new String[][] {{"region", "south Moravia"}})
+						.collect(Collectors.toMap(predicate -> predicate[0],
+								predicate -> predicate[1]))
+		);
+		BenchmarkFactory benchmarkFactory = new BenchmarkFactory(cubeManagerAdapter);
+		String expectedMessage = "A date was not defined in the selection predicates";
+
+		RuntimeException actualException =
+				assertThrows(RuntimeException.class, () ->
+						benchmarkFactory.createBenchmark(
+								Arrays.asList("Past", "10")
+						)
+				);
 		assertEquals(expectedMessage, actualException.getMessage());
 	}
 }
