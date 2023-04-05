@@ -1,11 +1,15 @@
 package assess.utils;
 
-import cubemanager.cubebase.Level;
-
-import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,7 +29,6 @@ public class DatesHandler {
      *
      * @param date The date in ANTLR Format
      * @return The date in SQL Format
-     * TODO: Perhaps by using the LocalDate object we can achieve a better solution
      */
     public static String formatDates(String date) {
         List<String> dates = Arrays.asList(date.split("/"));
@@ -59,33 +62,52 @@ public class DatesHandler {
      * @throws RuntimeException if the date level can not be defined
      */
     public static List<String> decrementDate(String date, String dateLevel, int times) {
+        DateDecrementer decrementOperator = new DateDecrementer(dateLevel, date);
+        return Stream
+                .iterate(decrementOperator.startingDate, decrementOperator.decrementer)
+                .limit(times)
+                .map(decrementOperator.stringFormatter)
+                .collect(Collectors.toList());
+    }
+
+    private static class DateDecrementer {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        switch (dateLevel) {
-            case "day":
-                return Stream.iterate(
-                                LocalDate.parse(date, formatter).minusDays(1),
-                                d -> d.minusDays(1))
-                        .limit(times)
-                        .map(LocalDate::toString)
-                        .collect(Collectors.toList());
-            case "month":
-                // The trick with this is that we have to set a default day
-                // when the day is missing. Otherwise, it doesn't get parsed
-                return Stream.iterate(
-                                LocalDate.parse("01/" + date, formatter).minusMonths(1),
-                                d -> d.minusMonths(1))
-                        .limit(times)
-                        .map(d-> d.toString().substring(0, 7))
-                        .collect(Collectors.toList());
-            case "year":
-                return Stream.iterate(
-                                LocalDate.parse("01/01/" + date, formatter).minusYears(1),
-                                d -> d.minusYears(1))
-                        .limit(times)
-                        .map(d-> d.toString().substring(0, 4))
-                        .collect(Collectors.toList());
-            default:
-                throw new RuntimeException("Couldn't identify date level");
+        UnaryOperator<LocalDate> decrementer;
+        LocalDate startingDate;
+        Function<LocalDate, String> stringFormatter;
+
+        DateDecrementer(String dateLevel, String date) {
+            switch (dateLevel) {
+                case "day":
+                    decrementByDay(date);
+                    return;
+                case "month":
+                    decrementByMonth(date);
+                    return;
+                case "year":
+                    decrementByYear(date);
+                    return;
+                default:
+                    throw new RuntimeException("Couldn't identify date level");
+            }
+        }
+
+        private void decrementByDay(String date) {
+            decrementer = d -> d.minusDays(1);
+            startingDate = LocalDate.parse(date, formatter).minusDays(1);
+            stringFormatter = LocalDate::toString;
+        }
+
+        private void decrementByMonth(String date) {
+            decrementer = d -> d.minusMonths(1);
+            startingDate = LocalDate.parse("01/" + date, formatter).minusMonths(1);
+            stringFormatter = d -> d.toString().substring(0, 7);
+        }
+
+        private void decrementByYear(String date) {
+            decrementer = d -> d.minusYears(1);
+            startingDate = LocalDate.parse("01/01/" + date, formatter).minusYears(1);
+            stringFormatter = d -> d.toString().substring(0, 4);
         }
     }
 }

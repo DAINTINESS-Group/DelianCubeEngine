@@ -141,6 +141,9 @@ public class CubeManagerAdapter {
     }
 
     public List<Result> collectPastRecords(int pastRecordsNumber) {
+        if (pastRecordsNumber <= 0) {
+            throw new RuntimeException("Did not provide a valid number of past Records");
+        }
         String dateLevel = getDateSelectionPredicate();
         String currentDate = selectionPredicates.get(dateLevel);
         List<String> pastDates = DatesHandler.decrementDate(currentDate, dateLevel, pastRecordsNumber);
@@ -148,7 +151,9 @@ public class CubeManagerAdapter {
 
         for (String date : pastDates) {
             updateSelectionPredicate(dateLevel, date);
-            pastRecords.add(executeCubeQuery(translateToCubeQuery()));
+            Result queryResult = executeCubeQuery(translateToCubeQuery());
+            if (!queryResult.getCells().isEmpty()) // If the result is not empty
+                pastRecords.add(queryResult);
         }
         return pastRecords;
     }

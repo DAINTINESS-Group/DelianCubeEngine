@@ -1,6 +1,7 @@
 package assess.benchmarks;
 
 import assess.CubeManagerAdapter;
+import result.Result;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class BenchmarkFactory {
      * Precondition: The selection predicates contain the level we want to slice <br>
      * For example: region should be in the group-by to say "against region = 'South Carolina'"
      *
-     * @return
+     * @return a sibling benchmark
      */
     private AssessBenchmark createSiblingBenchmark(String siblingKey, String siblingValue) {
         Map<String, String> predicates = cubeManagerAdapter.getSelectionPredicates();
@@ -53,7 +54,9 @@ public class BenchmarkFactory {
     }
 
     private AssessBenchmark createPastBenchmark(String pastRecordsNumber) {
-        return new PastBenchmark(cubeManagerAdapter.collectPastRecords(Integer.parseInt(pastRecordsNumber)));
+        int recordsNumber = Integer.parseInt(pastRecordsNumber);
+        List<Result> pastRecords = cubeManagerAdapter.collectPastRecords(recordsNumber);
+        return new PastBenchmark(pastRecords);
     }
 
     // This can not be currently implemented as a CubeManager instance only handles 1 cube

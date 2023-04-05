@@ -1,7 +1,6 @@
 package assess.deltas;
 
 import assess.benchmarks.AssessBenchmark;
-import cubemanager.cubebase.Cube;
 import result.Cell;
 import result.Result;
 

@@ -17,12 +17,6 @@ import java.util.Set;
  */
 public class AssessQueryBuilder {
 
-    //TODO
-    //Clearly shown original cube query, or cubequery parts
-    //Clearly shown benchmark cube query, or cubequery parts
-    //Clearly show delta
-    //Clearly show labeling scheme
-
     private final CubeManagerAdapter queryGenerator;
     private List<String> benchmarkDetails = new ArrayList<>(); // Default, as it can be empty
     private List<String> deltaFunctions;

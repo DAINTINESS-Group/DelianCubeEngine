@@ -3,7 +3,6 @@ package assess;
 import cubemanager.CubeManager;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
-import org.apache.hadoop.conf.ReconfigurationException;
 import org.junit.Test;
 
 import java.rmi.RemoteException;
@@ -33,18 +32,17 @@ public class AssessOperatorTest {
     }
 
     @Test
+    //TODO: This should return an exception that the query is invalid
     public void executeIncompleteQuery() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan for month = '2019-05', region = 'south Moravia'\n" +
                 "by region, month assess avg(amount) against region = 'north Moravia'";
 
         operator.execute(query);
-
-        //TODO: This should return an exception that the query is invalid
     }
 
     @Test
-    public void executeQuery() throws RecognitionException {
+    public void executeSiblingQuery() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan for month = '02/1998', region = 'South Moravia'\n" +
                 "by month assess avg(amount) against region = 'North Moravia'\n" +
@@ -57,7 +55,7 @@ public class AssessOperatorTest {
     }
 
     @Test
-    public void runComplexQueryAgainstConstanteBenchmark() throws RecognitionException {
+    public void runComplexQueryAgainstConstantBenchmark() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan by month, region AssEsS max(amount) against 100000\n"+
                 "using ratio(amount, benchmark.amount)\n" +
@@ -65,5 +63,29 @@ public class AssessOperatorTest {
 
         HashMap<Double, String> results = operator.execute(query);
         assertEquals("low", results.get(0.07656));
+    }
+
+    @Test
+    public void executeQueryWithPastBenchmark() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for month = '11/1997', region = 'south Moravia' by month, " +
+                "region AssEsS max(amount) against PaST 5\n"+
+                "using ratio(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.5]: low, (0.5, 1]: high}";
+
+        HashMap<Double, String> results = operator.execute(query);
+        assertEquals("low", results.get(0.14454832377089186));
+    }
+
+    @Test
+    public void executeQueryWithPastBenchmarkMissingEntries() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for month = '12/1997', region = 'north Moravia' by month, " +
+                "region AssEsS max(amount) against PaST 20\n"+
+                "using ratio(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
+
+        HashMap<Double, String> results = operator.execute(query);
+        assertEquals("ULTRA", results.get(1.8861714207264229));
     }
 }
