@@ -59,7 +59,7 @@ public class AnalyzeTranslationManagerTest {
 	public final void testExpressionWithGroupersOnMiddleHierarchy() throws IOException {
 		String incomingExpression = "ANALYZE min(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name, month AS first_query";
 		
-		String expectedCubeQueries = getFileContents("src/test/java/analyze/AnalyzeQueries_FirstQuery.txt");
+		String expectedCubeQueries = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueries_FirstQuery.txt");
 		
 		String resultedCubeQueries = "";
 								    				 
@@ -81,7 +81,7 @@ public class AnalyzeTranslationManagerTest {
 	public final void testExpressionWithGroupersOnTopHierarchy() throws IOException {
 		String incomingExpression = "ANALYZE max(amount) FROM loan FOR region='Prague' AND year='1998' AND status='Contract Finished/No Problems' GROUP BY All_account, All_date AS test_query";
 		
-		String expectedCubeQueries = getFileContents("src/test/java/analyze/AnalyzeQueries_TestQuery.txt");
+		String expectedCubeQueries = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueries_TestQuery.txt");
 		
 		String resultedCubeQueries = "";
 									 
@@ -103,9 +103,9 @@ public class AnalyzeTranslationManagerTest {
 	public final void testExpressionWithGroupersOnBottomHierarchy() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR district_name='Jihlava' AND month='1999-04' GROUP BY account, SK_day AS large_query";		
 		
-		String expectedCubeQueriesRDBMS = getFileContents("src/test/java/analyze/AnalyzeQueries_LargeQuery_RDBMS.txt");
+		String expectedCubeQueriesRDBMS = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueries_LargeQuery_RDBMS.txt");
 		
-		String expectedCubeQueriesSpark = getFileContents("src/test/java/analyze/AnalyzeQueries_LargeQuery_Spark.txt");
+		String expectedCubeQueriesSpark = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueries_LargeQuery_Spark.txt");
 		String resultedCubeQueries = "";
 									 
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
@@ -129,7 +129,7 @@ public class AnalyzeTranslationManagerTest {
 	public final void testThreeGroupers() throws IOException {
 		String incomingExpression = "ANALYZE max(amount) FROM loan FOR region='Prague' AND year='1989' AND status='Contract Finished/No Problems' GROUP BY district_name,month,SK_status AS multiple_groupers";
 		
-		String expectedCubeQueries = getFileContents("src/test/java/analyze/AnalyzeQueries_MultipleGroupers.txt");
+		String expectedCubeQueries = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueries_MultipleGroupers.txt");
 		
 		String resultedCubeQueries = "";
 									
