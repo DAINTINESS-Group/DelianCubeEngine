@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import analyze.AnalyzeQuery;
+import analyze.AnalyzeQuery.TypeOfAnalyzeQuery;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 
@@ -27,7 +29,7 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 	 * @return ArrayList&ltCubeQuery&gt that contains the Base query
 	 */
 	@Override
-	public ArrayList<CubeQuery> generateCubeQueries(String aggrFunc,
+	public ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc,
 													 String measure,
 													 String cubeName,
 													 ArrayList<String> sigmaExpressions,
@@ -35,16 +37,18 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 													 ArrayList<String> gammaExpressions,
 													 String queryAlias,
 													 HashMap<String,String> dimensions,
-													 HashMap<String,String> childToLevel,
-													 HashMap<String,String> parentToLevel,
+													 HashMap<String,String> childToLevelById,
+													 HashMap<String,String> childToLevelByName,
+													 HashMap<String,String> parentToLevelById,
+													 HashMap<String,String> parentToLevelByName,
 													 HashMap<String,String> expressionsToTableName,
 													 HashMap<String,String> currentLevelToDescriptions,
 													 String schemaName,
 													 String connectionType) {
 		
-		ArrayList<CubeQuery> baseQuery = new ArrayList<CubeQuery>();
+		ArrayList<AnalyzeQuery> baseQuery = new ArrayList<AnalyzeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
-		CubeQuery analyzeBaseQuery = null;
+		CubeQuery analyzeCubeQuery = null;
 		
 		// set-up the query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
@@ -78,11 +82,13 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		queryParams.put("Sigma", sigma);
 		
 		try {
-			analyzeBaseQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
+			analyzeCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 		
+		// build AnalyzeQuery
+		AnalyzeQuery analyzeBaseQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Base,"","not modified","","not modified");
 		// add the query to an ArrayList
 		baseQuery.add(analyzeBaseQuery);
 		

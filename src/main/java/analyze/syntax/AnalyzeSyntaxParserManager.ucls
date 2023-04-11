@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="analyze.syntax.AnalyzeOperatorLexer.DFA9" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/analyze/syntax/AnalyzeOperatorLexer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="106" width="161" x="175" y="1389"/>    
+    <position height="-1" width="-1" x="247" y="391"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -21,39 +21,43 @@
   </class>  
   <class id="3" language="java" name="analyze.syntax.AnalyzeOperatorLexer" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/analyze/syntax/AnalyzeOperatorLexer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="1960" width="220" x="155" y="-624"/>    
+    <position height="975" width="230" x="153" y="-683"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
   <class id="4" language="java" name="analyze.syntax.AnalyzeOperatorParser" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/analyze/syntax/AnalyzeOperatorParser.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="1798" width="280" x="1256" y="-518"/>    
+    <position height="373" width="285" x="1190" y="-540"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <dependency id="5">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <dependency id="6">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <association id="7">    
+  <association id="5">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="8" name="dfa9"/>      
-      <multiplicity id="9" minimum="0" maximum="1"/>    
+      <attribute id="6" name="dfa9">        
+        <position height="0" width="0" x="-8" y="-1051"/>      
+      </attribute>      
+      <multiplicity id="7" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-8" y="-1051"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
   <nesting id="10">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="2"/>  

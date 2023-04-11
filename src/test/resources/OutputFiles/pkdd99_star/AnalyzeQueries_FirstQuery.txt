@@ -1,0 +1,176 @@
+QueryName: first_query-AnalyzeBaseQuery
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.month
+Sigma Expression: account_dim.region='Prague' AND date_dim.year='1998'
+Type: Base
+Original Sigma Value: 
+Modified Sigma Value: not modified
+Original Gamma Value: 
+Modified Gamma Value: not modified
+QueryName: first_query-AnalyzeSiblingQuery_account_dim
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.region , date_dim.month
+Sigma Expression: account_dim.All_account='ALL' AND date_dim.year='1998'
+Type: Sibling
+Original Sigma Value: 'Prague'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: district_name
+Modified Gamma Value: region
+QueryName: first_query-AnalyzeSiblingQuery_date_dim
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.year
+Sigma Expression: date_dim.All_date='ALL' AND account_dim.region='Prague'
+Type: Sibling
+Original Sigma Value: '1998'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: month
+Modified Gamma Value: year
+QueryName: first_query-AnalyzeDrillDownQuery_account_dim_1
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.month
+Sigma Expression: account_dim.district_name='Hl.m. Praha' AND date_dim.year='1998'
+Type: Drill_Down
+Original Sigma Value: 'Prague'
+Modified Sigma Value: 'Hl.m. Praha'
+Original Gamma Value: district_name
+Modified Gamma Value: account
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_1
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-01' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-01'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_2
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-02' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-02'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_3
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-03' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-03'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_4
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-04' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-04'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_5
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-05' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-05'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_6
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-06' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-06'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_7
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-07' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-07'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_8
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-08' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-08'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_9
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-09' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-09'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_10
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-10' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-10'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_11
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-11' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-11'
+Original Gamma Value: month
+Modified Gamma Value: day
+QueryName: first_query-AnalyzeDrillDownQuery_date_dim_12
+BasicCube : loan_cube
+Aggregate Function : Min
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.day
+Sigma Expression: date_dim.month='1998-12' AND account_dim.region='Prague'
+Type: Drill_Down
+Original Sigma Value: '1998'
+Modified Sigma Value: '1998-12'
+Original Gamma Value: month
+Modified Gamma Value: day

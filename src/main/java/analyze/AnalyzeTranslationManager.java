@@ -1,4 +1,3 @@
-
 package analyze;
 
 import java.util.ArrayList;
@@ -8,9 +7,10 @@ import org.antlr.runtime.RecognitionException;
 
 import analyze.cubeQueryGenerator.CubeQueryGenerator;
 import analyze.cubeQueryGenerator.CubeQueryGeneratorFactory;
+import analyze.cubeQueryGenerator.CubeQueryGeneratorFactory.GeneratorType;
 import analyze.syntax.AnalyzeParserManager;
 import cubemanager.CubeManager;
-import cubemanager.cubebase.CubeQuery;
+
 
 /**
  * A class that manages the translation process of an analyze query to its respective CubeQueries
@@ -59,10 +59,14 @@ public class AnalyzeTranslationManager {
 	private HashMap<String,String> dimensions;
 	
 	// A hashmap that maps each sigma and gamma level to its child level
-	private HashMap<String,String> childToLevel;
+	private HashMap<String,String> childToLevelById;
+	
+	private HashMap<String,String> childToLevelByName;
 	
 	// A hashmap that maps each sigma and gamma level to its parent level 
-	private HashMap<String,String> parentToLevel;
+	private HashMap<String,String> parentToLevelById;
+	
+	private HashMap<String,String> parentToLevelByName;
 	
 	// A hashmap that maps each sigma and gamma level to its table name in the relational schema
 	private HashMap<String,String> expressionToTableName;
@@ -82,8 +86,10 @@ public class AnalyzeTranslationManager {
 		this.connectionType = connectionType;
 		this.analyzeParserManager = new AnalyzeParserManager();
 		this.dimensions = new HashMap<String,String>();
-		this.childToLevel = new HashMap<String,String>();
-		this.parentToLevel = new HashMap<String,String>();
+		this.childToLevelById = new HashMap<String,String>();
+		this.childToLevelByName = new HashMap<String,String>();
+		this.parentToLevelById = new HashMap<String,String>();
+		this.parentToLevelByName = new HashMap<String,String>();
 		this.expressionToTableName = new HashMap<String,String>();
 		this.currentLevelToDescriptions = new HashMap<String,String>();
 	}
@@ -108,8 +114,10 @@ public class AnalyzeTranslationManager {
 	private void getExpressionInfoFromCube() {
 		ArrayList<String> expressions = new ArrayList<String>();
 		String dimension = null;
-		String child;
-		String parent;
+		String childById;
+		String childByName;
+		String parentById;
+		String parentByName;
 		String currentLevelDescription;
 		
 		// collect all the sigma and gamma expressions into one collection
@@ -128,22 +136,29 @@ public class AnalyzeTranslationManager {
 						currentLevelDescription = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k).getLevelDescriptionAttribute();
 						
 						if(positionInHierarchy != 0) {
-							child =  cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k-1).getLevelDescriptionAttribute();
+							childById =  cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k-1).getLevelDescriptionAttribute();
+							childByName = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k-1).getName();
 						}else {
-							child = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(0).getLevelDescriptionAttribute();
+							childById = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(0).getLevelDescriptionAttribute();
+							childByName = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(0).getName();
 						}
 						
 						if(positionInHierarchy < cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().size() - 1) {
-							parent = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k+1).getLevelDescriptionAttribute();
-							if(parent.equals("All")) {
-								parent = "All_" + table;
+							parentById = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k+1).getLevelDescriptionAttribute();
+							parentByName = cubeManager.getDimensions().get(j).getHierarchy().get(0).getLevels().get(k+1).getName();
+							if(parentById.equals("All")) {
+								parentById = "All_" + table;
+								parentByName = parentById;
 							}
 						}else {
-							parent = expressions.get(i);
+							parentById = expressions.get(i);
+							parentByName = parentById;
 						}
 						dimensions.put(expressions.get(i), dimension);
-						childToLevel.put(expressions.get(i), child);
-						parentToLevel.put(expressions.get(i), parent);
+						childToLevelById.put(expressions.get(i), childById);
+						childToLevelByName.put(expressions.get(i), childByName);
+						parentToLevelById.put(expressions.get(i), parentById);
+						parentToLevelByName.put(expressions.get(i), parentByName);
 						expressionToTableName.put(expressions.get(i), table);
 						currentLevelToDescriptions.put(expressions.get(i), currentLevelDescription);
 					}
@@ -151,13 +166,17 @@ public class AnalyzeTranslationManager {
 			}
 		}
 	}	
-
+	
+	private void setUpTranslation() {
+		getAnalyzeQueryInfo();
+		getExpressionInfoFromCube();
+	}
 	
 	/**
 	 * Method that parses the incoming expression and checks if it contains syntax errors.
 	 * @return 0 if no errors found, else it returns -1 
 	 */
-	public int validateIncomingExpression() {
+	public boolean validateIncomingExpression() {
 		int numOfErrors = 0;
 		
 		// parse the incoming expression and find the number of syntax errors
@@ -167,9 +186,9 @@ public class AnalyzeTranslationManager {
 			e.printStackTrace();
 		}
 		if(numOfErrors != 0) {
-			return -1;
+			return false;
 		}
-		return 0;
+		return true;
 	}
 	
 	/**
@@ -178,70 +197,28 @@ public class AnalyzeTranslationManager {
 	 * @return An ArrayList&ltCubeQuery&gt object that contains the Base CubeQuery, the Drill-Downs and the Siblings
 	 * of the Base CubeQuery.
 	 */
-	public ArrayList<CubeQuery> translateToCubeQueries(){
-		ArrayList<CubeQuery> analyzeCubeQueries = new ArrayList<CubeQuery>();
+	public ArrayList<AnalyzeQuery> translateToCubeQueries(){
+		ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
 		CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
-		
 		//set up variables for translation
-		getAnalyzeQueryInfo();
-		getExpressionInfoFromCube();
+		setUpTranslation();
 		
 		//translate to Base Query
-		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator("Base", cubeManager);
-		ArrayList<CubeQuery> baseQueries = queryGenerator.generateCubeQueries(   aggrFunc,
-																				 measure,
-																				 cubeName,
-																				 sigmaExpressions,
-																				 sigmaExpressionsToValues,
-																				 gammaExpressions,
-																				 queryAlias,
-																				 dimensions,
-																				 childToLevel,
-																				 parentToLevel,
-																				 expressionToTableName,
-																				 currentLevelToDescriptions,
-																				 schemaName,
-																				 connectionType);
-		
-		analyzeCubeQueries.addAll(baseQueries);
+		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.Base, cubeManager);
+		ArrayList<AnalyzeQuery> baseQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		analyzeQueries.addAll(baseQueries);
 		
 		// translate to Sibling queries
-		queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator("Siblings", cubeManager);
-		ArrayList<CubeQuery> siblingQueries = queryGenerator.generateCubeQueries(aggrFunc,
-																				 measure, 
-																				 cubeName, 
-																				 sigmaExpressions, 
-																				 sigmaExpressionsToValues, 
-																				 gammaExpressions,
-																				 queryAlias,
-																				 dimensions,
-																				 childToLevel, 
-																				 parentToLevel, 
-																				 expressionToTableName,
-																				 currentLevelToDescriptions,
-																				 schemaName,
-																				 connectionType);
-		analyzeCubeQueries.addAll(siblingQueries);
+		queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.Siblings, cubeManager);
+		ArrayList<AnalyzeQuery> siblingQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		analyzeQueries.addAll(siblingQueries);
 		
 		// translate to Drill-Down queries
-		queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator("Drill-Downs", cubeManager);
-		ArrayList<CubeQuery> drillDownQueries = queryGenerator.generateCubeQueries(aggrFunc,
-																				 measure, 
-																				 cubeName, 
-																				 sigmaExpressions, 
-																				 sigmaExpressionsToValues, 
-																				 gammaExpressions,
-																				 queryAlias,
-																				 dimensions,
-																				 childToLevel, 
-																				 parentToLevel, 
-																				 expressionToTableName,
-																				 currentLevelToDescriptions,
-																				 schemaName,
-																				 connectionType);
-		// concatenate the results to one ArrayList
-		analyzeCubeQueries.addAll(drillDownQueries);
-		return analyzeCubeQueries;
+		queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.Drill_Downs, cubeManager);
+		ArrayList<AnalyzeQuery> drillDownQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		analyzeQueries.addAll(drillDownQueries);
+		
+		return analyzeQueries;
 		
 		
 	}

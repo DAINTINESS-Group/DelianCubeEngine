@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import analyze.AnalyzeQuery;
+import analyze.AnalyzeQuery.TypeOfAnalyzeQuery;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
@@ -83,7 +85,7 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 	 * @return ArrayList&ltCubeQuery&gt that contains the Drill-Down queries
 	 */
 	@Override
-	public ArrayList<CubeQuery> generateCubeQueries(String aggrFunc,
+	public ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc,
 													String measure, 
 													String cubeName,
 			                                        ArrayList<String> sigmaExpressions, 
@@ -91,15 +93,17 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			                                        ArrayList<String> gammaExpressions,
 			                                        String queryAlias,
 			                                        HashMap<String, String> dimensions, 
-			                                        HashMap<String, String> childToLevel,
-			                                        HashMap<String, String> parentToLevel,
+			                                        HashMap<String,String> childToLevelById,
+													HashMap<String,String> childToLevelByName,
+													HashMap<String,String> parentToLevelById,
+													HashMap<String,String> parentToLevelByName,
 			                                        HashMap<String, String> expressionToTableName,
 			                                        HashMap<String, String> currentLevelToDescriptions,
 			                                        String schemaName,
 			                                        String connectionType) {
-		ArrayList<CubeQuery> drillDownQueries = new ArrayList<CubeQuery>();
+		ArrayList<AnalyzeQuery> drillDownQueries = new ArrayList<AnalyzeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
-		CubeQuery analyzeDrillDownQuery = null;
+		CubeQuery analyzeCubeQuery = null;
 		
 		// set-up query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
@@ -113,10 +117,14 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 		for(int i = 0;i < sigmaExpressions.size();i++) {
 			boolean createDrillDown = false;
 			ArrayList<String> tempSigmas = new ArrayList<String>();
+			String prevGamma = null;
+			String newGamma = null;
+			String prevSigma = null;
+			String newSigma = null;
 			String gamma = "Gamma:";
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
-			String[][] childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
+			String[][] childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevelById.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
 			
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression
@@ -127,7 +135,9 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 				String gammaDimension = dimensions.get(gammaExpression);
 				if(gammaDimension.equals(sigmaDimension)) {
 					createDrillDown = true;
-					gamma += gammaDimension + "." + childToLevel.get(gammaExpression) + ",";
+					prevGamma = gammaExpression;
+					newGamma = childToLevelByName.get(gammaExpression);
+					gamma += gammaDimension + "." + newGamma + ",";
 				}else {
 					gamma +=  gammaDimension + "." + gammaExpression + ",";
 				}
@@ -143,7 +153,8 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			if(createDrillDown == true) {
 				for(int j = 2;j < childrenValues.length;j++) {
 					for(int k = 0;k < childrenValues[k].length;k++) {
-						String sigma = "Sigma:" + sigmaDimension + "." + childToLevel.get(expression) + "=" + "\'" + childrenValues[j][k] + "\'";
+						prevSigma = sigmaExpressionsToValues.get(expression);
+						String sigma = "Sigma:" + sigmaDimension + "." + childToLevelByName.get(expression) + "=" + "\'" + childrenValues[j][k] + "\'";
 						tempSigmas.add(sigma);
 					}
 				}
@@ -169,10 +180,13 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 					queryParams.put("Sigma", sigmas.get(j));
 			
 					try {
-						analyzeDrillDownQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
+						analyzeCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}
+					newSigma = sigmas.get(j).split(",")[0].split("=")[1];
+					//build AnalyzeQuery
+					AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Drill_Down,prevSigma,newSigma,prevGamma,newGamma);
 					drillDownQueries.add(analyzeDrillDownQuery);
 				}
 				// clear the sigma expression ArrayList

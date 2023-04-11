@@ -1,13 +1,10 @@
 package analyze;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import analyze.AnalyzeTranslationManager;
 import cubemanager.CubeManager;
 import mainengine.Session;
@@ -48,9 +45,9 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertNotEquals(0,numOfErrors);
+		assertFalse(numOfErrors);
 	}
 	
 	//test incoming expression without "" in the sigma expressions values
@@ -60,9 +57,9 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertNotEquals(0,numOfErrors);
+		assertFalse(numOfErrors);
 	}
 	
 	//test incoming expression with missing aggregate function, cubeName and gamma expressions
@@ -72,9 +69,9 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertNotEquals(0,numOfErrors);
+		assertFalse(numOfErrors);
 	}
 	
 	//test incoming expression with missing comma between gamma expressions
@@ -84,9 +81,9 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertNotEquals(0,numOfErrors);
+		assertFalse(numOfErrors);
 	}
 	
 	// test incoming expression without AS clause
@@ -96,9 +93,9 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertNotEquals(0,numOfErrors);
+		assertFalse(numOfErrors);
 	}
 	
 	// test incoming expression with correct syntax
@@ -108,8 +105,8 @@ public class AnalyzeInputValidationTest {
 		
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		int numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
+		boolean numOfErrors = testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		assertEquals(0,numOfErrors);
+		assertTrue(numOfErrors);
 	}
 }

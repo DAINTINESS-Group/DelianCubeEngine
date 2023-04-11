@@ -41,7 +41,7 @@ measure: WORD{measure=$WORD.text;};
 
 cubeName: WORD{cubeName=$WORD.text;};
 
-sigmaExpressions: sigmaExpression(AND sigmaExpression)*;
+sigmaExpressions: sigmaExpression?(AND sigmaExpression)*;
 
 sigmaExpression: sigmaExpressionNumberValue|sigmaExpressionTextValue;	
 

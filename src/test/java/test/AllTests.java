@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	mainengine.SessionQueryProcessorEngineTest.class,
 	analyze.AnalyzeInputValidationTest.class,
 	analyze.AnalyzeTranslationManagerTest.class,
+	analyze.AnalyzeQueriesExecutionTest.class,
 	assess.benchmarks.BenchmarkFactoryTest.class,
 	assess.deltas.DeltaSchemeTest.class,
 	assess.labelers.CustomLabelingSchemeTest.class,

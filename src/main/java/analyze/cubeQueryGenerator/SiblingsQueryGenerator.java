@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import analyze.AnalyzeQuery;
+import analyze.AnalyzeQuery.TypeOfAnalyzeQuery;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
@@ -77,7 +79,7 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 	 * @return ArrayList&ltCubeQuery&gt that contains the Sibling queries
 	 */
 	@Override
-	public ArrayList<CubeQuery> generateCubeQueries(String aggrFunc, 
+	public ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc, 
 													String measure, 
 													String cubeName,
 													ArrayList<String> sigmaExpressions, 
@@ -85,16 +87,18 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 													ArrayList<String> gammaExpressions,
 													String queryAlias,
 													HashMap<String, String> dimensions,
-													HashMap<String, String> childToLevel,
-													HashMap<String, String> parentToLevel,
+													HashMap<String,String> childToLevelById,
+													HashMap<String,String> childToLevelByName,
+													HashMap<String,String> parentToLevelById,
+													HashMap<String,String> parentToLevelByName,
 													HashMap<String, String> expressionToTableName,
 													HashMap<String,String> currentLevelToDescriptions,
 													String schemaName,
 													String connectionType) {
 		
-		ArrayList<CubeQuery> siblingQueries = new ArrayList<CubeQuery>();
+		ArrayList<AnalyzeQuery> siblingQueries = new ArrayList<AnalyzeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
-		CubeQuery analyzeSiblingQuery = null;
+		CubeQuery analyzeCubeQuery = null;
 		
 		// set-up query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
@@ -106,10 +110,14 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 		// create the gamma and sigma expressions and then the cube queries
 		for(int i = 0;i < sigmaExpressions.size();i++) {
 			boolean createSibling = false;
+			String prevGamma = null;
+			String newGamma = null;
+			String prevSigma = null;
+			String newSigma = null;
 			String gamma = "Gamma:";
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
-			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevel.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
+			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevelById.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
 					
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression
@@ -120,7 +128,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 				String gammaDimension = dimensions.get(gammaExpression);
 				if(gammaDimension.equals(sigmaDimension)) {
 					createSibling = true;
-					gamma += gammaDimension + "." + parentToLevel.get(gammaExpression) + ",";
+					prevGamma = gammaExpression;
+					newGamma = parentToLevelByName.get(gammaExpression);
+					gamma += gammaDimension + "." + newGamma + ",";
 				}else {
 					gamma +=  gammaDimension + "." + gammaExpression + ",";
 				}
@@ -134,8 +144,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 			// of the temp collection to create the sigma expressions. Note that the j counter starts from 2
 			// because the result's first 2 rows contains the field name of the result.
 			if(createSibling == true) {
-				String sigma = "Sigma:" + sigmaDimension + "." + parentToLevel.get(expression) + "=" + "\'" + parentValue + "\'";
-
+				String sigma = "Sigma:" + sigmaDimension + "." + parentToLevelByName.get(expression) + "=" + "\'" + parentValue + "\'";
+				newSigma = "'" + parentValue + "'";
+				prevSigma = sigmaExpressionsToValues.get(expression);
 				for(int j = 0;j < sigmaExpressions.size();j++) {
 					if(i!=j) {
 						sigma += "," + dimensions.get(sigmaExpressions.get(j)) + "." + sigmaExpressions.get(j) + "=" + sigmaExpressionsToValues.get(sigmaExpressions.get(j));
@@ -153,10 +164,13 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 				queryParams.put("Sigma", sigma);
 	
 				try {
-					analyzeSiblingQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
+					analyzeCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
+				
+				//build AnalyzeQuery
+				AnalyzeQuery analyzeSiblingQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Sibling,prevSigma,newSigma,prevGamma,newGamma);
 				siblingQueries.add(analyzeSiblingQuery);
 			}
 		}

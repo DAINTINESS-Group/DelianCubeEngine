@@ -1,0 +1,715 @@
+QueryName: large_query-AnalyzeBaseQuery
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.district_name='Jihlava' AND date_dim.month='1999-04'
+Type: Base
+Original Sigma Value: 
+Modified Sigma Value: not modified
+Original Gamma Value: 
+Modified Gamma Value: not modified
+QueryName: large_query-AnalyzeSiblingQuery_account_dim
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.district_name , date_dim.SK_day
+Sigma Expression: account_dim.region='south Moravia' AND date_dim.month='1999-04'
+Type: Sibling
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: 'south Moravia'
+Original Gamma Value: account
+Modified Gamma Value: district_name
+QueryName: large_query-AnalyzeSiblingQuery_date_dim
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.day
+Sigma Expression: date_dim.year='1999' AND account_dim.district_name='Jihlava'
+Type: Sibling
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999'
+Original Gamma Value: SK_day
+Modified Gamma Value: day
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_1
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='155' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '155'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_2
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='478' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '478'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_3
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='513' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '513'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_4
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='675' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '675'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_5
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='713' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '713'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_6
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='920' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '920'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_7
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='949' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '949'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_8
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='1246' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '1246'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_9
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='1320' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '1320'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_10
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='1414' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '1414'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_11
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2056' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2056'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_12
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2155' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2155'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_13
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2221' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2221'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_14
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2319' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2319'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_15
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2623' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2623'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_16
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2664' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2664'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_17
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2711' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2711'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_18
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2803' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2803'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_19
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='2909' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '2909'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_20
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3337' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3337'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_21
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3376' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3376'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_22
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3448' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3448'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_23
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3480' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3480'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_24
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3538' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3538'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_25
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3556' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3556'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_26
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3576' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3576'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_27
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3676' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3676'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_28
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='3903' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '3903'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_29
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='4026' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '4026'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_30
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='4105' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '4105'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_31
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='4480' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '4480'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_account_dim_32
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: account_dim.account='5126' AND date_dim.month='1999-04'
+Type: Drill_Down
+Original Sigma Value: 'Jihlava'
+Modified Sigma Value: '5126'
+Original Gamma Value: account
+Modified Gamma Value: account
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_1
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-01' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-01'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_2
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-02' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-02'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_3
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-03' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-03'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_4
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-04' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-04'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_5
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-05' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-05'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_6
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-06' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-06'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_7
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-07' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-07'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_8
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-08' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-08'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_9
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-09' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-09'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_10
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-10' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-10'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_11
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-11' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-11'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_12
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-12' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-12'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_13
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-13' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-13'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_14
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-14' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-14'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_15
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-15' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-15'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_16
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-16' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-16'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_17
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-17' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-17'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_18
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-18' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-18'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_19
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-19' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-19'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_20
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-20' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-20'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_21
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-21' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-21'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_22
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-22' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-22'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_23
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-23' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-23'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_24
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-24' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-24'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_25
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-25' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-25'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_26
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-26' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-26'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_27
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-27' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-27'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_28
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-28' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-28'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_29
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-29' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-29'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day
+QueryName: large_query-AnalyzeDrillDownQuery_date_dim_30
+BasicCube : loan_cube
+Aggregate Function : Sum
+Measure : amount
+Gamma Expression: account_dim.account , date_dim.SK_day
+Sigma Expression: date_dim.day='1999-04-30' AND account_dim.district_name='Jihlava'
+Type: Drill_Down
+Original Sigma Value: '1999-04'
+Modified Sigma Value: '1999-04-30'
+Original Gamma Value: SK_day
+Modified Gamma Value: SK_day

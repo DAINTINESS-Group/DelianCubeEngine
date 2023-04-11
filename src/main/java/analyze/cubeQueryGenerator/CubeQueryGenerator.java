@@ -2,8 +2,7 @@ package analyze.cubeQueryGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import cubemanager.cubebase.CubeQuery;
+import analyze.AnalyzeQuery;
 
 /**
  * An interface that implements the generateCubeQueries method
@@ -11,7 +10,7 @@ import cubemanager.cubebase.CubeQuery;
  *
  */
 public interface CubeQueryGenerator {
-	public abstract ArrayList<CubeQuery> generateCubeQueries(String aggrFunc,
+	public abstract ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc,
 															 String measure,
 															 String cubeName,
 															 ArrayList<String> sigmaExpressions,
@@ -19,8 +18,10 @@ public interface CubeQueryGenerator {
 															 ArrayList<String> gammaExpressions,
 															 String queryAlias,
 															 HashMap<String,String> dimensions,
-															 HashMap<String,String> childToLevel,
-															 HashMap<String,String> parentToLevel,
+															 HashMap<String,String> childToLevelById,
+															 HashMap<String,String> childToLevelByName,
+															 HashMap<String,String> parentToLevelById,
+															 HashMap<String,String> parentToLevelByName,
 															 HashMap<String,String> expressionToTableName,
 															 HashMap<String,String> currentLevelToDescriptions,
 															 String schemaName,
