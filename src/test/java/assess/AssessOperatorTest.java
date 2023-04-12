@@ -11,9 +11,9 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 
 public class AssessOperatorTest {
-    private final CubeManager cubeManager = initializeCubeManger();
+    private final CubeManager cubeManager = initializeCubeManager();
 
-    private CubeManager initializeCubeManger() {
+    private CubeManager initializeCubeManager() {
         String typeOfConnection = "RDBMS";
         HashMap<String, String> userInputList = new HashMap<>();
         userInputList.put("schemaName", "pkdd99_star");
