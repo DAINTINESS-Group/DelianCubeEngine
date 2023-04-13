@@ -1,43 +1,52 @@
 package assess.deltas;
 
 import assess.benchmarks.AssessBenchmark;
-import cubemanager.cubebase.Cube;
+import result.Cell;
+import result.Result;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class DeltaScheme {
-	interface ComparisonFunction {
-		double compare(double actual, double benchmark);
-		ComparisonFunction absoluteDifference = (actual, benchmark) -> Math.abs(actual - benchmark);
-		ComparisonFunction difference = (actual, benchmark) -> actual - benchmark;
-		ComparisonFunction ratio = (actual, benchmark) -> actual / benchmark;
-	}
+    interface ComparisonFunction {
+        double compare(double actual, double benchmark);
 
-	private static final HashMap<String, ComparisonFunction> functionsMap = createComparisonMap();
+        ComparisonFunction absoluteDifference = (actual, benchmark) -> Math.abs(actual - benchmark);
+        ComparisonFunction difference = (actual, benchmark) -> actual - benchmark;
+        ComparisonFunction ratio = (actual, benchmark) -> actual / benchmark;
+    }
 
-	private static HashMap<String, ComparisonFunction> createComparisonMap() {
-		HashMap<String, ComparisonFunction> functionsMap = new HashMap<>();
-		functionsMap.put("absolute", ComparisonFunction.absoluteDifference);
-		functionsMap.put("difference", ComparisonFunction.difference);
-		functionsMap.put("ratio", ComparisonFunction.ratio);
-		return functionsMap;
-	}
+    private static final HashMap<String, ComparisonFunction> functionsMap = createComparisonMap();
 
-	private final List<ComparisonFunction> appliedMethods = new ArrayList<>();
+    private static HashMap<String, ComparisonFunction> createComparisonMap() {
+        HashMap<String, ComparisonFunction> functionsMap = new HashMap<>();
+        functionsMap.put("absolute", ComparisonFunction.absoluteDifference);
+        functionsMap.put("difference", ComparisonFunction.difference);
+        functionsMap.put("ratio", ComparisonFunction.ratio);
+        return functionsMap;
+    }
 
-	public DeltaScheme(List<String> methods) {
-		for (String method : methods) {
-			appliedMethods.add(functionsMap.get(method));
-		}
-	}
+    private final List<ComparisonFunction> appliedMethods = new ArrayList<>();
 
-	public void compareTargetToBenchmark(Cube targetCube, AssessBenchmark benchmark) {
-		// Check if cubes are join able?
-		for (ComparisonFunction function : appliedMethods) {
-			// Iterate over both cubes measurements and apply deltaFunctions
-		}
-	}
+    public DeltaScheme(List<String> methods) {
+        Collections.reverse(methods);
+        for (String method : methods) {
+            appliedMethods.add(functionsMap.get(method));
+        }
+    }
+
+    public List<Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
+        ArrayList<Double> comparisonResults = new ArrayList<>();
+        for (Cell cell : targetCube.getCells()) {
+            double expectedValue = benchmark.getCellValue();
+            double resultValue = cell.toDouble();
+            for (ComparisonFunction function : appliedMethods) {
+                resultValue = function.compare(resultValue, expectedValue);
+            }
+            comparisonResults.add(resultValue);
+        }
+        return comparisonResults;
+    }
 }

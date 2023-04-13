@@ -46,6 +46,10 @@ query returns [AssessQuery query]
       )
       {$query = builder.build();}
     ;
+    catch [RecognitionException re] {
+        reportError(re);
+        throw new RuntimeException("Invalid Query Syntax");
+    }
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
     @init{$selectionPredicates = new HashMap<>();}
@@ -60,7 +64,10 @@ predicate returns [String level, String value]
 
 level_value : ID+ | date ;
 
-date : INT '/' INT ('/' INT)? ;
+date :
+    INT
+    | INT '/' INT
+    | INT '/' INT '/' INT;
 
 group_by_set returns [HashSet<String> groupBySet]
     @init{$groupBySet = new HashSet<>();}
@@ -169,7 +176,7 @@ AGGREGATE : (A V G | A V E R A G E
 
 // LEXICAL TOKENS
 SIGN : ('+' | '-');
-ID : ('a'..'z'|'A'..'Z')+;
+ID : ('a'..'z'|'A'..'Z'|'_')+;
 
 INT : '0'..'9'+;
 FLOAT : INT '.' INT;

@@ -8,6 +8,10 @@ import java.sql.Statement;
 
 import static org.junit.Assert.fail;
 
+/**
+ * Run this test if you are using docker for virtualizing the database,
+ * and you wish to know if the container is active.
+ */
 public class DockerTest {
 	@Test
 	public void testConnection() {

@@ -22,11 +22,10 @@ import static org.junit.Assert.fail;
  */
 public class AssessQueryBuilderTest {
 	@Test
-	public void testWithRealDatabase() throws RemoteException {
+	public void testWithRealDatabase() {
 		CubeManager cubeManager = initializeCubeManager();
 		AssessQuery query = initializeBuilder(cubeManager).build();
 		System.out.println(query.targetCubeQuery);
-		cubeManager.createCubeQueryFromString(query.targetCubeQuery, new HashMap<>());
 		assertEquals(100.0, query.benchmark.getCellValue(), 0.001);
 	}
 
