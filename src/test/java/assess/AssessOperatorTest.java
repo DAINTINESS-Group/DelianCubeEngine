@@ -1,5 +1,7 @@
 package assess;
 
+import assess.labelers.CustomLabelingScheme;
+import assess.labelers.InvalidLabelingRuleException;
 import cubemanager.CubeManager;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
@@ -9,6 +11,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class AssessOperatorTest {
     private final CubeManager cubeManager = initializeCubeManager();
@@ -38,7 +41,10 @@ public class AssessOperatorTest {
         String query = "with loan for month = '2019-05', region = 'south Moravia'\n" +
                 "by region, month assess avg(amount) against region = 'north Moravia'";
 
-        operator.execute(query);
+        RuntimeException actualException =
+                assertThrows(RuntimeException.class, () -> operator.execute(query));
+
+        assertEquals("Invalid Syntax", actualException.getMessage());
     }
 
     @Test

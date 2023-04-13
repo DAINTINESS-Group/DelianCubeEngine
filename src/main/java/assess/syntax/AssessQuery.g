@@ -46,6 +46,10 @@ query returns [AssessQuery query]
       )
       {$query = builder.build();}
     ;
+    catch [RecognitionException re] {
+        reportError(re);
+        throw new RuntimeException("Invalid Query Syntax");
+    }
 
 selection_predicates returns [HashMap<String, String> selectionPredicates]
     @init{$selectionPredicates = new HashMap<>();}
