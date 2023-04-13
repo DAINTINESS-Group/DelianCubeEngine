@@ -34,8 +34,8 @@ public class CubeManagerAdapter {
         return cubeManager
                 .getDimensions()
                 .stream()
-                .filter(dimension -> dimension.getName().equals("date_dim")) // This name is database dependent
-                .findFirst()
+                .filter(dimension -> dimension.getDimensionType().equals("date")) 
+                .findFirst() //TODO To be fixed if more than 1 date dimensions
                 .orElseThrow(() -> new RuntimeException("No date dimension in cube"))
                 .getHierarchy()
                 .get(0) // Because there's always only one hierarchy (At least, last time I checked)
