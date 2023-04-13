@@ -16,8 +16,8 @@ CubeName:adult
 Name:CubeQuery2
 AggrFunc:Avg
 Measure:hours_per_week
-Gamma:country_dim.lvl0 , work_dim.lvl1
-Sigma:country_dim.lvl1='Europe',work_dim.lvl2='With-Pay'
+Gamma:native_country_dim.lvl0 , work_dim.lvl1
+Sigma:native_country_dim.lvl2='Europe',work_dim.lvl2='With-Pay'
 @
 CubeName:adult
 Name:CubeQuery3
@@ -38,12 +38,12 @@ Name:CubeQuery4
 AggrFunc:Avg
 Measure:hours_per_week
 Gamma:education_dim.lvl2,work_dim.lvl1
-Sigma:native country_dim.lvl1='USA',education_dim.lvl3='Post-Secondary',work_dim.lvl2='With-Pay',age_dim.lvl3='37-56'
+Sigma:native_country_dim.lvl1='USA',education_dim.lvl3='Post-Secondary',work_dim.lvl2='With-Pay',age_dim.lvl3='37-56'
 @
 CubeName:adult
 Name:CubeQuery5
 AggrFunc:Avg
 Measure:hours_per_week
 Gamma:education_dim.lvl2,work_dim.lvl1
-Sigma:occupation_dim.lvl1='Blue-collar',work_dim.lvl2='With-Pay',education_dim.lvl3='Post-Secondary',native country_dim.lvl1='USA',marital_dim.lvl2='Married'
+Sigma:occupation_dim.lvl1='Blue-collar',work_dim.lvl2='With-Pay',education_dim.lvl3='Post-Secondary',native_country_dim.lvl1='USA',marital_dim.lvl2='Married'
 
