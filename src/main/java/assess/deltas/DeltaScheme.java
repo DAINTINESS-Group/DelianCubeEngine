@@ -39,13 +39,15 @@ public class DeltaScheme {
 
     public List<Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
         ArrayList<Double> comparisonResults = new ArrayList<>();
+        HashMap<Cell, Double> comparisonMap = new HashMap<>();
         for (Cell cell : targetCube.getCells()) {
             double expectedValue = benchmark.getCellValue();
-            double resultValue = cell.toDouble();
+            double comparisonValue = cell.toDouble();
             for (ComparisonFunction function : appliedMethods) {
-                resultValue = function.compare(resultValue, expectedValue);
+                comparisonValue = function.compare(comparisonValue, expectedValue);
             }
-            comparisonResults.add(resultValue);
+            comparisonResults.add(comparisonValue);
+            comparisonMap.put(cell, comparisonValue);
         }
         return comparisonResults;
     }

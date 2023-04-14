@@ -1,7 +1,5 @@
 package assess;
 
-import assess.labelers.CustomLabelingScheme;
-import assess.labelers.InvalidLabelingRuleException;
 import cubemanager.CubeManager;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
@@ -16,6 +14,7 @@ import static org.junit.Assert.assertThrows;
 public class AssessOperatorTest {
     private final CubeManager cubeManager = initializeCubeManager();
 
+    // Dimensions in Loan Cube: account, date and status
     private CubeManager initializeCubeManager() {
         String typeOfConnection = "RDBMS";
         HashMap<String, String> userInputList = new HashMap<>();
@@ -35,8 +34,7 @@ public class AssessOperatorTest {
     }
 
     @Test
-    //TODO: This should return an exception that the query is invalid
-    public void executeIncompleteQuery() throws RecognitionException {
+    public void executeIncompleteQuery() {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan for month = '2019-05', region = 'south Moravia'\n" +
                 "by region, month assess avg(amount) against region = 'north Moravia'";
@@ -61,6 +59,19 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void assessSiblingsWithMultipleCells() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for region = 'South Moravia', year = '1994'\n" +
+                "by status assess avg(amount) against region = 'North Moravia'\n" +
+                "using ratio(absolute(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
+
+        HashMap<Double, String> results = operator.execute(query);
+        assertEquals("mid_effort", results.get(0.3080660835762877));
+        assertEquals("low_effort", results.get(0.07408453052242985));
+    }
+
+    @Test
     public void runComplexQueryAgainstConstantBenchmark() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan by month, region AssEsS max(amount) against 100000\n"+
@@ -72,10 +83,22 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void assessSiblingsWithMissMatchingCells() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for region = 'South Moravia', year = '1994'\n" +
+                "by month assess avg(amount) against region = 'North Moravia'\n" +
+                "using ratio(absolute(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
+
+        HashMap<Double, String> results = operator.execute(query);
+        assertEquals("mid_effort", results.get(0.3080660835762877));
+        assertEquals("low_effort", results.get(0.07408453052242985));
+    }
+    @Test
     public void executeQueryWithPastBenchmark() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan for month = '11/1997', region = 'south Moravia' by month, " +
-                "region AssEsS max(amount) against PaST 5\n"+
+                "region AssEsS max(amount) agAinSt PaST 5\n"+
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high}";
 
@@ -91,6 +114,19 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
 
+        HashMap<Double, String> results = operator.execute(query);
+        assertEquals("ULTRA", results.get(1.8861714207264229));
+    }
+
+    @Test
+    public void executeQueryWithPastBenchmarkMismatchingCells() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for month = '12/1997', region = 'north Moravia' by month, " +
+                "status AssEsS max(amount) against PaST 20\n"+
+                "using ratio(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
+
+        // This fails as the number of cells of each month is not the same.
         HashMap<Double, String> results = operator.execute(query);
         assertEquals("ULTRA", results.get(1.8861714207264229));
     }
