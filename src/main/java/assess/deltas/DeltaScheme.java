@@ -4,10 +4,7 @@ import assess.benchmarks.AssessBenchmark;
 import result.Cell;
 import result.Result;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class DeltaScheme {
     interface ComparisonFunction {
@@ -37,18 +34,23 @@ public class DeltaScheme {
         }
     }
 
-    public List<Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
-        ArrayList<Double> comparisonResults = new ArrayList<>();
+    public HashMap<Cell, Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
         HashMap<Cell, Double> comparisonMap = new HashMap<>();
         for (Cell cell : targetCube.getCells()) {
-            double expectedValue = benchmark.getCellValue();
-            double comparisonValue = cell.toDouble();
-            for (ComparisonFunction function : appliedMethods) {
-                comparisonValue = function.compare(comparisonValue, expectedValue);
+            try { // When the benchmark cells are not enough, the remaining target cells will not be added to the set of cells
+                double expectedValue = benchmark.getCellValue();
+                double comparisonValue = cell.toDouble();
+                for (ComparisonFunction function : appliedMethods) {
+                    comparisonValue = function.compare(comparisonValue, expectedValue);
+                }
+                comparisonMap.put(cell, comparisonValue);
+            } catch (NoSuchElementException ie) {
+                int ignoredCellsNumber = targetCube.getCells().size() - targetCube.getCells().indexOf(cell);
+                System.out.println("Benchmark cells were not enough, " + ignoredCellsNumber +" cell(s) will be ignored");
+                break;
             }
-            comparisonResults.add(comparisonValue);
-            comparisonMap.put(cell, comparisonValue);
         }
-        return comparisonResults;
+
+        return comparisonMap;
     }
 }

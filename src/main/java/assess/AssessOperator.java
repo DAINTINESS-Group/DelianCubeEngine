@@ -2,15 +2,18 @@ package assess;
 
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
+import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import result.Cell;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,9 +34,9 @@ public class AssessOperator {
      * @return
      * @throws RecognitionException If the query does not follow the defined syntax
      */
-    public HashMap<Double, String> execute(String assessQuery) throws RecognitionException {
+    public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
         AssessQuery parsedQuery = parseQuery(assessQuery);
-        List<Double> comparisonResults = executeComparison(parsedQuery);
+        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
         return labelResults(parsedQuery, comparisonResults);
     }
 
@@ -55,18 +58,18 @@ public class AssessOperator {
         }
     }
 
-    private List<Double> executeComparison(AssessQuery parsedQuery) {
+    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery) {
         return parsedQuery.deltaFunction.compareTargetToBenchmark(
                 cubeManager.executeQuery(parsedQuery.targetCubeQuery),
                 parsedQuery.benchmark);
     }
 
-    private HashMap<Double, String> labelResults(AssessQuery parsedQuery, List<Double> comparisonResults) {
-        HashMap<Double, String> labeledResults = new HashMap<>();
-        for(Double value: comparisonResults) {
-            String label = parsedQuery.labelingScheme.applyLabels(value);
-            labeledResults.put(value, label);
+    private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
+        List<LabeledCell> labeledCells = new ArrayList<>();
+        for(Cell cell: comparisonResults.keySet()) {
+            String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
+            labeledCells.add(new LabeledCell(cell, label));
         }
-        return labeledResults;
+        return labeledCells;
     }
 }

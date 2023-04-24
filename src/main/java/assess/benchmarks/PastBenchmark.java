@@ -4,17 +4,24 @@ import result.Result;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PastBenchmark implements AssessBenchmark {
-    private final List<Double> averageCells;
-    private int currentIndex = 0;
+    private final Iterator<Double> benchmarkCells;
 
     public PastBenchmark(List<Result> pastResults) {
-        int numberOfCells = pastResults.get(0).getCells().size();
-        averageCells = new ArrayList<>(Collections.nCopies(numberOfCells, 0.0));
+        int numberOfCells = Collections.max(
+                pastResults
+                        .stream()
+                        .map(result -> result.getCells().size())
+                        .collect(Collectors.toList())
+        );
+        ArrayList<Double> averageCells =
+                new ArrayList<>(Collections.nCopies(numberOfCells, 0.0)); // Init values to 0.0
 
-        // Collect the values
+        // Get cell value, add it to the appropriate cell index in averageCells
         for (Result result : pastResults) {
             for (int i = 0; i < result.getCells().size(); i++) {
                 double prevValue = averageCells.get(i);
@@ -24,12 +31,11 @@ public class PastBenchmark implements AssessBenchmark {
         }
 
         averageCells.replaceAll(aDouble -> aDouble / pastResults.size());
+        benchmarkCells = averageCells.iterator();
     }
 
     @Override
     public double getCellValue() {
-        double cellValue = averageCells.get(currentIndex);
-        currentIndex++;
-        return cellValue;
+        return benchmarkCells.next();
     }
 }

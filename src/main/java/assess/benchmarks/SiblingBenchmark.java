@@ -3,18 +3,18 @@ package assess.benchmarks;
 import result.Cell;
 import result.Result;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class SiblingBenchmark implements AssessBenchmark {
-	private final List<Cell> cells;
-	private int currentIndex = 0;
+	private final Iterator<Cell> benchmarkCells;
 
-	public SiblingBenchmark(Result cubeResult) {cells = cubeResult.getCells();}
+	public SiblingBenchmark(Result cubeResult) {
+		benchmarkCells = cubeResult.getCells().iterator();
+	}
 
 	@Override
 	public double getCellValue() {
-		double cellValue = cells.get(currentIndex).toDouble();
-		currentIndex++;
-		return cellValue;
+		return benchmarkCells.next().toDouble();
 	}
 }
