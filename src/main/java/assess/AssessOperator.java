@@ -9,9 +9,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.Cell;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +35,11 @@ public class AssessOperator {
     public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
         AssessQuery parsedQuery = parseQuery(assessQuery);
         HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
-        return labelResults(parsedQuery, comparisonResults);
+        List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
+        exportToMD(assessQuery, results);
+        return results;
     }
+
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
         AssessQueryParser parser = createParser(assessQuery);
@@ -71,5 +72,23 @@ public class AssessOperator {
             labeledCells.add(new LabeledCell(cell, label));
         }
         return labeledCells;
+    }
+
+    private void exportToMD(String assessQuery, List<LabeledCell> results) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/Assessment_Results.md"));
+            writer.append("## Query\n");
+            writer.append(assessQuery);
+
+
+            writer.append("\n## Results");
+            for(LabeledCell cell: results) {
+                writer.append(cell.toString());
+            }
+            writer.close();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+            System.out.println("Failed to export to MarkDown");
+        }
     }
 }

@@ -10,4 +10,9 @@ public class LabeledCell {
         this.cell = cell;
         this.label = label;
     }
+
+    @Override
+    public String toString() {
+        return "\n\nCell: " + cell.toString("\t") + "\nWas Labeled: " + label;
+    }
 }
