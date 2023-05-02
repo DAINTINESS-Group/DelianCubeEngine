@@ -72,8 +72,8 @@ public class InterestingnessClientAdult {
 		userInputList.put("cubeName", "adult");
 		userInputList.put("inputFolder", "adult");
 		service.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
-				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/adultPredictions", 
-				"InputFiles/UserProfile/ExpectedValues/adultPredictions","InputFiles/UserProfile/ExpectedValues/adultPredictionsWithProbabilities", 1);
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "InputFiles/UserProfile/ExpectedValues/adultPredictions2", 
+				"InputFiles/UserProfile/ExpectedValues/adultPredictions2","InputFiles/UserProfile/ExpectedValues/adultPredictionsWithProbabilities", 1);
 		System.out.println("Completed connection initialization");
 		
 		
@@ -83,12 +83,13 @@ public class InterestingnessClientAdult {
 		
 		//compute all measures		
 		measures = new ArrayList<String>(Arrays.asList( "Partial Detailed Extensional Novelty",
-				"Partial Detailed Extensional Belief Based Novelty", "Partial Detailed Extensional Relevance",
-				"Partial Same Level Extensional Relevance", "Partial Detailed Extensional Jaccard Based Peculiarity",
-				"Partial Syntactic Average Peculiarity", "Partial Extensional Value Based Surprise"
+				/*"Partial Detailed Extensional Belief Based Novelty",*/ "Partial Detailed Extensional Relevance",
+				/*"Partial Same Level Extensional Relevance",*/ "Partial Detailed Extensional Jaccard Based Peculiarity",
+				/*"Partial Syntactic Average Peculiarity",*/ "Partial Extensional Value Based Surprise"
 				));
 		
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//version 1
 		// New query with predictions available
 	/*	//
 		String[] answers0 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
@@ -115,10 +116,10 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + answers1[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-*/
+
 		
 		
-	/*	String[] answers2 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+		String[] answers2 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:CubeQuery2\n" + 
 				"AggrFunc:Avg\n" + 
 				"Measure:hours_per_week\n" + 
@@ -130,6 +131,7 @@ public class InterestingnessClientAdult {
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");	*/
 		
+		/*
 		String[] answers1 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:CubeQuery0\n" + 
 				"AggrFunc:Avg\n" + 
@@ -208,8 +210,386 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + answers6[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		*/
 		
-			
+		/*
+		///////////////////////////////////////////////////////////////////////////////////////
+		//version 2
+		String[] initial1 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery1\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='Greece'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial1.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial1[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] initial2 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery2\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='France'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial2.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial2[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//1st Dilemma
+		String[] cube11 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube11\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Post-Secondary',native_country_dim.lvl0='France'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube11.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube11[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube12 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube12\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Without-Post-Secondary',native_country_dim.lvl0='France'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube12.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube12[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//2nd Dilemma
+		String[] cube21 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube21\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Post-Secondary',occupation_dim.lvl1='Blue-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube21.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube21[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube22 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube22\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Without-Post-Secondary',occupation_dim.lvl1='Blue-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube22.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube22[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//3rd Dilemma
+		String[] cube31 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube31\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Post-Secondary',occupation_dim.lvl1='White-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube31.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube31[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube32 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube32\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl3 = 'Without-Post-Secondary',occupation_dim.lvl1='White-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube32.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube32[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//4th Dilemma
+		String[] cube41 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube41\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='France',occupation_dim.lvl1='White-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube41.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube41[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube42 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube42\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='France',occupation_dim.lvl1='Blue-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube42.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube42[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//5th Dilemma
+		String[] cube51 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube51\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='Greece',occupation_dim.lvl1='White-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube51.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube51[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube52 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube52\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='Greece',occupation_dim.lvl1='Blue-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube52.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube52[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//6th Dilemma
+		String[] cube61 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube61\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='Greece',education_dim.lvl2='Post-grad'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube61.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube61[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube62 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube62\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1,work_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',native_country_dim.lvl0='Greece',education_dim.lvl2='University'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube62.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube62[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		*/
+		
+		//////////////////////////////////////////////////////////////////////////////////////////
+		//version 3
+		String[] initial1 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery1\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial1.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial1[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] initial2 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery2\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl1,occupation_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay', education_dim.lvl3='Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial2.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial2[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] initial3 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery3\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl1,age_dim.lvl2\n" + 
+				"Sigma:work_dim.lvl2='With-Pay', education_dim.lvl2='Post-grad'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial3.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial3[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] initial4 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:InitialCubeQuery4\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,age_dim.lvl3\n" + 
+				"Sigma:work_dim.lvl2='With-Pay', occupation_dim.lvl1='white-collar'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < initial4.length; i++) {
+			System.out.println(measures.get(i) + ":    " + initial4[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		//First slide
+
+		String[] cube11 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube11\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Without-Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube11.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube11[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+		String[] cube12 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube12\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl3,occupation_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',age_dim.lvl3='37-56'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube12.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube12[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube13 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube13\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl1,occupation_dim.lvl0\n" + 
+				"Sigma:education_dim.lvl2='Post-grad',work_dim.lvl2='With-pay',occupation_dim.lvl1='Other'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube13.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube13[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube14 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube14\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='Without-Pay'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube14.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube14[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//Second slide
+		
+		String[] cube21 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube21\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Post-Secondary', age_dim.lvl3='37-56'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube21.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube21[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube22 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube22\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl2,age_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Post-Secondary', age_dim.lvl2='37-46'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube22.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube22[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube23 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube23\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl2,age_dim.lvl3\n" + 
+				"Sigma:occupation_dim.lvl1='white-collar', education_dim.lvl3='Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube23.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube23[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube24 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube24\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl1='Self-emp',education_dim.lvl3='Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube24.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube24[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		
+		//Third slide
+		
+		String[] cube31 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube31\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,age_dim.lvl3\n" + 
+				"Sigma:occupation_dim.lvl1='white-collar', education_dim.lvl3='Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube31.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube31[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube32 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube32\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl3,age_dim.lvl3\n" + 
+				"Sigma:occupation_dim.lvl1='blue-collar', work_dim.lvl2='With-Pay'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube32.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube32[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube33 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube33\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,age_dim.lvl2\n" + 
+				"Sigma:age_dim.lvl3='37-56', education_dim.lvl3='Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube33.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube33[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		String[] cube34 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube34\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Without-Post-Secondary',age_dim.lvl3='37-56'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube34.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube34[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
 		//Delete history files created
 		clearOldHistory();
 		//Create .gitignore files
