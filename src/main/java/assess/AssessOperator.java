@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The top layer class for any assessments done in the intentional model.
@@ -36,7 +37,7 @@ public class AssessOperator {
         AssessQuery parsedQuery = parseQuery(assessQuery);
         HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
         List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
-        exportToMD(assessQuery, results);
+        exportToMD(assessQuery, parsedQuery.outputName, results);
         return results;
     }
 
@@ -67,26 +68,24 @@ public class AssessOperator {
 
     private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
         List<LabeledCell> labeledCells = new ArrayList<>();
-        for(Cell cell: comparisonResults.keySet()) {
+        for (Cell cell : comparisonResults.keySet()) {
             String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
             labeledCells.add(new LabeledCell(cell, label));
         }
         return labeledCells;
     }
 
-    private void exportToMD(String assessQuery, List<LabeledCell> results) {
+    private void exportToMD(String assessQuery, String outputName, List<LabeledCell> results) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/Assessment_Results.md"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"));
             writer.append("## Query\n");
             writer.append(assessQuery);
-
-
             writer.append("\n## Results");
-            for(LabeledCell cell: results) {
+            for (LabeledCell cell : results) {
                 writer.append(cell.toString());
             }
             writer.close();
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Failed to export to MarkDown");
         }
