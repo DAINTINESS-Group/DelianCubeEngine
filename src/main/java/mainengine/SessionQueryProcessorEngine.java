@@ -487,8 +487,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public ResultFileMetadata analyze(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
 		AnalyzeOperator operator = new AnalyzeOperator(incomingExpression, cubeManager,schemaName,connectionType);
-		operator.execute();
-		return null;
+		ResultFileMetadata analyzeResult = operator.execute();
+		return analyzeResult;
 	}
 
 	@Override

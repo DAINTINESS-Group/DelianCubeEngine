@@ -26,6 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	analyze.AnalyzeInputValidationTest.class,
 	analyze.AnalyzeTranslationManagerTest.class,
 	analyze.AnalyzeQueriesExecutionTest.class,
+	analyze.AnalyzeWrongExpressions.class,
 	assess.benchmarks.BenchmarkFactoryTest.class,
 	/*assess.deltas.DeltaSchemeTest.class,*/
 	assess.labelers.CustomLabelingSchemeTest.class,

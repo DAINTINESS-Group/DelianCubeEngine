@@ -88,7 +88,7 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		}
 		
 		// build AnalyzeQuery
-		AnalyzeQuery analyzeBaseQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Base,"","not modified","","not modified");
+		AnalyzeQuery analyzeBaseQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Base,"none","not modified","none","not modified");
 		// add the query to an ArrayList
 		baseQuery.add(analyzeBaseQuery);
 		

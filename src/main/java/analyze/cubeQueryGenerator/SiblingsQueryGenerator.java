@@ -37,6 +37,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 		Result queryResult = new Result();
 		String retString;
 		
+		if(parent == null) {
+			return null;
+		}
 		// set-up tableName and WHERE clause expression
 		// if RDBMS is used, add schemaName to the tableName
 		if(connectionType.equals("RDBMS")) {
@@ -54,6 +57,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 		String SQLQuery = "SELECT DISTINCT " + parent + " FROM " + tableName + " WHERE " + whereClauseExpression + ";";
 		queryResult = cubeManager.getCubeBase().executeQueryToProduceResult(SQLQuery, queryResult);
 		String[][] result = queryResult.getResultArray();
+		if(result == null) {
+			return null;
+		}
 		
 		// if spark connection is used modify the result so as the last 2 values of it 
 		// that are the attribute info to be on top of the array and not in the bottom
@@ -118,6 +124,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
 			String parentValue = getParentValue(schemaName,expressionToTableName.get(expression),parentToLevelById.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
+			if(parentValue == null) {
+				return siblingQueries;
+			}
 					
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression
@@ -126,6 +135,9 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 			for(int j = 0;j < gammaExpressions.size();j++) {
 				String gammaExpression = gammaExpressions.get(j);
 				String gammaDimension = dimensions.get(gammaExpression);
+				if(gammaDimension == null) {
+					return siblingQueries;
+				}
 				if(gammaDimension.equals(sigmaDimension)) {
 					createSibling = true;
 					prevGamma = gammaExpression;

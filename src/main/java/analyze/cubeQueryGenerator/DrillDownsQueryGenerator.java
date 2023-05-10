@@ -38,6 +38,10 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 	private String[][] getChildrenValues(String schemaName,String tableName,String child,String currentLevel,String currentLevelValue,String connectionType) {
 		Result queryResult = new Result();
 		
+		if(child == null) {
+			return null;
+		}
+		
 		// set-up tableName and WHERE clause expression
 		// if RDBMS is used, add schemaName to the tableName
 		if(connectionType.equals("RDBMS")){
@@ -49,6 +53,9 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 		String SQLQuery = "SELECT DISTINCT " + child + " FROM " + tableName + " WHERE " + whereClauseExpression + ";";
 		queryResult = cubeManager.getCubeBase().executeQueryToProduceResult(SQLQuery, queryResult);
 		String[][] result = queryResult.getResultArray();
+		if(result == null) {
+			return null;
+		}
 		
 		// if spark connection is used, sort the result to make testing easier
 		// and modify the array so as the bottom 2 values that contain the attribute
@@ -125,6 +132,9 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			String expression = sigmaExpressions.get(i);
 			String sigmaDimension = dimensions.get(expression);
 			String[][] childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevelById.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
+			if(childrenValues == null) {
+				return drillDownQueries;
+			}
 			
 			// if the sigma expression dimension is the same with the dimension of some
 			// gamma dimension, create the gamma expression
@@ -133,6 +143,9 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 			for(int j = 0;j < gammaExpressions.size();j++) {
 				String gammaExpression = gammaExpressions.get(j);
 				String gammaDimension = dimensions.get(gammaExpression);
+				if(gammaDimension == null) {
+					return drillDownQueries;
+				}
 				if(gammaDimension.equals(sigmaDimension)) {
 					createDrillDown = true;
 					prevGamma = gammaExpression;
@@ -186,7 +199,7 @@ public class DrillDownsQueryGenerator implements CubeQueryGenerator{
 					}
 					newSigma = sigmas.get(j).split(",")[0].split("=")[1];
 					//build AnalyzeQuery
-					AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Drill_Down,prevSigma,newSigma,prevGamma,newGamma);
+					AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Drill_Down,prevSigma,newSigma.replace("\n",""),prevGamma,newGamma);
 					drillDownQueries.add(analyzeDrillDownQuery);
 				}
 				// clear the sigma expression ArrayList

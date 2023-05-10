@@ -5,9 +5,9 @@ Measure : amount
 Gamma Expression: account_dim.All_account , date_dim.All_date
 Sigma Expression: account_dim.region='Prague' AND date_dim.year='1998' AND status_dim.status='Contract Finished/No Problems'
 Type: Base
-Original Sigma Value: 
+Original Sigma Value: none
 Modified Sigma Value: not modified
-Original Gamma Value: 
+Original Gamma Value: none
 Modified Gamma Value: not modified
 QueryName: test_query-AnalyzeSiblingQuery_account_dim
 BasicCube : loan_cube
