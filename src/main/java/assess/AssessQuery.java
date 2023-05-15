@@ -5,19 +5,26 @@ import assess.deltas.DeltaScheme;
 import assess.labelers.LabelingScheme;
 import cubemanager.cubebase.CubeQuery;
 
-public class AssessQuery {
-	public final CubeQuery targetCubeQuery;
-	public final AssessBenchmark benchmark;
-	public final DeltaScheme deltaFunction;
-	public final LabelingScheme labelingScheme;
+import java.util.Date;
+import java.util.Optional;
 
-	public AssessQuery(CubeQuery targetCubeQuery,
+public class AssessQuery {
+    public final CubeQuery targetCubeQuery;
+    public final AssessBenchmark benchmark;
+    public final DeltaScheme deltaFunction;
+    public final LabelingScheme labelingScheme;
+    public final String outputName;
+
+    public AssessQuery(CubeQuery targetCubeQuery,
                        AssessBenchmark benchmark,
                        DeltaScheme deltaFunction,
-                       LabelingScheme labelingScheme) {
-		this.targetCubeQuery = targetCubeQuery;
-		this.benchmark = benchmark;
-		this.deltaFunction = deltaFunction;
-		this.labelingScheme = labelingScheme;
-	}
+                       LabelingScheme labelingScheme,
+                       String outputName) {
+        this.targetCubeQuery = targetCubeQuery;
+        this.benchmark = benchmark;
+        this.deltaFunction = deltaFunction;
+        this.labelingScheme = labelingScheme;
+        this.outputName = Optional.ofNullable(outputName).
+                orElse(String.valueOf(new Date().getTime()));
+    }
 }

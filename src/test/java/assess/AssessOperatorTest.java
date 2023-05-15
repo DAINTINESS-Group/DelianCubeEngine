@@ -6,12 +6,14 @@ import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -54,7 +56,7 @@ public class AssessOperatorTest {
         RuntimeException actualException =
                 assertThrows(RuntimeException.class, () -> operator.execute(query));
 
-        assertEquals("Invalid Syntax", actualException.getMessage());
+        assertEquals("Invalid Query Syntax", actualException.getMessage());
     }
 
     @Test
@@ -98,7 +100,8 @@ public class AssessOperatorTest {
     public void runComplexQueryAgainstConstantBenchmark() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         int constantBenchmark = 10000;
-        String query = "with loan for region = 'central Bohemia' by month, region AssEsS max(amount) against " + constantBenchmark + "\n" +
+        String query = "with loan for region = 'central Bohemia' " +
+                "by month, region AssEsS max(amount) against " + constantBenchmark + "\n" +
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
 
@@ -129,8 +132,8 @@ public class AssessOperatorTest {
                 assertEquals("low_effort", labeledCell.label);
                 comparisonsMade[0] = true;
             } else if (labeledCell.cell.toDouble() == 172936.0) {
-               assertEquals("mid_effort", labeledCell.label);
-               comparisonsMade[1] = true;
+                assertEquals("mid_effort", labeledCell.label);
+                comparisonsMade[1] = true;
             }
         }
 
@@ -185,5 +188,18 @@ public class AssessOperatorTest {
         if (!assertionCompleted) {
             fail();
         }
+    }
+
+    @Test
+    public void saveResultsInPredefinedOutputFile() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for month = '12/1997', region = 'north Moravia' by month, " +
+                "status asseSs max(amount) against PaST 20\n" +
+                "using ratio(amount, benchmark.amount)\n" +
+                "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}" +
+                "SAVE aS filename_test";
+        operator.execute(query);
+        File outputFile = new File("OutputFiles/assessments/filename_test.md");
+        assertTrue(outputFile.exists());
     }
 }

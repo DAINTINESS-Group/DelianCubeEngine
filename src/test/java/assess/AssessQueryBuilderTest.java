@@ -16,10 +16,6 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-/**
- * In this test we are using a mocked CubeManager that only has a single
- * cube (created in createSalesCube method).
- */
 public class AssessQueryBuilderTest {
 	@Test
 	public void testWithRealDatabase() {
@@ -56,21 +52,27 @@ public class AssessQueryBuilderTest {
 	 */
 	private static AssessQueryBuilder initializeBuilder(CubeManager cubeManager) {
 		AssessQueryBuilder builder = new AssessQueryBuilder(cubeManager);
+
 		builder.setTargetCubeName("loan");
+
 		builder.setGroupBySet(
 				Stream.of("month", "status")
 						.collect(Collectors.toCollection(HashSet::new))
 		);
+		// Set Selection Predicates
 		builder.setSelectionPredicates(
 				Stream.of(new String[][] {{"region", "south Moravia"}})
 						.collect(Collectors.toMap(predicate -> predicate[0],
 								predicate -> predicate[1]))
 		);
+
+		// Set Aggregation and Benchmark
 		builder.setMeasurement("amount")
 				.setAggregationFunction("avg")
 				.setBenchmarkDetails(Arrays.asList("Constant", "100"))
 				.setDeltaFunctions(Arrays.asList("ratio"));
 
+		// Set the Labeling System
 		List<List<String>> rules = new ArrayList<>();
 		rules.add(Arrays.asList("(", "-inf", "-10.0", ")", "bad"));
 		rules.add(Arrays.asList("[", "-10.0", "10.0", "]", "average"));
