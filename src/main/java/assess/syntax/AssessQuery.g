@@ -44,6 +44,7 @@ query returns [AssessQuery query]
       | labelingSystem = custom_labeling
       {builder.setLabelingRules(labelingSystem);}
       )
+      (SAVE AS output_name = ID {builder.setOutputName($output_name.text);})?
       {$query = builder.build();}
     ;
     catch [RecognitionException re] {
@@ -168,6 +169,8 @@ LABELS : L A B E L S;
 PAST : P A S T;
 USING : U S I N G;
 WITH : W I T H;
+SAVE : S A V E;
+AS : A S;
 
 AGGREGATE : (A V G | A V E R A G E
           | M I N | M I N I M U M

@@ -21,6 +21,7 @@ public class AssessQueryBuilder {
     private List<String> benchmarkDetails = new ArrayList<>(); // Default, as it can be empty
     private List<String> deltaFunctions;
     private List<List<String>> labelingRules;
+    private String outputName = null;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
         queryGenerator = new CubeManagerAdapter(cubeManager);
@@ -37,6 +38,11 @@ public class AssessQueryBuilder {
 
     public AssessQueryBuilder setMeasurement(String measurement) {
         queryGenerator.setMeasurement(measurement);
+        return this;
+    }
+
+    public AssessQueryBuilder setOutputName(String name) {
+        this.outputName = name;
         return this;
     }
 
@@ -67,10 +73,11 @@ public class AssessQueryBuilder {
      */
     public void setLabelingRules(List<List<String>> rulesList) {
         labelingRules = rulesList;
-	}
+    }
 
     /**
      * FUTURE: Builds a labeling scheme based on a predefined method
+     *
      * @param method the predefined labeling method to be applied
      */
     public void buildLabelingScheme(String method) {
@@ -83,6 +90,7 @@ public class AssessQueryBuilder {
                 queryGenerator.translateToCubeQuery(),
                 buildBenchmark(),
                 new DeltaScheme(deltaFunctions),
-                new CustomLabelingScheme(labelingRules));
+                new CustomLabelingScheme(labelingRules),
+                outputName);
     }
 }

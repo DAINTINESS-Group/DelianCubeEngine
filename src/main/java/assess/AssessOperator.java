@@ -9,13 +9,12 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.Cell;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The top layer class for any assessments done in the intentional model.
@@ -37,8 +36,11 @@ public class AssessOperator {
     public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
         AssessQuery parsedQuery = parseQuery(assessQuery);
         HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
-        return labelResults(parsedQuery, comparisonResults);
+        List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
+        exportToMD(assessQuery, parsedQuery.outputName, results);
+        return results;
     }
+
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
         AssessQueryParser parser = createParser(assessQuery);
@@ -66,10 +68,26 @@ public class AssessOperator {
 
     private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
         List<LabeledCell> labeledCells = new ArrayList<>();
-        for(Cell cell: comparisonResults.keySet()) {
+        for (Cell cell : comparisonResults.keySet()) {
             String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
             labeledCells.add(new LabeledCell(cell, label));
         }
         return labeledCells;
+    }
+
+    private void exportToMD(String assessQuery, String outputName, List<LabeledCell> results) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"));
+            writer.append("## Query\n");
+            writer.append(assessQuery);
+            writer.append("\n## Results");
+            for (LabeledCell cell : results) {
+                writer.append(cell.toString());
+            }
+            writer.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            System.out.println("Failed to export to MarkDown");
+        }
     }
 }

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 AssessQuery.g 2023-04-13 10:33:13
+// $ANTLR 3.5.2 AssessQuery.g 2023-05-08 08:08:38
 
 package assess.syntax;
 import assess.AssessQuery;
@@ -16,16 +16,14 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class AssessQueryParser extends Parser {
 	public static final String[] tokenNames = new String[] {
-		"<invalid>", "<EOR>", "<DOWN>", "<UP>", "A", "AGAINST", "AGGREGATE", "ASSESS", 
-		"B", "BY", "C", "D", "E", "F", "FLOAT", "FOR", "G", "H", "I", "ID", "INT", 
-		"J", "K", "L", "LABELS", "M", "N", "O", "P", "PAST", "Q", "R", "S", "SIGN", 
-		"T", "U", "USING", "V", "W", "WITH", "WS", "X", "Y", "Z", "'('", "')'", 
-		"','", "'.'", "'/'", "':'", "'='", "'['", "'\\''", "']'", "'benchmark.'", 
-		"'inf'", "'{'", "'}'"
+		"<invalid>", "<EOR>", "<DOWN>", "<UP>", "A", "AGAINST", "AGGREGATE", "AS", 
+		"ASSESS", "B", "BY", "C", "D", "E", "F", "FLOAT", "FOR", "G", "H", "I", 
+		"ID", "INT", "J", "K", "L", "LABELS", "M", "N", "O", "P", "PAST", "Q", 
+		"R", "S", "SAVE", "SIGN", "T", "U", "USING", "V", "W", "WITH", "WS", "X", 
+		"Y", "Z", "'('", "')'", "','", "'.'", "'/'", "':'", "'='", "'['", "'\\''", 
+		"']'", "'benchmark.'", "'inf'", "'{'", "'}'"
 	};
 	public static final int EOF=-1;
-	public static final int T__44=44;
-	public static final int T__45=45;
 	public static final int T__46=46;
 	public static final int T__47=47;
 	public static final int T__48=48;
@@ -38,46 +36,50 @@ public class AssessQueryParser extends Parser {
 	public static final int T__55=55;
 	public static final int T__56=56;
 	public static final int T__57=57;
+	public static final int T__58=58;
+	public static final int T__59=59;
 	public static final int A=4;
 	public static final int AGAINST=5;
 	public static final int AGGREGATE=6;
-	public static final int ASSESS=7;
-	public static final int B=8;
-	public static final int BY=9;
-	public static final int C=10;
-	public static final int D=11;
-	public static final int E=12;
-	public static final int F=13;
-	public static final int FLOAT=14;
-	public static final int FOR=15;
-	public static final int G=16;
-	public static final int H=17;
-	public static final int I=18;
-	public static final int ID=19;
-	public static final int INT=20;
-	public static final int J=21;
-	public static final int K=22;
-	public static final int L=23;
-	public static final int LABELS=24;
-	public static final int M=25;
-	public static final int N=26;
-	public static final int O=27;
-	public static final int P=28;
-	public static final int PAST=29;
-	public static final int Q=30;
-	public static final int R=31;
-	public static final int S=32;
-	public static final int SIGN=33;
-	public static final int T=34;
-	public static final int U=35;
-	public static final int USING=36;
-	public static final int V=37;
-	public static final int W=38;
-	public static final int WITH=39;
-	public static final int WS=40;
-	public static final int X=41;
-	public static final int Y=42;
-	public static final int Z=43;
+	public static final int AS=7;
+	public static final int ASSESS=8;
+	public static final int B=9;
+	public static final int BY=10;
+	public static final int C=11;
+	public static final int D=12;
+	public static final int E=13;
+	public static final int F=14;
+	public static final int FLOAT=15;
+	public static final int FOR=16;
+	public static final int G=17;
+	public static final int H=18;
+	public static final int I=19;
+	public static final int ID=20;
+	public static final int INT=21;
+	public static final int J=22;
+	public static final int K=23;
+	public static final int L=24;
+	public static final int LABELS=25;
+	public static final int M=26;
+	public static final int N=27;
+	public static final int O=28;
+	public static final int P=29;
+	public static final int PAST=30;
+	public static final int Q=31;
+	public static final int R=32;
+	public static final int S=33;
+	public static final int SAVE=34;
+	public static final int SIGN=35;
+	public static final int T=36;
+	public static final int U=37;
+	public static final int USING=38;
+	public static final int V=39;
+	public static final int W=40;
+	public static final int WITH=41;
+	public static final int WS=42;
+	public static final int X=43;
+	public static final int Y=44;
+	public static final int Z=45;
 
 	// delegates
 	public Parser[] getDelegates() {
@@ -138,7 +140,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "query"
-	// AssessQuery.g:25:1: query returns [AssessQuery query] : WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling ) ;
+	// AssessQuery.g:25:1: query returns [AssessQuery query] : WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling ) ( SAVE AS output_name= ID )? ;
 	public final AssessQuery query() throws RecognitionException {
 		AssessQuery query = null;
 
@@ -146,6 +148,7 @@ public class AssessQueryParser extends Parser {
 		Token targetCube=null;
 		Token measurement=null;
 		Token labelingMethod=null;
+		Token output_name=null;
 		Token AGGREGATE1=null;
 		HashMap<String, String> predicates =null;
 		HashSet<String> gammas =null;
@@ -157,8 +160,8 @@ public class AssessQueryParser extends Parser {
 		    List<String> comparisonMethods = new ArrayList<String>();
 		    
 		try {
-			// AssessQuery.g:29:5: ( WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling ) )
-			// AssessQuery.g:29:7: WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling )
+			// AssessQuery.g:29:5: ( WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling ) ( SAVE AS output_name= ID )? )
+			// AssessQuery.g:29:7: WITH targetCube= ID ( FOR predicates= selection_predicates )? BY gammas= group_by_set ASSESS AGGREGATE '(' measurement= ID ')' ( AGAINST parsedBenchmark= benchmark )? ( USING updatedComparisonMethods= comparison_scheme[comparisonMethods] )? LABELS (labelingMethod= ID |labelingSystem= custom_labeling ) ( SAVE AS output_name= ID )?
 			{
 			match(input,WITH,FOLLOW_WITH_in_query94); 
 			targetCube=(Token)match(input,ID,FOLLOW_ID_in_query100); 
@@ -193,10 +196,10 @@ public class AssessQueryParser extends Parser {
 			match(input,ASSESS,FOLLOW_ASSESS_in_query145); 
 			AGGREGATE1=(Token)match(input,AGGREGATE,FOLLOW_AGGREGATE_in_query147); 
 			builder.setAggregationFunction((AGGREGATE1!=null?AGGREGATE1.getText():null));
-			match(input,44,FOLLOW_44_in_query157); 
+			match(input,46,FOLLOW_46_in_query157); 
 			measurement=(Token)match(input,ID,FOLLOW_ID_in_query163); 
 			builder.setMeasurement((measurement!=null?measurement.getText():null));
-			match(input,45,FOLLOW_45_in_query167); 
+			match(input,47,FOLLOW_47_in_query167); 
 			// AssessQuery.g:35:7: ( AGAINST parsedBenchmark= benchmark )?
 			int alt2=2;
 			int LA2_0 = input.LA(1);
@@ -246,7 +249,7 @@ public class AssessQueryParser extends Parser {
 			if ( (LA4_0==ID) ) {
 				alt4=1;
 			}
-			else if ( (LA4_0==56) ) {
+			else if ( (LA4_0==58) ) {
 				alt4=2;
 			}
 
@@ -277,6 +280,25 @@ public class AssessQueryParser extends Parser {
 
 			}
 
+			// AssessQuery.g:47:7: ( SAVE AS output_name= ID )?
+			int alt5=2;
+			int LA5_0 = input.LA(1);
+			if ( (LA5_0==SAVE) ) {
+				alt5=1;
+			}
+			switch (alt5) {
+				case 1 :
+					// AssessQuery.g:47:8: SAVE AS output_name= ID
+					{
+					match(input,SAVE,FOLLOW_SAVE_in_query290); 
+					match(input,AS,FOLLOW_AS_in_query292); 
+					output_name=(Token)match(input,ID,FOLLOW_ID_in_query298); 
+					builder.setOutputName((output_name!=null?output_name.getText():null));
+					}
+					break;
+
+			}
+
 			query = builder.build();
 			}
 
@@ -284,7 +306,7 @@ public class AssessQueryParser extends Parser {
 		catch (RecognitionException re) {
 
 			        reportError(re);
-			        throw new RuntimeException("Invalid Syntax");
+			        throw new RuntimeException("Invalid Query Syntax");
 			    
 		}
 
@@ -298,7 +320,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "selection_predicates"
-	// AssessQuery.g:54:1: selection_predicates returns [HashMap<String, String> selectionPredicates] : parsed_predicate= predicate ( ',' additional_predicate= predicate )* ;
+	// AssessQuery.g:55:1: selection_predicates returns [HashMap<String, String> selectionPredicates] : parsed_predicate= predicate ( ',' additional_predicate= predicate )* ;
 	public final HashMap<String, String> selection_predicates() throws RecognitionException {
 		HashMap<String, String> selectionPredicates = null;
 
@@ -308,29 +330,29 @@ public class AssessQueryParser extends Parser {
 
 		selectionPredicates = new HashMap<>();
 		try {
-			// AssessQuery.g:56:5: (parsed_predicate= predicate ( ',' additional_predicate= predicate )* )
-			// AssessQuery.g:56:7: parsed_predicate= predicate ( ',' additional_predicate= predicate )*
+			// AssessQuery.g:57:5: (parsed_predicate= predicate ( ',' additional_predicate= predicate )* )
+			// AssessQuery.g:57:7: parsed_predicate= predicate ( ',' additional_predicate= predicate )*
 			{
-			pushFollow(FOLLOW_predicate_in_selection_predicates332);
+			pushFollow(FOLLOW_predicate_in_selection_predicates353);
 			parsed_predicate=predicate();
 			state._fsp--;
 
 			selectionPredicates.put((parsed_predicate!=null?((AssessQueryParser.predicate_return)parsed_predicate).level:null), (parsed_predicate!=null?((AssessQueryParser.predicate_return)parsed_predicate).value:null));
-			// AssessQuery.g:57:5: ( ',' additional_predicate= predicate )*
-			loop5:
+			// AssessQuery.g:58:5: ( ',' additional_predicate= predicate )*
+			loop6:
 			while (true) {
-				int alt5=2;
-				int LA5_0 = input.LA(1);
-				if ( (LA5_0==46) ) {
-					alt5=1;
+				int alt6=2;
+				int LA6_0 = input.LA(1);
+				if ( (LA6_0==48) ) {
+					alt6=1;
 				}
 
-				switch (alt5) {
+				switch (alt6) {
 				case 1 :
-					// AssessQuery.g:57:6: ',' additional_predicate= predicate
+					// AssessQuery.g:58:6: ',' additional_predicate= predicate
 					{
-					match(input,46,FOLLOW_46_in_selection_predicates341); 
-					pushFollow(FOLLOW_predicate_in_selection_predicates347);
+					match(input,48,FOLLOW_48_in_selection_predicates362); 
+					pushFollow(FOLLOW_predicate_in_selection_predicates368);
 					additional_predicate=predicate();
 					state._fsp--;
 
@@ -339,7 +361,7 @@ public class AssessQueryParser extends Parser {
 					break;
 
 				default :
-					break loop5;
+					break loop6;
 				}
 			}
 
@@ -365,7 +387,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "predicate"
-	// AssessQuery.g:60:1: predicate returns [String level, String value] : level_name= ID '=' '\\'' val= level_value '\\'' ;
+	// AssessQuery.g:61:1: predicate returns [String level, String value] : level_name= ID '=' '\\'' val= level_value '\\'' ;
 	public final AssessQueryParser.predicate_return predicate() throws RecognitionException {
 		AssessQueryParser.predicate_return retval = new AssessQueryParser.predicate_return();
 		retval.start = input.LT(1);
@@ -374,19 +396,19 @@ public class AssessQueryParser extends Parser {
 		ParserRuleReturnScope val =null;
 
 		try {
-			// AssessQuery.g:61:5: (level_name= ID '=' '\\'' val= level_value '\\'' )
-			// AssessQuery.g:61:7: level_name= ID '=' '\\'' val= level_value '\\''
+			// AssessQuery.g:62:5: (level_name= ID '=' '\\'' val= level_value '\\'' )
+			// AssessQuery.g:62:7: level_name= ID '=' '\\'' val= level_value '\\''
 			{
-			level_name=(Token)match(input,ID,FOLLOW_ID_in_predicate376); 
+			level_name=(Token)match(input,ID,FOLLOW_ID_in_predicate397); 
 			retval.level = (level_name!=null?level_name.getText():null);
-			match(input,50,FOLLOW_50_in_predicate384); 
-			match(input,52,FOLLOW_52_in_predicate386); 
-			pushFollow(FOLLOW_level_value_in_predicate392);
+			match(input,52,FOLLOW_52_in_predicate405); 
+			match(input,54,FOLLOW_54_in_predicate407); 
+			pushFollow(FOLLOW_level_value_in_predicate413);
 			val=level_value();
 			state._fsp--;
 
 			retval.value = (val!=null?input.toString(val.start,val.stop):null);
-			match(input,52,FOLLOW_52_in_predicate396); 
+			match(input,54,FOLLOW_54_in_predicate417); 
 			}
 
 			retval.stop = input.LT(-1);
@@ -409,64 +431,64 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "level_value"
-	// AssessQuery.g:65:1: level_value : ( ( ID )+ | date );
+	// AssessQuery.g:66:1: level_value : ( ( ID )+ | date );
 	public final AssessQueryParser.level_value_return level_value() throws RecognitionException {
 		AssessQueryParser.level_value_return retval = new AssessQueryParser.level_value_return();
 		retval.start = input.LT(1);
 
 		try {
-			// AssessQuery.g:65:13: ( ( ID )+ | date )
-			int alt7=2;
-			int LA7_0 = input.LA(1);
-			if ( (LA7_0==ID) ) {
-				alt7=1;
+			// AssessQuery.g:66:13: ( ( ID )+ | date )
+			int alt8=2;
+			int LA8_0 = input.LA(1);
+			if ( (LA8_0==ID) ) {
+				alt8=1;
 			}
-			else if ( (LA7_0==INT) ) {
-				alt7=2;
+			else if ( (LA8_0==INT) ) {
+				alt8=2;
 			}
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 7, 0, input);
+					new NoViableAltException("", 8, 0, input);
 				throw nvae;
 			}
 
-			switch (alt7) {
+			switch (alt8) {
 				case 1 :
-					// AssessQuery.g:65:15: ( ID )+
+					// AssessQuery.g:66:15: ( ID )+
 					{
-					// AssessQuery.g:65:15: ( ID )+
-					int cnt6=0;
-					loop6:
+					// AssessQuery.g:66:15: ( ID )+
+					int cnt7=0;
+					loop7:
 					while (true) {
-						int alt6=2;
-						int LA6_0 = input.LA(1);
-						if ( (LA6_0==ID) ) {
-							alt6=1;
+						int alt7=2;
+						int LA7_0 = input.LA(1);
+						if ( (LA7_0==ID) ) {
+							alt7=1;
 						}
 
-						switch (alt6) {
+						switch (alt7) {
 						case 1 :
-							// AssessQuery.g:65:15: ID
+							// AssessQuery.g:66:15: ID
 							{
-							match(input,ID,FOLLOW_ID_in_level_value409); 
+							match(input,ID,FOLLOW_ID_in_level_value430); 
 							}
 							break;
 
 						default :
-							if ( cnt6 >= 1 ) break loop6;
-							EarlyExitException eee = new EarlyExitException(6, input);
+							if ( cnt7 >= 1 ) break loop7;
+							EarlyExitException eee = new EarlyExitException(7, input);
 							throw eee;
 						}
-						cnt6++;
+						cnt7++;
 					}
 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:65:21: date
+					// AssessQuery.g:66:21: date
 					{
-					pushFollow(FOLLOW_date_in_level_value414);
+					pushFollow(FOLLOW_date_in_level_value435);
 					date();
 					state._fsp--;
 
@@ -491,23 +513,23 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "date"
-	// AssessQuery.g:67:1: date : ( INT | INT '/' INT | INT '/' INT '/' INT );
+	// AssessQuery.g:68:1: date : ( INT | INT '/' INT | INT '/' INT '/' INT );
 	public final void date() throws RecognitionException {
 		try {
-			// AssessQuery.g:67:6: ( INT | INT '/' INT | INT '/' INT '/' INT )
-			int alt8=3;
-			int LA8_0 = input.LA(1);
-			if ( (LA8_0==INT) ) {
-				int LA8_1 = input.LA(2);
-				if ( (LA8_1==48) ) {
-					int LA8_2 = input.LA(3);
-					if ( (LA8_2==INT) ) {
-						int LA8_4 = input.LA(4);
-						if ( (LA8_4==48) ) {
-							alt8=3;
+			// AssessQuery.g:68:6: ( INT | INT '/' INT | INT '/' INT '/' INT )
+			int alt9=3;
+			int LA9_0 = input.LA(1);
+			if ( (LA9_0==INT) ) {
+				int LA9_1 = input.LA(2);
+				if ( (LA9_1==50) ) {
+					int LA9_2 = input.LA(3);
+					if ( (LA9_2==INT) ) {
+						int LA9_4 = input.LA(4);
+						if ( (LA9_4==50) ) {
+							alt9=3;
 						}
-						else if ( (LA8_4==52) ) {
-							alt8=2;
+						else if ( (LA9_4==54) ) {
+							alt9=2;
 						}
 
 						else {
@@ -517,7 +539,7 @@ public class AssessQueryParser extends Parser {
 									input.consume();
 								}
 								NoViableAltException nvae =
-									new NoViableAltException("", 8, 4, input);
+									new NoViableAltException("", 9, 4, input);
 								throw nvae;
 							} finally {
 								input.rewind(nvaeMark);
@@ -533,7 +555,7 @@ public class AssessQueryParser extends Parser {
 								input.consume();
 							}
 							NoViableAltException nvae =
-								new NoViableAltException("", 8, 2, input);
+								new NoViableAltException("", 9, 2, input);
 							throw nvae;
 						} finally {
 							input.rewind(nvaeMark);
@@ -541,8 +563,8 @@ public class AssessQueryParser extends Parser {
 					}
 
 				}
-				else if ( (LA8_1==52) ) {
-					alt8=1;
+				else if ( (LA9_1==54) ) {
+					alt9=1;
 				}
 
 				else {
@@ -550,7 +572,7 @@ public class AssessQueryParser extends Parser {
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 8, 1, input);
+							new NoViableAltException("", 9, 1, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
@@ -561,33 +583,33 @@ public class AssessQueryParser extends Parser {
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 8, 0, input);
+					new NoViableAltException("", 9, 0, input);
 				throw nvae;
 			}
 
-			switch (alt8) {
+			switch (alt9) {
 				case 1 :
-					// AssessQuery.g:68:5: INT
+					// AssessQuery.g:69:5: INT
 					{
-					match(input,INT,FOLLOW_INT_in_date427); 
+					match(input,INT,FOLLOW_INT_in_date448); 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:69:7: INT '/' INT
+					// AssessQuery.g:70:7: INT '/' INT
 					{
-					match(input,INT,FOLLOW_INT_in_date435); 
-					match(input,48,FOLLOW_48_in_date437); 
-					match(input,INT,FOLLOW_INT_in_date439); 
+					match(input,INT,FOLLOW_INT_in_date456); 
+					match(input,50,FOLLOW_50_in_date458); 
+					match(input,INT,FOLLOW_INT_in_date460); 
 					}
 					break;
 				case 3 :
-					// AssessQuery.g:70:7: INT '/' INT '/' INT
+					// AssessQuery.g:71:7: INT '/' INT '/' INT
 					{
-					match(input,INT,FOLLOW_INT_in_date447); 
-					match(input,48,FOLLOW_48_in_date449); 
-					match(input,INT,FOLLOW_INT_in_date451); 
-					match(input,48,FOLLOW_48_in_date453); 
-					match(input,INT,FOLLOW_INT_in_date455); 
+					match(input,INT,FOLLOW_INT_in_date468); 
+					match(input,50,FOLLOW_50_in_date470); 
+					match(input,INT,FOLLOW_INT_in_date472); 
+					match(input,50,FOLLOW_50_in_date474); 
+					match(input,INT,FOLLOW_INT_in_date476); 
 					}
 					break;
 
@@ -606,7 +628,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "group_by_set"
-	// AssessQuery.g:72:1: group_by_set returns [HashSet<String> groupBySet] : id= ID ( ',' id= ID )* ;
+	// AssessQuery.g:73:1: group_by_set returns [HashSet<String> groupBySet] : id= ID ( ',' id= ID )* ;
 	public final HashSet<String> group_by_set() throws RecognitionException {
 		HashSet<String> groupBySet = null;
 
@@ -615,31 +637,31 @@ public class AssessQueryParser extends Parser {
 
 		groupBySet = new HashSet<>();
 		try {
-			// AssessQuery.g:74:5: (id= ID ( ',' id= ID )* )
-			// AssessQuery.g:74:7: id= ID ( ',' id= ID )*
+			// AssessQuery.g:75:5: (id= ID ( ',' id= ID )* )
+			// AssessQuery.g:75:7: id= ID ( ',' id= ID )*
 			{
-			id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set481); 
+			id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set502); 
 			groupBySet.add((id!=null?id.getText():null));
-			// AssessQuery.g:74:42: ( ',' id= ID )*
-			loop9:
+			// AssessQuery.g:75:42: ( ',' id= ID )*
+			loop10:
 			while (true) {
-				int alt9=2;
-				int LA9_0 = input.LA(1);
-				if ( (LA9_0==46) ) {
-					alt9=1;
+				int alt10=2;
+				int LA10_0 = input.LA(1);
+				if ( (LA10_0==48) ) {
+					alt10=1;
 				}
 
-				switch (alt9) {
+				switch (alt10) {
 				case 1 :
-					// AssessQuery.g:74:43: ',' id= ID
+					// AssessQuery.g:75:43: ',' id= ID
 					{
-					match(input,46,FOLLOW_46_in_group_by_set486); 
-					id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set490); 
+					match(input,48,FOLLOW_48_in_group_by_set507); 
+					id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set511); 
 					}
 					break;
 
 				default :
-					break loop9;
+					break loop10;
 				}
 			}
 
@@ -661,7 +683,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "benchmark"
-	// AssessQuery.g:77:1: benchmark returns [List<String> parsedBenchmark] : ( constant_benchmark | external_benchmark | predicate | PAST INT );
+	// AssessQuery.g:78:1: benchmark returns [List<String> parsedBenchmark] : ( constant_benchmark | external_benchmark | predicate | PAST INT );
 	public final List<String> benchmark() throws RecognitionException {
 		List<String> parsedBenchmark = null;
 
@@ -673,24 +695,24 @@ public class AssessQueryParser extends Parser {
 
 		parsedBenchmark = new ArrayList<>();
 		try {
-			// AssessQuery.g:79:5: ( constant_benchmark | external_benchmark | predicate | PAST INT )
-			int alt10=4;
+			// AssessQuery.g:80:5: ( constant_benchmark | external_benchmark | predicate | PAST INT )
+			int alt11=4;
 			switch ( input.LA(1) ) {
 			case FLOAT:
 			case INT:
 			case SIGN:
 				{
-				alt10=1;
+				alt11=1;
 				}
 				break;
 			case ID:
 				{
-				int LA10_2 = input.LA(2);
-				if ( (LA10_2==47) ) {
-					alt10=2;
+				int LA11_2 = input.LA(2);
+				if ( (LA11_2==49) ) {
+					alt11=2;
 				}
-				else if ( (LA10_2==50) ) {
-					alt10=3;
+				else if ( (LA11_2==52) ) {
+					alt11=3;
 				}
 
 				else {
@@ -698,7 +720,7 @@ public class AssessQueryParser extends Parser {
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 10, 2, input);
+							new NoViableAltException("", 11, 2, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
@@ -709,19 +731,19 @@ public class AssessQueryParser extends Parser {
 				break;
 			case PAST:
 				{
-				alt10=4;
+				alt11=4;
 				}
 				break;
 			default:
 				NoViableAltException nvae =
-					new NoViableAltException("", 10, 0, input);
+					new NoViableAltException("", 11, 0, input);
 				throw nvae;
 			}
-			switch (alt10) {
+			switch (alt11) {
 				case 1 :
-					// AssessQuery.g:79:7: constant_benchmark
+					// AssessQuery.g:80:7: constant_benchmark
 					{
-					pushFollow(FOLLOW_constant_benchmark_in_benchmark523);
+					pushFollow(FOLLOW_constant_benchmark_in_benchmark544);
 					constant_benchmark2=constant_benchmark();
 					state._fsp--;
 
@@ -731,9 +753,9 @@ public class AssessQueryParser extends Parser {
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:83:7: external_benchmark
+					// AssessQuery.g:84:7: external_benchmark
 					{
-					pushFollow(FOLLOW_external_benchmark_in_benchmark537);
+					pushFollow(FOLLOW_external_benchmark_in_benchmark558);
 					external_benchmark3=external_benchmark();
 					state._fsp--;
 
@@ -744,9 +766,9 @@ public class AssessQueryParser extends Parser {
 					}
 					break;
 				case 3 :
-					// AssessQuery.g:88:7: predicate
+					// AssessQuery.g:89:7: predicate
 					{
-					pushFollow(FOLLOW_predicate_in_benchmark551);
+					pushFollow(FOLLOW_predicate_in_benchmark572);
 					predicate4=predicate();
 					state._fsp--;
 
@@ -757,10 +779,10 @@ public class AssessQueryParser extends Parser {
 					}
 					break;
 				case 4 :
-					// AssessQuery.g:93:7: PAST INT
+					// AssessQuery.g:94:7: PAST INT
 					{
-					match(input,PAST,FOLLOW_PAST_in_benchmark565); 
-					INT5=(Token)match(input,INT,FOLLOW_INT_in_benchmark567); 
+					match(input,PAST,FOLLOW_PAST_in_benchmark586); 
+					INT5=(Token)match(input,INT,FOLLOW_INT_in_benchmark588); 
 					parsedBenchmark.add("Past");
 					    parsedBenchmark.add((INT5!=null?INT5.getText():null));
 					    
@@ -786,7 +808,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "constant_benchmark"
-	// AssessQuery.g:99:1: constant_benchmark : ( SIGN )? number= ( INT | FLOAT ) ;
+	// AssessQuery.g:100:1: constant_benchmark : ( SIGN )? number= ( INT | FLOAT ) ;
 	public final AssessQueryParser.constant_benchmark_return constant_benchmark() throws RecognitionException {
 		AssessQueryParser.constant_benchmark_return retval = new AssessQueryParser.constant_benchmark_return();
 		retval.start = input.LT(1);
@@ -794,20 +816,20 @@ public class AssessQueryParser extends Parser {
 		Token number=null;
 
 		try {
-			// AssessQuery.g:99:20: ( ( SIGN )? number= ( INT | FLOAT ) )
-			// AssessQuery.g:99:22: ( SIGN )? number= ( INT | FLOAT )
+			// AssessQuery.g:100:20: ( ( SIGN )? number= ( INT | FLOAT ) )
+			// AssessQuery.g:100:22: ( SIGN )? number= ( INT | FLOAT )
 			{
-			// AssessQuery.g:99:22: ( SIGN )?
-			int alt11=2;
-			int LA11_0 = input.LA(1);
-			if ( (LA11_0==SIGN) ) {
-				alt11=1;
+			// AssessQuery.g:100:22: ( SIGN )?
+			int alt12=2;
+			int LA12_0 = input.LA(1);
+			if ( (LA12_0==SIGN) ) {
+				alt12=1;
 			}
-			switch (alt11) {
+			switch (alt12) {
 				case 1 :
-					// AssessQuery.g:99:23: SIGN
+					// AssessQuery.g:100:23: SIGN
 					{
-					match(input,SIGN,FOLLOW_SIGN_in_constant_benchmark587); 
+					match(input,SIGN,FOLLOW_SIGN_in_constant_benchmark608); 
 					}
 					break;
 
@@ -846,7 +868,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "external_benchmark"
-	// AssessQuery.g:101:1: external_benchmark returns [String cube, String measurement] : benchmarkCube= ID '.' benchmarkMeasurement= ID ;
+	// AssessQuery.g:102:1: external_benchmark returns [String cube, String measurement] : benchmarkCube= ID '.' benchmarkMeasurement= ID ;
 	public final AssessQueryParser.external_benchmark_return external_benchmark() throws RecognitionException {
 		AssessQueryParser.external_benchmark_return retval = new AssessQueryParser.external_benchmark_return();
 		retval.start = input.LT(1);
@@ -855,13 +877,13 @@ public class AssessQueryParser extends Parser {
 		Token benchmarkMeasurement=null;
 
 		try {
-			// AssessQuery.g:102:5: (benchmarkCube= ID '.' benchmarkMeasurement= ID )
-			// AssessQuery.g:102:7: benchmarkCube= ID '.' benchmarkMeasurement= ID
+			// AssessQuery.g:103:5: (benchmarkCube= ID '.' benchmarkMeasurement= ID )
+			// AssessQuery.g:103:7: benchmarkCube= ID '.' benchmarkMeasurement= ID
 			{
-			benchmarkCube=(Token)match(input,ID,FOLLOW_ID_in_external_benchmark620); 
+			benchmarkCube=(Token)match(input,ID,FOLLOW_ID_in_external_benchmark641); 
 			retval.cube = (benchmarkCube!=null?benchmarkCube.getText():null);
-			match(input,47,FOLLOW_47_in_external_benchmark624); 
-			benchmarkMeasurement=(Token)match(input,ID,FOLLOW_ID_in_external_benchmark634); 
+			match(input,49,FOLLOW_49_in_external_benchmark645); 
+			benchmarkMeasurement=(Token)match(input,ID,FOLLOW_ID_in_external_benchmark655); 
 			retval.measurement = (benchmarkMeasurement!=null?benchmarkMeasurement.getText():null);
 			}
 
@@ -882,7 +904,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "comparison_scheme"
-	// AssessQuery.g:105:1: comparison_scheme[List<String> comparisonMethods] returns [List<String> updatedComparisonMethods] : (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' );
+	// AssessQuery.g:106:1: comparison_scheme[List<String> comparisonMethods] returns [List<String> updatedComparisonMethods] : (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' );
 	public final List<String> comparison_scheme(List<String> comparisonMethods) throws RecognitionException {
 		List<String> updatedComparisonMethods = null;
 
@@ -891,16 +913,16 @@ public class AssessQueryParser extends Parser {
 
 		updatedComparisonMethods = comparisonMethods;
 		try {
-			// AssessQuery.g:107:5: (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' )
-			int alt12=2;
-			int LA12_0 = input.LA(1);
-			if ( (LA12_0==ID) ) {
-				int LA12_1 = input.LA(2);
-				if ( (LA12_1==46) ) {
-					alt12=2;
+			// AssessQuery.g:108:5: (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' )
+			int alt13=2;
+			int LA13_0 = input.LA(1);
+			if ( (LA13_0==ID) ) {
+				int LA13_1 = input.LA(2);
+				if ( (LA13_1==48) ) {
+					alt13=2;
 				}
-				else if ( (LA12_1==44) ) {
-					alt12=1;
+				else if ( (LA13_1==46) ) {
+					alt13=1;
 				}
 
 				else {
@@ -908,7 +930,7 @@ public class AssessQueryParser extends Parser {
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 12, 1, input);
+							new NoViableAltException("", 13, 1, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
@@ -919,31 +941,31 @@ public class AssessQueryParser extends Parser {
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 12, 0, input);
+					new NoViableAltException("", 13, 0, input);
 				throw nvae;
 			}
 
-			switch (alt12) {
+			switch (alt13) {
 				case 1 :
-					// AssessQuery.g:107:7: method_name= ID '(' comparison_scheme[$updatedComparisonMethods]
+					// AssessQuery.g:108:7: method_name= ID '(' comparison_scheme[$updatedComparisonMethods]
 					{
-					method_name=(Token)match(input,ID,FOLLOW_ID_in_comparison_scheme666); 
+					method_name=(Token)match(input,ID,FOLLOW_ID_in_comparison_scheme687); 
 					updatedComparisonMethods.add((method_name!=null?method_name.getText():null));
-					match(input,44,FOLLOW_44_in_comparison_scheme674); 
-					pushFollow(FOLLOW_comparison_scheme_in_comparison_scheme676);
+					match(input,46,FOLLOW_46_in_comparison_scheme695); 
+					pushFollow(FOLLOW_comparison_scheme_in_comparison_scheme697);
 					comparison_scheme(updatedComparisonMethods);
 					state._fsp--;
 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:108:56: comparison_args ')'
+					// AssessQuery.g:109:56: comparison_args ')'
 					{
-					pushFollow(FOLLOW_comparison_args_in_comparison_scheme681);
+					pushFollow(FOLLOW_comparison_args_in_comparison_scheme702);
 					comparison_args();
 					state._fsp--;
 
-					match(input,45,FOLLOW_45_in_comparison_scheme682); 
+					match(input,47,FOLLOW_47_in_comparison_scheme703); 
 					}
 					break;
 
@@ -963,57 +985,57 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "comparison_args"
-	// AssessQuery.g:110:1: comparison_args : ID ',' ( ( 'benchmark.' )? ID | INT ) ;
+	// AssessQuery.g:111:1: comparison_args : ID ',' ( ( 'benchmark.' )? ID | INT ) ;
 	public final void comparison_args() throws RecognitionException {
 		try {
-			// AssessQuery.g:110:17: ( ID ',' ( ( 'benchmark.' )? ID | INT ) )
-			// AssessQuery.g:110:19: ID ',' ( ( 'benchmark.' )? ID | INT )
+			// AssessQuery.g:111:17: ( ID ',' ( ( 'benchmark.' )? ID | INT ) )
+			// AssessQuery.g:111:19: ID ',' ( ( 'benchmark.' )? ID | INT )
 			{
-			match(input,ID,FOLLOW_ID_in_comparison_args690); 
-			match(input,46,FOLLOW_46_in_comparison_args692); 
-			// AssessQuery.g:110:26: ( ( 'benchmark.' )? ID | INT )
-			int alt14=2;
-			int LA14_0 = input.LA(1);
-			if ( (LA14_0==ID||LA14_0==54) ) {
-				alt14=1;
+			match(input,ID,FOLLOW_ID_in_comparison_args711); 
+			match(input,48,FOLLOW_48_in_comparison_args713); 
+			// AssessQuery.g:111:26: ( ( 'benchmark.' )? ID | INT )
+			int alt15=2;
+			int LA15_0 = input.LA(1);
+			if ( (LA15_0==ID||LA15_0==56) ) {
+				alt15=1;
 			}
-			else if ( (LA14_0==INT) ) {
-				alt14=2;
+			else if ( (LA15_0==INT) ) {
+				alt15=2;
 			}
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 14, 0, input);
+					new NoViableAltException("", 15, 0, input);
 				throw nvae;
 			}
 
-			switch (alt14) {
+			switch (alt15) {
 				case 1 :
-					// AssessQuery.g:110:28: ( 'benchmark.' )? ID
+					// AssessQuery.g:111:28: ( 'benchmark.' )? ID
 					{
-					// AssessQuery.g:110:28: ( 'benchmark.' )?
-					int alt13=2;
-					int LA13_0 = input.LA(1);
-					if ( (LA13_0==54) ) {
-						alt13=1;
+					// AssessQuery.g:111:28: ( 'benchmark.' )?
+					int alt14=2;
+					int LA14_0 = input.LA(1);
+					if ( (LA14_0==56) ) {
+						alt14=1;
 					}
-					switch (alt13) {
+					switch (alt14) {
 						case 1 :
-							// AssessQuery.g:110:29: 'benchmark.'
+							// AssessQuery.g:111:29: 'benchmark.'
 							{
-							match(input,54,FOLLOW_54_in_comparison_args697); 
+							match(input,56,FOLLOW_56_in_comparison_args718); 
 							}
 							break;
 
 					}
 
-					match(input,ID,FOLLOW_ID_in_comparison_args701); 
+					match(input,ID,FOLLOW_ID_in_comparison_args722); 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:110:49: INT
+					// AssessQuery.g:111:49: INT
 					{
-					match(input,INT,FOLLOW_INT_in_comparison_args705); 
+					match(input,INT,FOLLOW_INT_in_comparison_args726); 
 					}
 					break;
 
@@ -1035,7 +1057,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "custom_labeling"
-	// AssessQuery.g:112:1: custom_labeling returns [List<List<String>> labelingTerms] : '{' term= label_term ( ',' term= label_term )* '}' ;
+	// AssessQuery.g:113:1: custom_labeling returns [List<List<String>> labelingTerms] : '{' term= label_term ( ',' term= label_term )* '}' ;
 	public final List<List<String>> custom_labeling() throws RecognitionException {
 		List<List<String>> labelingTerms = null;
 
@@ -1044,30 +1066,30 @@ public class AssessQueryParser extends Parser {
 
 		labelingTerms = new ArrayList<List<String>>();
 		try {
-			// AssessQuery.g:114:5: ( '{' term= label_term ( ',' term= label_term )* '}' )
-			// AssessQuery.g:114:7: '{' term= label_term ( ',' term= label_term )* '}'
+			// AssessQuery.g:115:5: ( '{' term= label_term ( ',' term= label_term )* '}' )
+			// AssessQuery.g:115:7: '{' term= label_term ( ',' term= label_term )* '}'
 			{
-			match(input,56,FOLLOW_56_in_custom_labeling731); 
-			pushFollow(FOLLOW_label_term_in_custom_labeling737);
+			match(input,58,FOLLOW_58_in_custom_labeling752); 
+			pushFollow(FOLLOW_label_term_in_custom_labeling758);
 			term=label_term();
 			state._fsp--;
 
 			labelingTerms.add(term);
-			// AssessQuery.g:115:5: ( ',' term= label_term )*
-			loop15:
+			// AssessQuery.g:116:5: ( ',' term= label_term )*
+			loop16:
 			while (true) {
-				int alt15=2;
-				int LA15_0 = input.LA(1);
-				if ( (LA15_0==46) ) {
-					alt15=1;
+				int alt16=2;
+				int LA16_0 = input.LA(1);
+				if ( (LA16_0==48) ) {
+					alt16=1;
 				}
 
-				switch (alt15) {
+				switch (alt16) {
 				case 1 :
-					// AssessQuery.g:115:6: ',' term= label_term
+					// AssessQuery.g:116:6: ',' term= label_term
 					{
-					match(input,46,FOLLOW_46_in_custom_labeling746); 
-					pushFollow(FOLLOW_label_term_in_custom_labeling752);
+					match(input,48,FOLLOW_48_in_custom_labeling767); 
+					pushFollow(FOLLOW_label_term_in_custom_labeling773);
 					term=label_term();
 					state._fsp--;
 
@@ -1076,11 +1098,11 @@ public class AssessQueryParser extends Parser {
 					break;
 
 				default :
-					break loop15;
+					break loop16;
 				}
 			}
 
-			match(input,57,FOLLOW_57_in_custom_labeling758); 
+			match(input,59,FOLLOW_59_in_custom_labeling779); 
 			}
 
 		}
@@ -1098,7 +1120,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "label_term"
-	// AssessQuery.g:118:1: label_term returns [List<String> term] : range= label_range ':' label= ID ;
+	// AssessQuery.g:119:1: label_term returns [List<String> term] : range= label_range ':' label= ID ;
 	public final List<String> label_term() throws RecognitionException {
 		List<String> term = null;
 
@@ -1107,15 +1129,15 @@ public class AssessQueryParser extends Parser {
 		List<String> range =null;
 
 		try {
-			// AssessQuery.g:120:5: (range= label_range ':' label= ID )
-			// AssessQuery.g:120:7: range= label_range ':' label= ID
+			// AssessQuery.g:121:5: (range= label_range ':' label= ID )
+			// AssessQuery.g:121:7: range= label_range ':' label= ID
 			{
-			pushFollow(FOLLOW_label_range_in_label_term789);
+			pushFollow(FOLLOW_label_range_in_label_term810);
 			range=label_range();
 			state._fsp--;
 
-			match(input,49,FOLLOW_49_in_label_term791); 
-			label=(Token)match(input,ID,FOLLOW_ID_in_label_term795); 
+			match(input,51,FOLLOW_51_in_label_term812); 
+			label=(Token)match(input,ID,FOLLOW_ID_in_label_term816); 
 			range.add((label!=null?label.getText():null)); 
 			}
 
@@ -1135,7 +1157,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "label_range"
-	// AssessQuery.g:122:1: label_range returns [List<String> limits] : (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' ) ;
+	// AssessQuery.g:123:1: label_range returns [List<String> limits] : (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' ) ;
 	public final List<String> label_range() throws RecognitionException {
 		List<String> limits = null;
 
@@ -1147,60 +1169,16 @@ public class AssessQueryParser extends Parser {
 
 		limits = new ArrayList<String>();
 		try {
-			// AssessQuery.g:124:5: ( (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' ) )
-			// AssessQuery.g:124:7: (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' )
+			// AssessQuery.g:125:5: ( (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' ) )
+			// AssessQuery.g:125:7: (lowLimit= '[' |lowLimit= '(' ) start= range_point ',' end= range_point (highLimit= ')' |highLimit= ']' )
 			{
-			// AssessQuery.g:124:7: (lowLimit= '[' |lowLimit= '(' )
-			int alt16=2;
-			int LA16_0 = input.LA(1);
-			if ( (LA16_0==51) ) {
-				alt16=1;
-			}
-			else if ( (LA16_0==44) ) {
-				alt16=2;
-			}
-
-			else {
-				NoViableAltException nvae =
-					new NoViableAltException("", 16, 0, input);
-				throw nvae;
-			}
-
-			switch (alt16) {
-				case 1 :
-					// AssessQuery.g:124:9: lowLimit= '['
-					{
-					lowLimit=(Token)match(input,51,FOLLOW_51_in_label_range828); 
-					}
-					break;
-				case 2 :
-					// AssessQuery.g:124:26: lowLimit= '('
-					{
-					lowLimit=(Token)match(input,44,FOLLOW_44_in_label_range836); 
-					}
-					break;
-
-			}
-
-			limits.add((lowLimit!=null?lowLimit.getText():null));
-			pushFollow(FOLLOW_range_point_in_label_range852);
-			start=range_point();
-			state._fsp--;
-
-			 limits.add((start!=null?input.toString(start.start,start.stop):null)); 
-			match(input,46,FOLLOW_46_in_label_range856); 
-			pushFollow(FOLLOW_range_point_in_label_range868);
-			end=range_point();
-			state._fsp--;
-
-			 limits.add((end!=null?input.toString(end.start,end.stop):null)); 
-			// AssessQuery.g:127:7: (highLimit= ')' |highLimit= ']' )
+			// AssessQuery.g:125:7: (lowLimit= '[' |lowLimit= '(' )
 			int alt17=2;
 			int LA17_0 = input.LA(1);
-			if ( (LA17_0==45) ) {
+			if ( (LA17_0==53) ) {
 				alt17=1;
 			}
-			else if ( (LA17_0==53) ) {
+			else if ( (LA17_0==46) ) {
 				alt17=2;
 			}
 
@@ -1212,15 +1190,59 @@ public class AssessQueryParser extends Parser {
 
 			switch (alt17) {
 				case 1 :
-					// AssessQuery.g:127:9: highLimit= ')'
+					// AssessQuery.g:125:9: lowLimit= '['
 					{
-					highLimit=(Token)match(input,45,FOLLOW_45_in_label_range884); 
+					lowLimit=(Token)match(input,53,FOLLOW_53_in_label_range849); 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:127:27: highLimit= ']'
+					// AssessQuery.g:125:26: lowLimit= '('
 					{
-					highLimit=(Token)match(input,53,FOLLOW_53_in_label_range892); 
+					lowLimit=(Token)match(input,46,FOLLOW_46_in_label_range857); 
+					}
+					break;
+
+			}
+
+			limits.add((lowLimit!=null?lowLimit.getText():null));
+			pushFollow(FOLLOW_range_point_in_label_range873);
+			start=range_point();
+			state._fsp--;
+
+			 limits.add((start!=null?input.toString(start.start,start.stop):null)); 
+			match(input,48,FOLLOW_48_in_label_range877); 
+			pushFollow(FOLLOW_range_point_in_label_range889);
+			end=range_point();
+			state._fsp--;
+
+			 limits.add((end!=null?input.toString(end.start,end.stop):null)); 
+			// AssessQuery.g:128:7: (highLimit= ')' |highLimit= ']' )
+			int alt18=2;
+			int LA18_0 = input.LA(1);
+			if ( (LA18_0==47) ) {
+				alt18=1;
+			}
+			else if ( (LA18_0==55) ) {
+				alt18=2;
+			}
+
+			else {
+				NoViableAltException nvae =
+					new NoViableAltException("", 18, 0, input);
+				throw nvae;
+			}
+
+			switch (alt18) {
+				case 1 :
+					// AssessQuery.g:128:9: highLimit= ')'
+					{
+					highLimit=(Token)match(input,47,FOLLOW_47_in_label_range905); 
+					}
+					break;
+				case 2 :
+					// AssessQuery.g:128:27: highLimit= ']'
+					{
+					highLimit=(Token)match(input,55,FOLLOW_55_in_label_range913); 
 					}
 					break;
 
@@ -1247,32 +1269,32 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "range_point"
-	// AssessQuery.g:130:1: range_point : ( SIGN )? ( INT | FLOAT | 'inf' ) ;
+	// AssessQuery.g:131:1: range_point : ( SIGN )? ( INT | FLOAT | 'inf' ) ;
 	public final AssessQueryParser.range_point_return range_point() throws RecognitionException {
 		AssessQueryParser.range_point_return retval = new AssessQueryParser.range_point_return();
 		retval.start = input.LT(1);
 
 		try {
-			// AssessQuery.g:130:13: ( ( SIGN )? ( INT | FLOAT | 'inf' ) )
-			// AssessQuery.g:130:15: ( SIGN )? ( INT | FLOAT | 'inf' )
+			// AssessQuery.g:131:13: ( ( SIGN )? ( INT | FLOAT | 'inf' ) )
+			// AssessQuery.g:131:15: ( SIGN )? ( INT | FLOAT | 'inf' )
 			{
-			// AssessQuery.g:130:15: ( SIGN )?
-			int alt18=2;
-			int LA18_0 = input.LA(1);
-			if ( (LA18_0==SIGN) ) {
-				alt18=1;
+			// AssessQuery.g:131:15: ( SIGN )?
+			int alt19=2;
+			int LA19_0 = input.LA(1);
+			if ( (LA19_0==SIGN) ) {
+				alt19=1;
 			}
-			switch (alt18) {
+			switch (alt19) {
 				case 1 :
-					// AssessQuery.g:130:15: SIGN
+					// AssessQuery.g:131:15: SIGN
 					{
-					match(input,SIGN,FOLLOW_SIGN_in_range_point908); 
+					match(input,SIGN,FOLLOW_SIGN_in_range_point929); 
 					}
 					break;
 
 			}
 
-			if ( input.LA(1)==FLOAT||input.LA(1)==INT||input.LA(1)==55 ) {
+			if ( input.LA(1)==FLOAT||input.LA(1)==INT||input.LA(1)==57 ) {
 				input.consume();
 				state.errorRecovery=false;
 			}
@@ -1302,81 +1324,84 @@ public class AssessQueryParser extends Parser {
 
 	public static final BitSet FOLLOW_query_in_parse66 = new BitSet(new long[]{0x0000000000000000L});
 	public static final BitSet FOLLOW_EOF_in_parse68 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_WITH_in_query94 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_query100 = new BitSet(new long[]{0x0000000000008200L});
-	public static final BitSet FOLLOW_FOR_in_query111 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_selection_predicates_in_query117 = new BitSet(new long[]{0x0000000000000200L});
-	public static final BitSet FOLLOW_BY_in_query129 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_group_by_set_in_query135 = new BitSet(new long[]{0x0000000000000080L});
+	public static final BitSet FOLLOW_WITH_in_query94 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_query100 = new BitSet(new long[]{0x0000000000010400L});
+	public static final BitSet FOLLOW_FOR_in_query111 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_selection_predicates_in_query117 = new BitSet(new long[]{0x0000000000000400L});
+	public static final BitSet FOLLOW_BY_in_query129 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_group_by_set_in_query135 = new BitSet(new long[]{0x0000000000000100L});
 	public static final BitSet FOLLOW_ASSESS_in_query145 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_AGGREGATE_in_query147 = new BitSet(new long[]{0x0000100000000000L});
-	public static final BitSet FOLLOW_44_in_query157 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_query163 = new BitSet(new long[]{0x0000200000000000L});
-	public static final BitSet FOLLOW_45_in_query167 = new BitSet(new long[]{0x0000001001000020L});
-	public static final BitSet FOLLOW_AGAINST_in_query177 = new BitSet(new long[]{0x0000000220184000L});
-	public static final BitSet FOLLOW_benchmark_in_query183 = new BitSet(new long[]{0x0000001001000000L});
-	public static final BitSet FOLLOW_USING_in_query203 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_comparison_scheme_in_query209 = new BitSet(new long[]{0x0000000001000000L});
-	public static final BitSet FOLLOW_LABELS_in_query236 = new BitSet(new long[]{0x0100000000080000L});
-	public static final BitSet FOLLOW_ID_in_query243 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_custom_labeling_in_query265 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_predicate_in_selection_predicates332 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_selection_predicates341 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_predicate_in_selection_predicates347 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_ID_in_predicate376 = new BitSet(new long[]{0x0004000000000000L});
-	public static final BitSet FOLLOW_50_in_predicate384 = new BitSet(new long[]{0x0010000000000000L});
-	public static final BitSet FOLLOW_52_in_predicate386 = new BitSet(new long[]{0x0000000000180000L});
-	public static final BitSet FOLLOW_level_value_in_predicate392 = new BitSet(new long[]{0x0010000000000000L});
-	public static final BitSet FOLLOW_52_in_predicate396 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_level_value409 = new BitSet(new long[]{0x0000000000080002L});
-	public static final BitSet FOLLOW_date_in_level_value414 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_date427 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_date435 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_date437 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_INT_in_date439 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_date447 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_date449 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_INT_in_date451 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_date453 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_INT_in_date455 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_group_by_set481 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_46_in_group_by_set486 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_group_by_set490 = new BitSet(new long[]{0x0000400000000002L});
-	public static final BitSet FOLLOW_constant_benchmark_in_benchmark523 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_external_benchmark_in_benchmark537 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_predicate_in_benchmark551 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_PAST_in_benchmark565 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_INT_in_benchmark567 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_SIGN_in_constant_benchmark587 = new BitSet(new long[]{0x0000000000104000L});
-	public static final BitSet FOLLOW_set_in_constant_benchmark595 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_external_benchmark620 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_external_benchmark624 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_external_benchmark634 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_comparison_scheme666 = new BitSet(new long[]{0x0000100000000000L});
-	public static final BitSet FOLLOW_44_in_comparison_scheme674 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_comparison_scheme_in_comparison_scheme676 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparison_args_in_comparison_scheme681 = new BitSet(new long[]{0x0000200000000000L});
-	public static final BitSet FOLLOW_45_in_comparison_scheme682 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_comparison_args690 = new BitSet(new long[]{0x0000400000000000L});
-	public static final BitSet FOLLOW_46_in_comparison_args692 = new BitSet(new long[]{0x0040000000180000L});
-	public static final BitSet FOLLOW_54_in_comparison_args697 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_comparison_args701 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_comparison_args705 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_56_in_custom_labeling731 = new BitSet(new long[]{0x0008100000000000L});
-	public static final BitSet FOLLOW_label_term_in_custom_labeling737 = new BitSet(new long[]{0x0200400000000000L});
-	public static final BitSet FOLLOW_46_in_custom_labeling746 = new BitSet(new long[]{0x0008100000000000L});
-	public static final BitSet FOLLOW_label_term_in_custom_labeling752 = new BitSet(new long[]{0x0200400000000000L});
-	public static final BitSet FOLLOW_57_in_custom_labeling758 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_label_range_in_label_term789 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_49_in_label_term791 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_ID_in_label_term795 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_51_in_label_range828 = new BitSet(new long[]{0x0080000200104000L});
-	public static final BitSet FOLLOW_44_in_label_range836 = new BitSet(new long[]{0x0080000200104000L});
-	public static final BitSet FOLLOW_range_point_in_label_range852 = new BitSet(new long[]{0x0000400000000000L});
-	public static final BitSet FOLLOW_46_in_label_range856 = new BitSet(new long[]{0x0080000200104000L});
-	public static final BitSet FOLLOW_range_point_in_label_range868 = new BitSet(new long[]{0x0020200000000000L});
-	public static final BitSet FOLLOW_45_in_label_range884 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_53_in_label_range892 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_SIGN_in_range_point908 = new BitSet(new long[]{0x0080000000104000L});
-	public static final BitSet FOLLOW_set_in_range_point911 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_AGGREGATE_in_query147 = new BitSet(new long[]{0x0000400000000000L});
+	public static final BitSet FOLLOW_46_in_query157 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_query163 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_query167 = new BitSet(new long[]{0x0000004002000020L});
+	public static final BitSet FOLLOW_AGAINST_in_query177 = new BitSet(new long[]{0x0000000840308000L});
+	public static final BitSet FOLLOW_benchmark_in_query183 = new BitSet(new long[]{0x0000004002000000L});
+	public static final BitSet FOLLOW_USING_in_query203 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_comparison_scheme_in_query209 = new BitSet(new long[]{0x0000000002000000L});
+	public static final BitSet FOLLOW_LABELS_in_query236 = new BitSet(new long[]{0x0400000000100000L});
+	public static final BitSet FOLLOW_ID_in_query243 = new BitSet(new long[]{0x0000000400000002L});
+	public static final BitSet FOLLOW_custom_labeling_in_query265 = new BitSet(new long[]{0x0000000400000002L});
+	public static final BitSet FOLLOW_SAVE_in_query290 = new BitSet(new long[]{0x0000000000000080L});
+	public static final BitSet FOLLOW_AS_in_query292 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_query298 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_predicate_in_selection_predicates353 = new BitSet(new long[]{0x0001000000000002L});
+	public static final BitSet FOLLOW_48_in_selection_predicates362 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_predicate_in_selection_predicates368 = new BitSet(new long[]{0x0001000000000002L});
+	public static final BitSet FOLLOW_ID_in_predicate397 = new BitSet(new long[]{0x0010000000000000L});
+	public static final BitSet FOLLOW_52_in_predicate405 = new BitSet(new long[]{0x0040000000000000L});
+	public static final BitSet FOLLOW_54_in_predicate407 = new BitSet(new long[]{0x0000000000300000L});
+	public static final BitSet FOLLOW_level_value_in_predicate413 = new BitSet(new long[]{0x0040000000000000L});
+	public static final BitSet FOLLOW_54_in_predicate417 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_level_value430 = new BitSet(new long[]{0x0000000000100002L});
+	public static final BitSet FOLLOW_date_in_level_value435 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_date448 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_date456 = new BitSet(new long[]{0x0004000000000000L});
+	public static final BitSet FOLLOW_50_in_date458 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_INT_in_date460 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_date468 = new BitSet(new long[]{0x0004000000000000L});
+	public static final BitSet FOLLOW_50_in_date470 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_INT_in_date472 = new BitSet(new long[]{0x0004000000000000L});
+	public static final BitSet FOLLOW_50_in_date474 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_INT_in_date476 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_group_by_set502 = new BitSet(new long[]{0x0001000000000002L});
+	public static final BitSet FOLLOW_48_in_group_by_set507 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_group_by_set511 = new BitSet(new long[]{0x0001000000000002L});
+	public static final BitSet FOLLOW_constant_benchmark_in_benchmark544 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_external_benchmark_in_benchmark558 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_predicate_in_benchmark572 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_PAST_in_benchmark586 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_INT_in_benchmark588 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_SIGN_in_constant_benchmark608 = new BitSet(new long[]{0x0000000000208000L});
+	public static final BitSet FOLLOW_set_in_constant_benchmark616 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_external_benchmark641 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_49_in_external_benchmark645 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_external_benchmark655 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_comparison_scheme687 = new BitSet(new long[]{0x0000400000000000L});
+	public static final BitSet FOLLOW_46_in_comparison_scheme695 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_comparison_scheme_in_comparison_scheme697 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_comparison_args_in_comparison_scheme702 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_comparison_scheme703 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_comparison_args711 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_comparison_args713 = new BitSet(new long[]{0x0100000000300000L});
+	public static final BitSet FOLLOW_56_in_comparison_args718 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_comparison_args722 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_comparison_args726 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_58_in_custom_labeling752 = new BitSet(new long[]{0x0020400000000000L});
+	public static final BitSet FOLLOW_label_term_in_custom_labeling758 = new BitSet(new long[]{0x0801000000000000L});
+	public static final BitSet FOLLOW_48_in_custom_labeling767 = new BitSet(new long[]{0x0020400000000000L});
+	public static final BitSet FOLLOW_label_term_in_custom_labeling773 = new BitSet(new long[]{0x0801000000000000L});
+	public static final BitSet FOLLOW_59_in_custom_labeling779 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_label_range_in_label_term810 = new BitSet(new long[]{0x0008000000000000L});
+	public static final BitSet FOLLOW_51_in_label_term812 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_label_term816 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_53_in_label_range849 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_46_in_label_range857 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_range_point_in_label_range873 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_label_range877 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_range_point_in_label_range889 = new BitSet(new long[]{0x0080800000000000L});
+	public static final BitSet FOLLOW_47_in_label_range905 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_55_in_label_range913 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_SIGN_in_range_point929 = new BitSet(new long[]{0x0200000000208000L});
+	public static final BitSet FOLLOW_set_in_range_point932 = new BitSet(new long[]{0x0000000000000002L});
 }
