@@ -81,9 +81,9 @@ public class AnalyzeOperator {
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);
 				aq.setAnalyzeQueryResult(result);
-				analyzeReport.setAnalyzeQueries(analyzeQueries);
-				analyzeReport.createTextReportFile();
 			}
+			analyzeReport.setAnalyzeQueries(analyzeQueries);
+			analyzeReport.createTextReportFile();
 		}
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(analyzeReport.getLocalFolder());
