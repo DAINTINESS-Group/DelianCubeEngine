@@ -4,6 +4,7 @@
 package cubemanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		HashSet<String> FromTables=new HashSet<String>();
 
 		/*Create WhereClausse */
+		HashMap<String, String> existingJoinFilters = new HashMap<String,String>();
 		for(String[] sigmaExpr: sigmaExpressions){
 			for(int i = 0;i < referCube.getDimensionsList().size(); i++) {
 				Dimension dimension = referCube.getDimensionsList().get(i);
@@ -68,7 +70,9 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 					toaddJoin[1] = "=";
 					toaddJoin[2] = dimension.getTableName()+"."+((LinearHierarchy)dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
 					extractionMethod.addFilter(toaddJoin);
-
+					String joinFilter = toaddJoin[0]+toaddJoin[1]+toaddJoin[2];
+					existingJoinFilters.put(dimension.getName(), joinFilter);
+					
 					FromTables.add(dimension.getTableName());
 
 					/* Add the Sigma Expression */
@@ -127,7 +131,11 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 									toaddJoin[0]=referCube.getDimensionRefFieldList().get(i);
 									toaddJoin[1]="=";
 									toaddJoin[2]=dimension.getTableName()+"."+((LinearHierarchy)dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
-									extractionMethod.addFilter(toaddJoin);
+									String joinFilter = toaddJoin[0]+toaddJoin[1]+toaddJoin[2];
+									if(!(joinFilter).equals(existingJoinFilters.get(dimension.getName()))) {
+										extractionMethod.addFilter(toaddJoin);
+									}
+									
 									String[] toAddfrom=new String[1];
 									toAddfrom[0]=dimension.getTableName();
 									if(FromTables.contains(dimension.getTableName())==false) 
