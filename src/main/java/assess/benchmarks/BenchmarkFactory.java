@@ -61,6 +61,6 @@ public class BenchmarkFactory {
 
     // This can not be currently implemented as a CubeManager instance only handles 1 cube
     private AssessBenchmark createExternalBenchmark() {
-        return null;
+        throw new RuntimeException("External Benchmark not implemented yet!");
     }
 }

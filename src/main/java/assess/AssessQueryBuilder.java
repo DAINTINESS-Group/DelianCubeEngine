@@ -41,9 +41,8 @@ public class AssessQueryBuilder {
         return this;
     }
 
-    public AssessQueryBuilder setOutputName(String name) {
+    public void setOutputName(String name) {
         this.outputName = name;
-        return this;
     }
 
     public void setSelectionPredicates(Map<String, String> selectionPredicates) {

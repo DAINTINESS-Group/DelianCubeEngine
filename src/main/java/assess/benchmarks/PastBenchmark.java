@@ -13,8 +13,7 @@ public class PastBenchmark implements AssessBenchmark {
 
     public PastBenchmark(List<Result> pastResults) {
         int numberOfCells = Collections.max(
-                pastResults
-                        .stream()
+                pastResults.stream()
                         .map(result -> result.getCells().size())
                         .collect(Collectors.toList())
         );

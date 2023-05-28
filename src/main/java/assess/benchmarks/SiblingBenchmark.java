@@ -4,7 +4,6 @@ import result.Cell;
 import result.Result;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class SiblingBenchmark implements AssessBenchmark {
 	private final Iterator<Cell> benchmarkCells;
