@@ -20,6 +20,7 @@ import org.junit.Test;
 import mainengine.SessionQueryProcessorEngine;
 public class PartialDetailedExtensionalNoveltyTest {
 	private static SessionQueryProcessorEngine queryEngine;
+	private static SessionQueryProcessorEngine queryEngine2;
 	private static List<String> measures = new ArrayList<String>();
 	
 	static void clearOldHistory() throws IOException {
@@ -56,9 +57,22 @@ public class PartialDetailedExtensionalNoveltyTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine = new SessionQueryProcessorEngine(); 
+		queryEngine2 = new SessionQueryProcessorEngine();
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
+		
+
+		HashMap<String, String>userInputList2 = new HashMap<>();
+		userInputList2.put("schemaName", "adult_no_dublic");
+		userInputList2.put("username", "CinecubesUser");
+		userInputList2.put("password", "Cinecubes");
+		userInputList2.put("cubeName", "adult");
+		userInputList2.put("inputFolder", "adult");
+		
+		queryEngine2.initializeConnectionWithIntrMng(typeOfConnection, userInputList2,
+				"InputFiles/ServerRegisteredInfo/Interestingness/History", "", "", "", -1);
+		
 		
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
@@ -72,6 +86,29 @@ public class PartialDetailedExtensionalNoveltyTest {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl3\n" + 
 				"Sigma:account_dim.lvl2='west Bohemia',status_dim.lvl0='Contract Finished/No Problems', date_dim.lvl3 = '1996'", measures);
+		
+		
+		queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery1\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:native_country_dim.lvl2,race_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay', education_dim.lvl3='Without-Post-Secondary'", measures );
+		
+		queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery2\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:occupation_dim.lvl1,age_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl2='Some-college'", measures );
+		
+		queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery21\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:occupation_dim.lvl1,age_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl2='Post-grad'", measures );
+		
 		measures.clear();
 		measures.add("Partial Detailed Extensional Novelty");
 
@@ -85,9 +122,52 @@ public class PartialDetailedExtensionalNoveltyTest {
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures);
+		//clearOldHistory();
+		//createGitignoreFiles();
+		assertEquals("0.7857142857142857", answer[0]);	
+	}
+	
+	@Test
+	public void test2() throws IOException {
+		
+		String[] answer3 = queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery3\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:native_country_dim.lvl2,race_dim.lvl1\n" + 
+				"Sigma:work_dim.lvl2='Without-Pay'", measures );
+		
+		String[] answer4 = queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery4\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:occupation_dim.lvl1,age_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl1='Doctorate'", measures );
+		
+		String[] answer5 = queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery5\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:occupation_dim.lvl1,age_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Post-Secondary'", measures );	
+		
+		String[] answer6 = queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:AdultCubeQuery6\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:occupation_dim.lvl1,age_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Post-Secondary', work_dim.lvl2='With-Pay'", measures );
+		
+		
+		
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.7857142857142857", answer[0]);	
+		
+		assertEquals("1.0", answer3[0]);
+		assertEquals("0.0", answer4[0]);
+		assertEquals("0.1407032145226464", answer5[0]);
+		assertEquals("0.0", answer6[0]);
+		
 	}
 
  

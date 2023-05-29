@@ -393,7 +393,6 @@ public class InterestingnessClientAdult {
 		//////////////////////////////////////////////////////////////////////////////////////////
 		//version 3-4
 		//Session1
-		/*
 		String[] initial1 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:InitialCubeQuery1\n" + 
 				"AggrFunc:Avg\n" + 
@@ -405,6 +404,8 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + initial1[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		
 		
 		String[] initial2 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:InitialCubeQuery2\n" + 
@@ -466,7 +467,7 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + cube12[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		
+
 		String[] cube13 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:Cube13\n" + 
 				"AggrFunc:Avg\n" + 
@@ -490,7 +491,19 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + cube14[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		
+
+		String[] cube15 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name:Cube15\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:education_dim.lvl2,occupation_dim.lvl1\n" + 
+				"Sigma:education_dim.lvl3='Without-Post-Secondary'", measures );
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for(int i = 0; i < cube15.length; i++) {
+			System.out.println(measures.get(i) + ":    " + cube15[i]);
+		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	
 		//Second slide
 		
 		String[] cube21 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
@@ -591,8 +604,8 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + cube34[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		*/
 		
+/*		
 		//Session 2
 		String[] initial1 = service.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
 				"Name:InitialCubeQuery1\n" + 
@@ -791,7 +804,7 @@ public class InterestingnessClientAdult {
 			System.out.println(measures.get(i) + ":    " + cube34[i]);
 		}
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		
+		*/
 		//Delete history files created
 		clearOldHistory();
 		//Create .gitignore files

@@ -381,6 +381,7 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		TreeSet<Cell> detailedAreaOfInterest = new TreeSet<Cell>(new CellComparator());
 		ArrayList<Cell> res;
 		for(int i = 0; i < historyQueries.size(); i++) {
+
 			res = computeDetailedQueryCube(historyQueries.get(i));
 			
 			for(int j = 0; j < res.size(); j++) {
@@ -395,14 +396,50 @@ public class InputManager implements IHistoryInput, IExpectedValuesInput{
 		retrieveLevels();
 		
 		CubeQuery detailedQuery = new CubeQuery(query);
-		ArrayList<String[]> gammaExpr = detailedQuery.getGammaExpressions();
 		
-		for(int i=0; i < gammaExpr.size(); i++) {
-			String levelZero = dimensionsToLevelsHashmap.get(gammaExpr.get(i)[0]).get(0);
-			gammaExpr.get(i)[1] = levelZero;
+		/*
+		//first solution
+		ArrayList<String[]> allGammaExpressions = detailedQuery.getGammaExpressions();
+		for(int i=0; i < allGammaExpressions.size(); i++) {
+			String levelZero = dimensionsToLevelsHashmap.get(allGammaExpressions.get(i)[0]).get(0);
+			allGammaExpressions.get(i)[1] = levelZero;
+		}
+		*/
+		/*
+		//All joins
+		ArrayList<String[]> allGammaExpressions = new ArrayList<String[]>();
+		for(String dimension: dimensionsToLevelsHashmap.keySet()) {
+			String[] gammaExpression = new String[2];
+			gammaExpression[0] = dimension;
+			gammaExpression[1] = dimensionsToLevelsHashmap.get(dimension).get(0);
+			allGammaExpressions.add(gammaExpression);	
+		}*/
+		
+		//Filter levels into the gamma solution
+		ArrayList<String[]> allGammaExpressions = detailedQuery.getGammaExpressions();
+		ArrayList<String[]> allSigmaExpressions = detailedQuery.getSigmaExpressions();
+		ArrayList<String> gammaDimensions = new ArrayList<String>();
+		
+		for(String[] gammaExpr: allGammaExpressions) {
+			gammaDimensions.add(gammaExpr[0]);
 		}
 		
-		detailedQuery.setGammaExpressions(gammaExpr);
+		for(String[] sigmaExpr: allSigmaExpressions) {
+			String[] sigmaDimension = sigmaExpr[0].split("[.]",0);
+			if(!gammaDimensions.contains(sigmaDimension[0])) {
+				allGammaExpressions.add(sigmaDimension);
+			}
+			
+		}
+		for(int i=0; i < allGammaExpressions.size(); i++) {
+			String levelZero = dimensionsToLevelsHashmap.get(allGammaExpressions.get(i)[0]).get(0);
+			allGammaExpressions.get(i)[1] = levelZero;
+		}	
+			
+		
+		
+		//change the setGamma parameter to allGammaExpressions if all joins and groupers are needed, new arraylist for no groupers
+		detailedQuery.setGammaExpressions(new ArrayList<String[]>());
 		Result detailedResult = cubeMng.executeQuery(detailedQuery);
 		
 		return detailedResult.getCells();

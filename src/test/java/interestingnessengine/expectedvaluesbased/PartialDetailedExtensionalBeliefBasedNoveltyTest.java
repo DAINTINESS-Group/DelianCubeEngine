@@ -20,6 +20,7 @@ import org.junit.Test;
 import mainengine.SessionQueryProcessorEngine;
 public class PartialDetailedExtensionalBeliefBasedNoveltyTest {
 	private static SessionQueryProcessorEngine queryEngine;
+	private static SessionQueryProcessorEngine queryEngine2;
 	private static List<String> measures = new ArrayList<String>();
 	
 	static void clearOldHistory() throws IOException {
@@ -56,9 +57,19 @@ public class PartialDetailedExtensionalBeliefBasedNoveltyTest {
 		userInputList.put("cubeName", "loan");
 		userInputList.put("inputFolder", "pkdd99");
 		queryEngine = new SessionQueryProcessorEngine(); 
+		queryEngine2 = new SessionQueryProcessorEngine();
 		
 		queryEngine.initializeConnectionWithIntrMng(typeOfConnection, userInputList,
 				"", "", "", "InputFiles/UserProfile/ExpectedValues/predictionsWithProbabilitiesAvg", -1);
+		
+		HashMap<String, String>userInputList2 = new HashMap<>();
+		userInputList2.put("schemaName", "adult_no_dublic");
+		userInputList2.put("username", "CinecubesUser");
+		userInputList2.put("password", "Cinecubes");
+		userInputList2.put("cubeName", "adult");
+		userInputList2.put("inputFolder", "adult");
+		queryEngine2.initializeConnectionWithIntrMng(typeOfConnection, userInputList2,
+				"", "", "", "InputFiles/UserProfile/ExpectedValues/adultPredictionsWithProbabilities", -1);
 		//measures.add("Direct Novelty");
 		/*
 		queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
@@ -83,13 +94,28 @@ public class PartialDetailedExtensionalBeliefBasedNoveltyTest {
 		
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures("CubeName:loan\n" + 
 				"Name: LoanQuery21_S2_CG-Cmmn\n" + 
-				"AggrFunc:Min\n" + 
+				"AggrFunc:Avg\n" + 
 				"Measure:amount\n" + 
 				"Gamma:account_dim.lvl1,date_dim.lvl2\n" + 
 				"Sigma:account_dim.lvl2='Prague'", measures);
+			
 		clearOldHistory();
 		createGitignoreFiles();
-		assertEquals("0.39285714285714285", answer[0]);	
+		assertEquals("0.47619047619047616", answer[0]);	
+	}
+	
+	@Test
+	public void testBeliefBasedNovelty2() throws Exception {
+	
+		String[] answer2 = queryEngine2.answerCubeQueryWithInterestMeasures("CubeName:adult\n" + 
+				"Name: AdultCubeQuery\n" + 
+				"AggrFunc:Avg\n" + 
+				"Measure:hours_per_week\n" + 
+				"Gamma:work_dim.lvl1,age_dim.lvl2\n" + 
+				"Sigma:work_dim.lvl2='With-Pay',education_dim.lvl2='Post-grad'", measures);
+		
+		
+		assertEquals("0.497002997002997", answer2[0]);
 	}
 
  

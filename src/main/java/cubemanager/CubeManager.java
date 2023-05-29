@@ -25,8 +25,8 @@ import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
-import exctractionmethod.ExtractionMethod;
-import exctractionmethod.ExtractionMethodFactory;
+import extractionmethod.ExtractionMethod;
+import extractionmethod.ExtractionMethodFactory;
 import result.Result;
 
 import java.rmi.RemoteException;

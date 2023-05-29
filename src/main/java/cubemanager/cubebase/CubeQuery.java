@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 //import java.util.List;
 
-import exctractionmethod.ExtractionMethod;
+import extractionmethod.ExtractionMethod;
 import result.Result;
 
 public class CubeQuery extends Cube {

@@ -1,0 +1,13 @@
+id;dim_0;index_0;parent1;parent2
+1;age;0;NULL;NULL
+2;age;1;NULL;NULL
+3;age;2;NULL;NULL
+4;age;3;NULL;NULL
+5;age;4;NULL;NULL
+6;work_class;0;NULL;NULL
+7;work_class;1;NULL;NULL
+8;work_class;2;NULL;NULL
+9;work_class;3;NULL;NULL
+10;race;0;NULL;NULL
+11;race;1;NULL;NULL
+12;race;2;NULL;NULL

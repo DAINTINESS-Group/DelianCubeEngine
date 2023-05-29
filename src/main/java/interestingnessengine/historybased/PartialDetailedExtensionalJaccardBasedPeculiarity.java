@@ -35,7 +35,7 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 	 */
 	public double computeMeasure(IHistoryInput inputManager) {
 		TreeSet<Cell> union = new TreeSet<Cell>(new CellComparator());
-		ArrayList<Cell> intersection = new ArrayList<Cell>();
+		HashMap<String, Cell> intersection = new HashMap<String, Cell>();
 		long startIntersection, endIntersection, startDetailedQuery, endDetailedQuery;
 		long durationIntersection, totalIntersection = 0, durationDetailedQuery, totalDetailedQuery = 0;
 		
@@ -67,14 +67,15 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 			durationDetailedQuery = endDetailedQuery - startDetailedQuery;
 			totalDetailedQuery += durationDetailedQuery;
 			
-			intersection = new ArrayList<Cell>();
+			intersection = new HashMap<String, Cell>();
 			
 			startIntersection = System.nanoTime();	
-			for(int i = 0; i < detailedCurrentQueryCube.size(); i++) {
-				Cell c = detailedCurrentQueryCube.get(i);
+			for(Cell c: detailedCurrentQueryCube) {
+				
 				ArrayList<String> cellDimensionMembers = c.getDimensionMembers();
 				if(detailedAreaOfInterestHashMap.containsKey(cellDimensionMembers.toString())) {
-					intersection.add(detailedAreaOfInterestHashMap.get(cellDimensionMembers.toString()));
+					String key = c.getDimensionMembers().toString();
+					intersection.put(key, c);
 				}
 				
 				/*
@@ -85,7 +86,7 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 					}
 				}*/
 			}
-			
+	
 			endIntersection = System.nanoTime();
 			
 			durationIntersection = endIntersection - startIntersection;
@@ -97,7 +98,6 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 			
 			if(union.size() > 0) {
 				double t = (double)intersection.size() /(double) union.size();
-				
 				temp = 1.0 - t;
 				jaccardDistances.add(temp);
 			}

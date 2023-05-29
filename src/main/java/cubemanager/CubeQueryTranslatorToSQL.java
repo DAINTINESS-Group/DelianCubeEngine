@@ -15,7 +15,7 @@ import cubemanager.cubebase.Hierarchy;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.LinearHierarchy;
 import cubemanager.cubebase.Measure;
-import exctractionmethod.ExtractionMethod;
+import extractionmethod.ExtractionMethod;
 
 /**
  * @author pvassil
@@ -108,7 +108,16 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 			extractionMethod.addSourceCube(toAdd);
 		}
 		
-		/*Create groupClausse*/
+		/*Create groupClause*/
+		//THIS IF CLAUSE IS FOR NO GROUPERS QUERIES W/ INTERESTINGNESS
+		if(gammaExpressions.size()==0) {
+			for(int i=0; i<referCube.getDimensionRefFieldList().size(); i++) {
+				String[] toAdd = new String[1];
+				toAdd[0] = referCube.getDimensionRefFieldList().get(i);
+				extractionMethod.addSelection(toAdd);
+			}
+		}
+		
 		for(String[] gammaExpr: gammaExpressions){
 			if(gammaExpr[0].length()==0) {
 				String[] toadd=new String[1];

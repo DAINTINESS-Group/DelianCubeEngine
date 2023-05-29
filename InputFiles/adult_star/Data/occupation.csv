@@ -1,0 +1,15 @@
+level0,level1,level2
+Adm-clerical,white-collar,*
+Armed-Forces,Other,*
+Craft-repair,Blue-collar,*
+Exec-managerial,white-collar,*
+Farming-fishing,Other,*
+Handlers-cleaners,Blue-collar,*
+Machine-op-inspct,Blue-collar,*
+Other-service,Other,*
+Priv-house-serv,Blue-collar,*
+Prof-specialty,white-collar,*
+Protective-serv,Other,*
+Sales,white-collar,*
+Tech-support,Blue-collar,*
+Transport-moving,Blue-collar,*

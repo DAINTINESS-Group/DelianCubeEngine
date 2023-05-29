@@ -94,9 +94,12 @@ public class PartialSyntacticAveragePeculiarityTest {
 				"Sigma:account_dim.lvl2='Prague'";
 		
 		String[] answer = queryEngine.answerCubeQueryWithInterestMeasures(q1, measures);
+		String[] answer2 = queryEngine.answerCubeQueryWithInterestMeasures(q, measures);
 		clearOldHistory();
 		createGitignoreFiles();
 		assertEquals("0.6583333333333333", answer[0]);	
+		assertEquals("0.4527777777777778", answer2[0]);
+		
 	}
 
  

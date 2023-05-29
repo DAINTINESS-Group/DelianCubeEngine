@@ -1,0 +1,8 @@
+level0;level1;level2;level3
+Federal-gov;Gov;With-Pay;ALL
+Local-gov;Gov;With-Pay;ALL
+Private;Private;With-Pay;ALL
+Self-emp-inc;Self-emp;With-Pay;ALL
+Self-emp-not-inc;Self-emp;With-Pay;ALL
+State-gov;Gov;With-Pay;ALL
+Without-pay;Without-pay;Without-pay;ALL
