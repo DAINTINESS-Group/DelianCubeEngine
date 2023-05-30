@@ -9,7 +9,6 @@ import org.junit.Test;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -67,8 +66,8 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        List<LabeledCell> results = operator.execute(query);
-        assertEquals("mid_effort", results.get(0).label);
+        AssessOperator.AssessResults results = operator.execute(query);
+        assertEquals("mid_effort", results.labeledCells.get(0).label);
     }
 
     @Test
@@ -82,10 +81,10 @@ public class AssessOperatorTest {
         double magicNumber = 101448.0; // A known cell value, with a known label
         String expected = "low_effort";
 
-        List<LabeledCell> results = operator.execute(query);
+         AssessOperator.AssessResults results = operator.execute(query);
 
         boolean assertionComplete = false;
-        for (LabeledCell labeledCell : results) {
+        for (LabeledCell labeledCell : results.labeledCells) {
             if (labeledCell.cell.toDouble() == magicNumber) {
                 assertEquals(expected, labeledCell.label);
                 assertionComplete = true;
@@ -105,9 +104,9 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
 
-        List<LabeledCell> results = operator.execute(query);
+         AssessOperator.AssessResults results = operator.execute(query);
 
-        for (LabeledCell labeledCell : results) {
+        for (LabeledCell labeledCell : results.labeledCells) {
             if (labeledCell.cell.toDouble() > constantBenchmark) {
                 assertEquals("high", labeledCell.label);
             } else {
@@ -124,10 +123,10 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        List<LabeledCell> results = operator.execute(query);
+         AssessOperator.AssessResults results = operator.execute(query);
         boolean[] comparisonsMade = {false, false};
 
-        for (LabeledCell labeledCell : results) {
+        for (LabeledCell labeledCell : results.labeledCells) {
             if (labeledCell.cell.toDouble() == 91776.0) {
                 assertEquals("low_effort", labeledCell.label);
                 comparisonsMade[0] = true;
@@ -150,8 +149,8 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high}";
 
-        List<LabeledCell> results = operator.execute(query);
-        assertEquals("low", results.get(0).label);
+         AssessOperator.AssessResults results = operator.execute(query);
+        assertEquals("low", results.labeledCells.get(0).label);
     }
 
     @Test
@@ -162,8 +161,8 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
 
-        List<LabeledCell> results = operator.execute(query);
-        assertEquals("ULTRA", results.get(0).label);
+         AssessOperator.AssessResults results = operator.execute(query);
+        assertEquals("ULTRA", results.labeledCells.get(0).label);
     }
 
     @Test
@@ -176,10 +175,10 @@ public class AssessOperatorTest {
         double magicNumber = 465504.0;
         boolean assertionCompleted = false;
 
-        List<LabeledCell> results = operator.execute(query);
-        results.stream().map(labeledCell -> labeledCell.cell.toDouble()).forEach(System.out::println);
+        AssessOperator.AssessResults results = operator.execute(query);
+        results.labeledCells.stream().map(labeledCell -> labeledCell.cell.toDouble()).forEach(System.out::println);
 
-        for (LabeledCell labeledCell : results) {
+        for (LabeledCell labeledCell : results.labeledCells) {
             if (labeledCell.cell.toDouble() == magicNumber) {
                 assertEquals("ULTRA", labeledCell.label);
                 assertionCompleted = true;

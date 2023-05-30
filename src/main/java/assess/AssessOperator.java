@@ -25,18 +25,18 @@ import java.util.List;
  */
 public class AssessOperator {
     private final CubeManager cubeManager;
-    private final PerformanceResults performanceResults;
 
-    static class PerformanceResults {
+    static class AssessResults {
         long parseTime;
         long comparisonTime;
         long labelingTime;
+        String query;
+        AssessQuery parsedQuery;
+        List<LabeledCell> labeledCells;
     }
-
 
     public AssessOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
-        this.performanceResults = new PerformanceResults();
     }
 
     private String outputFileName;
@@ -61,25 +61,32 @@ public class AssessOperator {
      * @return
      * @throws RecognitionException If the query does not follow the defined syntax
      */
-    public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
+    public AssessResults execute(String assessQuery) throws RecognitionException {
+        AssessResults assessResults = new AssessResults();
+        assessResults.query = assessQuery;
+        // Parse the Query
         Instant start = Instant.now();
         AssessQuery parsedQuery = parseQuery(assessQuery);
         outputFileName = parsedQuery.outputName;
         Instant end = Instant.now();
-        performanceResults.parseTime = Duration.between(start, end).toMillis();
+        assessResults.parseTime = Duration.between(start, end).toMillis();
+        assessResults.parsedQuery = parsedQuery;
 
+        // Execute Comparisons
         start = Instant.now();
         HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
         end = Instant.now();
-        performanceResults.comparisonTime = Duration.between(start, end).toMillis();
+        assessResults.comparisonTime = Duration.between(start, end).toMillis();
 
+        // Label Comparison Results
         start = Instant.now();
         List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
         end = Instant.now();
-        performanceResults.labelingTime = Duration.between(start, end).toNanos();
+        assessResults.labelingTime = Duration.between(start, end).toNanos();
+        assessResults.labeledCells = results;
 
-        exportToMD(assessQuery, parsedQuery.outputName, results);
-        return results;
+        exportToMD(assessResults);
+        return assessResults;
     }
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
@@ -114,18 +121,19 @@ public class AssessOperator {
         return labeledCells;
     }
 
-    private void exportToMD(String assessQuery, String outputName, List<LabeledCell> results) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"));){
+    private void exportToMD(AssessResults assessResults) {
+        String outputName = assessResults.parsedQuery.outputName;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"))){
             writer.append("## Query\n");
-            writer.append(assessQuery);
+            writer.append(assessResults.query);
             writer.append("\n## Results");
-            for (LabeledCell cell : results) {
+            for (LabeledCell cell : assessResults.labeledCells) {
                 writer.append(cell.toString());
             }
             writer.append("\n## Performance Results\n");
-            writer.append("Parsing time: ").append(String.valueOf(performanceResults.parseTime)).append(" ms\n");
-            writer.append("Comparison time: ").append(String.valueOf(performanceResults.comparisonTime)).append(" ms\n");
-            writer.append("Labeling time: ").append(String.valueOf(performanceResults.labelingTime)).append(" ns\n");
+            writer.append("Parsing time: ").append(String.valueOf(assessResults.parseTime)).append(" ms\n");
+            writer.append("Comparison time: ").append(String.valueOf(assessResults.comparisonTime)).append(" ms\n");
+            writer.append("Labeling time: ").append(String.valueOf(assessResults.labelingTime)).append(" ns\n");
         } catch (IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Failed to export to MarkDown");
