@@ -4,6 +4,7 @@ import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
+import mainengine.ResultFileMetadata;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -31,11 +32,29 @@ public class AssessOperator {
         long comparisonTime;
         long labelingTime;
     }
+
+
     public AssessOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
         this.performanceResults = new PerformanceResults();
     }
 
+    private String outputFileName;
+
+    public ResultFileMetadata execute(String assessQuery, String name) {
+        ResultFileMetadata results = new ResultFileMetadata();
+        results.setComponentResultFiles(null);
+        results.setComponentResultInfoFiles(null);
+        results.setResultInfoFile(name);
+        try {
+            execute(assessQuery);
+            results.setResultFile(outputFileName);
+        }
+        catch (RecognitionException | RuntimeException e) {
+            results.setErrorCheckingStatus(e.toString());
+        }
+        return results;
+    }
 
     /* Executes the provided query. Returns ?
      * @param assessQuery The user-provided query for assessment reasons
@@ -45,6 +64,7 @@ public class AssessOperator {
     public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
         Instant start = Instant.now();
         AssessQuery parsedQuery = parseQuery(assessQuery);
+        outputFileName = parsedQuery.outputName;
         Instant end = Instant.now();
         performanceResults.parseTime = Duration.between(start, end).toMillis();
 

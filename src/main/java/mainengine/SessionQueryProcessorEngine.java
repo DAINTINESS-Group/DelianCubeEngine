@@ -493,14 +493,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
-		cubeManager = session.getCubeManager();
-		AssessOperator operator = new AssessOperator(cubeManager);
-		try {
-			operator.execute(incomingExpression);
-		} catch (RecognitionException e) {
-			throw new RuntimeException(e);
-		}
-		return null;
+		return new AssessOperator(session.getCubeManager())
+				.execute(incomingExpression, "Metadata");
 	}
 	
 	
