@@ -195,7 +195,7 @@ public class AssessOperatorTest {
         String query = "with loan for month = '12/1997', region = 'north Moravia' by month, " +
                 "status asseSs max(amount) against PaST 20\n" +
                 "using ratio(amount, benchmark.amount)\n" +
-                "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}" +
+                "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA} " +
                 "SAVE aS filename_test";
         operator.execute(query);
         File outputFile = new File("OutputFiles/assessments/filename_test.md");

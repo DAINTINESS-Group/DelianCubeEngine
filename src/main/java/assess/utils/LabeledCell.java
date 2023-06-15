@@ -13,6 +13,8 @@ public class LabeledCell {
 
     @Override
     public String toString() {
-        return "\n\nCell: " + cell.toString("\t") + "\nWas Labeled: " + label;
+        return "Target Cell: " + cell.toString(", ") +
+                "\nwith measurement: " + cell.getMeasure() +
+                "\nwas labeled: " + label;
     }
 }
