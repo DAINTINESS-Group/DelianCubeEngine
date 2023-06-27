@@ -47,7 +47,11 @@ public class AnalyzeOperator {
 		//check if the incoming expression is written correctly and if so translate it to cube queries
 		incomingExpressionIsValid = analyzeTranslationManager.validateIncomingExpression();
 		if(incomingExpressionIsValid == true) {
+			long startTime = System.nanoTime();
 			analyzeQueries = analyzeTranslationManager.translateToCubeQueries();
+			long endTime = System.nanoTime();
+			double queriesGenerationTime = endTime - startTime;
+			System.out.println("Analyze Cube Query Generation Time :" + Double.toString(queriesGenerationTime/1000000) + " ms");
 			return true;
 		}else {
 			System.err.println("ANALYZE incoming expression contains syntax errors!Please check.");
@@ -61,6 +65,7 @@ public class AnalyzeOperator {
 	 */
 	public ResultFileMetadata execute() {
 		//this must return a Intentional Result object, not null, not void, not int
+		int resultTuplesCounter = 0;
 		boolean translationStatus = this.constructAnalyzeQueries();
 		boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
 		if(translationStatus == false) {
@@ -77,13 +82,26 @@ public class AnalyzeOperator {
 			analyzeReport.createTextReportFile();
 		}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
 			analyzeReport.setErrorStatus(false);
+			long startTime = System.nanoTime();
 			for(AnalyzeQuery aq: analyzeQueries) {
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);
+				String[][] resultArray = result.getResultArray();
+				if(resultArray != null) {
+					resultTuplesCounter += resultArray.length;
+				}
 				aq.setAnalyzeQueryResult(result);
 			}
+			long endTime = System.nanoTime();
+			double executionTime = endTime - startTime;
+			System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			analyzeReport.setAnalyzeQueries(analyzeQueries);
+			
+			startTime = System.nanoTime();
 			analyzeReport.createTextReportFile();
+			endTime = System.nanoTime();
+			double reportingTime = endTime - startTime;
+			System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 		}
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(analyzeReport.getLocalFolder());
@@ -91,6 +109,8 @@ public class AnalyzeOperator {
 		if(analyzeReport.getErrorStatus() == true) {
 			resultFile.setErrorCheckingStatus(analyzeReport.getErrorMessage());
 		}
+		System.out.println("Number of generated queries: " + Integer.toString(analyzeQueries.size()) + " queries");
+		System.out.println("Number of resulted tuples: " + Integer.toString(resultTuplesCounter));
 		return resultFile;
 	}
 	
