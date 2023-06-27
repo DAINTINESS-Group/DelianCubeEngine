@@ -35,7 +35,9 @@ public class DeltaScheme {
     }
 
     public HashMap<Cell, Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
-        HashMap<Cell, Double> comparisonMap = new HashMap<>();
+        HashMap<Cell, Double> comparisonMap = initializeComparisonMap(targetCube);
+        if (benchmark == null) { return comparisonMap; } // Just label the cell values
+
         for (Cell cell : targetCube.getCells()) {
             try { // When the benchmark cells are not enough, the remaining target cells will not be added to the set of cells
                 double expectedValue = benchmark.getCellValue();
@@ -50,7 +52,14 @@ public class DeltaScheme {
                 break;
             }
         }
+        return comparisonMap;
+    }
 
+    private HashMap<Cell, Double> initializeComparisonMap(Result targetCube) {
+        HashMap<Cell, Double> comparisonMap = new HashMap<>();
+        for (Cell cell : targetCube.getCells()) {
+            comparisonMap.put(cell, cell.toDouble());
+        }
         return comparisonMap;
     }
 }

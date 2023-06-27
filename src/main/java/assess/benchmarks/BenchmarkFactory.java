@@ -14,6 +14,9 @@ public class BenchmarkFactory {
     }
 
     public AssessBenchmark createBenchmark(List<String> details) {
+        if (details.isEmpty()) {
+            return null;
+        }
         String benchmarkType = details.get(0);
         switch (benchmarkType) {
             case "Constant":
