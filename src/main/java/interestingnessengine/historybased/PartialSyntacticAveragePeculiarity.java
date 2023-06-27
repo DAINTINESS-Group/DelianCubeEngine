@@ -15,8 +15,8 @@ public class PartialSyntacticAveragePeculiarity implements IInterestingnessMeasu
 	private String tempAggr;
 	private ArrayList<String[]> tempGamma;
 	private ArrayList<String[]> tempSigma;
-	private double intersetionGamma;
-	private double intersetionSigma;
+	private double intersectionGamma;
+	private double intersectionSigma;
 	private double unionGamma;
 	private double unionSigma;
 	private double totalJaccardGammaDistance;
@@ -83,38 +83,40 @@ public class PartialSyntacticAveragePeculiarity implements IInterestingnessMeasu
 			tempAggr = pastQuery.getAggregateFunction();
 			tempGamma = pastQuery.getGammaExpressions();
 			tempSigma = pastQuery.getSigmaExpressions();
-			intersetionGamma = 0.0;
-			intersetionSigma = 0.0;
+			intersectionGamma = 0.0;
+			intersectionSigma = 0.0;
 
 			//Calculate Gamma Jaccard component for each query
 			for(int i=0; i<tempGamma.size();i++) {
 				if(gammaMap.containsKey(tempGamma.get(i)[0] + "." + tempGamma.get(i)[1])) {
-					intersetionGamma++;
+					intersectionGamma++;
 				}
 			}
 			
-			unionGamma = gamma.size() + tempGamma.size();
+			unionGamma = gamma.size() + tempGamma.size() - intersectionGamma;
 			
 			//Add the the Jaccard distance of each query to the total Gamma distance
-			totalJaccardGammaDistance += (1 - (intersetionGamma/unionGamma));
+			totalJaccardGammaDistance += (1 - (intersectionGamma/unionGamma));
+			//System.out.println("Gamma Distance: "+totalJaccardGammaDistance);
 			
 			//Calculate Sigma Jaccard component for each query
 			for(int i=0; i<tempSigma.size();i++) {
 				if(sigmaMap.containsKey(tempSigma.get(i)[0]+tempSigma.get(i)[1]+tempSigma.get(i)[2])) {
-					intersetionSigma++;
+					intersectionSigma++;
 				}
 			}
 			
-			unionSigma = sigma.size() + tempSigma.size();
+			unionSigma = sigma.size() + tempSigma.size() - intersectionSigma;
 
 			//Add the the Jaccard distance of each query to the total Sigma distance
-			totalJaccardSigmaDistance += (1 - (intersetionSigma/unionSigma));
+			totalJaccardSigmaDistance += (1 - (intersectionSigma/unionSigma));
+			//System.out.println("Sigma Distance: "+totalJaccardSigmaDistance);
 			
 			//Calculate Measure Jaccard component
-			if(measure.equals(tempMeasure) && aggr.equals(tempAggr)) {
+			if(!(measure.equals(tempMeasure) && aggr.equals(tempAggr))) {
 				totalJaccardMeasureDistance++;
 			}
-			
+			//System.out.println("Measure Distance: "+totalJaccardMeasureDistance);
 		}
 				
 		//apply weights and divide by the number of past queries to find the total Jaccard distance

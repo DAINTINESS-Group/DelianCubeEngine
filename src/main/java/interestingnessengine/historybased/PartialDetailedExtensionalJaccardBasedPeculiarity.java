@@ -98,7 +98,11 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 			
 			if(union.size() > 0) {
 				double t = (double)intersection.size() /(double) union.size();
+				//System.out.println("Intersection of cells: "+(double)intersection.size());
+				//System.out.println("Union of cells: " +(double)union.size());
+				//System.out.println("T: "+t);
 				temp = 1.0 - t;
+				//System.out.println(temp);
 				jaccardDistances.add(temp);
 			}
 			
@@ -119,6 +123,9 @@ public class PartialDetailedExtensionalJaccardBasedPeculiarity implements IInter
 			System.out.println("K is out of bounds.");
 			return -1; 
 		}
+		//for(int i=0; i<jaccardDistances.size();i++) {
+		//	System.out.println(jaccardDistances.get(i));
+		//}
 		return jaccardDistances.get(inputManager.getKthNeighbor() - 1);
 	}
 
