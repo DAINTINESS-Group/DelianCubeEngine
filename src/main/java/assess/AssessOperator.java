@@ -10,7 +10,11 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.Cell;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
@@ -108,9 +112,12 @@ public class AssessOperator {
     }
 
     private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery) {
+        List<Cell> targetCells = cubeManager.executeQuery(parsedQuery.targetCubeQuery).getCells();
+        if (targetCells.isEmpty()) {
+            throw new RuntimeException("No cells collected from the target cube query");
+        }
         return parsedQuery.deltaFunction.compareTargetToBenchmark(
-                cubeManager.executeQuery(parsedQuery.targetCubeQuery),
-                parsedQuery.benchmark);
+                targetCells, parsedQuery.benchmark);
     }
 
     private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
@@ -119,6 +126,7 @@ public class AssessOperator {
             String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
             labeledCells.add(new LabeledCell(cell, label));
         }
+
         return labeledCells;
     }
 

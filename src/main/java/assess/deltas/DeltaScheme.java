@@ -2,7 +2,6 @@ package assess.deltas;
 
 import assess.benchmarks.AssessBenchmark;
 import result.Cell;
-import result.Result;
 
 import java.util.*;
 
@@ -34,31 +33,26 @@ public class DeltaScheme {
         }
     }
 
-    public HashMap<Cell, Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
-        HashMap<Cell, Double> comparisonMap = initializeComparisonMap(targetCube);
+    public HashMap<Cell, Double> compareTargetToBenchmark(List<Cell> targetCubeCells, AssessBenchmark benchmark) {
+        HashMap<Cell, Double> comparisonMap = new HashMap<>();
+        for (Cell cell : targetCubeCells) { comparisonMap.put(cell, cell.toDouble()); }
         if (benchmark == null) { return comparisonMap; } // Just label the cell values
 
-        for (Cell cell : targetCube.getCells()) {
-            try { // When the benchmark cells are not enough, the remaining target cells will not be added to the set of cells
-                double expectedValue = benchmark.getCellValue();
-                double comparisonValue = cell.toDouble();
-                for (ComparisonFunction function : appliedMethods) {
-                    comparisonValue = function.compare(comparisonValue, expectedValue);
-                }
-                comparisonMap.put(cell, comparisonValue);
-            } catch (NoSuchElementException ie) {
-                int ignoredCellsNumber = targetCube.getCells().size() - targetCube.getCells().indexOf(cell);
-                System.out.println("Benchmark cells were not enough, " + ignoredCellsNumber +" cell(s) will be ignored");
-                break;
+        for (Cell targetCell : targetCubeCells) {
+            Optional<Cell> matchedCell = benchmark.matchCell(targetCell);
+            System.out.println("\nTarget Cell: " + targetCell.toString(", "));
+            if(!matchedCell.isPresent()) {
+                System.out.println("Was not matched");
+                comparisonMap.remove(targetCell);
+                continue;
             }
-        }
-        return comparisonMap;
-    }
+            System.out.println("Benchmark Cell: " + matchedCell.get().toString(", "));
 
-    private HashMap<Cell, Double> initializeComparisonMap(Result targetCube) {
-        HashMap<Cell, Double> comparisonMap = new HashMap<>();
-        for (Cell cell : targetCube.getCells()) {
-            comparisonMap.put(cell, cell.toDouble());
+            double comparisonValue = targetCell.toDouble();
+            for (ComparisonFunction function : appliedMethods) {
+                comparisonValue = function.compare(comparisonValue, matchedCell.get().toDouble());
+            }
+            comparisonMap.put(targetCell, comparisonValue);
         }
         return comparisonMap;
     }

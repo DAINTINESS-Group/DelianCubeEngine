@@ -72,7 +72,7 @@ date :
 
 group_by_set returns [HashSet<String> groupBySet]
     @init{$groupBySet = new HashSet<>();}
-    : id=ID {$groupBySet.add($id.text);} (',' id=ID)* {$groupBySet.add($id.text);}
+    : id=ID {$groupBySet.add($id.text);} (',' id=ID {$groupBySet.add($id.text);})*
     ;
 
 benchmark returns [List<String> parsedBenchmark]

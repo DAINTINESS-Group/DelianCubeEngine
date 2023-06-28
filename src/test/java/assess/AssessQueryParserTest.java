@@ -73,12 +73,14 @@ public class AssessQueryParserTest {
 	@Test
 	public void createGroupBySetTest()
 			throws IOException, RecognitionException {
-		String predicates = "country, product";
+		String predicates = "country, product, age, date";
 		AssessQueryParser parser = createParser(predicates);
 
 		HashSet<String> expected = new HashSet<>();
-		expected.add("product");
 		expected.add("country");
+		expected.add("product");
+		expected.add("age");
+		expected.add("date");
 
 		HashSet<String> actual = parser.group_by_set();
 

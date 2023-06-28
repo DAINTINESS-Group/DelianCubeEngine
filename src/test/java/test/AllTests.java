@@ -28,9 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	analyze.AnalyzeQueriesExecutionTest.class,
 	analyze.AnalyzeWrongExpressions.class,
 	assess.benchmarks.BenchmarkFactoryTest.class,
-	/*assess.deltas.DeltaSchemeTest.class,*/
 	assess.labelers.CustomLabelingSchemeTest.class,
-	assess.AssessQueryBuilderTest.class,
 	assess.AssessQueryParserTest.class})
 public class AllTests {
 

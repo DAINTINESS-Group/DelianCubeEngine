@@ -13,11 +13,24 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Problem Parameters
+ * <ol>
+ *     <li>Data Set Size</li>
+ *     <li>Grouper dimension</li>
+ *     <li>result size</li>
+ *     <li>type of Benchmark</li>
+ * </ol>
+ */
 @BenchmarkMode(Mode.AverageTime) // Default will be 5 times
-@Fork(1) // How many times the whole process will be repeated
 @Warmup(iterations = 2) // How many warm up runs, discarding results
 @OutputTimeUnit(TimeUnit.MILLISECONDS) // Print time in milliseconds
 public class AssessOperatorBenchmarks {
+    // How does changing a single one of the following affect performance:
+    // Data set size (100K, 1M, 10M, 100M)
+    // Grouper Dimension (1, 2, 3, 4, 5) I don't know how many groupers we have
+    // Result size (Number of cells 10, 100, 1000)
+    // Type of Benchmark (Constant, Sibling, Past)
 
     @State(Scope.Benchmark)
     public static class CubeManagers {
@@ -43,6 +56,8 @@ public class AssessOperatorBenchmarks {
         return cubeManager;
     }
 
+    // Prototype: <benchmark><data-set-size><result-size><grouper-dimensions>
+
     @Benchmark
     public void pastBenchmarkSingleGrouper(CubeManagers cubeManagerSample) throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManagerSample.pkdd99CubeManager);
@@ -64,8 +79,6 @@ public class AssessOperatorBenchmarks {
                 "save as constantBenchmark";
          operator.execute(query);
     }
-
-
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(AssessOperatorBenchmarks.class.getSimpleName())

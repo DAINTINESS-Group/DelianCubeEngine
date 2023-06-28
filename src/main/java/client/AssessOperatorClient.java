@@ -13,8 +13,8 @@ public class AssessOperatorClient {
     public static void main(String [] args) throws RecognitionException {
         CubeManager cubeManager = initCubeManger();
         AssessOperator operator = new AssessOperator(cubeManager);
-        String query = "with loan for month = '10/1997'" +
-                "by month, region asseSs max(amount) " +
+        String query = "with loan for region = 'North Moravia' " +
+                "by region, status, month asseSs max(amount) against region = 'Prague'" +
                 "using ratio(amount, benchmark.amount) " +
                 "labels {[-inf, 50000.0]: low, (50000.0, +inf]: high}";
         operator.execute(query);

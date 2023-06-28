@@ -52,14 +52,16 @@ public class BenchmarkFactory {
         return new SiblingBenchmark(
                 cubeManagerAdapter.executeCubeQuery(
                         cubeManagerAdapter.translateToCubeQuery()
-                )
+                ), siblingKey
         );
     }
 
     private AssessBenchmark createPastBenchmark(String pastRecordsNumber) {
         int recordsNumber = Integer.parseInt(pastRecordsNumber);
         List<Result> pastRecords = cubeManagerAdapter.collectPastRecords(recordsNumber);
-        return new PastBenchmark(pastRecords);
+        if (pastRecords.isEmpty()) throw new RuntimeException("No past records for this query");
+        return new PastBenchmark(pastRecords,
+                cubeManagerAdapter.getDateSelectionPredicate());
     }
 
     // This can not be currently implemented as a CubeManager instance only handles 1 cube

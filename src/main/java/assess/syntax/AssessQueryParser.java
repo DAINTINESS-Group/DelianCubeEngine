@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 AssessQuery.g 2023-05-08 08:08:38
+// $ANTLR 3.5.2 AssessQuery.g 2023-06-27 18:06:48
 
 package assess.syntax;
 import assess.AssessQuery;
@@ -657,6 +657,7 @@ public class AssessQueryParser extends Parser {
 					{
 					match(input,48,FOLLOW_48_in_group_by_set507); 
 					id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set511); 
+					groupBySet.add((id!=null?id.getText():null));
 					}
 					break;
 
@@ -665,7 +666,6 @@ public class AssessQueryParser extends Parser {
 				}
 			}
 
-			groupBySet.add((id!=null?id.getText():null));
 			}
 
 		}

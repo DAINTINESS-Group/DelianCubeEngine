@@ -1,40 +1,89 @@
 package assess.benchmarks;
 
+import result.Cell;
 import result.Result;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PastBenchmark implements AssessBenchmark {
-    private final Iterator<Double> benchmarkCells;
+    private final List<PastEntry> pastEntries = new ArrayList<>();
+    private final int keyIndex;
 
-    public PastBenchmark(List<Result> pastResults) {
-        int numberOfCells = Collections.max(
-                pastResults.stream()
-                        .map(result -> result.getCells().size())
-                        .collect(Collectors.toList())
-        );
-        ArrayList<Double> averageCells =
-                new ArrayList<>(Collections.nCopies(numberOfCells, 0.0)); // Init values to 0.0
+    private static class PastEntry {
+        final List<String> dimensions; // Except the date dimension
+        double measurement;
+        int resultsAdded;
 
-        // Get cell value, add it to the appropriate cell index in averageCells
-        for (Result result : pastResults) {
-            for (int i = 0; i < result.getCells().size(); i++) {
-                double prevValue = averageCells.get(i);
-                double newValue = result.getCells().get(i).toDouble();
-                averageCells.set(i, prevValue + newValue);
-            }
+        public PastEntry(List<String> dimensions, double measurement) {
+            this.dimensions = dimensions;
+            this.measurement = measurement;
+            this.resultsAdded = 1;
         }
 
-        averageCells.replaceAll(aDouble -> aDouble / pastResults.size());
-        benchmarkCells = averageCells.iterator();
+        boolean matches(List<String> dimensions) {
+            return this.dimensions.equals(dimensions);
+        }
+
+        void update(double measurement) {
+            this.measurement += measurement;
+            resultsAdded++;
+        }
+
+        @Override
+        public String toString() {
+            return "dimensions=" + dimensions +
+                    ", measurement=" + measurement +
+                    ", resultsAdded=" + resultsAdded;
+        }
+    }
+
+    public PastBenchmark(List<Result> pastResults, String dateLevel) {
+        keyIndex = findDateIndex(pastResults.get(0).getColumnLabels(), dateLevel);
+        for (Result result : pastResults) {
+            for (Cell cell : result.getCells()) {
+                List<String> dimensionValues = new ArrayList<>(cell.getDimensionMembers());
+                double measurement = cell.toDouble();
+                dimensionValues.remove(keyIndex);
+                Optional<PastEntry> matchingEntry = pastEntries.stream()
+                        .filter(pastEntry -> pastEntry.matches(dimensionValues))
+                        .findFirst();
+
+                if (matchingEntry.isPresent()) {
+                    matchingEntry.get().update(cell.toDouble());
+                } else {
+                    pastEntries.add(new PastEntry(dimensionValues, measurement));
+                }
+            }
+        }
+        pastEntries.forEach(pastEntry -> pastEntry.measurement = pastEntry.measurement / pastEntry.resultsAdded);
+        pastEntries.forEach(System.out::println);
+    }
+
+    // Assuming all results have the same order of columns
+    private int findDateIndex(List<String> dimensions, String dateLevel) {
+        return dimensions
+                .stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList())
+                .indexOf(dateLevel);
     }
 
     @Override
-    public double getCellValue() {
-        return benchmarkCells.next();
+    public Optional<Cell> matchCell(Cell targetCell) {
+        List<String> targetDimensionValues = new ArrayList<>(targetCell.getDimensionMembers());
+        targetDimensionValues.remove(keyIndex);
+
+        for (PastEntry pastEntry : pastEntries) {
+            if (pastEntry.matches(targetDimensionValues)) {
+                return Optional.of(new Cell( new String[]
+                        {"Average of " + pastEntry.resultsAdded,
+                                Double.toString(pastEntry.measurement),
+                                Integer.toString(pastEntry.resultsAdded)
+                        }));
+            }
+        }
+
+        return Optional.empty();
     }
 }
