@@ -48,11 +48,11 @@ public class AssessOperator {
 
     private String outputFileName;
 
-    public ResultFileMetadata execute(String assessQuery, String name) {
+    public ResultFileMetadata execute(String assessQuery, String metadataFilename) {
         ResultFileMetadata results = new ResultFileMetadata();
         results.setComponentResultFiles(null);
         results.setComponentResultInfoFiles(null);
-        results.setResultInfoFile(name);
+        results.setResultInfoFile(metadataFilename);
         try {
             execute(assessQuery);
             results.setResultFile(outputFileName);
