@@ -2,6 +2,7 @@ package assess;
 
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
+import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
 import mainengine.ResultFileMetadata;
@@ -37,6 +38,7 @@ public class AssessOperator {
         long labelingTime;
         String query;
         AssessQuery parsedQuery;
+        List<ComparedCell> comparedCells = new ArrayList<>();
         List<LabeledCell> labeledCells;
     }
 
@@ -79,7 +81,7 @@ public class AssessOperator {
 
         // Execute Comparisons
         Instant comparingStart = Instant.now();
-        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
+        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery, assessResults.comparedCells);
         assessResults.comparisonTime = Duration.between(comparingStart, Instant.now()).toMillis();
 
         // Label Comparison Results
@@ -111,13 +113,13 @@ public class AssessOperator {
         }
     }
 
-    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery) {
+    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery, List<ComparedCell> comparedCells) {
         List<Cell> targetCells = cubeManager.executeQuery(parsedQuery.targetCubeQuery).getCells();
         if (targetCells.isEmpty()) {
             throw new RuntimeException("No cells collected from the target cube query");
         }
         return parsedQuery.deltaFunction.compareTargetToBenchmark(
-                targetCells, parsedQuery.benchmark);
+                targetCells, parsedQuery.benchmark, comparedCells);
     }
 
     private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
@@ -137,6 +139,12 @@ public class AssessOperator {
             writer.append("## Query\n");
             writer.append(assessResults.query);
             writer.append("\n\n");
+
+            // Comparisons Made
+            writer.append("## Comparisons Made\n");
+            for (ComparedCell comparedCell : assessResults.comparedCells) {
+                writer.append(comparedCell.toString()).append("\n\n");
+            }
 
             // Print resulting cells with their labels
             writer.append("## Results\n");

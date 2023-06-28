@@ -1,6 +1,7 @@
 package assess.deltas;
 
 import assess.benchmarks.AssessBenchmark;
+import assess.utils.ComparedCell;
 import result.Cell;
 
 import java.util.*;
@@ -33,25 +34,26 @@ public class DeltaScheme {
         }
     }
 
-    public HashMap<Cell, Double> compareTargetToBenchmark(List<Cell> targetCubeCells, AssessBenchmark benchmark) {
+    public HashMap<Cell, Double> compareTargetToBenchmark(List<Cell> targetCubeCells, AssessBenchmark benchmark, List<ComparedCell> comparedCells) {
         HashMap<Cell, Double> comparisonMap = new HashMap<>();
         for (Cell cell : targetCubeCells) { comparisonMap.put(cell, cell.toDouble()); }
         if (benchmark == null) { return comparisonMap; } // Just label the cell values
 
         for (Cell targetCell : targetCubeCells) {
             Optional<Cell> matchedCell = benchmark.matchCell(targetCell);
-            System.out.println("\nTarget Cell: " + targetCell.toString(", "));
             if(!matchedCell.isPresent()) {
-                System.out.println("Was not matched");
+                ComparedCell comparedCell = new ComparedCell(targetCell, null);
+                comparedCells.add(comparedCell);
                 comparisonMap.remove(targetCell);
                 continue;
             }
-            System.out.println("Benchmark Cell: " + matchedCell.get().toString(", "));
 
             double comparisonValue = targetCell.toDouble();
             for (ComparisonFunction function : appliedMethods) {
                 comparisonValue = function.compare(comparisonValue, matchedCell.get().toDouble());
             }
+            ComparedCell comparedCell = new ComparedCell(targetCell, matchedCell.get());
+            comparedCells.add(comparedCell);
             comparisonMap.put(targetCell, comparisonValue);
         }
         return comparisonMap;

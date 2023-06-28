@@ -13,10 +13,14 @@ public class AssessOperatorClient {
     public static void main(String [] args) throws RecognitionException {
         CubeManager cubeManager = initCubeManger();
         AssessOperator operator = new AssessOperator(cubeManager);
-        String query = "with loan for region = 'North Moravia' " +
-                "by region, status, month asseSs max(amount) against region = 'Prague'" +
-                "using ratio(amount, benchmark.amount) " +
-                "labels {[-inf, 50000.0]: low, (50000.0, +inf]: high}";
+        String query = "WITH loan\n" +
+                "FOR region = 'North Moravia'\n" +
+                "BY region, status, month\n" +
+                "ASSESS max(amount)\n" +
+                "AGAINST region = 'Prague'\n" +
+                "USING ratio(amount, benchmark.amount)\n" +
+                "LABELS {[0.01, 0.5]: low, (0.5, 1]: high, (1, +inf): ultra}\n" +
+                "SAVE AS NMoraviaVSPrague";
         operator.execute(query);
     }
 
