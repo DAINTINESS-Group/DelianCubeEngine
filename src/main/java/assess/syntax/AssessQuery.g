@@ -106,7 +106,7 @@ external_benchmark returns [String cube, String measurement]
 comparison_scheme [List<String> comparisonMethods] returns [List<String> updatedComparisonMethods]
     @init{$updatedComparisonMethods = $comparisonMethods;}
     : method_name = ID {$updatedComparisonMethods.add($method_name.text);}
-    '(' comparison_scheme[$updatedComparisonMethods] | comparison_args')';
+    '(' (comparison_scheme[$updatedComparisonMethods] | comparison_args) ')';
 
 comparison_args : ID ',' ( ('benchmark.')? ID | INT);
 
@@ -178,10 +178,10 @@ AGGREGATE : (A V G | A V E R A G E
           | S U M | C O U N T);
 
 // LEXICAL TOKENS
-SIGN : ('+' | '-');
-ID : ('a'..'z'|'A'..'Z'|'_')+;
-
 INT : '0'..'9'+;
 FLOAT : INT '.' INT;
+SIGN : ('+' | '-');
+ID : ('a'..'z'|'A'..'Z'|'_'|INT)+;
+
 
 WS : (' '|'\t'|'\n'|'\r') {$channel=HIDDEN;} ;

@@ -141,13 +141,15 @@ public class AssessOperator {
             writer.append("\n\n");
 
             // Comparisons Made
-            writer.append("## Comparisons Made\n");
+            writer.append("## Comparisons Made (")
+                    .append(Integer.toString(assessResults.comparedCells.size())).append(" in total)\n");
             for (ComparedCell comparedCell : assessResults.comparedCells) {
                 writer.append(comparedCell.toString()).append("\n\n");
             }
 
             // Print resulting cells with their labels
-            writer.append("## Results\n");
+            writer.append("## Labeling Results (")
+                    .append(Integer.toString(assessResults.labeledCells.size())).append(" in total)\n");
             for (LabeledCell cell : assessResults.labeledCells) {
                 writer.append(cell.toString()).append("\n\n");
             }

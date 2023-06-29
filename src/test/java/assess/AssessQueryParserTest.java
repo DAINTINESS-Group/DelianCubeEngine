@@ -135,10 +135,10 @@ public class AssessQueryParserTest {
 	@Test
 	public void givenUsingStatement_whenParsingInput_thenCollectComparisonMethods()
 			throws IOException, RecognitionException {
-		String usingStatement = "ratio(deference(storeSales,benchmark.storeSales))";
+		String usingStatement = "ratio(absolute(storeSales,benchmark.storeSales))";
 		AssessQueryParser parser = createParser(usingStatement);
 
-		List<String> expected = new ArrayList<>(Arrays.asList("ratio", "deference"));
+		List<String> expected = new ArrayList<>(Arrays.asList("ratio", "absolute"));
 		List<String> actual = parser.comparison_scheme(new ArrayList<>());
 
 		assertEquals(expected, actual);

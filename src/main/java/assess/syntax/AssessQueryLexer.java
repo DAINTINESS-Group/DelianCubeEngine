@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 AssessQuery.g 2023-06-27 18:06:49
+// $ANTLR 3.5.2 AssessQuery.g 2023-06-29 07:55:40
 
 package assess.syntax;
 
@@ -1518,48 +1518,21 @@ public class AssessQueryLexer extends Lexer {
 	}
 	// $ANTLR end "AGGREGATE"
 
-	// $ANTLR start "SIGN"
-	public final void mSIGN() throws RecognitionException {
+	// $ANTLR start "INT"
+	public final void mINT() throws RecognitionException {
 		try {
-			int _type = SIGN;
+			int _type = INT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// AssessQuery.g:181:6: ( ( '+' | '-' ) )
-			// AssessQuery.g:
+			// AssessQuery.g:181:5: ( ( '0' .. '9' )+ )
+			// AssessQuery.g:181:7: ( '0' .. '9' )+
 			{
-			if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
-				input.consume();
-			}
-			else {
-				MismatchedSetException mse = new MismatchedSetException(null,input);
-				recover(mse);
-				throw mse;
-			}
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "SIGN"
-
-	// $ANTLR start "ID"
-	public final void mID() throws RecognitionException {
-		try {
-			int _type = ID;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// AssessQuery.g:182:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+ )
-			// AssessQuery.g:182:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+
-			{
-			// AssessQuery.g:182:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' )+
+			// AssessQuery.g:181:7: ( '0' .. '9' )+
 			int cnt2=0;
 			loop2:
 			while (true) {
 				int alt2=2;
 				int LA2_0 = input.LA(1);
-				if ( ((LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
+				if ( ((LA2_0 >= '0' && LA2_0 <= '9')) ) {
 					alt2=1;
 				}
 
@@ -1567,7 +1540,7 @@ public class AssessQueryLexer extends Lexer {
 				case 1 :
 					// AssessQuery.g:
 					{
-					if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
 						input.consume();
 					}
 					else {
@@ -1595,38 +1568,177 @@ public class AssessQueryLexer extends Lexer {
 			// do for sure before leaving
 		}
 	}
-	// $ANTLR end "ID"
+	// $ANTLR end "INT"
 
-	// $ANTLR start "INT"
-	public final void mINT() throws RecognitionException {
+	// $ANTLR start "FLOAT"
+	public final void mFLOAT() throws RecognitionException {
 		try {
-			int _type = INT;
+			int _type = FLOAT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// AssessQuery.g:184:5: ( ( '0' .. '9' )+ )
-			// AssessQuery.g:184:7: ( '0' .. '9' )+
+			// AssessQuery.g:182:7: ( INT '.' INT )
+			// AssessQuery.g:182:9: INT '.' INT
 			{
-			// AssessQuery.g:184:7: ( '0' .. '9' )+
+			mINT(); 
+
+			match('.'); 
+			mINT(); 
+
+			}
+
+			state.type = _type;
+			state.channel = _channel;
+		}
+		finally {
+			// do for sure before leaving
+		}
+	}
+	// $ANTLR end "FLOAT"
+
+	// $ANTLR start "SIGN"
+	public final void mSIGN() throws RecognitionException {
+		try {
+			int _type = SIGN;
+			int _channel = DEFAULT_TOKEN_CHANNEL;
+			// AssessQuery.g:183:6: ( ( '+' | '-' ) )
+			// AssessQuery.g:
+			{
+			if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
+				input.consume();
+			}
+			else {
+				MismatchedSetException mse = new MismatchedSetException(null,input);
+				recover(mse);
+				throw mse;
+			}
+			}
+
+			state.type = _type;
+			state.channel = _channel;
+		}
+		finally {
+			// do for sure before leaving
+		}
+	}
+	// $ANTLR end "SIGN"
+
+	// $ANTLR start "ID"
+	public final void mID() throws RecognitionException {
+		try {
+			int _type = ID;
+			int _channel = DEFAULT_TOKEN_CHANNEL;
+			// AssessQuery.g:184:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+ )
+			// AssessQuery.g:184:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
+			{
+			// AssessQuery.g:184:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
 			int cnt3=0;
 			loop3:
 			while (true) {
-				int alt3=2;
-				int LA3_0 = input.LA(1);
-				if ( ((LA3_0 >= '0' && LA3_0 <= '9')) ) {
+				int alt3=5;
+				switch ( input.LA(1) ) {
+				case 'a':
+				case 'b':
+				case 'c':
+				case 'd':
+				case 'e':
+				case 'f':
+				case 'g':
+				case 'h':
+				case 'i':
+				case 'j':
+				case 'k':
+				case 'l':
+				case 'm':
+				case 'n':
+				case 'o':
+				case 'p':
+				case 'q':
+				case 'r':
+				case 's':
+				case 't':
+				case 'u':
+				case 'v':
+				case 'w':
+				case 'x':
+				case 'y':
+				case 'z':
+					{
 					alt3=1;
+					}
+					break;
+				case 'A':
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'E':
+				case 'F':
+				case 'G':
+				case 'H':
+				case 'I':
+				case 'J':
+				case 'K':
+				case 'L':
+				case 'M':
+				case 'N':
+				case 'O':
+				case 'P':
+				case 'Q':
+				case 'R':
+				case 'S':
+				case 'T':
+				case 'U':
+				case 'V':
+				case 'W':
+				case 'X':
+				case 'Y':
+				case 'Z':
+					{
+					alt3=2;
+					}
+					break;
+				case '_':
+					{
+					alt3=3;
+					}
+					break;
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					{
+					alt3=4;
+					}
+					break;
 				}
-
 				switch (alt3) {
 				case 1 :
-					// AssessQuery.g:
+					// AssessQuery.g:184:7: 'a' .. 'z'
 					{
-					if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-						input.consume();
+					matchRange('a','z'); 
 					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
+					break;
+				case 2 :
+					// AssessQuery.g:184:16: 'A' .. 'Z'
+					{
+					matchRange('A','Z'); 
 					}
+					break;
+				case 3 :
+					// AssessQuery.g:184:25: '_'
+					{
+					match('_'); 
+					}
+					break;
+				case 4 :
+					// AssessQuery.g:184:29: INT
+					{
+					mINT(); 
+
 					}
 					break;
 
@@ -1647,31 +1759,7 @@ public class AssessQueryLexer extends Lexer {
 			// do for sure before leaving
 		}
 	}
-	// $ANTLR end "INT"
-
-	// $ANTLR start "FLOAT"
-	public final void mFLOAT() throws RecognitionException {
-		try {
-			int _type = FLOAT;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// AssessQuery.g:185:7: ( INT '.' INT )
-			// AssessQuery.g:185:9: INT '.' INT
-			{
-			mINT(); 
-
-			match('.'); 
-			mINT(); 
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "FLOAT"
+	// $ANTLR end "ID"
 
 	// $ANTLR start "WS"
 	public final void mWS() throws RecognitionException {
@@ -1703,7 +1791,7 @@ public class AssessQueryLexer extends Lexer {
 
 	@Override
 	public void mTokens() throws RecognitionException {
-		// AssessQuery.g:1:8: ( T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | AGAINST | ASSESS | BY | FOR | LABELS | PAST | USING | WITH | SAVE | AS | AGGREGATE | SIGN | ID | INT | FLOAT | WS )
+		// AssessQuery.g:1:8: ( T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | AGAINST | ASSESS | BY | FOR | LABELS | PAST | USING | WITH | SAVE | AS | AGGREGATE | INT | FLOAT | SIGN | ID | WS )
 		int alt4=30;
 		alt4 = dfa4.predict(input);
 		switch (alt4) {
@@ -1883,30 +1971,30 @@ public class AssessQueryLexer extends Lexer {
 				}
 				break;
 			case 26 :
-				// AssessQuery.g:1:157: SIGN
-				{
-				mSIGN(); 
-
-				}
-				break;
-			case 27 :
-				// AssessQuery.g:1:162: ID
-				{
-				mID(); 
-
-				}
-				break;
-			case 28 :
-				// AssessQuery.g:1:165: INT
+				// AssessQuery.g:1:157: INT
 				{
 				mINT(); 
 
 				}
 				break;
-			case 29 :
-				// AssessQuery.g:1:169: FLOAT
+			case 27 :
+				// AssessQuery.g:1:161: FLOAT
 				{
 				mFLOAT(); 
+
+				}
+				break;
+			case 28 :
+				// AssessQuery.g:1:167: SIGN
+				{
+				mSIGN(); 
+
+				}
+				break;
+			case 29 :
+				// AssessQuery.g:1:172: ID
+				{
+				mID(); 
 
 				}
 				break;
@@ -1924,45 +2012,50 @@ public class AssessQueryLexer extends Lexer {
 
 	protected DFA4 dfa4 = new DFA4(this);
 	static final String DFA4_eotS =
-		"\13\uffff\2\32\2\uffff\12\32\2\uffff\1\55\1\uffff\1\32\1\60\2\32\1\63"+
-		"\13\32\2\uffff\1\32\1\uffff\1\102\1\32\1\uffff\1\32\1\105\1\32\1\107\5"+
-		"\32\3\105\2\32\1\uffff\2\32\1\uffff\1\32\1\uffff\1\32\1\125\1\32\1\127"+
-		"\1\130\10\32\1\uffff\1\141\2\uffff\2\32\1\105\2\32\1\146\1\32\1\150\1"+
-		"\uffff\3\32\1\154\1\uffff\1\105\1\uffff\2\105\1\32\1\uffff\1\32\1\uffff";
+		"\13\uffff\2\44\2\uffff\12\44\1\104\1\uffff\11\44\2\uffff\1\44\2\107\2"+
+		"\44\1\113\2\44\1\113\25\44\2\uffff\1\44\1\uffff\1\147\2\44\1\uffff\2\44"+
+		"\1\154\1\44\1\154\1\44\2\157\12\44\6\154\3\44\1\uffff\4\44\1\uffff\2\44"+
+		"\1\uffff\2\44\2\u0089\2\44\2\u008c\2\u008d\17\44\1\uffff\2\u009d\2\uffff"+
+		"\4\44\2\154\3\44\2\u00a5\2\44\2\u00a8\1\uffff\5\44\2\u00ae\1\uffff\2\154"+
+		"\1\uffff\4\154\1\44\1\uffff\1\44\1\uffff";
 	static final String DFA4_eofS =
-		"\157\uffff";
+		"\u00b1\uffff";
 	static final String DFA4_minS =
 		"\1\11\12\uffff\1\131\1\156\2\uffff\1\107\1\131\1\117\2\101\1\123\1\111"+
-		"\2\101\1\117\2\uffff\1\56\1\uffff\1\156\1\101\1\146\2\101\1\105\1\122"+
-		"\1\102\1\123\1\111\1\124\1\126\1\115\1\116\1\130\1\125\2\uffff\1\143\1"+
-		"\uffff\1\101\1\111\1\uffff\1\105\1\101\1\122\1\101\1\105\1\124\1\116\1"+
-		"\110\1\105\3\101\1\116\1\150\1\uffff\1\116\1\123\1\uffff\1\101\1\uffff"+
-		"\1\114\1\101\1\107\2\101\2\115\1\124\1\155\2\123\1\107\1\123\1\uffff\1"+
-		"\101\2\uffff\2\125\1\101\1\141\1\124\1\101\1\105\1\101\1\uffff\2\115\1"+
-		"\162\1\101\1\uffff\1\101\1\uffff\2\101\1\153\1\uffff\1\56\1\uffff";
+		"\2\101\1\117\1\56\1\uffff\1\107\1\117\2\101\1\123\1\111\2\101\1\117\2"+
+		"\uffff\1\156\2\60\1\146\1\101\1\60\1\105\1\101\1\60\1\105\2\122\2\102"+
+		"\2\123\2\111\2\124\1\126\1\115\1\126\1\115\1\116\1\130\1\116\1\130\2\125"+
+		"\2\uffff\1\143\1\uffff\1\60\2\111\1\uffff\2\105\1\60\1\122\1\60\1\122"+
+		"\2\60\2\105\2\124\2\116\2\110\2\105\6\60\2\116\1\150\1\uffff\2\116\2\123"+
+		"\1\uffff\2\101\1\uffff\2\114\2\60\2\107\4\60\4\115\2\124\1\155\4\123\2"+
+		"\107\2\123\1\uffff\2\60\2\uffff\4\125\2\60\1\141\2\124\2\60\2\105\2\60"+
+		"\1\uffff\4\115\1\162\2\60\1\uffff\2\60\1\uffff\4\60\1\153\1\uffff\1\56"+
+		"\1\uffff";
 	static final String DFA4_maxS =
 		"\1\175\12\uffff\1\171\1\156\2\uffff\1\166\1\171\1\157\2\141\1\163\1\151"+
-		"\1\165\1\151\1\157\2\uffff\1\71\1\uffff\1\156\1\172\1\146\1\141\1\172"+
-		"\1\147\1\162\1\142\1\163\1\151\1\164\1\166\1\155\1\156\1\170\1\165\2\uffff"+
-		"\1\143\1\uffff\1\172\1\151\1\uffff\1\145\1\172\1\162\1\172\1\145\1\164"+
-		"\1\156\1\150\1\145\3\172\1\156\1\150\1\uffff\1\156\1\163\1\uffff\1\141"+
-		"\1\uffff\1\154\1\172\1\147\2\172\2\155\1\164\1\155\2\163\1\147\1\163\1"+
-		"\uffff\1\172\2\uffff\2\165\1\172\1\141\1\164\1\172\1\145\1\172\1\uffff"+
-		"\2\155\1\162\1\172\1\uffff\1\172\1\uffff\2\172\1\153\1\uffff\1\56\1\uffff";
+		"\1\165\1\151\1\157\1\172\1\uffff\1\166\1\157\2\141\1\163\1\151\1\165\1"+
+		"\151\1\157\2\uffff\1\156\2\172\1\146\1\141\1\172\1\147\1\141\1\172\1\147"+
+		"\2\162\2\142\2\163\2\151\2\164\1\166\1\155\1\166\1\155\1\156\1\170\1\156"+
+		"\1\170\2\165\2\uffff\1\143\1\uffff\1\172\2\151\1\uffff\2\145\1\172\1\162"+
+		"\1\172\1\162\2\172\2\145\2\164\2\156\2\150\2\145\6\172\2\156\1\150\1\uffff"+
+		"\2\156\2\163\1\uffff\2\141\1\uffff\2\154\2\172\2\147\4\172\4\155\2\164"+
+		"\1\155\4\163\2\147\2\163\1\uffff\2\172\2\uffff\4\165\2\172\1\141\2\164"+
+		"\2\172\2\145\2\172\1\uffff\4\155\1\162\2\172\1\uffff\2\172\1\uffff\4\172"+
+		"\1\153\1\uffff\1\56\1\uffff";
 	static final String DFA4_acceptS =
 		"\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\2\uffff\1\15\1\16"+
-		"\12\uffff\1\32\1\33\1\uffff\1\36\20\uffff\1\34\1\35\1\uffff\1\21\2\uffff"+
-		"\1\30\16\uffff\1\14\2\uffff\1\31\1\uffff\1\22\15\uffff\1\24\1\uffff\1"+
-		"\26\1\27\10\uffff\1\25\4\uffff\1\20\1\uffff\1\23\3\uffff\1\17\1\uffff"+
+		"\13\uffff\1\34\11\uffff\1\35\1\36\36\uffff\1\32\1\33\1\uffff\1\21\3\uffff"+
+		"\1\30\33\uffff\1\14\4\uffff\1\31\2\uffff\1\22\31\uffff\1\24\2\uffff\1"+
+		"\26\1\27\17\uffff\1\25\7\uffff\1\20\2\uffff\1\23\5\uffff\1\17\1\uffff"+
 		"\1\13";
 	static final String DFA4_specialS =
-		"\157\uffff}>";
+		"\u00b1\uffff}>";
 	static final String[] DFA4_transitionS = {
-			"\2\34\2\uffff\1\34\22\uffff\1\34\6\uffff\1\11\1\1\1\2\1\uffff\1\31\1"+
-			"\3\1\31\1\4\1\5\12\33\1\6\2\uffff\1\7\3\uffff\1\17\1\20\1\30\2\32\1\21"+
-			"\5\32\1\22\1\27\2\32\1\23\2\32\1\26\1\32\1\24\1\32\1\25\3\32\1\10\1\uffff"+
-			"\1\12\1\uffff\1\32\1\uffff\1\17\1\13\1\30\2\32\1\21\2\32\1\14\2\32\1"+
-			"\22\1\27\2\32\1\23\2\32\1\26\1\32\1\24\1\32\1\25\3\32\1\15\1\uffff\1"+
+			"\2\45\2\uffff\1\45\22\uffff\1\45\6\uffff\1\11\1\1\1\2\1\uffff\1\32\1"+
+			"\3\1\32\1\4\1\5\12\31\1\6\2\uffff\1\7\3\uffff\1\33\1\20\1\43\2\44\1\34"+
+			"\5\44\1\35\1\42\2\44\1\36\2\44\1\41\1\44\1\37\1\44\1\40\3\44\1\10\1\uffff"+
+			"\1\12\1\uffff\1\44\1\uffff\1\17\1\13\1\30\2\44\1\21\2\44\1\14\2\44\1"+
+			"\22\1\27\2\44\1\23\2\44\1\26\1\44\1\24\1\44\1\25\3\44\1\15\1\uffff\1"+
 			"\16",
 			"",
 			"",
@@ -1974,106 +2067,177 @@ public class AssessQueryLexer extends Lexer {
 			"",
 			"",
 			"",
-			"\1\36\13\uffff\1\35\23\uffff\1\36",
-			"\1\37",
+			"\1\50\13\uffff\1\46\23\uffff\1\47",
+			"\1\51",
 			"",
 			"",
-			"\1\40\13\uffff\1\41\2\uffff\1\42\20\uffff\1\40\13\uffff\1\41\2\uffff"+
-			"\1\42",
-			"\1\36\37\uffff\1\36",
-			"\1\43\37\uffff\1\43",
-			"\1\44\37\uffff\1\44",
-			"\1\45\37\uffff\1\45",
-			"\1\46\37\uffff\1\46",
-			"\1\47\37\uffff\1\47",
-			"\1\50\23\uffff\1\51\13\uffff\1\50\23\uffff\1\51",
-			"\1\53\7\uffff\1\52\27\uffff\1\53\7\uffff\1\52",
-			"\1\54\37\uffff\1\54",
+			"\1\55\13\uffff\1\56\2\uffff\1\57\20\uffff\1\52\13\uffff\1\53\2\uffff"+
+			"\1\54",
+			"\1\50\37\uffff\1\47",
+			"\1\61\37\uffff\1\60",
+			"\1\63\37\uffff\1\62",
+			"\1\65\37\uffff\1\64",
+			"\1\67\37\uffff\1\66",
+			"\1\71\37\uffff\1\70",
+			"\1\74\23\uffff\1\75\13\uffff\1\72\23\uffff\1\73",
+			"\1\101\7\uffff\1\100\27\uffff\1\77\7\uffff\1\76",
+			"\1\103\37\uffff\1\102",
+			"\1\105\1\uffff\12\31\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"",
+			"\1\55\13\uffff\1\56\2\uffff\1\57\20\uffff\1\52\13\uffff\1\53\2\uffff"+
+			"\1\54",
+			"\1\61\37\uffff\1\60",
+			"\1\63\37\uffff\1\62",
+			"\1\65\37\uffff\1\64",
+			"\1\67\37\uffff\1\66",
+			"\1\71\37\uffff\1\70",
+			"\1\74\23\uffff\1\75\13\uffff\1\72\23\uffff\1\73",
+			"\1\101\7\uffff\1\100\27\uffff\1\77\7\uffff\1\76",
+			"\1\103\37\uffff\1\102",
 			"",
 			"",
-			"\1\56\1\uffff\12\33",
-			"",
-			"\1\57",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\61",
-			"\1\62\37\uffff\1\62",
-			"\22\32\1\64\7\32\4\uffff\1\32\1\uffff\22\32\1\64\7\32",
-			"\1\66\1\uffff\1\65\35\uffff\1\66\1\uffff\1\65",
-			"\1\67\37\uffff\1\67",
-			"\1\70\37\uffff\1\70",
-			"\1\71\37\uffff\1\71",
-			"\1\72\37\uffff\1\72",
-			"\1\73\37\uffff\1\73",
-			"\1\74\37\uffff\1\74",
-			"\1\75\37\uffff\1\75",
-			"\1\76\37\uffff\1\76",
-			"\1\77\37\uffff\1\77",
-			"\1\100\37\uffff\1\100",
-			"",
-			"",
-			"\1\101",
-			"",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\103\37\uffff\1\103",
-			"",
-			"\1\104\37\uffff\1\104",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\106\37\uffff\1\106",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\110\37\uffff\1\110",
-			"\1\111\37\uffff\1\111",
-			"\1\112\37\uffff\1\112",
-			"\1\113\37\uffff\1\113",
-			"\1\114\37\uffff\1\114",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\10\32\1\115\21\32\4\uffff\1\32\1\uffff\10\32\1\115\21\32",
-			"\10\32\1\116\21\32\4\uffff\1\32\1\uffff\10\32\1\116\21\32",
-			"\1\117\37\uffff\1\117",
-			"\1\120",
-			"",
-			"\1\121\37\uffff\1\121",
-			"\1\122\37\uffff\1\122",
-			"",
-			"\1\123\37\uffff\1\123",
-			"",
-			"\1\124\37\uffff\1\124",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\126\37\uffff\1\126",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\131\37\uffff\1\131",
-			"\1\132\37\uffff\1\132",
-			"\1\133\37\uffff\1\133",
-			"\1\134",
-			"\1\135\37\uffff\1\135",
-			"\1\136\37\uffff\1\136",
-			"\1\137\37\uffff\1\137",
-			"\1\140\37\uffff\1\140",
-			"",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
+			"\1\106",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\110",
+			"\1\112\37\uffff\1\111",
+			"\12\44\7\uffff\22\44\1\115\7\44\4\uffff\1\44\1\uffff\22\44\1\114\7\44",
+			"\1\121\1\uffff\1\120\35\uffff\1\117\1\uffff\1\116",
+			"\1\112\37\uffff\1\111",
+			"\12\44\7\uffff\22\44\1\115\7\44\4\uffff\1\44\1\uffff\22\44\1\114\7\44",
+			"\1\121\1\uffff\1\120\35\uffff\1\117\1\uffff\1\116",
+			"\1\123\37\uffff\1\122",
+			"\1\123\37\uffff\1\122",
+			"\1\125\37\uffff\1\124",
+			"\1\125\37\uffff\1\124",
+			"\1\127\37\uffff\1\126",
+			"\1\127\37\uffff\1\126",
+			"\1\131\37\uffff\1\130",
+			"\1\131\37\uffff\1\130",
+			"\1\133\37\uffff\1\132",
+			"\1\133\37\uffff\1\132",
+			"\1\135\37\uffff\1\134",
+			"\1\137\37\uffff\1\136",
+			"\1\135\37\uffff\1\134",
+			"\1\137\37\uffff\1\136",
+			"\1\141\37\uffff\1\140",
+			"\1\143\37\uffff\1\142",
+			"\1\141\37\uffff\1\140",
+			"\1\143\37\uffff\1\142",
+			"\1\145\37\uffff\1\144",
+			"\1\145\37\uffff\1\144",
 			"",
 			"",
-			"\1\142\37\uffff\1\142",
-			"\1\143\37\uffff\1\143",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\144",
-			"\1\145\37\uffff\1\145",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\147\37\uffff\1\147",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
+			"\1\146",
 			"",
-			"\1\151\37\uffff\1\151",
-			"\1\152\37\uffff\1\152",
-			"\1\153",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\151\37\uffff\1\150",
+			"\1\151\37\uffff\1\150",
 			"",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
+			"\1\153\37\uffff\1\152",
+			"\1\153\37\uffff\1\152",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\156\37\uffff\1\155",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\156\37\uffff\1\155",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\161\37\uffff\1\160",
+			"\1\161\37\uffff\1\160",
+			"\1\163\37\uffff\1\162",
+			"\1\163\37\uffff\1\162",
+			"\1\165\37\uffff\1\164",
+			"\1\165\37\uffff\1\164",
+			"\1\167\37\uffff\1\166",
+			"\1\167\37\uffff\1\166",
+			"\1\171\37\uffff\1\170",
+			"\1\171\37\uffff\1\170",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\10\44\1\173\21\44\4\uffff\1\44\1\uffff\10\44\1\172\21"+
+			"\44",
+			"\12\44\7\uffff\10\44\1\173\21\44\4\uffff\1\44\1\uffff\10\44\1\172\21"+
+			"\44",
+			"\12\44\7\uffff\10\44\1\175\21\44\4\uffff\1\44\1\uffff\10\44\1\174\21"+
+			"\44",
+			"\12\44\7\uffff\10\44\1\175\21\44\4\uffff\1\44\1\uffff\10\44\1\174\21"+
+			"\44",
+			"\1\177\37\uffff\1\176",
+			"\1\177\37\uffff\1\176",
+			"\1\u0080",
 			"",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\32\32\4\uffff\1\32\1\uffff\32\32",
-			"\1\155",
+			"\1\u0082\37\uffff\1\u0081",
+			"\1\u0082\37\uffff\1\u0081",
+			"\1\u0084\37\uffff\1\u0083",
+			"\1\u0084\37\uffff\1\u0083",
 			"",
-			"\1\156",
+			"\1\u0086\37\uffff\1\u0085",
+			"\1\u0086\37\uffff\1\u0085",
+			"",
+			"\1\u0088\37\uffff\1\u0087",
+			"\1\u0088\37\uffff\1\u0087",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\u008b\37\uffff\1\u008a",
+			"\1\u008b\37\uffff\1\u008a",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\u008f\37\uffff\1\u008e",
+			"\1\u008f\37\uffff\1\u008e",
+			"\1\u0091\37\uffff\1\u0090",
+			"\1\u0091\37\uffff\1\u0090",
+			"\1\u0093\37\uffff\1\u0092",
+			"\1\u0093\37\uffff\1\u0092",
+			"\1\u0094",
+			"\1\u0096\37\uffff\1\u0095",
+			"\1\u0096\37\uffff\1\u0095",
+			"\1\u0098\37\uffff\1\u0097",
+			"\1\u0098\37\uffff\1\u0097",
+			"\1\u009a\37\uffff\1\u0099",
+			"\1\u009a\37\uffff\1\u0099",
+			"\1\u009c\37\uffff\1\u009b",
+			"\1\u009c\37\uffff\1\u009b",
+			"",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"",
+			"",
+			"\1\u009f\37\uffff\1\u009e",
+			"\1\u009f\37\uffff\1\u009e",
+			"\1\u00a1\37\uffff\1\u00a0",
+			"\1\u00a1\37\uffff\1\u00a0",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\u00a2",
+			"\1\u00a4\37\uffff\1\u00a3",
+			"\1\u00a4\37\uffff\1\u00a3",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\u00a7\37\uffff\1\u00a6",
+			"\1\u00a7\37\uffff\1\u00a6",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"",
+			"\1\u00aa\37\uffff\1\u00a9",
+			"\1\u00aa\37\uffff\1\u00a9",
+			"\1\u00ac\37\uffff\1\u00ab",
+			"\1\u00ac\37\uffff\1\u00ab",
+			"\1\u00ad",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\12\44\7\uffff\32\44\4\uffff\1\44\1\uffff\32\44",
+			"\1\u00af",
+			"",
+			"\1\u00b0",
 			""
 	};
 
@@ -2108,7 +2272,7 @@ public class AssessQueryLexer extends Lexer {
 		}
 		@Override
 		public String getDescription() {
-			return "1:1: Tokens : ( T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | AGAINST | ASSESS | BY | FOR | LABELS | PAST | USING | WITH | SAVE | AS | AGGREGATE | SIGN | ID | INT | FLOAT | WS );";
+			return "1:1: Tokens : ( T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | AGAINST | ASSESS | BY | FOR | LABELS | PAST | USING | WITH | SAVE | AS | AGGREGATE | INT | FLOAT | SIGN | ID | WS );";
 		}
 	}
 
