@@ -140,7 +140,7 @@ public class AssessOperatorPastBenchmarkMeasuring {
         operator.execute(query);
     }
 
-    // The forbidden one, do not run daily as it takes a long time
+    // The forbidden one, do not run daily as it takes a long time (~2 hours each run)
     //@Benchmark
     public void runFor_10MRecords_TwoGroupers_100Cells(CubeManagers cubeManagers) throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManagers.pkdd99CubeManager10M);

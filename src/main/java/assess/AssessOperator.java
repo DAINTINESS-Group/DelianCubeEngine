@@ -82,7 +82,7 @@ public class AssessOperator {
         // Execute Comparisons
         Instant comparingStart = Instant.now();
         HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery, assessResults.comparedCells);
-        assessResults.comparisonTime = Duration.between(comparingStart, Instant.now()).toMillis();
+        assessResults.comparisonTime = Duration.between(comparingStart, Instant.now()).toNanos();
 
         // Label Comparison Results
         Instant labelingStart = Instant.now();
@@ -114,7 +114,7 @@ public class AssessOperator {
     }
 
     private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery, List<ComparedCell> comparedCells) {
-        List<Cell> targetCells = cubeManager.executeQuery(parsedQuery.targetCubeQuery).getCells();
+        List<Cell> targetCells = parsedQuery.targetCube.getCells();
         if (targetCells.isEmpty()) {
             throw new RuntimeException("No cells collected from the target cube query");
         }
@@ -157,7 +157,7 @@ public class AssessOperator {
             // Print Performance results
             writer.append("## Performance Results\n");
             writer.append("Parsing time: ").append(String.valueOf(assessResults.parseTime)).append(" ms\n");
-            writer.append("Comparison time: ").append(String.valueOf(assessResults.comparisonTime)).append(" ms\n");
+            writer.append("Comparison time: ").append(String.valueOf(assessResults.comparisonTime)).append(" ns\n");
             writer.append("Labeling time: ").append(String.valueOf(assessResults.labelingTime)).append(" ns\n");
             writer.append("Whole execution time: ").append(String.valueOf(assessResults.executionTime)).append(" ms\n");
         } catch (IOException ioe) {
