@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS) // Print time in milliseconds
 @Fork(1)
 public class AssessOperatorSiblingBenchmarkMeasuring {
+
     @State(Scope.Benchmark)
     public static class CubeManagers {
         CubeManager pkdd99CubeManager100K = initPKDD99CubeManager100K();

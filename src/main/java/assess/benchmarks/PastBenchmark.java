@@ -40,6 +40,7 @@ public class PastBenchmark implements AssessBenchmark {
 
     public PastBenchmark(List<Result> pastResults, String dateLevel) {
         keyIndex = findDateIndex(pastResults.get(0).getColumnLabels(), dateLevel);
+        if (keyIndex < 0) { throw new RuntimeException("Make sure that the comparison field is in the groupers"); }
         for (Result result : pastResults) {
             for (Cell cell : result.getCells()) {
                 List<String> dimensionValues = new ArrayList<>(cell.getDimensionMembers());
@@ -57,7 +58,6 @@ public class PastBenchmark implements AssessBenchmark {
             }
         }
         pastEntries.forEach(pastEntry -> pastEntry.measurement = pastEntry.measurement / pastEntry.resultsAdded);
-        pastEntries.forEach(System.out::println);
     }
 
     // Assuming all results have the same order of columns

@@ -11,15 +11,16 @@ import java.util.HashMap;
 public class AssessOperatorClient {
 
     public static void main(String [] args) throws RecognitionException {
-        CubeManager cubeManager = initCubeMangerB();
+        CubeManager cubeManager = initCubeMangerA();
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "WITH loan\n" +
-                "FOR district_name = 'Liberec'\n" +
-                "BY district_name\n" +
+                "FOR day = '10/10/1995'\n" +
+                "BY district_name, day\n" +
                 "ASSESS max(amount)\n" +
-                "AGAINST district_name = 'Decin'\n" +
+                "AGAINST PAST 10\n" +
                 "USING ratio(absolute(amount, benchmark.amount))\n" +
-                "LABELS {[0.01, 0.5]: low, (0.5, 1]: high, (1, +inf): ultra}\n";
+                "LABELS {[0.01, 0.5]: low, (0.5, 1]: high, (1, +inf): ultra}\n" +
+                "SAVE AS Past100KRecordsTwoGroupers100Cells";
         operator.execute(query);
     }
 
