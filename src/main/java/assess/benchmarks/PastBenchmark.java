@@ -77,8 +77,9 @@ public class PastBenchmark implements AssessBenchmark {
         for (PastEntry pastEntry : pastEntries) {
             if (pastEntry.matches(targetDimensionValues)) {
                 return Optional.of(new Cell( new String[]
-                        {"Average of " + pastEntry.resultsAdded,
-                                Double.toString(pastEntry.measurement),
+                        {"Average of " + pastEntry.resultsAdded + " entries\n" +
+                                "Benchmark dimensions: " + String.join(", ", pastEntry.dimensions) + "\nValues:",
+                                String.valueOf(pastEntry.measurement),
                                 Integer.toString(pastEntry.resultsAdded)
                         }));
             }

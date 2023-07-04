@@ -31,11 +31,11 @@ import java.util.List;
 public class AssessOperator {
     private final CubeManager cubeManager;
 
-    static class AssessResults {
-        long executionTime;
-        long parseTime;
-        long comparisonTime;
-        long labelingTime;
+    public static class AssessResults {
+        public long executionTime;
+        public long parseTime;
+        public long comparisonTime;
+        public long labelingTime;
         String query;
         AssessQuery parsedQuery;
         List<ComparedCell> comparedCells = new ArrayList<>();
@@ -62,7 +62,7 @@ public class AssessOperator {
         return results;
     }
 
-    /* Executes the provided query. Returns ?
+    /* Executes the provided query.
      * @param assessQuery The user-provided query for assessment reasons
      * @return
      * @throws RecognitionException If the query does not follow the defined syntax
