@@ -148,7 +148,7 @@ public class AnalyzeQueriesExecutionTest {
 		
 		String testResultString = "";
 		
-		String expectedResultString =	getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithSomeEmptyQueriesResults.csv");
+		String expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithSomeEmptyQueriesResults.csv");
 		
 		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
