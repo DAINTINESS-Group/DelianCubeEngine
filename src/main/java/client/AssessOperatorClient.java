@@ -18,15 +18,15 @@ public class AssessOperatorClient {
         long labelingTime = 0;
         long executionTime = 0;
         String query = "WITH loan\n" +
-                "FOR region = 'South Moravia', day = '11/10/1997'\n" +
+                "FOR region = 'South Moravia', day = '08/10/1997'\n" +
                 "BY region, day, status\n" +
                 "ASSESS max(amount)\n" +
-                "AGAINST PAST 3\n" +
+                "AGAINST PAST 5\n" +
                 "USING ratio(absolute(amount, benchmark.amount))\n" +
-                "LABELS {[0.01, 0.5]: low, (0.5, 1]: high, (1, +inf): ultra}\n" +
-                "SAVE AS PastBenchmark";
+                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
+                "SAVE AS PastBenchmarkDemo";
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             AssessOperator.AssessResults results = operator.execute(query);
             parsingTime += results.parseTime;
             comparisonTime += results.comparisonTime;

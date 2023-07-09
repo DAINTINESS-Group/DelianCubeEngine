@@ -126,7 +126,7 @@ public class AssessOperator {
         List<LabeledCell> labeledCells = new ArrayList<>();
         for (Cell cell : comparisonResults.keySet()) {
             String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
-            labeledCells.add(new LabeledCell(cell, label));
+            labeledCells.add(new LabeledCell(cell, comparisonResults.get(cell), label));
         }
 
         return labeledCells;
