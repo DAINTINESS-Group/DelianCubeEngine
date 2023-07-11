@@ -37,6 +37,8 @@ public class PartialSameLevelExtensionalRelevance implements IInterestingnessMea
 		novelAreaOfInterest.addAll(currentQueryCube);
 
 		//get the user's goals by reading the necessary file
+		//These actually are not user's goals but simply cells written in a file
+		//Of course we can consider these cells as user's "goals", as the user can see how relevant is a new query over these cells
 		userGoals = inputManager.getQueryGoals();
 		long endQuery = System.nanoTime();
 		long durationQuery = endQuery - startQuery;

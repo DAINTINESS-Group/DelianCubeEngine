@@ -14,6 +14,7 @@ import result.Cell;
 public class LabelSurpriseStrict implements IInterestingnessMeasureWithExpectedValues{
 
 	private String expectedLabel;
+	private boolean expectedLabelFound;
 	/**
 	 * Checks whether any cells from the current query have an unexpected label 
 	 * @param inputManager The current {@link InputManager} object
@@ -21,6 +22,7 @@ public class LabelSurpriseStrict implements IInterestingnessMeasureWithExpectedV
 	 */
 	public double computeMeasure(IExpectedValuesInput inputManager) {
 		long start = System.nanoTime();
+		expectedLabelFound = false;
 		
 		for(Cell c: inputManager.getCurrentQueryResult().getCells()) {
 			for(Cell expectedC: inputManager.getExpectedLabels()) {
@@ -30,6 +32,7 @@ public class LabelSurpriseStrict implements IInterestingnessMeasureWithExpectedV
 				}
 			}
 			if(expectedLabel != null) {
+				expectedLabelFound = true;
 				if(expectedLabel.equals(c.getMeasure()) == false) {
 					long end = System.nanoTime();
 					long durationComparison = end - start;
@@ -56,7 +59,11 @@ public class LabelSurpriseStrict implements IInterestingnessMeasureWithExpectedV
 		    		outputTxt.getBytes(), StandardOpenOption.APPEND);
 		}catch (IOException e) {}
 		
+		if(expectedLabelFound == true) {
+			return 0;
+		} else {
+			return -1;
+		}
 		
-		return 0;
 	}
 }
