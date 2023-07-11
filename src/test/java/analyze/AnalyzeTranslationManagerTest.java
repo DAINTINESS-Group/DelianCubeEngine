@@ -28,7 +28,7 @@ public class AnalyzeTranslationManagerTest {
 	// set up SQP and CubeManager
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
-		String typeOfConnection = "Spark";
+		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
 		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
