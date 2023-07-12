@@ -26,7 +26,7 @@ public class AssessOperatorClient {
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkDemo";
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 5; i++) {
             AssessOperator.AssessResults results = operator.execute(query);
             parsingTime += results.parseTime;
             comparisonTime += results.comparisonTime;
