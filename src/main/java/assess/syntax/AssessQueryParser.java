@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 AssessQuery.g 2023-05-08 08:08:38
+// $ANTLR 3.5.2 AssessQuery.g 2023-06-29 07:55:40
 
 package assess.syntax;
 import assess.AssessQuery;
@@ -657,6 +657,7 @@ public class AssessQueryParser extends Parser {
 					{
 					match(input,48,FOLLOW_48_in_group_by_set507); 
 					id=(Token)match(input,ID,FOLLOW_ID_in_group_by_set511); 
+					groupBySet.add((id!=null?id.getText():null));
 					}
 					break;
 
@@ -665,7 +666,6 @@ public class AssessQueryParser extends Parser {
 				}
 			}
 
-			groupBySet.add((id!=null?id.getText():null));
 			}
 
 		}
@@ -904,7 +904,7 @@ public class AssessQueryParser extends Parser {
 
 
 	// $ANTLR start "comparison_scheme"
-	// AssessQuery.g:106:1: comparison_scheme[List<String> comparisonMethods] returns [List<String> updatedComparisonMethods] : (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' );
+	// AssessQuery.g:106:1: comparison_scheme[List<String> comparisonMethods] returns [List<String> updatedComparisonMethods] : method_name= ID '(' ( comparison_scheme[$updatedComparisonMethods] | comparison_args ) ')' ;
 	public final List<String> comparison_scheme(List<String> comparisonMethods) throws RecognitionException {
 		List<String> updatedComparisonMethods = null;
 
@@ -913,7 +913,13 @@ public class AssessQueryParser extends Parser {
 
 		updatedComparisonMethods = comparisonMethods;
 		try {
-			// AssessQuery.g:108:5: (method_name= ID '(' comparison_scheme[$updatedComparisonMethods] | comparison_args ')' )
+			// AssessQuery.g:108:5: (method_name= ID '(' ( comparison_scheme[$updatedComparisonMethods] | comparison_args ) ')' )
+			// AssessQuery.g:108:7: method_name= ID '(' ( comparison_scheme[$updatedComparisonMethods] | comparison_args ) ')'
+			{
+			method_name=(Token)match(input,ID,FOLLOW_ID_in_comparison_scheme687); 
+			updatedComparisonMethods.add((method_name!=null?method_name.getText():null));
+			match(input,46,FOLLOW_46_in_comparison_scheme695); 
+			// AssessQuery.g:109:9: ( comparison_scheme[$updatedComparisonMethods] | comparison_args )
 			int alt13=2;
 			int LA13_0 = input.LA(1);
 			if ( (LA13_0==ID) ) {
@@ -947,29 +953,29 @@ public class AssessQueryParser extends Parser {
 
 			switch (alt13) {
 				case 1 :
-					// AssessQuery.g:108:7: method_name= ID '(' comparison_scheme[$updatedComparisonMethods]
+					// AssessQuery.g:109:10: comparison_scheme[$updatedComparisonMethods]
 					{
-					method_name=(Token)match(input,ID,FOLLOW_ID_in_comparison_scheme687); 
-					updatedComparisonMethods.add((method_name!=null?method_name.getText():null));
-					match(input,46,FOLLOW_46_in_comparison_scheme695); 
-					pushFollow(FOLLOW_comparison_scheme_in_comparison_scheme697);
+					pushFollow(FOLLOW_comparison_scheme_in_comparison_scheme698);
 					comparison_scheme(updatedComparisonMethods);
 					state._fsp--;
 
 					}
 					break;
 				case 2 :
-					// AssessQuery.g:109:56: comparison_args ')'
+					// AssessQuery.g:109:57: comparison_args
 					{
-					pushFollow(FOLLOW_comparison_args_in_comparison_scheme702);
+					pushFollow(FOLLOW_comparison_args_in_comparison_scheme703);
 					comparison_args();
 					state._fsp--;
 
-					match(input,47,FOLLOW_47_in_comparison_scheme703); 
 					}
 					break;
 
 			}
+
+			match(input,47,FOLLOW_47_in_comparison_scheme706); 
+			}
+
 		}
 		catch (RecognitionException re) {
 			reportError(re);
@@ -991,8 +997,8 @@ public class AssessQueryParser extends Parser {
 			// AssessQuery.g:111:17: ( ID ',' ( ( 'benchmark.' )? ID | INT ) )
 			// AssessQuery.g:111:19: ID ',' ( ( 'benchmark.' )? ID | INT )
 			{
-			match(input,ID,FOLLOW_ID_in_comparison_args711); 
-			match(input,48,FOLLOW_48_in_comparison_args713); 
+			match(input,ID,FOLLOW_ID_in_comparison_args714); 
+			match(input,48,FOLLOW_48_in_comparison_args716); 
 			// AssessQuery.g:111:26: ( ( 'benchmark.' )? ID | INT )
 			int alt15=2;
 			int LA15_0 = input.LA(1);
@@ -1023,19 +1029,19 @@ public class AssessQueryParser extends Parser {
 						case 1 :
 							// AssessQuery.g:111:29: 'benchmark.'
 							{
-							match(input,56,FOLLOW_56_in_comparison_args718); 
+							match(input,56,FOLLOW_56_in_comparison_args721); 
 							}
 							break;
 
 					}
 
-					match(input,ID,FOLLOW_ID_in_comparison_args722); 
+					match(input,ID,FOLLOW_ID_in_comparison_args725); 
 					}
 					break;
 				case 2 :
 					// AssessQuery.g:111:49: INT
 					{
-					match(input,INT,FOLLOW_INT_in_comparison_args726); 
+					match(input,INT,FOLLOW_INT_in_comparison_args729); 
 					}
 					break;
 
@@ -1069,8 +1075,8 @@ public class AssessQueryParser extends Parser {
 			// AssessQuery.g:115:5: ( '{' term= label_term ( ',' term= label_term )* '}' )
 			// AssessQuery.g:115:7: '{' term= label_term ( ',' term= label_term )* '}'
 			{
-			match(input,58,FOLLOW_58_in_custom_labeling752); 
-			pushFollow(FOLLOW_label_term_in_custom_labeling758);
+			match(input,58,FOLLOW_58_in_custom_labeling755); 
+			pushFollow(FOLLOW_label_term_in_custom_labeling761);
 			term=label_term();
 			state._fsp--;
 
@@ -1088,8 +1094,8 @@ public class AssessQueryParser extends Parser {
 				case 1 :
 					// AssessQuery.g:116:6: ',' term= label_term
 					{
-					match(input,48,FOLLOW_48_in_custom_labeling767); 
-					pushFollow(FOLLOW_label_term_in_custom_labeling773);
+					match(input,48,FOLLOW_48_in_custom_labeling770); 
+					pushFollow(FOLLOW_label_term_in_custom_labeling776);
 					term=label_term();
 					state._fsp--;
 
@@ -1102,7 +1108,7 @@ public class AssessQueryParser extends Parser {
 				}
 			}
 
-			match(input,59,FOLLOW_59_in_custom_labeling779); 
+			match(input,59,FOLLOW_59_in_custom_labeling782); 
 			}
 
 		}
@@ -1132,12 +1138,12 @@ public class AssessQueryParser extends Parser {
 			// AssessQuery.g:121:5: (range= label_range ':' label= ID )
 			// AssessQuery.g:121:7: range= label_range ':' label= ID
 			{
-			pushFollow(FOLLOW_label_range_in_label_term810);
+			pushFollow(FOLLOW_label_range_in_label_term813);
 			range=label_range();
 			state._fsp--;
 
-			match(input,51,FOLLOW_51_in_label_term812); 
-			label=(Token)match(input,ID,FOLLOW_ID_in_label_term816); 
+			match(input,51,FOLLOW_51_in_label_term815); 
+			label=(Token)match(input,ID,FOLLOW_ID_in_label_term819); 
 			range.add((label!=null?label.getText():null)); 
 			}
 
@@ -1192,26 +1198,26 @@ public class AssessQueryParser extends Parser {
 				case 1 :
 					// AssessQuery.g:125:9: lowLimit= '['
 					{
-					lowLimit=(Token)match(input,53,FOLLOW_53_in_label_range849); 
+					lowLimit=(Token)match(input,53,FOLLOW_53_in_label_range852); 
 					}
 					break;
 				case 2 :
 					// AssessQuery.g:125:26: lowLimit= '('
 					{
-					lowLimit=(Token)match(input,46,FOLLOW_46_in_label_range857); 
+					lowLimit=(Token)match(input,46,FOLLOW_46_in_label_range860); 
 					}
 					break;
 
 			}
 
 			limits.add((lowLimit!=null?lowLimit.getText():null));
-			pushFollow(FOLLOW_range_point_in_label_range873);
+			pushFollow(FOLLOW_range_point_in_label_range876);
 			start=range_point();
 			state._fsp--;
 
 			 limits.add((start!=null?input.toString(start.start,start.stop):null)); 
-			match(input,48,FOLLOW_48_in_label_range877); 
-			pushFollow(FOLLOW_range_point_in_label_range889);
+			match(input,48,FOLLOW_48_in_label_range880); 
+			pushFollow(FOLLOW_range_point_in_label_range892);
 			end=range_point();
 			state._fsp--;
 
@@ -1236,13 +1242,13 @@ public class AssessQueryParser extends Parser {
 				case 1 :
 					// AssessQuery.g:128:9: highLimit= ')'
 					{
-					highLimit=(Token)match(input,47,FOLLOW_47_in_label_range905); 
+					highLimit=(Token)match(input,47,FOLLOW_47_in_label_range908); 
 					}
 					break;
 				case 2 :
 					// AssessQuery.g:128:27: highLimit= ']'
 					{
-					highLimit=(Token)match(input,55,FOLLOW_55_in_label_range913); 
+					highLimit=(Token)match(input,55,FOLLOW_55_in_label_range916); 
 					}
 					break;
 
@@ -1288,7 +1294,7 @@ public class AssessQueryParser extends Parser {
 				case 1 :
 					// AssessQuery.g:131:15: SIGN
 					{
-					match(input,SIGN,FOLLOW_SIGN_in_range_point929); 
+					match(input,SIGN,FOLLOW_SIGN_in_range_point932); 
 					}
 					break;
 
@@ -1379,29 +1385,29 @@ public class AssessQueryParser extends Parser {
 	public static final BitSet FOLLOW_ID_in_external_benchmark655 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_ID_in_comparison_scheme687 = new BitSet(new long[]{0x0000400000000000L});
 	public static final BitSet FOLLOW_46_in_comparison_scheme695 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_comparison_scheme_in_comparison_scheme697 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparison_args_in_comparison_scheme702 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_comparison_scheme703 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_comparison_args711 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_comparison_args713 = new BitSet(new long[]{0x0100000000300000L});
-	public static final BitSet FOLLOW_56_in_comparison_args718 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_ID_in_comparison_args722 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_comparison_args726 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_58_in_custom_labeling752 = new BitSet(new long[]{0x0020400000000000L});
-	public static final BitSet FOLLOW_label_term_in_custom_labeling758 = new BitSet(new long[]{0x0801000000000000L});
-	public static final BitSet FOLLOW_48_in_custom_labeling767 = new BitSet(new long[]{0x0020400000000000L});
-	public static final BitSet FOLLOW_label_term_in_custom_labeling773 = new BitSet(new long[]{0x0801000000000000L});
-	public static final BitSet FOLLOW_59_in_custom_labeling779 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_label_range_in_label_term810 = new BitSet(new long[]{0x0008000000000000L});
-	public static final BitSet FOLLOW_51_in_label_term812 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_ID_in_label_term816 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_53_in_label_range849 = new BitSet(new long[]{0x0200000800208000L});
-	public static final BitSet FOLLOW_46_in_label_range857 = new BitSet(new long[]{0x0200000800208000L});
-	public static final BitSet FOLLOW_range_point_in_label_range873 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_label_range877 = new BitSet(new long[]{0x0200000800208000L});
-	public static final BitSet FOLLOW_range_point_in_label_range889 = new BitSet(new long[]{0x0080800000000000L});
-	public static final BitSet FOLLOW_47_in_label_range905 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_55_in_label_range913 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_SIGN_in_range_point929 = new BitSet(new long[]{0x0200000000208000L});
-	public static final BitSet FOLLOW_set_in_range_point932 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_comparison_scheme_in_comparison_scheme698 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_comparison_args_in_comparison_scheme703 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_comparison_scheme706 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_comparison_args714 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_comparison_args716 = new BitSet(new long[]{0x0100000000300000L});
+	public static final BitSet FOLLOW_56_in_comparison_args721 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_comparison_args725 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_comparison_args729 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_58_in_custom_labeling755 = new BitSet(new long[]{0x0020400000000000L});
+	public static final BitSet FOLLOW_label_term_in_custom_labeling761 = new BitSet(new long[]{0x0801000000000000L});
+	public static final BitSet FOLLOW_48_in_custom_labeling770 = new BitSet(new long[]{0x0020400000000000L});
+	public static final BitSet FOLLOW_label_term_in_custom_labeling776 = new BitSet(new long[]{0x0801000000000000L});
+	public static final BitSet FOLLOW_59_in_custom_labeling782 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_label_range_in_label_term813 = new BitSet(new long[]{0x0008000000000000L});
+	public static final BitSet FOLLOW_51_in_label_term815 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_label_term819 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_53_in_label_range852 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_46_in_label_range860 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_range_point_in_label_range876 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_label_range880 = new BitSet(new long[]{0x0200000800208000L});
+	public static final BitSet FOLLOW_range_point_in_label_range892 = new BitSet(new long[]{0x0080800000000000L});
+	public static final BitSet FOLLOW_47_in_label_range908 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_55_in_label_range916 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_SIGN_in_range_point932 = new BitSet(new long[]{0x0200000000208000L});
+	public static final BitSet FOLLOW_set_in_range_point935 = new BitSet(new long[]{0x0000000000000002L});
 }

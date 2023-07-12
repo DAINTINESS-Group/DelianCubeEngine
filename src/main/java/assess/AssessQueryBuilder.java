@@ -5,6 +5,7 @@ import assess.benchmarks.BenchmarkFactory;
 import assess.deltas.DeltaScheme;
 import assess.labelers.CustomLabelingScheme;
 import cubemanager.CubeManager;
+import cubemanager.cubebase.CubeQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +42,8 @@ public class AssessQueryBuilder {
         return this;
     }
 
-    public AssessQueryBuilder setOutputName(String name) {
+    public void setOutputName(String name) {
         this.outputName = name;
-        return this;
     }
 
     public void setSelectionPredicates(Map<String, String> selectionPredicates) {
@@ -86,8 +86,10 @@ public class AssessQueryBuilder {
     }
 
     public AssessQuery build() {
+        CubeQuery targetCubeQuery = queryGenerator.translateToCubeQuery();
         return new AssessQuery(
-                queryGenerator.translateToCubeQuery(),
+                targetCubeQuery,
+                queryGenerator.executeCubeQuery(targetCubeQuery),
                 buildBenchmark(),
                 new DeltaScheme(deltaFunctions),
                 new CustomLabelingScheme(labelingRules),

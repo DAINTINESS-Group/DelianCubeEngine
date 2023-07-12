@@ -1,5 +1,10 @@
 package assess.benchmarks;
 
+import result.Cell;
+
+import java.util.List;
+import java.util.Optional;
+
 public class ConstantBenchmark implements AssessBenchmark{
 	private final double value;
 
@@ -8,7 +13,8 @@ public class ConstantBenchmark implements AssessBenchmark{
 	}
 
 	@Override
-	public double getCellValue() {
-		return value;
+	public Optional<Cell> matchCell(Cell cell) {
+		Cell matchedCell = new Cell(new String[] {"Constant", Double.toString(value), "1"});
+		return Optional.of(matchedCell);
 	}
 }

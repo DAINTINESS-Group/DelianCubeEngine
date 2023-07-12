@@ -1,8 +1,8 @@
 package assess.deltas;
 
 import assess.benchmarks.AssessBenchmark;
+import assess.utils.ComparedCell;
 import result.Cell;
-import result.Result;
 
 import java.util.*;
 
@@ -12,6 +12,7 @@ public class DeltaScheme {
 
         ComparisonFunction absoluteDifference = (actual, benchmark) -> Math.abs(actual - benchmark);
         ComparisonFunction difference = (actual, benchmark) -> actual - benchmark;
+        ComparisonFunction invDifference = (actual, benchmark) -> benchmark - actual;
         ComparisonFunction ratio = (actual, benchmark) -> actual / benchmark;
     }
 
@@ -21,6 +22,7 @@ public class DeltaScheme {
         HashMap<String, ComparisonFunction> functionsMap = new HashMap<>();
         functionsMap.put("absolute", ComparisonFunction.absoluteDifference);
         functionsMap.put("difference", ComparisonFunction.difference);
+        functionsMap.put("invDifference", ComparisonFunction.invDifference);
         functionsMap.put("ratio", ComparisonFunction.ratio);
         return functionsMap;
     }
@@ -34,23 +36,32 @@ public class DeltaScheme {
         }
     }
 
-    public HashMap<Cell, Double> compareTargetToBenchmark(Result targetCube, AssessBenchmark benchmark) {
+    public HashMap<Cell, Double> compareTargetToBenchmark(List<Cell> targetCubeCells, AssessBenchmark benchmark, List<ComparedCell> comparedCells) {
         HashMap<Cell, Double> comparisonMap = new HashMap<>();
-        for (Cell cell : targetCube.getCells()) {
-            try { // When the benchmark cells are not enough, the remaining target cells will not be added to the set of cells
-                double expectedValue = benchmark.getCellValue();
-                double comparisonValue = cell.toDouble();
-                for (ComparisonFunction function : appliedMethods) {
-                    comparisonValue = function.compare(comparisonValue, expectedValue);
-                }
-                comparisonMap.put(cell, comparisonValue);
-            } catch (NoSuchElementException ie) {
-                int ignoredCellsNumber = targetCube.getCells().size() - targetCube.getCells().indexOf(cell);
-                System.out.println("Benchmark cells were not enough, " + ignoredCellsNumber +" cell(s) will be ignored");
-                break;
-            }
+        for (Cell cell : targetCubeCells) {
+            comparisonMap.put(cell, cell.toDouble());
         }
+        if (benchmark == null) {
+            return comparisonMap;
+        } // Just label the cell values
 
+        for (Cell targetCell : targetCubeCells) {
+            Optional<Cell> matchedCell = benchmark.matchCell(targetCell);
+            if (!matchedCell.isPresent()) {
+                ComparedCell comparedCell = new ComparedCell(targetCell, null);
+                comparedCells.add(comparedCell);
+                comparisonMap.remove(targetCell);
+                continue;
+            }
+
+            double comparisonValue = targetCell.toDouble();
+            for (ComparisonFunction function : appliedMethods) {
+                comparisonValue = function.compare(comparisonValue, matchedCell.get().toDouble());
+            }
+            ComparedCell comparedCell = new ComparedCell(targetCell, matchedCell.get());
+            comparedCells.add(comparedCell);
+            comparisonMap.put(targetCell, comparisonValue);
+        }
         return comparisonMap;
     }
 }

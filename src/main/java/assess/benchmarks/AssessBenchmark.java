@@ -1,3 +1,10 @@
 package assess.benchmarks;
 
-public interface AssessBenchmark { double getCellValue(); }
+import result.Cell;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface AssessBenchmark {
+        Optional<Cell> matchCell(Cell targetCell);
+}

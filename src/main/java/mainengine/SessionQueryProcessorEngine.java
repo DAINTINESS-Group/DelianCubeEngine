@@ -35,14 +35,13 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 
+import assess.AssessOperator;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.QueryHistoryManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.CubeManager;
-
-import assess.AssessOperator;
 
 import interestingnessengine.InterestingnessManager;
 import mainengine.nlq.ITranslator;
@@ -52,7 +51,6 @@ import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
-import org.antlr.runtime.RecognitionException;
 
 import analyze.AnalyzeOperator;
 import result.Result;
@@ -67,8 +65,8 @@ import setup.ModeOfWork.WorkMode;
  *
  * USed to be MainEngine in Cinecubes. Refactored to address the needs of SimpleOLAP Engine.
  * The class is the main server component of answering _cube_ queries.
- * 
- * Use {@link #answerCubeQueriesFromFile(File file)} to answer the queries contained in a file 
+ *
+ * Use {@link #answerCubeQueriesFromFile(File file)} to answer the queries contained in a file
  */
 //@SuppressWarnings("serial")
 public class SessionQueryProcessorEngine extends UnicastRemoteObject implements IMainEngine {
@@ -94,7 +92,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private List<BasicStoredCube> registeredCubesList;
 	private InterestingnessManager interestMng;
 	private int historyCounter = 0;
-	
+
 /**
  * Simple constructor for the class
  * @throws RemoteException
@@ -105,21 +103,21 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		currentCubeQuery = null;
 		currentQueryName = null;
 	}
-	
+
 	@Override
 	public OutputStream getOutputStream(File f) throws IOException {
-	    return new RMIOutputStream(new RMIOutputStreamImpl(new 
+	    return new RMIOutputStream(new RMIOutputStreamImpl(new
 	    FileOutputStream(f)));
 	}
 	@Override
 	public InputStream getInputStream(File f) throws IOException {
 	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
 	}//end method
-	
-	
-	/* 
+
+
+	/*
 	 * TODO: at some point, connections must be initialized at the beginning and NOT on a per query basis!!
-	 * 
+	 *
 	 * (non-Javadoc)
 	 * @see mainengine.IMainEngine#initializeConnection(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -136,7 +134,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		System.out.println("DONE WITH INIT");
 	}
-	
+
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
 			String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException {
 		schemaName = userInputList.get("schemaName");
@@ -157,7 +155,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			interestMng = new InterestingnessManager(historyFolder, expValuesFolder, expLabelsFolder, beliefFolder, session.getCubeManager(), k);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mainengine.IMainEngine#answerCubeQueriesFromFile(java.io.File)
 	 */
@@ -177,10 +175,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			e.printStackTrace();
 		}
 		return fileLocations;
-	}	
-	
+	}
 
-	/** 
+
+	/**
 	 * Gets the query from a string, executes it and produces the output of a query
 	 * <p>
 	 * The main idea is:
@@ -188,10 +186,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	 * (2) execute the query again via {@link CubeManager} and obtain a {@link Result}
 	 * (3a) produce a file in the directory <code>OutputFiles</code> with the name of the query
 	 * (3x) btw., the results are also output to the console
-	 * 
+	 *
 	 * @param queryRawString a String with the query
 	 * @return a String containing the location of output file at the server
-	 *  
+	 *
 	 * @author pvassil
 	 * @since v.0.1
 	 * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
@@ -205,9 +203,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		cubeManager = session.getCubeManager();
 
 		//1. parse query and produce a CubeQuery
-		CubeQuery currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams); 
+		CubeQuery currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
 		this.currentCubeQuery = currentCubeQuery;
-		
+
 		//2. execute the query AND populate Result with a 2D string
 		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
 		Result res = cubeManager.executeQuery(currentCubeQuery);
@@ -218,30 +216,30 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		//3a. print result to file and screen
 		String queryName = queryParams.get("QueryName");
 		this.currentQueryName = queryName;
-				
+
 		//3b. print result to file
 		String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
 
-		//Replaced all printing of String[][] with printing of Cells which seems to be identical 
+		//Replaced all printing of String[][] with printing of Cells which seems to be identical
 		//TODO SUPER MUST: devise a nice way to handle the output to console when in development mode
 		if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
 			res.printCellsToStream(System.out);
 		}
 		queryHistoryMng.addQuery(currentCubeQuery);
-		Instant tOutputed = Instant.now();	
+		Instant tOutputed = Instant.now();
 		long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
 		long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-		
+
 		System.out.println("\n\n@TIMER\tQuery\t" + queryName + "\tQuery Execution:\t" + durationExecution
 				+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
-		
+
 		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-		
+
 		return outputLocation;
 	}//answerCubeQueryFromString
-	
 
-	/** 
+
+	/**
 	 * Gets the query from a string, executes it and produces the output of a query as a ResultFileMetadata object
 	 * <p>
 	 * The main idea is:
@@ -250,10 +248,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	 * (3a) produce a queryName.tab file in the directory <code>OutputFiles</code> with the queryName being name of the query
 	 * (3b) produce an queryName_info.txt file that contains the query definition in the same folder
 	 * (3x) btw., the results are also output to the console
-	 * 
+	 *
 	 * @param queryRawString a String with the query
 	 * @return a ResultFileMetadata containing info on the location of output files at the server
-	 * 
+	 *
 	 * @author pvassil
 	 * @since v.0.2
 	 * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
@@ -264,32 +262,32 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 		String outputLocation = answerCubeQueryFromString(queryRawString);
 		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-		
-		ResultFileMetadata resMetadata = new ResultFileMetadata();		
+
+		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		resMetadata.setComponentResultFiles(null);
 		resMetadata.setComponentResultInfoFiles(null);
 		resMetadata.setLocalFolder("OutputFiles" + File.separator);
 		resMetadata.setResultFile(outputLocation);
 		resMetadata.setResultInfoFile(outputInfoLocation);
-		
+
 		System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 		System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
-		
+		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
+
 		return resMetadata;
 	}//answerCubeQueryFromStringWithMetadata
-	
-	
+
+
 	@Override
 	public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate)
 			throws RemoteException {
-		
+
 		int numOfModelsGenerated = 0;
 		int numOfModelsRequested = 0;
-		
+
 		//0. answer the query and get its result and info files
 		ResultFileMetadata resMetadata = answerCubeQueryFromStringWithMetadata(queryRawString);
-		/* 
+		/*
 		 * postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
 		*/
 
@@ -309,14 +307,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		if((modelsToGenerate == null) ||(modelsToGenerate.length == 0)) {
 			numOfModelsRequested = 0;
 		}
-		else 
+		else
 			numOfModelsRequested = modelsToGenerate.length;
-		
+
 		String [] modelNames;
 		ModelSelector modelSelector = new ModelSelector(currentQueryName);
 		modelNames = modelSelector.decideModelsToExecute(currentQueryName, modelsToGenerate);
 
-		
+
 		//2. select the models to fire
 		ModelManager modelManager = new ModelManager(this.currentResult);
 		modelManager.selectModelsToLaunch(modelNames);
@@ -325,27 +323,27 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		//4.Populate resMetadata with the outcome of model generation
 		if (modelGenFlag == 0) { 			//all went OK
 			numOfModelsGenerated = modelManager.addComponentsToResultMetadata(resMetadata);
-						
+
 
 			if( (numOfModelsRequested > 0) &&(numOfModelsGenerated < numOfModelsRequested)) {
 				System.err.println("\nSIMPLEQUERYPROCESSORENGINE # answerCubeQueryFromStringWithModels\nModel generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
 				System.err.println("Shutting down server\n");
 				System.exit(-1);
 			}
-			
+
 		}//end if modelGenFlag
 
-		
+
 		return resMetadata;
 	}//end method answerCubeQueryFromStringWithModels
 
-	
+
 	/**
 	 * Populates a tab-separated file where the result of a query is stored and returns its location.
 	 * <p>
 	 * The goal of this method is to output a file containing the result of a query
-	 * The name of the file is the name of the query + extension tab 
-	 * 
+	 * The name of the file is the name of the query + extension tab
+	 *
 	 * @param cubequery The query whose result is being outputed
 	 * @return  A String with the location of the file holding the results
 	 * @author pvassil
@@ -362,9 +360,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		try {
 			fileOutputStream=new FileOutputStream(file);
 			printStream=new PrintStream(fileOutputStream);
-			
+
 			res.printCellsToStream(printStream);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -379,35 +377,35 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 				e.printStackTrace();
 			}//end finally try
 		}//end finally
-		
+
 		return fileName;
 	}//end method
-	
-	
+
+
 	//OLAP BASIC OPERATORS METHODS
 	@Override
 	public ResultFileMetadata rollUp(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
-		
+
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
 		cubeManager = session.getCubeManager();
 		RollUpOperator operator = new RollUpOperator(oldCubeQuery, cubeManager);
-		
-		//1. Perform the Roll-Up	
+
+		//1. Perform the Roll-Up
 		Instant t0 = Instant.now();
 		ResultFileMetadata resMetadata = operator.executeRollUp(oldQueryName, newQueryName, dimensionName, targetLevelName);
 		Instant tExecuted = Instant.now();
 		long durationExecution = Duration.between(t0, tExecuted).toMillis();
-		
+
 		if(resMetadata.getErrorCheckingStatus()==null) {
-			
+
 			this.currentCubeQuery = operator.getCubeQuery();
 			this.currentQueryName = newQueryName;
 			this.currentResult = operator.getResult();
 			queryHistoryMng.addQuery(currentCubeQuery);
-			
+
 			//2. print result to file
 			String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
-			
+
 			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
 				this.currentResult.printCellsToStream(System.out);
 			}
@@ -417,14 +415,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			resMetadata.setLocalFolder("OutputFiles" + File.separator);
 			resMetadata.setResultFile(outputLocation);
 			resMetadata.setResultInfoFile(outputInfoLocation);
-			
-			Instant tOutputed = Instant.now();			
+
+			Instant tOutputed = Instant.now();
 			long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
 			long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-			
+
 			//3. Print to screen
 			System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
-					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);			
+					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
 			System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
 			System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 			System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
@@ -432,31 +430,31 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}
 		return resMetadata;
 	}
-	
-	
+
+
 	@Override
 	public ResultFileMetadata drillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
-		
+
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
 		cubeManager = session.getCubeManager();
 		DrillDownOperator operator = new DrillDownOperator(oldCubeQuery, cubeManager);
-		
+
 		//1.Perform the Drill-Down
 		Instant t0 = Instant.now();
 		ResultFileMetadata resMetadata = operator.executeDrillDown(oldQueryName, newQueryName, dimensionName, targetLevelName);
 		Instant tExecuted = Instant.now();
 		long durationExecution = Duration.between(t0, tExecuted).toMillis();
-		
+
 		if(resMetadata.getErrorCheckingStatus()==null) {
-			
+
 			this.currentCubeQuery = operator.getCubeQuery();
 			this.currentQueryName = newQueryName;
 			this.currentResult = operator.getResult();
 			queryHistoryMng.addQuery(currentCubeQuery);
-					
+
 			//2. print result to file
 			String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
-			
+
 			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
 				this.currentResult.printCellsToStream(System.out);
 			}
@@ -466,14 +464,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			resMetadata.setLocalFolder("OutputFiles" + File.separator);
 			resMetadata.setResultFile(outputLocation);
 			resMetadata.setResultInfoFile(outputInfoLocation);
-			
-			Instant tOutputed = Instant.now();		
+
+			Instant tOutputed = Instant.now();
 			long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
 			long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-			
+
 			//3. Print to screen
 			System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
-					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);			
+					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
 			System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
 			System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 			System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
@@ -481,7 +479,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}
 		return resMetadata;
 	}
-	
+
 	//INTENTIONAL OPERATORS METHODS
 	@Override
 	public ResultFileMetadata analyze(String incomingExpression) throws RemoteException {
@@ -493,31 +491,25 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
-		cubeManager = session.getCubeManager();
-		AssessOperator operator = new AssessOperator(cubeManager);
-		try {
-			operator.execute(incomingExpression);
-		} catch (RecognitionException e) {
-			throw new RuntimeException(e);
-		}
-		return null;
+		return new AssessOperator(session.getCubeManager())
+				.execute(incomingExpression, "Metadata");
 	}
-	
-	
+
+
 	//NATURAL LANGUAGE QUERYING METHODS
-	/**Gets a natural language query as a string, analyzes it, produces a cube query, 
+	/**Gets a natural language query as a string, analyzes it, produces a cube query,
 	 * executes the query and produces the output of the query.
-	 * 
+	 *
 	 * The idea is:
 	 * 1. Parse and analyze the natural language query via <code>analyzeNLQuery</code> of <code>NLTranslator</code>, see {@link NLTranslator}.
 	 * 2. Produces a String with the cube query.
 	 * 3. Calls <code>answerCubeQueryFromString</code> with this String as a parameter.
 	 * 4. Returns the results in a file with the name of the query and outputs them to the console.
-	 * 
+	 *
 	 * @param queryRawString a String with the natural language query
 	 * @return a String containing the location of output file at the server
 	 * @author DimosGkitsakis
-	 * 
+	 *
 	 */
 	@Override
 	public String answerCubeQueryFromNLString(String queryRawString) throws RemoteException{
@@ -529,7 +521,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		long tF = System.nanoTime();
 		long duration = tF - t0;
 		System.out.println("NLQuery Transformation Time: " + duration + " nanoseconds");
-		
+
 		System.out.println(analysedString);
 		//2. call answerCubeQueryFromString() with the analysedNLString as parameter
 		t0 = System.nanoTime();
@@ -538,27 +530,27 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		duration = tF - t0;
 		System.out.println("Query Execution Time " + duration + " nanoseconds");
 		return outputLocation;
-		
+
 	}//answerCubeQueryFromNLString
-	
-	
-	
+
+
+
 	/**
 	 * Same idea as the {@link #answerCubeQueryFromStringWithMetadata(String)}, but for a natural language query instead of cube query.
 	 * Gets the natural language query from a string, executes it and produces the output of a query as a ResultFileMetadata object.
 	 * Result produced via {@link #answerCubeQueryFromNLString(String)} instead of {@link #answerCubeQueryFromString(String)}.
-	 * 
+	 *
 	 * @param queryRawString a String with the natural language query
 	 * @return a ResultFileMetadata containing info on the location of output files at the server
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	@Override
 	public ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String queryRawString) throws RemoteException {
 
 		String outputLocation = answerCubeQueryFromNLString(queryRawString);
 		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-		
+
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		resMetadata.setComponentResultFiles(null);
 		resMetadata.setComponentResultInfoFiles(null);
@@ -567,18 +559,18 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		resMetadata.setResultInfoFile(outputInfoLocation);
 		System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 		System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());		
+		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
 		return resMetadata;
 	}//answerCubeQueryFromNLStringWithMetadata
-	
+
 	private void extractCubeMetadata() {
 		cubeNames = new ArrayList<String>();
 		measuresFields = new ArrayList<String>();
 		dimensions = new ArrayList<String>();
 		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
 		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
-		
+
 		for(int i=0; i<registeredCubesList.size(); i++) {
 			//1.Bring data for CubeName
 			cubeNames.add(registeredCubesList.get(i).getName());
@@ -588,12 +580,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 						+"."+registeredCubesList.get(i).getMeasuresList().get(j).getAttribute().getName());
 			}
 		}
-		
-		//3.Bring data for Dimensions		
+
+		//3.Bring data for Dimensions
 		for(int i =0; i<registeredDimensions.size(); i++) {
-			dimensions.add(registeredDimensions.get(i).getName());	
+			dimensions.add(registeredDimensions.get(i).getName());
 		}
-		
+
 		//4.Create data for AggrFunc
 		aggrFunctions = new ArrayList<String>();
 		aggrFunctions.add("max");
@@ -603,14 +595,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		aggrFunctions.add("count");
 		aggrFunctions.add("avg");
 		aggrFunctions.add("average");
-		aggrFunctions.add("sum");	
+		aggrFunctions.add("sum");
 
-		
+
 		//5.Bring data for levels
 		dimensionsToLevelsHashmap = new HashMap<String, ArrayList<String>>();
 		levelsToDimensionsHashmap = new HashMap<String, ArrayList<String>>();
 		List<Dimension> dimensionsList = registeredDimensions;
-		ArrayList<String> tmpLvls = null; 
+		ArrayList<String> tmpLvls = null;
 		ArrayList<String> tmpDim = null;
 		for (int i=0;i < registeredDimensions.size();i ++) {
 			Dimension dim = registeredDimensions.get(i);
@@ -634,10 +626,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			}
 		}
 	}
-	
+
 	/**
 	 * Validates a natural language Query String and returns a ResultFileMetadata object with the result.
-	 * 
+	 *
 	 * Gets the natural language query from a string, passes it to a NLTranslator object, which parses it and produces error messages if any errors where found.
 	 * The errors are returned to the client as a ErrorChecking.txt file, so the client can produce the error message to the end-user.
 	 *
@@ -654,12 +646,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		long tF = System.nanoTime();
 		long duration = tF - t0;
 		System.out.println("NLQuery Preprocessing Time: " + duration + " nanoseconds");
-		
+
 		String errorCheckingInfoOutput = this.printErrorCheckingResultsToFile(results,"OutputFiles" + File.separator + "ErrorChecking.txt");
-		
+
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		resMetadata.setErrorCheckingStatus(errorCheckingInfoOutput);
-		return resMetadata;		
+		return resMetadata;
 	}
 
 	private ITranslator getNLTranslator() {
@@ -667,7 +659,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		ITranslator translator = translatorFactory.getITranslator("NLTranslator", dimensionsToLevelsHashmap, levelsToDimensionsHashmap);
 		return translator;
 	}
-	
+
 	private String printErrorCheckingResultsToFile(NLQValidationResults results, String filePath) {
 		String fileName = filePath;
 		File file=new File(fileName);
@@ -680,7 +672,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			printStream.print(results.getFoundError() +";\n");
 			printStream.print(results.getErrorCode() + ";\n");
 			printStream.print(results.getDetails());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -697,13 +689,13 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}//end finally
 		return fileName;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Populates a file, XXX_info.txt, XXX being the query name, containing information for the query launched and returns its location.
-	 * 
-	 * @param cubequery   the CubeQuery whose info is recorded 
+	 *
+	 * @param cubequery   the CubeQuery whose info is recorded
 	 * @param outputFolder the folder to which the file is going to be stored
 	 * @return  the String with the location of the produced file
 	 */
@@ -715,9 +707,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		try {
 			fileOutputStream=new FileOutputStream(file);
 			printStream=new PrintStream(fileOutputStream);
-			
+
 			printStream.print(cubequery.toString()+"\n\n");
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -732,14 +724,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 				e.printStackTrace();
 			}//end finally try
 		}//end finally
-		
+
 		return fileName;
 	}//end method
-	
-	
+
+
 	/**
 	 * Given an query (and thus its name), and an output folder, computes the path of the _info.txt file of the query
-	 * 
+	 *
 	 * @param cubequery a CubeQuery whose info file name is requested
 	 * @param outputFolder  a String representing a target folder, if the form of "MyFolder/" where the output will be placed. Don't forget the "/"
 	 * @return the path of the _info.txt file of the query
@@ -748,8 +740,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		String fileName = outputFolder + cubequery.getName() + "_info.txt";
 		return fileName;
 	}//end method
-	
-	
+
+
 
 	/**
 	 * Populates a file qX.txt in History/Queries, X being an augmenting number, containing the raw query string
@@ -766,7 +758,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			if(filesInFolder.size() > 0) {
 				int max = 0;
 				for(int i=0; i< filesInFolder.size(); i++) {
-	
+
 					if(String.valueOf(filesInFolder.get(i).charAt(66)).equals(".")) {
 						if(Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65))) > max){
 							max = Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)));
@@ -777,12 +769,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 						}
 					}
 				}
-				
+
 				historyCounter = max;
 			}else {
 				historyCounter = 0;
 			}
-			
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -792,7 +784,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		PrintStream printStream=null;
 
 		String queryFileName = "InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/q" + historyCounter + ".txt";
-		
+
 		File queryFile=new File(queryFileName);
 
 		try {
@@ -848,7 +840,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public String[] answerCubeQueryWithInterestMeasures(String queryString, List<String> measures)
 			throws RemoteException {
 
-		answerCubeQueryFromString(queryString); 
+		answerCubeQueryFromString(queryString);
 		this.interestMng.updateState(currentCubeQuery, currentResult);
 		double result;
 		String[] results = new String[measures.size()];
@@ -863,13 +855,13 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		return results;
 
 	}//end answerCubeQueryWithInterestMeasures
-	
+
 	public String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures)
 			throws RemoteException, FileNotFoundException {
 		// answer query
 		answerCubeQueryFromString(queryString);
 		this.interestMng.updateState(currentCubeQuery, currentResult);
-		answerCubeQueryFromString(queryString1); 
+		answerCubeQueryFromString(queryString1);
 		this.interestMng.updateState(currentCubeQuery, currentResult);
 
 		double result;
@@ -898,7 +890,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 					      e.printStackTrace();
 					    }
 				}
-				
+
 
 				result = interestMng.computeMeasure(measures.get(0), currentCubeQuery, currentResult, helpingQuery);
 
@@ -920,6 +912,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	}//end answerCubeQueryWithInterestMeasures
 
-	
-	
+
+
 }//end class

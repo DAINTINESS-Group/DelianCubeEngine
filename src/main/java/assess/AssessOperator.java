@@ -2,19 +2,26 @@ package assess;
 
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
+import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
+import mainengine.ResultFileMetadata;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.Cell;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The top layer class for any assessments done in the intentional model.
@@ -24,23 +31,70 @@ import java.util.Optional;
 public class AssessOperator {
     private final CubeManager cubeManager;
 
+    public static class AssessResults {
+        public long executionTime;
+        public long parseTime;
+        public long comparisonTime;
+        public long labelingTime;
+        String query;
+        AssessQuery parsedQuery;
+        List<ComparedCell> comparedCells = new ArrayList<>();
+        List<LabeledCell> labeledCells;
+    }
+
     public AssessOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
     }
 
-    /* Executes the provided query. Returns ?
+    private String outputFileName;
+
+    public ResultFileMetadata execute(String assessQuery, String metadataFilename) {
+        ResultFileMetadata results = new ResultFileMetadata();
+        results.setComponentResultFiles(null);
+        results.setComponentResultInfoFiles(null);
+        results.setResultInfoFile(metadataFilename);
+        try {
+            execute(assessQuery);
+            results.setResultFile(outputFileName);
+        } catch (RecognitionException | RuntimeException e) {
+            results.setErrorCheckingStatus(e.toString());
+        }
+        return results;
+    }
+
+    /* Executes the provided query.
      * @param assessQuery The user-provided query for assessment reasons
      * @return
      * @throws RecognitionException If the query does not follow the defined syntax
      */
-    public List<LabeledCell> execute(String assessQuery) throws RecognitionException {
-        AssessQuery parsedQuery = parseQuery(assessQuery);
-        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery);
-        List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
-        exportToMD(assessQuery, parsedQuery.outputName, results);
-        return results;
-    }
+    public AssessResults execute(String assessQuery) throws RecognitionException {
+        AssessResults assessResults = new AssessResults();
+        assessResults.query = assessQuery;
+        Instant executionStart = Instant.now();
 
+        // Parse the Query
+        Instant parsingStart = Instant.now();
+        AssessQuery parsedQuery = parseQuery(assessQuery);
+        outputFileName = parsedQuery.outputName;
+        assessResults.parseTime = Duration.between(parsingStart, Instant.now()).toMillis();
+        assessResults.parsedQuery = parsedQuery;
+
+        // Execute Comparisons
+        Instant comparingStart = Instant.now();
+        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery, assessResults.comparedCells);
+        assessResults.comparisonTime = Duration.between(comparingStart, Instant.now()).toNanos();
+
+        // Label Comparison Results
+        Instant labelingStart = Instant.now();
+        List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
+        assessResults.labelingTime = Duration.between(labelingStart, Instant.now()).toNanos();
+        assessResults.labeledCells = results;
+
+        assessResults.executionTime = Duration.between(executionStart, Instant.now()).toMillis();
+
+        exportToMD(assessResults);
+        return assessResults;
+    }
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
         AssessQueryParser parser = createParser(assessQuery);
@@ -55,36 +109,57 @@ public class AssessOperator {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             return new AssessQueryParser(tokens);
         } catch (IOException e) {
-            // No idea what could go wrong here.
             throw new RuntimeException("There was an error while creating the Assess Query parser");
         }
     }
 
-    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery) {
+    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery, List<ComparedCell> comparedCells) {
+        List<Cell> targetCells = parsedQuery.targetCube.getCells();
+        if (targetCells.isEmpty()) {
+            throw new RuntimeException("No cells collected from the target cube query");
+        }
         return parsedQuery.deltaFunction.compareTargetToBenchmark(
-                cubeManager.executeQuery(parsedQuery.targetCubeQuery),
-                parsedQuery.benchmark);
+                targetCells, parsedQuery.benchmark, comparedCells);
     }
 
     private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
         List<LabeledCell> labeledCells = new ArrayList<>();
         for (Cell cell : comparisonResults.keySet()) {
             String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
-            labeledCells.add(new LabeledCell(cell, label));
+            labeledCells.add(new LabeledCell(cell, comparisonResults.get(cell), label));
         }
+
         return labeledCells;
     }
 
-    private void exportToMD(String assessQuery, String outputName, List<LabeledCell> results) {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"));
+    private void exportToMD(AssessResults assessResults) {
+        String outputName = assessResults.parsedQuery.outputName;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"))) {
+            // Print Query
             writer.append("## Query\n");
-            writer.append(assessQuery);
-            writer.append("\n## Results");
-            for (LabeledCell cell : results) {
-                writer.append(cell.toString());
+            writer.append(assessResults.query);
+            writer.append("\n\n");
+
+            // Comparisons Made
+            writer.append("## Comparisons Made (")
+                    .append(Integer.toString(assessResults.comparedCells.size())).append(" in total)\n");
+            for (ComparedCell comparedCell : assessResults.comparedCells) {
+                writer.append(comparedCell.toString()).append("\n\n");
             }
-            writer.close();
+
+            // Print resulting cells with their labels
+            writer.append("## Labeling Results (")
+                    .append(Integer.toString(assessResults.labeledCells.size())).append(" in total)\n");
+            for (LabeledCell cell : assessResults.labeledCells) {
+                writer.append(cell.toString()).append("\n\n");
+            }
+
+            // Print Performance results
+            writer.append("## Performance Results\n");
+            writer.append("Parsing time: ").append(String.valueOf(assessResults.parseTime)).append(" ms\n");
+            writer.append("Comparison time: ").append(String.valueOf(assessResults.comparisonTime)).append(" ns\n");
+            writer.append("Labeling time: ").append(String.valueOf(assessResults.labelingTime)).append(" ns\n");
+            writer.append("Whole execution time: ").append(String.valueOf(assessResults.executionTime)).append(" ms\n");
         } catch (IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Failed to export to MarkDown");
