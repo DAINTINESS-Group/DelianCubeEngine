@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g 2023-04-08 12:34:17
+// $ANTLR 3.5.1 C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g 2023-06-04 14:06:07
 
 	package analyze.syntax;
 
@@ -522,17 +522,17 @@ public class AnalyzeOperatorLexer extends Lexer {
 		try {
 			int _type = TEXTVALUE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:10: ( '\\'' ( LETTER | '_' | '/' | '-' | ' ' )+ '\\'' )
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:12: '\\'' ( LETTER | '_' | '/' | '-' | ' ' )+ '\\''
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:10: ( '\\'' ( LETTER | '_' | '/' | '-' | ' ' | '.' )+ '\\'' )
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:12: '\\'' ( LETTER | '_' | '/' | '-' | ' ' | '.' )+ '\\''
 			{
 			match('\''); 
-			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:16: ( LETTER | '_' | '/' | '-' | ' ' )+
+			// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:85:16: ( LETTER | '_' | '/' | '-' | ' ' | '.' )+
 			int cnt3=0;
 			loop3:
 			while (true) {
 				int alt3=2;
 				int LA3_0 = input.LA(1);
-				if ( (LA3_0==' '||LA3_0=='-'||LA3_0=='/'||(LA3_0 >= 'A' && LA3_0 <= 'Z')||LA3_0=='_'||(LA3_0 >= 'a' && LA3_0 <= 'z')) ) {
+				if ( (LA3_0==' '||(LA3_0 >= '-' && LA3_0 <= '/')||(LA3_0 >= 'A' && LA3_0 <= 'Z')||LA3_0=='_'||(LA3_0 >= 'a' && LA3_0 <= 'z')) ) {
 					alt3=1;
 				}
 
@@ -540,7 +540,7 @@ public class AnalyzeOperatorLexer extends Lexer {
 				case 1 :
 					// C:\\Users\\mariosjkb\\eclipse-workspace\\DelianCubeEngine\\src\\main\\java\\analyze\\syntax\\AnalyzeOperator.g:
 					{
-					if ( input.LA(1)==' '||input.LA(1)=='-'||input.LA(1)=='/'||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( input.LA(1)==' '||(input.LA(1) >= '-' && input.LA(1) <= '/')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 						input.consume();
 					}
 					else {
@@ -1561,29 +1561,29 @@ public class AnalyzeOperatorLexer extends Lexer {
 
 	protected DFA9 dfa9 = new DFA9(this);
 	static final String DFA9_eotS =
-		"\1\uffff\7\14\7\uffff\1\14\1\37\4\14\1\44\4\14\3\uffff\1\14\1\54\1\uffff"+
-		"\1\55\1\14\1\57\1\14\1\uffff\4\55\2\uffff\1\14\2\uffff\1\62\1\uffff\2"+
-		"\14\1\uffff\1\65\1\14\1\uffff\1\67\1\uffff";
+		"\1\uffff\7\14\7\uffff\1\14\1\37\4\14\1\44\4\14\3\uffff\1\14\1\55\1\uffff"+
+		"\1\56\1\14\1\60\1\14\1\uffff\4\56\3\uffff\1\14\2\uffff\1\64\1\uffff\1"+
+		"\14\1\uffff\1\14\1\uffff\1\67\1\14\1\uffff\1\71\1\uffff";
 	static final String DFA9_eofS =
-		"\70\uffff";
+		"\72\uffff";
 	static final String DFA9_minS =
 		"\1\11\1\116\1\117\1\122\1\131\1\101\1\125\1\116\5\uffff\1\40\1\uffff\1"+
 		"\101\1\60\1\107\1\117\1\122\1\117\1\60\1\116\1\130\1\115\1\124\1\40\2"+
-		"\uffff\1\114\1\60\1\uffff\1\60\1\115\1\60\1\125\1\uffff\4\60\1\uffff\1"+
-		"\40\1\131\2\uffff\1\60\1\uffff\1\120\1\132\1\uffff\1\60\1\105\1\uffff"+
+		"\uffff\1\114\1\60\1\uffff\1\60\1\115\1\60\1\125\1\uffff\4\60\1\uffff\2"+
+		"\40\1\131\2\uffff\1\60\1\uffff\1\120\1\40\1\132\1\uffff\1\60\1\105\1\uffff"+
 		"\1\60\1\uffff";
 	static final String DFA9_maxS =
 		"\1\172\1\166\2\162\1\171\1\151\1\165\1\156\5\uffff\1\172\1\uffff\1\144"+
 		"\1\172\1\147\1\157\1\162\1\157\1\172\1\156\1\170\1\155\1\164\1\172\2\uffff"+
-		"\1\154\1\172\1\uffff\1\172\1\155\1\172\1\165\1\uffff\4\172\1\uffff\1\172"+
-		"\1\171\2\uffff\1\172\1\uffff\1\160\1\172\1\uffff\1\172\1\145\1\uffff\1"+
+		"\1\154\1\172\1\uffff\1\172\1\155\1\172\1\165\1\uffff\4\172\1\uffff\2\172"+
+		"\1\171\2\uffff\1\172\1\uffff\1\160\2\172\1\uffff\1\172\1\145\1\uffff\1"+
 		"\172\1\uffff";
 	static final String DFA9_acceptS =
 		"\10\uffff\1\11\1\12\1\13\1\14\1\15\1\uffff\1\20\14\uffff\1\16\1\17\2\uffff"+
-		"\1\3\4\uffff\1\7\4\uffff\1\16\2\uffff\1\2\1\10\1\uffff\1\5\2\uffff\1\4"+
+		"\1\3\4\uffff\1\7\4\uffff\1\16\3\uffff\1\2\1\10\1\uffff\1\5\3\uffff\1\4"+
 		"\2\uffff\1\6\1\uffff\1\1";
 	static final String DFA9_specialS =
-		"\70\uffff}>";
+		"\72\uffff}>";
 	static final String[] DFA9_transitionS = {
 			"\2\16\1\uffff\2\16\22\uffff\1\16\6\uffff\1\15\1\12\1\13\2\uffff\1\10"+
 			"\3\uffff\12\14\3\uffff\1\11\3\uffff\1\1\1\4\1\7\2\14\1\2\1\3\5\14\1\5"+
@@ -1602,8 +1602,8 @@ public class AnalyzeOperatorLexer extends Lexer {
 			"",
 			"",
 			"",
-			"\1\33\14\uffff\1\32\1\uffff\1\33\12\34\7\uffff\32\33\4\uffff\1\33\1"+
-			"\uffff\32\33",
+			"\1\33\14\uffff\1\32\2\33\12\34\7\uffff\32\33\4\uffff\1\33\1\uffff\32"+
+			"\33",
 			"",
 			"\1\35\2\uffff\1\36\34\uffff\1\35\2\uffff\1\36",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
@@ -1616,35 +1616,39 @@ public class AnalyzeOperatorLexer extends Lexer {
 			"\1\46\37\uffff\1\46",
 			"\1\47\37\uffff\1\47",
 			"\1\50\37\uffff\1\50",
-			"\1\33\6\uffff\1\51\5\uffff\1\52\1\34\1\33\12\34\7\uffff\32\33\4\uffff"+
+			"\1\33\6\uffff\1\51\5\uffff\1\52\1\53\1\33\12\34\7\uffff\32\33\4\uffff"+
 			"\1\33\1\uffff\32\33",
 			"",
 			"",
-			"\1\53\37\uffff\1\53",
+			"\1\54\37\uffff\1\54",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"\1\56\37\uffff\1\56",
+			"\1\57\37\uffff\1\57",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"\1\60\37\uffff\1\60",
-			"",
-			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
-			"",
-			"\1\33\6\uffff\1\51\5\uffff\1\52\1\34\1\33\12\34\7\uffff\32\33\4\uffff"+
-			"\1\33\1\uffff\32\33",
 			"\1\61\37\uffff\1\61",
 			"",
-			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			"",
+			"\1\33\6\uffff\1\51\5\uffff\1\52\1\53\1\33\12\34\7\uffff\32\33\4\uffff"+
+			"\1\33\1\uffff\32\33",
+			"\1\33\6\uffff\1\33\5\uffff\1\62\2\33\12\34\7\uffff\32\33\4\uffff\1\33"+
+			"\1\uffff\32\33",
 			"\1\63\37\uffff\1\63",
-			"\1\64\37\uffff\1\64",
+			"",
 			"",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"",
+			"\1\65\37\uffff\1\65",
+			"\1\33\6\uffff\1\51\5\uffff\1\62\2\33\12\34\7\uffff\32\33\4\uffff\1\33"+
+			"\1\uffff\32\33",
 			"\1\66\37\uffff\1\66",
+			"",
+			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
+			"\1\70\37\uffff\1\70",
 			"",
 			"\12\14\7\uffff\32\14\4\uffff\1\14\1\uffff\32\14",
 			""

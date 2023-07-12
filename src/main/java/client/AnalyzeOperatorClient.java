@@ -55,12 +55,14 @@ public class AnalyzeOperatorClient {
 		System.out.println("Connection is successful.");
 		
 		// Analyze intentional query execution
-		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name, month AS first_query";                          
+		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";                          
 		
-		ResultFileMetadata resultMetadata = service.analyze(analyzeIntentionalExpression);
-		String localFolder = resultMetadata.getLocalFolder();
-		String resultFile = resultMetadata.getResultFile();
-		fetchData(localFolder,resultFile);
+		for(int i = 0;i < 5;i++) {
+			ResultFileMetadata resultMetadata = service.analyze(analyzeIntentionalExpression);
+			String localFolder = resultMetadata.getLocalFolder();
+			String resultFile = resultMetadata.getResultFile();
+			fetchData(localFolder,resultFile);
+		}
 	}
 
 }

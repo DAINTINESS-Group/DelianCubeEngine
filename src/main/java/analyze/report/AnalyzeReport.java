@@ -76,21 +76,21 @@ public class AnalyzeReport {
 										.split("-")[0];
 	
 		try {
-			this.reportFile = fileName + "-Analyze_Operator_Report.txt";
+			this.reportFile = fileName + "-Analyze_Operator_Report.md";
 			this.localFolder = "OutputFiles" + File.separator;
 			FileWriter reportFile = new FileWriter(this.localFolder + this.reportFile);
 			
-			reportFile.write("------------------------------------ANALYZE OPERATOR REPORT-------------------------------------\n\n");		
+			reportFile.write("## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n");		
 			
-			reportFile.write("ANALYZE OPERATOR INTENTIONAL QUERY: \n\n" + incomingExpression + "\n\n");
+			reportFile.write("ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" + incomingExpression + "**\n\n");
 
 			if(errorStatus == true) {
-				reportFile.write("ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION\n\n");
+				reportFile.write("**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n");
 				reportFile.write("AnalyzeExecutionError: " + errorMessage + "\n\n");
 				reportFile.close();
 			}else {
 			
-				reportFile.write("------------------------------------PRODUCED CUBE QUERIES--------------------------------------\n\n");
+				reportFile.write("### -----------------------------------------PRODUCED CUBE QUERIES--------------------------------------\n\n");
 				
 				for(AnalyzeQuery aq: analyzeQueries) {
 					Result result = aq.getAnalyzeQueryResult();
@@ -103,37 +103,76 @@ public class AnalyzeReport {
 						resultString = "The result of the Cube Query is empty!";
 					}else {
 						if(connectionType.equals("RDBMS")) {
+							// set up markdown table
 							for(int i = 2;i<resultArray.length;i++) {
-								if(i > 2) {
-									resultString += "                                             ";
+								if(i==2) {
+									resultString += "|";
+									if(i == 2) {
+										for(int k=0;k<resultArray[i].length-1;k++) {
+											if(k == resultArray[i].length-2) {
+												resultString += "Metric|";
+											}else {
+												resultString += "Grouper " + Integer.toString(k+1) + "|";
+											}
+										}
+										resultString += "\n|";
+										for(int k=0;k<resultArray[i].length-1;k++) {
+											resultString += "---|";
+										}
+										resultString += "\n|";
+									}
 								}
+								// fill table with data
 								for(int j = 0;j<resultArray[i].length-1;j++) {
-									resultString += resultArray[i][j] + ",";
+									resultString += resultArray[i][j] + "|";
 								}
 								resultString += "\n";
+								if(i < resultArray.length - 1) {
+									resultString += "|";
+								}
 							}
 						}else if(connectionType.equals("Spark")) {
+							// set-up markdown table
 							for(int i = 0;i<resultArray.length-2;i++) {
-								if(i > 0) {
-									resultString += "                                             ";
+								if(i==0) {
+									resultString += "|";
+									if(i == 0) {
+										for(int k=0;k<resultArray[i].length-1;k++) {
+											if(k == resultArray[i].length-2) {
+												resultString += "Metric|";
+											}else {
+												resultString += "Grouper " + Integer.toString(k+1) + "|";
+											}
+										}
+										resultString += "\n|";
+										for(int k=0;k<resultArray[i].length-1;k++) {
+											resultString += "---|";
+										}
+										resultString += "\n|";
+									}
 								}
+								//fill table with data
 								for(int j = 0;j<resultArray[i].length-1;j++) {
-									resultString += resultArray[i][j] + ",";
+									
+									resultString += resultArray[i][j] + "|";
 								}
 								resultString += "\n";
+								if(i < resultArray.length - 3) {
+									resultString += "|";
+								}
 							}
 						}
 					}
 					
-					reportFile.write("CUBE QUERY\n\n"
+					reportFile.write("#### ANALYZE CUBE QUERY\n\n"
 									+ aq.getAnalyzeCubeQuery().toString() + "\n\n"
-									+ "CUBE QUERY DETAILS\n\n" 
-									+ "Cube Query Type: " + aq.getType() + "\n"
-									+ "Filter value that is modified compared to the Base Query: " + aq.getOriginalSigmaValue() + "\n"
-									+ "Filter value after modification: " + aq.getModifiedSigmaValue() + "\n"
-									+ "Grouper value that is modified compared to the Base Query: " + aq.getOriginalGammaValue() + "\n"
-									+ "Grouper value after modification: " + aq.getModifiedGammaValue() + "\n"
-									+ "Result of the Cube Query in ascending order: " + resultString + "\n"
+									+ "##### ANALYZE CUBE QUERY DETAILS\n\n" 
+									+ "Cube Query Type: **" + aq.getType() + "**\n"
+									+ "Filter value that is modified compared to the Base Query: **" + aq.getOriginalSigmaValue() + "**\n"
+									+ "Filter value after modification: **" + aq.getModifiedSigmaValue() + "**\n"
+									+ "Grouper value that is modified compared to the Base Query: **" + aq.getOriginalGammaValue() + "**\n"
+									+ "Grouper value after modification: **" + aq.getModifiedGammaValue() + "**\n"
+									+ "Result of the Cube Query in ascending order:\n" + resultString + "\n"
 									+ "-----------------------------------------------------------------\n");
 				}
 				reportFile.close();

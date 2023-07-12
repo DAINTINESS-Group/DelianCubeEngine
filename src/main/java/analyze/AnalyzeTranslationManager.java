@@ -184,7 +184,11 @@ public class AnalyzeTranslationManager {
 		
 		// parse the incoming expression and find the number of syntax errors
 		try {
+			long startTime = System.nanoTime();
 			numOfErrors = analyzeParserManager.parse(incomingExpression);
+			long endTime = System.nanoTime();
+			double parsingTime = endTime - startTime;
+			System.out.println("Incoming Expression Parsing Time :" + Double.toString(parsingTime/1000000) + " ms");
 		} catch (RecognitionException e) {
 			e.printStackTrace();
 		}

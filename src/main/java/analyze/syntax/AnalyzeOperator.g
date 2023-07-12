@@ -82,7 +82,7 @@ RPARENTHESIS: ')';
 
 WORD: (LETTER | '_'|DIGIT)+;
 
-TEXTVALUE: '\''(LETTER|'_'|'/'|'-'|' ')+ '\'';
+TEXTVALUE: '\''(LETTER|'_'|'/'|'-'|' '|'.')+ '\'';
 
 NUMBER: '\'''-'?(DIGIT|'-')+('.'(DIGIT|'-')+)?'\'' ;
 

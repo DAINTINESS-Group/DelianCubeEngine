@@ -56,10 +56,10 @@ public class AnalyzeWrongExpressions {
 	public final void testAnalyzeQueryWithWrongExpressionValues() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR district_name='Athens' AND month='13-1998' GROUP BY region,day AS mistaken_values";
 		
-		String expectedReportFileContents = "------------------------------------ANALYZE OPERATOR REPORT-------------------------------------\n\n"
-				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n" 
-				+ incomingExpression + "\n\n"
-				+ "ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION\n\n"
+		String expectedReportFileContents = "## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n"
+				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" 
+				+ incomingExpression + "**\n\n"
+				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
@@ -67,7 +67,7 @@ public class AnalyzeWrongExpressions {
 		
 		testAnalyzeOperator.execute();
 		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_values" + "-Analyze_Operator_Report.txt");
+		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_values" + "-Analyze_Operator_Report.md");
 		
 		assertEquals(expectedReportFileContents,reportFileContents);
 	}
@@ -77,10 +77,10 @@ public class AnalyzeWrongExpressions {
 	public final void testAnalyzeQueryWithWrongExpressions() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR rgon='Athens' AND y='2030' GROUP BY district_name,month AS mistaken_expressions";
 		
-		String expectedReportFileContents = "------------------------------------ANALYZE OPERATOR REPORT-------------------------------------\n\n"
-				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n" 
-				+ incomingExpression + "\n\n"
-				+ "ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION\n\n"
+		String expectedReportFileContents = "## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n"
+				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" 
+				+ incomingExpression + "**\n\n"
+				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
@@ -88,7 +88,7 @@ public class AnalyzeWrongExpressions {
 		
 		testAnalyzeOperator.execute();
 		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_expressions" + "-Analyze_Operator_Report.txt");
+		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_expressions" + "-Analyze_Operator_Report.md");
 		
 		assertEquals(expectedReportFileContents,reportFileContents);
 	}
@@ -98,10 +98,10 @@ public class AnalyzeWrongExpressions {
 	public final void testAnalyzeQueryWithWrongGammaExpressions() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district,month AS mistaken_gamma_expressions";
 		
-		String expectedReportFileContents = "------------------------------------ANALYZE OPERATOR REPORT-------------------------------------\n\n"
-				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n" 
-				+ incomingExpression + "\n\n"
-				+ "ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION\n\n"
+		String expectedReportFileContents = "## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n"
+				+ "ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" 
+				+ incomingExpression + "**\n\n"
+				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
@@ -109,7 +109,7 @@ public class AnalyzeWrongExpressions {
 		
 		testAnalyzeOperator.execute();
 		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_gamma_expressions" + "-Analyze_Operator_Report.txt");
+		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_gamma_expressions" + "-Analyze_Operator_Report.md");
 		
 		assertEquals(expectedReportFileContents,reportFileContents);
 	}
