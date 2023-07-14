@@ -3,8 +3,6 @@ package mainengine.nlq;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import mainengine.nlq.NLTranslator;
-import mainengine.nlq.CubeQueryForm;
 
 public class NLTranslatorTest {
 

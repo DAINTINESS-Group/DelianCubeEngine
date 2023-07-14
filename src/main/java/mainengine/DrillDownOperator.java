@@ -2,21 +2,16 @@ package mainengine;
 
 import java.util.Arrays;
 
-import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeQuery;
-import result.Result;
 
 public class DrillDownOperator {
 
 	private CubeQuery oldCubeQuery;
-	private CubeManager cubeManager;
 	private CubeQuery cubeQuery;
-	private Result res;
 	
-	public DrillDownOperator(CubeQuery oldCubeQuery, CubeManager cManager) {
+	public DrillDownOperator(CubeQuery oldCubeQuery) {
 		this.oldCubeQuery = oldCubeQuery;
-		this.cubeManager = cManager;
 	}
 	
 	public ResultFileMetadata executeDrillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) {
@@ -33,7 +28,6 @@ public class DrillDownOperator {
 				}
 			}
 		
-			this.res = cubeManager.executeQuery(cubeQuery);
 		}
 		return resMetadata;
 	}
@@ -97,11 +91,8 @@ public class DrillDownOperator {
 		return resMetadata;
 	}
 	
-	public CubeQuery getCubeQuery() {
+	public CubeQuery getDrillDownCubeQuery() {
 		return this.cubeQuery;
 	}
 	
-	public Result getResult() {
-		return this.res;
-	}
 }

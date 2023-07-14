@@ -44,10 +44,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
-import mainengine.SessionQueryProcessorEngine;
-
 
 /**
  * Test class for SimpleQueryProcessorEngine AND for the ENTIRE ENGINE

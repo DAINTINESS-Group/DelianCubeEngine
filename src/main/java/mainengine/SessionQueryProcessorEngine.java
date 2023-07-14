@@ -199,25 +199,33 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public String answerCubeQueryFromString(String queryRawString) throws RemoteException{
 		//Use a hashmap to get any useful data (like queryname) from the raw query string
 		HashMap<String, String> queryParams = new HashMap<String, String>();
-		Instant t0 = Instant.now();
 		cubeManager = session.getCubeManager();
-
+		
 		//1. parse query and produce a CubeQuery
 		CubeQuery currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
 		this.currentCubeQuery = currentCubeQuery;
-
+		
 		//2. execute the query AND populate Result with a 2D string
+		String outputLocation = executeCubeQuery(this.currentCubeQuery);
+		return outputLocation;
+	}//answerCubeQueryFromString
+	
+	
+	public String executeCubeQuery(CubeQuery cubeQuery) {
+		
 		//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
+		Instant t0 = Instant.now();
 		Result res = cubeManager.executeQuery(currentCubeQuery);
 		this.currentResult = res;
 		Instant tExecuted = Instant.now();
 		long durationExecution = Duration.between(t0, tExecuted).toMillis();
 
-		//3a. print result to file and screen
-		String queryName = queryParams.get("QueryName");
-		this.currentQueryName = queryName;
+		//Print result to file and screen
+		//String queryName = queryParams.get("QueryName");
+		this.currentQueryName = currentCubeQuery.getName();
+		String queryName = currentCubeQuery.getName();
 
-		//3b. print result to file
+		//Print result to file
 		String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
 
 		//Replaced all printing of String[][] with printing of Cells which seems to be identical
@@ -234,9 +242,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 				+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
 
 		System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
-
 		return outputLocation;
-	}//answerCubeQueryFromString
+	}
 
 
 	/**
@@ -385,48 +392,16 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	//OLAP BASIC OPERATORS METHODS
 	@Override
 	public ResultFileMetadata rollUp(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
-
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
-		cubeManager = session.getCubeManager();
-		RollUpOperator operator = new RollUpOperator(oldCubeQuery, cubeManager);
+		RollUpOperator operator = new RollUpOperator(oldCubeQuery);
 
 		//1. Perform the Roll-Up
-		Instant t0 = Instant.now();
 		ResultFileMetadata resMetadata = operator.executeRollUp(oldQueryName, newQueryName, dimensionName, targetLevelName);
-		Instant tExecuted = Instant.now();
-		long durationExecution = Duration.between(t0, tExecuted).toMillis();
-
 		if(resMetadata.getErrorCheckingStatus()==null) {
-
-			this.currentCubeQuery = operator.getCubeQuery();
-			this.currentQueryName = newQueryName;
-			this.currentResult = operator.getResult();
-			queryHistoryMng.addQuery(currentCubeQuery);
-
-			//2. print result to file
-			String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
-
-			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
-				this.currentResult.printCellsToStream(System.out);
-			}
-			String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-			resMetadata.setComponentResultFiles(null);
-			resMetadata.setComponentResultInfoFiles(null);
-			resMetadata.setLocalFolder("OutputFiles" + File.separator);
-			resMetadata.setResultFile(outputLocation);
-			resMetadata.setResultInfoFile(outputInfoLocation);
-
-			Instant tOutputed = Instant.now();
-			long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
-			long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-
-			//3. Print to screen
-			System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
-					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
-			System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
-			System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
-			System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-			System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
+			this.currentCubeQuery = operator.getRollUpCubeQuery();
+			System.out.println("Roll-Up Cube Query:\n"+currentCubeQuery.toString());
+			//2. Execute the Roll-Up Query
+			resMetadata = answerCubeQueryFromStringWithMetadata(currentCubeQuery.toString());
 		}
 		return resMetadata;
 	}
@@ -434,48 +409,16 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	@Override
 	public ResultFileMetadata drillDown(String oldQueryName, String newQueryName, String dimensionName, String targetLevelName) throws RemoteException {
-
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
-		cubeManager = session.getCubeManager();
-		DrillDownOperator operator = new DrillDownOperator(oldCubeQuery, cubeManager);
+		DrillDownOperator operator = new DrillDownOperator(oldCubeQuery);
 
-		//1.Perform the Drill-Down
-		Instant t0 = Instant.now();
+		//1. Perform the Drill-Down
 		ResultFileMetadata resMetadata = operator.executeDrillDown(oldQueryName, newQueryName, dimensionName, targetLevelName);
-		Instant tExecuted = Instant.now();
-		long durationExecution = Duration.between(t0, tExecuted).toMillis();
-
 		if(resMetadata.getErrorCheckingStatus()==null) {
-
-			this.currentCubeQuery = operator.getCubeQuery();
-			this.currentQueryName = newQueryName;
-			this.currentResult = operator.getResult();
-			queryHistoryMng.addQuery(currentCubeQuery);
-
-			//2. print result to file
-			String outputLocation = this.printToTabTextFile(currentCubeQuery,  "OutputFiles" + File.separator);
-
-			if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
-				this.currentResult.printCellsToStream(System.out);
-			}
-			String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-			resMetadata.setComponentResultFiles(null);
-			resMetadata.setComponentResultInfoFiles(null);
-			resMetadata.setLocalFolder("OutputFiles" + File.separator);
-			resMetadata.setResultFile(outputLocation);
-			resMetadata.setResultInfoFile(outputInfoLocation);
-
-			Instant tOutputed = Instant.now();
-			long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
-			long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-
-			//3. Print to screen
-			System.out.println("\n\n@TIMER\tQuery\t" + newQueryName + "\tQuery Execution:\t" + durationExecution
-					+ "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
-			System.out.println("------- Done with " + newQueryName + " --------------------------"+"\n");
-			System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
-			System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-			System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
+			this.currentCubeQuery = operator.getDrillDownCubeQuery();
+			System.out.println("Drill-Down Cube Query:\n"+currentCubeQuery.toString());
+			//2. Execute the Drill-Down Query
+			resMetadata = answerCubeQueryFromStringWithMetadata(currentCubeQuery.toString());
 		}
 		return resMetadata;
 	}

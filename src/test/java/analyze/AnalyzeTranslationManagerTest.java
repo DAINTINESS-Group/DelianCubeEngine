@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cubemanager.CubeManager;
-import analyze.AnalyzeTranslationManager;
 import mainengine.Session;
 
 
@@ -94,7 +93,6 @@ public class AnalyzeTranslationManagerTest {
 		for(AnalyzeQuery aq:result) {
 			resultedCubeQueries += aq.toString() + "\n";
 		}
-
 		assertEquals(expectedCubeQueries,resultedCubeQueries);
 
 	}

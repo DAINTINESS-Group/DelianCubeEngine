@@ -3,22 +3,17 @@ package mainengine;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeQuery;
-import result.Result;
 
 
 public class RollUpOperator {
 	
 	private CubeQuery oldCubeQuery;
-	private CubeManager cubeManager;
 	private CubeQuery cubeQuery;
-	private Result res;
 	
-	public RollUpOperator(CubeQuery oldCubeQuery, CubeManager cManager) {
+	public RollUpOperator(CubeQuery oldCubeQuery) {
 		this.oldCubeQuery = oldCubeQuery;
-		this.cubeManager = cManager;
 	}
 	
 	
@@ -37,11 +32,7 @@ public class RollUpOperator {
 					System.out.println("After the Roll-Up: "+Arrays.toString(cubeQuery.getGammaExpressions().get(i)));		
 				}
 			}
-			
-			this.res = cubeManager.executeQuery(cubeQuery);
-
 		}
-		
 		return resMetadata;		
 	}
 	
@@ -105,11 +96,8 @@ public class RollUpOperator {
 		return resMetadata;
 	}
 	
-	public CubeQuery getCubeQuery() {
+	public CubeQuery getRollUpCubeQuery() {
 		return this.cubeQuery;
 	}
 	
-	public Result getResult() {
-		return this.res;
-	}
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import analyze.AnalyzeTranslationManager;
 import cubemanager.CubeManager;
 import mainengine.Session;
 

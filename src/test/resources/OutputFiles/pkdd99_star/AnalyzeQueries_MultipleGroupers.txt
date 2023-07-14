@@ -1,196 +1,196 @@
-QueryName: multiple_groupers-AnalyzeBaseQuery
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.month , status_dim.SK_status
-Sigma Expression: account_dim.region='Prague' AND date_dim.year='1989' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeBaseQuery
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.month, status_dim.SK_status
+Sigma:account_dim.region='Prague', date_dim.year='1989', status_dim.status='Contract Finished/No Problems'
 Type: Base
 Original Sigma Value: none
 Modified Sigma Value: not modified
 Original Gamma Value: none
 Modified Gamma Value: not modified
-QueryName: multiple_groupers-AnalyzeSiblingQuery_account_dim
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.region , date_dim.month , status_dim.SK_status
-Sigma Expression: account_dim.All_account='ALL' AND date_dim.year='1989' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeSiblingQuery_account_dim
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.region, date_dim.month, status_dim.SK_status
+Sigma:account_dim.All_account='ALL', date_dim.year='1989', status_dim.status='Contract Finished/No Problems'
 Type: Sibling
 Original Sigma Value: 'Prague'
 Modified Sigma Value: 'ALL'
 Original Gamma Value: district_name
 Modified Gamma Value: region
-QueryName: multiple_groupers-AnalyzeSiblingQuery_date_dim
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.year , status_dim.SK_status
-Sigma Expression: date_dim.All_date='ALL' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeSiblingQuery_date_dim
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.year, status_dim.SK_status
+Sigma:date_dim.All_date='ALL', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Sibling
 Original Sigma Value: '1989'
 Modified Sigma Value: 'ALL'
 Original Gamma Value: month
 Modified Gamma Value: year
-QueryName: multiple_groupers-AnalyzeSiblingQuery_status_dim
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.month , status_dim.status
-Sigma Expression: status_dim.All_status='ALL' AND account_dim.region='Prague' AND date_dim.year='1989'
+CubeName:loan
+Name: multiple_groupers-AnalyzeSiblingQuery_status_dim
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.month, status_dim.status
+Sigma:status_dim.All_status='ALL', account_dim.region='Prague', date_dim.year='1989'
 Type: Sibling
 Original Sigma Value: 'Contract Finished/No Problems'
 Modified Sigma Value: 'ALL'
 Original Gamma Value: SK_status
 Modified Gamma Value: status
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_account_dim_1
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.account , date_dim.month , status_dim.SK_status
-Sigma Expression: account_dim.district_name='Hl.m. Praha' AND date_dim.year='1989' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_account_dim_1
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.account, date_dim.month, status_dim.SK_status
+Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1989', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: 'Prague'
 Modified Sigma Value: 'Hl.m. Praha'
 Original Gamma Value: district_name
 Modified Gamma Value: account
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_1
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-01' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_1
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-01', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-01'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_2
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-02' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_2
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-02', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-02'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_3
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-03' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_3
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-03', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-03'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_4
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-04' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_4
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-04', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-04'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_5
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-05' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_5
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-05', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-05'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_6
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-06' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_6
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-06', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-06'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_7
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-07' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_7
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-07', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-07'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_8
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-08' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_8
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-08', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-08'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_9
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-09' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_9
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-09', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-09'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_10
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-10' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_10
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-10', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-10'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_11
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-11' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_11
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-11', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-11'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_date_dim_12
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.day , status_dim.SK_status
-Sigma Expression: date_dim.month='1989-12' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_date_dim_12
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.day, status_dim.SK_status
+Sigma:date_dim.month='1989-12', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1989'
 Modified Sigma Value: '1989-12'
 Original Gamma Value: month
 Modified Gamma Value: day
-QueryName: multiple_groupers-AnalyzeDrillDownQuery_status_dim_1
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.district_name , date_dim.month , status_dim.SK_status
-Sigma Expression: status_dim.SK_status='2' AND account_dim.region='Prague' AND date_dim.year='1989'
+CubeName:loan
+Name: multiple_groupers-AnalyzeDrillDownQuery_status_dim_1
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.district_name, date_dim.month, status_dim.SK_status
+Sigma:status_dim.SK_status='2', account_dim.region='Prague', date_dim.year='1989'
 Type: Drill_Down
 Original Sigma Value: 'Contract Finished/No Problems'
 Modified Sigma Value: '2'

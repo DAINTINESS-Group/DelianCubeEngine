@@ -136,25 +136,26 @@ public class CubeQuery extends Cube {
 	 * @since v.0.0 Cinecubes
 	 */
 	public String toString() {
-		String ret_value = "QueryName: " + this.name + 
-				"\nBasicCube : " + this.referCube.getName() + 
-				"\nAggregate Function : " + AggregateFunction + "\n";
+		String ret_value = 
+				"CubeName:" + this.referCube.getName().substring(0, this.referCube.getName().length()-5) +
+				"\nName: " + this.name + 
+				"\nAggrFunc:" + AggregateFunction + "\n";
 		if (this.cubeMeasuresList.size() > 0 && this.cubeMeasuresList.get(0) != null
 				&& this.cubeMeasuresList.get(0).getAttribute() != null)
-			ret_value += "Measure : " + this.cubeMeasuresList.get(0).getAttribute().getName() + "\n";
-		ret_value += "Gamma Expression: ";
+			ret_value += "Measure:" + this.cubeMeasuresList.get(0).getAttribute().getName() + "\n";
+		ret_value += "Gamma:";
 		for (int i = 0; i < GammaExpressions.size(); i++) {
 			if (i > 0)
-				ret_value += " , ";
+				ret_value += ", ";
 			if (GammaExpressions.get(i)[0].length() > 0)
 				ret_value += GammaExpressions.get(i)[0] + ".";
 			ret_value += GammaExpressions.get(i)[1];
 		}
 
-		ret_value += "\nSigma Expression: ";
+		ret_value += "\nSigma:";
 		for (int i = 0; i < SigmaExpressions.size(); i++) {
 			if (i > 0)
-				ret_value += " AND ";
+				ret_value += ", ";
 			ret_value += SigmaExpressions.get(i)[0]
 					+ SigmaExpressions.get(i)[1] + SigmaExpressions.get(i)[2];
 		}

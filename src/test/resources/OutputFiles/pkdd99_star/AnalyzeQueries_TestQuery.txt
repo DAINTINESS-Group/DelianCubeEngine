@@ -1,174 +1,174 @@
-QueryName: test_query-AnalyzeBaseQuery
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.All_date
-Sigma Expression: account_dim.region='Prague' AND date_dim.year='1998' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeBaseQuery
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.All_date
+Sigma:account_dim.region='Prague', date_dim.year='1998', status_dim.status='Contract Finished/No Problems'
 Type: Base
 Original Sigma Value: none
 Modified Sigma Value: not modified
 Original Gamma Value: none
 Modified Gamma Value: not modified
-QueryName: test_query-AnalyzeSiblingQuery_account_dim
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.All_date
-Sigma Expression: account_dim.All_account='ALL' AND date_dim.year='1998' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeSiblingQuery_account_dim
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.All_date
+Sigma:account_dim.All_account='ALL', date_dim.year='1998', status_dim.status='Contract Finished/No Problems'
 Type: Sibling
 Original Sigma Value: 'Prague'
 Modified Sigma Value: 'ALL'
 Original Gamma Value: All_account
 Modified Gamma Value: All_account
-QueryName: test_query-AnalyzeSiblingQuery_date_dim
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.All_date
-Sigma Expression: date_dim.All_date='ALL' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeSiblingQuery_date_dim
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.All_date
+Sigma:date_dim.All_date='ALL', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Sibling
 Original Sigma Value: '1998'
 Modified Sigma Value: 'ALL'
 Original Gamma Value: All_date
 Modified Gamma Value: All_date
-QueryName: test_query-AnalyzeDrillDownQuery_account_dim_1
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.region , date_dim.All_date
-Sigma Expression: account_dim.district_name='Hl.m. Praha' AND date_dim.year='1998' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_account_dim_1
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.region, date_dim.All_date
+Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1998', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: 'Prague'
 Modified Sigma Value: 'Hl.m. Praha'
 Original Gamma Value: All_account
 Modified Gamma Value: region
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_1
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-01' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_1
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-01', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-01'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_2
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-02' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_2
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-02', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-02'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_3
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-03' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_3
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-03', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-03'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_4
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-04' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_4
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-04', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-04'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_5
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-05' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_5
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-05', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-05'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_6
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-06' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_6
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-06', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-06'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_7
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-07' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_7
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-07', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-07'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_8
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-08' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_8
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-08', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-08'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_9
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-09' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_9
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-09', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-09'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_10
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-10' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_10
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-10', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-10'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_11
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-11' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_11
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-11', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-11'
 Original Gamma Value: All_date
 Modified Gamma Value: year
-QueryName: test_query-AnalyzeDrillDownQuery_date_dim_12
-BasicCube : loan_cube
-Aggregate Function : Max
-Measure : amount
-Gamma Expression: account_dim.All_account , date_dim.year
-Sigma Expression: date_dim.month='1998-12' AND account_dim.region='Prague' AND status_dim.status='Contract Finished/No Problems'
+CubeName:loan
+Name: test_query-AnalyzeDrillDownQuery_date_dim_12
+AggrFunc:Max
+Measure:amount
+Gamma:account_dim.All_account, date_dim.year
+Sigma:date_dim.month='1998-12', account_dim.region='Prague', status_dim.status='Contract Finished/No Problems'
 Type: Drill_Down
 Original Sigma Value: '1998'
 Modified Sigma Value: '1998-12'

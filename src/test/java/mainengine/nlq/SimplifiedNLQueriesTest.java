@@ -8,12 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import mainengine.nlq.NLTranslator;
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
 import mainengine.SessionQueryProcessorEngine;
 
 
