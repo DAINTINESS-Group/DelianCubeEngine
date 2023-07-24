@@ -7,6 +7,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 
+import model.AbstractModel;
+import model.ModelFactory;
+
 public class ModelManager {
 
 	public ModelManager(Result res) {
