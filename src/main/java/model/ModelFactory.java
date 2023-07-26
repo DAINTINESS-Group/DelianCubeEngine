@@ -19,6 +19,12 @@
 
 package model;
 
+import model.abstracts.AbstractModel;
+import model.clustering.KmeansApache;
+import model.kpi.KPIMedianBasedModel;
+import model.kpi.KPIModel_SouthBoh_YR_Status;
+import model.outlier.OutlierModel;
+import model.rank.RankModel;
 import result.Result;
 
 public class ModelFactory {

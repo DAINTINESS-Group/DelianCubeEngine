@@ -16,12 +16,15 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.outlier;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import model.abstracts.AbstractModel;
+import model.abstracts.AbstractModelComponent;
 
 /**
  * The model component for Outlier detection. Relates to ΟutlierModel.
@@ -45,7 +48,7 @@ public class OutlierModelComponent extends AbstractModelComponent {
 	 * Simply converting the internal double array to an arraylist of strings
 	 * Taking care of locale's too -- see also the way to do it in the private static format attributes
 	 * 
-	 * @see model.AbstractModelComponent#getCellLabelsAsStrings()
+	 * @see model.abstracts.AbstractModelComponent#getCellLabelsAsStrings()
 	 */
 	@Override
 	public ArrayList<String> getCellLabelsAsStrings() {

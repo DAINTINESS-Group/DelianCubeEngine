@@ -16,13 +16,14 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.kpi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import model.abstracts.AbstractModel;
 import result.Cell;
 import result.Result;
 
@@ -57,7 +58,7 @@ public class KPIMedianBasedModel extends AbstractModel {
 	 * 
 	 * The actual computation takes place in the applyKPIrules method
 	 * 
-	 * @see model.AbstractModel#compute()
+	 * @see model.abstracts.AbstractModel#compute()
 	 */
 	@Override
 	public int compute() {
@@ -121,7 +122,7 @@ public class KPIMedianBasedModel extends AbstractModel {
 	/** 
 	 * Return "KPIMedianBasedModel"
 	 * 
-	 * @see model.AbstractModel#getModelName()
+	 * @see model.abstracts.AbstractModel#getModelName()
 	 */
 	@Override
 	public String getModelName() {
@@ -135,7 +136,7 @@ public class KPIMedianBasedModel extends AbstractModel {
 	 * First row is the header per component
 	 * Each row, next, pertains to the respective cell
 	 * 
-	 * @see model.AbstractModel#printAs2DStringArray()
+	 * @see model.abstracts.AbstractModel#printAs2DStringArray()
 	 */
 	@Override
 	public String[][] printAs2DStringArray() {

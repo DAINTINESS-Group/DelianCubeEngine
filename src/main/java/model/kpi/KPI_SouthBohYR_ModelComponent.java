@@ -1,9 +1,12 @@
 /**
  * 
  */
-package model;
+package model.kpi;
 
 import java.util.ArrayList;
+
+import model.abstracts.AbstractModel;
+import model.abstracts.AbstractModelComponent;
 
 /**
  * Model component for KPIModel_SouthBoh_YR_Status
@@ -26,7 +29,7 @@ public class KPI_SouthBohYR_ModelComponent extends AbstractModelComponent {
 	/**
 	 * Simply converting the internal int array to an arraylist of strings
 	 * 
-	 * @see model.AbstractModelComponent#getCellLabelsAsStrings()
+	 * @see model.abstracts.AbstractModelComponent#getCellLabelsAsStrings()
 	 */
 	@Override
 	public ArrayList<String> getCellLabelsAsStrings() {

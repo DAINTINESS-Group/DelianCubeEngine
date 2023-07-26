@@ -16,12 +16,13 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.outlier;
 
 import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import model.abstracts.AbstractModel;
 import result.Cell;
 import result.Result;
 
@@ -55,7 +56,7 @@ public class OutlierModel extends AbstractModel {
 	/**
 	 * This is the method where the computation of outliers takes place
 	 * 
-	 * @see model.AbstractModel#compute()
+	 * @see model.abstracts.AbstractModel#compute()
 	 */
 	@Override
 	public int compute() {				
@@ -141,7 +142,7 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 	 * First row is the header per component
 	 * Each row, next, pertains to the respective cell
 	 * 
-	 * @see model.AbstractModel#printAs2DStringArray()
+	 * @see model.abstracts.AbstractModel#printAs2DStringArray()
 	 */
 	@Override
 	public String[][] printAs2DStringArray() {

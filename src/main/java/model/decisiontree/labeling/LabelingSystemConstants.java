@@ -1,4 +1,4 @@
-package model.labeling;
+package model.decisiontree.labeling;
 
 public class LabelingSystemConstants {
 	public static final String GT = ">";

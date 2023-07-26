@@ -1,12 +1,13 @@
 /**
  * 
  */
-package model;
+package model.kpi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import model.abstracts.AbstractModel;
 import result.Result;
 
 /**
@@ -91,7 +92,7 @@ public class KPIModel_SouthBoh_YR_Status extends AbstractModel {
 
 	/** 
 	 * KPI name
-	 * @see model.AbstractModel#getModelName()
+	 * @see model.abstracts.AbstractModel#getModelName()
 	 */
 	@Override
 	public String getModelName() {
@@ -104,7 +105,7 @@ public class KPIModel_SouthBoh_YR_Status extends AbstractModel {
 	 * First row is the header per component
 	 * Each row, next, pertains to the respective cell
 	 * 
-	 * @see model.AbstractModel#printAs2DStringArray()
+	 * @see model.abstracts.AbstractModel#printAs2DStringArray()
 	 */
 	@Override
 	public String[][] printAs2DStringArray() {
@@ -132,7 +133,7 @@ public class KPIModel_SouthBoh_YR_Status extends AbstractModel {
 	/** 
 	 * Info content
 	 * 
-	 * @see model.AbstractModel#getInfoContent()
+	 * @see model.abstracts.AbstractModel#getInfoContent()
 	 */
 	@Override
 	public String getInfoContent() {

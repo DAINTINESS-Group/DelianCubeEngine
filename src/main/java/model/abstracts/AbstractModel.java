@@ -16,7 +16,7 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.abstracts;
 
 import java.io.File;
 import java.io.FileOutputStream;

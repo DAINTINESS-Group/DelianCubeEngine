@@ -16,7 +16,7 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.rank;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +25,7 @@ import org.apache.commons.math3.stat.ranking.NaNStrategy;
 import org.apache.commons.math3.stat.ranking.NaturalRanking;
 import org.apache.commons.math3.stat.ranking.TiesStrategy;
 
+import model.abstracts.AbstractModel;
 import result.Cell;
 import result.Result;
 
@@ -56,7 +57,7 @@ public class RankModel extends AbstractModel {
 
 	/** Computes three model components, (a) a ranking of cell values, (b) the max and (c) the min cell.
 	 * 
-	 * @see model.AbstractModel#compute()
+	 * @see model.abstracts.AbstractModel#compute()
 	 */
 	@Override
 	public int compute() {
@@ -107,7 +108,7 @@ public class RankModel extends AbstractModel {
 	/** Formats the output as a 2D string array. The order of columns is (a) Rank, (b) Max, and (c) Min.
 	 * The first row is the header with the name of the component.
 	 * 
-	 * @see model.AbstractModel#printAs2DStringArray()
+	 * @see model.abstracts.AbstractModel#printAs2DStringArray()
 	 */
 	@Override
 	public String[][] printAs2DStringArray() {

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
+  <package id="1" language="java" name="model" project="DelianCubeEngine" file="/DelianCubeEngine/src/main/java/model" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="516" y="69"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="2" language="java" name="model.abstracts" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/abstracts" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="528" y="558"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="3" language="java" name="model.clustering" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/clustering" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="50" width="119" x="101" y="286"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="4" language="java" name="model.decisiontree" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/decisiontree" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="50" width="133" x="302" y="281"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="5" language="java" name="model.kpi" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/kpi" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="634" y="309"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="6" language="java" name="model.rank" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/rank" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="50" width="101" x="966" y="278"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="7" language="java" name="model.outlier" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/model/outlier" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="50" width="101" x="769" y="276"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -16,7 +16,7 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.clustering;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
+import model.abstracts.AbstractModel;
 import result.Cell;
 import result.CellWrapper;
 import result.Result;
@@ -97,7 +98,7 @@ public class KmeansApache extends AbstractModel {
 	
 	/**
 	 * Returns  String "KMeansApache"
-	 * @see model.AbstractModel#getModelName()
+	 * @see model.abstracts.AbstractModel#getModelName()
 	 */
 	@Override
 	public String getModelName() {

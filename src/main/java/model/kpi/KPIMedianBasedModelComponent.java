@@ -16,50 +16,55 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.kpi;
 
 import java.util.ArrayList;
 
+import model.abstracts.AbstractModel;
+import model.abstracts.AbstractModelComponent;
+
 /**
- * The model components for simple ranking -- relates to a RankModel model
- * Used to carry represent max, min and rank components.
- * Max (min) are "bitmaps" with 1 for the cells with the max(min) values and 0's for the rest
- * Rank is an array with the rank of the cells wrt their measure values.
+ * Model component for KPIMedianBasedModel. 
  * 
  * @author pvassil
  *
  */
-public class RankModelComponent extends AbstractModelComponent {
+public class KPIMedianBasedModelComponent extends AbstractModelComponent {
 
 	/**
-	 * @param aName Component's name
-	 * @param aModel To which model (here: RankModel) the component belongs to
+	 * Constructor for the class
+	 * 
+	 * @param aName  the name of the component
+	 * @param aModel the model to which it belongs (here: KPIMedianBasedModel)
 	 */
-	public RankModelComponent(String aName, AbstractModel aModel) {
+	public KPIMedianBasedModelComponent(String aName, AbstractModel aModel) {
 		super(aName, aModel);
-		cellLabels = new ArrayList<String>();
+		cellLabels = new ArrayList<String>();	
 	}
 
 	/**
-	 * Simply converting the internal ranking int array to an arraylist of strings
-	 *  
-	 * @see model.AbstractModelComponent#getCellLabelsAsStrings()
+	 * Simply converting the internal int array to an arraylist of strings
+	 * 
+	 * @see model.abstracts.AbstractModelComponent#getCellLabelsAsStrings()
 	 */
 	@Override
 	public ArrayList<String> getCellLabelsAsStrings() {
-		int arraySize = rankLabel.length;
+		int arraySize = classBitmap.length;
 		
 		for(int i =0; i<arraySize; i++) {
-			cellLabels.add(Integer.toString(rankLabel[i]));
+			cellLabels.add(String.valueOf(classBitmap[i]));
 		}
 		return cellLabels;
 	}
 
-	
-	public void setRankLabel(int [] aRankLabel) {
-		rankLabel = aRankLabel;
+	public int [] getClassBitmap() {
+		return this.classBitmap;
+	}
+	public void setClassBitmap(int[] aClassBitmap) {
+		this.classBitmap = aClassBitmap;
 	}
 	
-	private int[] rankLabel;
+	int [] classBitmap;
 	private ArrayList<String> cellLabels;
-}//end class
+
+}

@@ -1,4 +1,4 @@
-package model.util;
+package model.decisiontree.util;
 
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;

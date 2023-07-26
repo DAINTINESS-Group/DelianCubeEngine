@@ -1,4 +1,4 @@
-package model.labeling;
+package model.decisiontree.labeling;
 
 import java.util.List;
 

@@ -16,9 +16,12 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 */
-package model;
+package model.clustering;
 
 import java.util.ArrayList;
+
+import model.abstracts.AbstractModel;
+import model.abstracts.AbstractModelComponent;
 
 /**
  * The current class stands for the clusters of a cluster-set derived from the Apache KMeans.
@@ -42,7 +45,7 @@ public class KMeansApacheComponent extends AbstractModelComponent {
 	/**
 	 * Simply converting the internal clusterId int array to an arraylist of strings
 	 *  
-	 * @see model.AbstractModelComponent#getCellLabelsAsStrings()
+	 * @see model.abstracts.AbstractModelComponent#getCellLabelsAsStrings()
 	 */
 	@Override
 	public ArrayList<String> getCellLabelsAsStrings() {
