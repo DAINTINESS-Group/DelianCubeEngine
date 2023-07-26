@@ -12,6 +12,13 @@ import model.ModelFactory;
 
 public class ModelManager {
 
+	private ArrayList<AbstractModel> modelsToLaunch;
+	private Result result;
+	private String namePrefix; 
+	private ArrayList<String> modelComponentFileNames;
+	private ArrayList<String> modelInfoFileNames;
+	
+	
 	public ModelManager(Result res) {
 		result = res;
 		modelsToLaunch = new ArrayList<AbstractModel>();
@@ -110,9 +117,5 @@ public class ModelManager {
 		return modelComponentFileNames.size();
 	}//end addComponentsToResultMetadata
 	
-	private ArrayList<AbstractModel> modelsToLaunch;
-	private Result result;
-	private String namePrefix; 
-	private ArrayList<String> modelComponentFileNames;
-	private ArrayList<String> modelInfoFileNames;
+	
 }

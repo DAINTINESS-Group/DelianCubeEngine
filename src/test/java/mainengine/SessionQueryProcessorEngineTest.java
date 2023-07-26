@@ -140,20 +140,22 @@ public class SessionQueryProcessorEngineTest {
 		boolean comparison12 = fileProduced12.equals(fileReference12);
         assertEquals(comparison12, true);
         */
+        
+        
 		String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
 		String fileReference21 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
 		boolean comparison21 = fileProduced21.equals(fileReference21);
-        assertEquals(comparison21, true);
+        assertEquals(true, comparison21);
         
 		String fileProduced22 = getContents("OutputFiles/LoanQuery22_S2_CG-Prtl.tab");
 		String fileReference22 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery22_S2_CG-Prtl.tsv");
 		boolean comparison22 = fileProduced22.equals(fileReference22);
-        assertEquals(comparison22, true);
+        assertEquals(true, comparison22);
         
 		String fileProduced31 = getContents("OutputFiles/LoanQuery31_S3_CG-Prtl.tab");
 		String fileReference31 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery31_S3_CG-Prtl.tsv");
 		boolean comparison31 = fileProduced31.equals(fileReference31);
-        assertEquals(comparison31, true);
+        assertEquals(true, comparison31);
 		
 	} //end testAnswerCubeQueriesFromFile
 	

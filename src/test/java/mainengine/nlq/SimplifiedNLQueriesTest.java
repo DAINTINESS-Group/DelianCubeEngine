@@ -81,7 +81,7 @@ public class SimplifiedNLQueriesTest {
 		String fileProduced2 = getContents("OutputFiles/LoanQuery1.tab");
 		String fileReference2 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1.tab");
         //boolean comparison2 = FileUtils.contentEquals(fileProduced2, fileReference2);
-        assertEquals(fileProduced2 , fileReference2);
+        assertEquals(fileReference2, fileProduced2);
 	}//end testanswerCubeQueryFromString
 	
 	
@@ -96,7 +96,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents = getContents("OutputFiles/LoanQuery1_info.txt");
 		String referenceContents = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_info.txt");
-		assertEquals(producedContents, referenceContents);
+		assertEquals(referenceContents, producedContents);
         
         
 		
@@ -105,7 +105,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents2 = getContents("OutputFiles/LoanQuery2_info.txt");
 		String referenceContents2 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery2_info.txt");
-		assertEquals(producedContents2, referenceContents2);
+		assertEquals(referenceContents2, producedContents2);
         
 		
         
@@ -114,7 +114,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents3 = getContents("OutputFiles/LoanQuery3_info.txt");
 		String referenceContents3 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery3_info.txt");
-		assertEquals(producedContents3, referenceContents3);
+		assertEquals(referenceContents3, producedContents3);
 		
 		
 		String testQueryString4 ="Describe the sum of loan amount per district_name and year for region is 'south Moravia' and status is 'Running Contract/OK' as LoanQuery4"; 
@@ -122,7 +122,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents4 = getContents("OutputFiles/LoanQuery4_info.txt");
 		String referenceContents4 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery4_info.txt");
-		assertEquals(producedContents4, referenceContents4);	
+		assertEquals(referenceContents4, producedContents4);	
 		
 		
 		
@@ -131,7 +131,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents5 = getContents("OutputFiles/LoanQuery5_info.txt");
 		String referenceContents5 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery5_info.txt");
-		assertEquals(producedContents5, referenceContents5);
+		assertEquals(referenceContents5, producedContents5);
         
 	}//end method testanswerCubeQueryFromStringWithMetadata
 	
@@ -149,7 +149,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_ErrorChecking.txt");
-		assertEquals(producedContents, referenceContents);	
+		assertEquals(referenceContents, producedContents);	
 		
         
         //Error: Wrong cube name
@@ -158,7 +158,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents2 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents2 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongCubeName.txt");
-		assertEquals(producedContents2, referenceContents2);
+		assertEquals(referenceContents2, producedContents2);
 		
         
         //Error: Wrong agreggate function
@@ -167,7 +167,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents3 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents3 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongAggrFunc.txt");
-		assertEquals(producedContents3, referenceContents3);
+		assertEquals(referenceContents3, producedContents3);
 		
 		
 		//Error: Wrong measure name
@@ -176,7 +176,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents4 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents4 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongMeasureName.txt");
-		assertEquals(producedContents4, referenceContents4);
+		assertEquals(referenceContents4, producedContents4);
 		
 		
 		//Error: Wrong gamma
@@ -185,7 +185,7 @@ public class SimplifiedNLQueriesTest {
 		
 		String producedContents5 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents5 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongGamma.txt");
-		assertEquals(producedContents5, referenceContents5);
+		assertEquals(referenceContents5, producedContents5);
 		
         
         //Error: Wrong sigma
@@ -194,7 +194,7 @@ public class SimplifiedNLQueriesTest {
       	
       	String producedContents6 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents6 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1_WrongSigma.txt");
-		assertEquals(producedContents6, referenceContents6);
+		assertEquals(referenceContents6, producedContents6);
 		
 		
 		//Error: Many Same Levels
@@ -203,7 +203,7 @@ public class SimplifiedNLQueriesTest {
       	
       	String producedContents7 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents7 = getContents("src/test/resources/OutputFiles/adult/Reference_AdultNLQuery0_SameLevelNames.txt");
-		assertEquals(producedContents7, referenceContents7);
+		assertEquals(referenceContents7, producedContents7);
 
 		
 		
@@ -213,7 +213,7 @@ public class SimplifiedNLQueriesTest {
       	
       	String producedContents8 = getContents("OutputFiles/ErrorChecking.txt");
 		String referenceContents8 = getContents("src/test/resources/OutputFiles/adult/Reference_CorrectAdultNLQuery0.txt");
-		assertEquals(producedContents8, referenceContents8);
+		assertEquals(referenceContents8, producedContents8);
 		
 	}//end method testanswerCubeQueryFromStringWithMetadata
 

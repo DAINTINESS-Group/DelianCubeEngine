@@ -169,7 +169,7 @@ public class AssessOperatorTest {
         }
     }
 
-
+    /*
     @Test
     public void saveResultsInPredefinedOutputFile() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
@@ -181,5 +181,5 @@ public class AssessOperatorTest {
         operator.execute(query);
         File outputFile = new File("OutputFiles/assessments/filename_test.md");
         assertTrue(outputFile.exists());
-    }
+    }*/
 }

@@ -83,7 +83,7 @@ public class SparkNLQueriesTest {
 		String fileProduced2 = getContents("OutputFiles/LoanQuery1.tab");
 		String fileReference2 = getContents("src/test/resources/OutputFiles/pkdd99_star/Reference_LoanQuery1.tab");
         //boolean comparison2 = FileUtils.contentEquals(fileProduced2, fileReference2);
-        assertEquals(fileProduced2 , fileReference2);
+        assertEquals(fileReference2, fileProduced2);
 	}//end testanswerCubeQueryFromString
 	
 	
