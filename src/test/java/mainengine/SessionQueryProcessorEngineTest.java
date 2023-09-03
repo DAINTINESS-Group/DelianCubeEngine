@@ -41,6 +41,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.spark.sql.AnalysisException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -347,9 +348,10 @@ public class SessionQueryProcessorEngineTest {
 	/**
 	 * Test method for {@link mainengine.SimpleQueryProcessorEngine#answerCubeQueryFromStringWithModels(String, String [])}.
 	 * @throws IOException 
+	 * @throws AnalysisException 
 	 */
 	@Test
-	public final void testanswerCubeQueryFromStringWithModels() throws IOException {
+	public final void testanswerCubeQueryFromStringWithModels() throws IOException, AnalysisException {
 		String queryForModels11 =		"CubeName:loan" + " \n" +
 				"Name: CubeQueryLoan11_Prague" + " \n" +
 				"AggrFunc:Sum" + " \n" +
@@ -454,6 +456,8 @@ public class SessionQueryProcessorEngineTest {
 		String fileReference_12_2_32 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
         //boolean comparison_12_2_32 = FileUtils.contentEquals(fileProduced_12_2_32, fileReference_12_2_32);
         assertEquals(fileProduced_12_2_32 , fileReference_12_2_32);
+        
+        testedQPEngine.produceDecisionTree("CubeQueryLoan2_Copy");
 	}//end testanswerCubeQueryFromStringWithModels
 	
 	private String getContents(String fileName) {

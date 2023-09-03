@@ -143,7 +143,7 @@ public class NaiveJavaClientExperimentsWithStar {
 			String queryName = queryNames[i];
 			
 			ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryFired, modelsToGenerate);
-			brindDataToTheClient(service, queryName, resMetadata);
+			bringDataToTheClient(service, queryName, resMetadata);
 		}
 		
 		System.out.println("Execution of client is complete");
@@ -158,7 +158,7 @@ public class NaiveJavaClientExperimentsWithStar {
 	 * 
 	 * @throws IOException
 	 */
-	private static void brindDataToTheClient(IMainEngine service, String queryName, ResultFileMetadata resMetadata)
+	private static void bringDataToTheClient(IMainEngine service, String queryName, ResultFileMetadata resMetadata)
 			throws IOException {
 		String remoteFolder = resMetadata.getLocalFolder();
 		String remoteResultsFile = resMetadata.getResultFile();

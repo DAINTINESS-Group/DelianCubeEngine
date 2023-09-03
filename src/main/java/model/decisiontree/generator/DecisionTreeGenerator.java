@@ -51,6 +51,7 @@ public class DecisionTreeGenerator implements IDecisionTreeGenerator {
                 .setMaxDepth(decisionTreeParams.getMaxDepth())
                 .setMinInfoGain(decisionTreeParams.getMinInfoGain());
         model = decisionTreeClassifier.fit(decisionTreeDataProcessor.getTrainingData());
+        //model.toDebugString(); gia print to dentro
     }
 
     private void calculateAccuracy() {

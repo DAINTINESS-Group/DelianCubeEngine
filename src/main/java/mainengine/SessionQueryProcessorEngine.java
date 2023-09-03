@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
 import cubemanager.cubebase.CubeQuery;
@@ -51,7 +52,7 @@ import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
-
+import model.decisiontree.services.DatasetManager;
 import analyze.AnalyzeOperator;
 import result.Result;
 import setup.ModeOfWork;
@@ -343,6 +344,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 		return resMetadata;
 	}//end method answerCubeQueryFromStringWithModels
+	
+	public void produceDecisionTree(String queryName) throws RemoteException, AnalysisException {
+		DatasetManager datasetManager = new DatasetManager();
+		String path = "OutputFiles" + "/" + queryName + ".tab";
+		datasetManager.registerDataset(queryName, path);		
+	}
 
 
 	/**

@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.spark.sql.AnalysisException;
+
 
 
 /**
@@ -165,6 +167,16 @@ public interface IMainEngine extends IServer {
 	 * @see answerCubeQueryFromString
 	 */
 	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
+	
+	
+	
+	/**
+	 * Produces a decision trees based on the results of the query
+	 * 
+	 * @param queryRawString	A String with the query definition
+	 * @throws RemoteException
+	 */
+	void produceDecisionTree(String queryRawString) throws RemoteException, AnalysisException;
 	
 	
 	
