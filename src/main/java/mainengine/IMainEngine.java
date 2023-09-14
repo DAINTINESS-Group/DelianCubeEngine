@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.apache.spark.sql.AnalysisException;
 
+import model.decisiontree.labeling.RuleSet;
+
 
 
 /**
@@ -169,14 +171,14 @@ public interface IMainEngine extends IServer {
 	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
 	
 	
-	
+	//TODO the javadoc
 	/**
 	 * Produces a decision trees based on the results of the query
 	 * 
-	 * @param queryRawString	A String with the query definition
+	 *
 	 * @throws RemoteException
 	 */
-	void produceDecisionTree(String queryRawString) throws RemoteException, AnalysisException;
+	void produceDecisionTree(String queryName, String queryFilePath, RuleSet ruleSet) throws RemoteException, AnalysisException;
 	
 	
 	

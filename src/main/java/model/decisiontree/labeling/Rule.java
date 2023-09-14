@@ -1,6 +1,9 @@
 package model.decisiontree.labeling;
 
-public class Rule {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Rule implements Serializable {
 	
 	private String targetColumnName;
 	private String sparkOperator;

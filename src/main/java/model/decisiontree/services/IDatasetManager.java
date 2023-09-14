@@ -24,27 +24,11 @@ public interface IDatasetManager {
    * @param ruleSet - A rule set based on which the labeled column is computed.
    */
   void computeLabeledColumn(RuleSet ruleSet);
-
-  /**
-   * Declares parameters for dominance highlight pattern identification. This method is required
-   * for overall highlight pattern identification to proceed.
-   *
-   * @param dominanceColumnSelectionMode - Enum which corresponds to the mode
-   *                                     based on which columns involved in dominance pattern identification will be selected
-   *                                     (e.g. smart mode, exhaustive mode). This parameter is optional. If null is given, smart mode
-   *                                     will be picked by default.
-   * @param measurementColumns           - Names of specific measurement columns that should be
-   *                                     involved in dominance identification.
-   * @param coordinateColumns            - Names of specific coordinate columns that should be involved
-   *                                     in dominance identification.
-   */
  
   /**
    * This is the main method that automatically computes the profile of a registered dataset.
    *
-   * @param parameters - Parameters that specify which dataset analysis parts should be executed,
-   *                   as well as the directory path where the auxiliary data (e.g. images of the decision trees) will be generated,
-   *                   such that they can later be used in the report.
+   * @param path - The path to which the profile of the dataset will be stored
    * @return A DatasetProfile object that contains all the analysis results.
    * @throws IOException
    */

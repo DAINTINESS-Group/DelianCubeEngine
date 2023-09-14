@@ -12,13 +12,19 @@ public class SparkConfig {
   public SparkConfig() {
     try (InputStream input =
         SparkConfig.class.getClassLoader().getResourceAsStream("spark.properties")) {
-      if (input == null)
-        throw new RuntimeException("Unable to find spark.properties file in classpath.");
-      Properties properties = new Properties();
-      properties.load(input);
-      master = properties.getProperty("spark.master.uri");
-      appName = properties.getProperty("spark.app.name");
-      sparkWarehouse = System.getProperty("java.io.tmpdir");
+      if (input == null) {
+    	  master = "local[*]";
+    	  appName = "DelianCubesEngine";
+    	  sparkWarehouse = System.getProperty("java.io.tmpdir");
+    	  //throw new RuntimeException("Unable to find spark.properties file in classpath.");
+      } else {
+    	  Properties properties = new Properties();
+          properties.load(input);
+          master = properties.getProperty("spark.master.uri");
+          appName = properties.getProperty("spark.app.name");
+          sparkWarehouse = System.getProperty("java.io.tmpdir");
+      }
+     
     } catch (IOException ex) {
       ex.printStackTrace();
     }

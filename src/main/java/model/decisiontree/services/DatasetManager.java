@@ -2,9 +2,15 @@ package model.decisiontree.services;
 
 import static org.apache.spark.sql.functions.expr;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +22,6 @@ import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.StructField;
 
 import model.decisiontree.config.SparkConfig;
-import model.decisiontree.services.DecisionTreeManager;
 import model.decisiontree.labeling.RuleSet;
 import model.decisiontree.Column;
 import model.decisiontree.DatasetProfile;
@@ -61,12 +66,11 @@ public class DatasetManager implements IDatasetManager {
 		}
 		
 		datasets.put(datasetName, dataset);
-		System.out.println("////////////////////// DECISION TREES ATTEMPT /////////////////////");
-		datasets.get(datasetName).printSchema();
-		//datasets.get(datasetName).schema()
-				
-		//TOBECONTINUED FROM HERE
-		/*
+		System.out.println("////////////////////// Spark Dataset for Decision Trees //////////////////////");
+		dataset.printSchema();
+		//datasets.get(datasetName).printSchema();
+		//datasets.get(datasetName).schema()				
+		
 		List<Column> columns = new ArrayList<>();
 		StructField[] fields = dataset.schema().fields();
 		for (int i = 0; i < fields.length; ++i) {
@@ -74,7 +78,7 @@ public class DatasetManager implements IDatasetManager {
 		}
 		datasetProfile = new DatasetProfile(datasetName, path, columns);
 		System.out.println(String.format("Registered Dataset file with name '%s' at %s", datasetName, path));
-		*/
+		
 		Instant end = Instant.now();
 		Duration duration = Duration.between(start, end);
 		System.out.println(String.format("Duration of registerDataset: %s / %sms", duration, duration.toMillis()));
@@ -101,7 +105,9 @@ public class DatasetManager implements IDatasetManager {
 	@Override
 	public DatasetProfile computeProfileOfDataset() 
 			throws IOException {
-				
+		String path="OutputFiles";
+		createOutputFolder(path);
+		
 		extractAllDecisionTrees();		
 		return datasetProfile;
 	}
@@ -111,6 +117,7 @@ public class DatasetManager implements IDatasetManager {
 		Instant start = Instant.now();
 		
 		DecisionTreeManager decisionTreeManager = new DecisionTreeManager(dataset, datasetProfile);
+		
 		List<String> labeledColumnNames = decisionTreeManager.extractAllDecisionTrees();
 		for (String labeledColumnName : labeledColumnNames) {
 			System.out.println(String.format("Computed Decision Tree(s) for labeled column: %s", labeledColumnName));
@@ -119,9 +126,10 @@ public class DatasetManager implements IDatasetManager {
 		Instant end = Instant.now();
 		Duration duration = Duration.between(start, end);
 		System.out.println(String.format("Duration of extractAllDecisionTrees: %s / %sms", duration, duration.toMillis()));
+		
 	}
 	
-	/*
+	
 	private void createOutputFolder(String path) throws IOException {
 		if (isInvalidPath(path)) {
 			path = new File(datasetProfile.getPath()).getParent();
@@ -131,14 +139,14 @@ public class DatasetManager implements IDatasetManager {
 		}
 
 		String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
-		String outputDirectory = path + File.separator + datasetProfile.getAlias() + "_results_" + currentDateTime;
+		String outputDirectory = path + File.separator + datasetProfile.getAlias() + "_DecisionTree_" + currentDateTime;
 		Files.createDirectories(Paths.get(outputDirectory));
 		datasetProfile.setAuxiliaryDataOutputDirectory(outputDirectory);
 	}
-
+	
 	private boolean isInvalidPath(String path) {
 		return path == null || path.isEmpty();
 	}
-	*/
+	
 	
 }

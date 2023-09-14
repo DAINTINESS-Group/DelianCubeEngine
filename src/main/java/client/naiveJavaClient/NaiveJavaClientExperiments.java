@@ -160,7 +160,7 @@ public class NaiveJavaClientExperiments {
 	 */
 	private static void brindDataToTheClient(IMainEngine service, String queryName, ResultFileMetadata resMetadata)
 			throws IOException {
-		String remoteFolder = resMetadata.getLocalFolder();
+		//String remoteFolder = resMetadata.getLocalFolder();
 		String remoteResultsFile = resMetadata.getResultFile();
 		String remoteInfoFile = resMetadata.getResultInfoFile();
 		ArrayList<String> models = resMetadata.getComponentResultFiles();

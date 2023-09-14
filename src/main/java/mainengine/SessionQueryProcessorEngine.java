@@ -41,6 +41,7 @@ import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.QueryHistoryManager;
+import model.decisiontree.labeling.RuleSet;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.CubeManager;
 
@@ -345,10 +346,17 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		return resMetadata;
 	}//end method answerCubeQueryFromStringWithModels
 	
-	public void produceDecisionTree(String queryName) throws RemoteException, AnalysisException {
+	public void produceDecisionTree(String queryName, String path, RuleSet ruleSet) throws RemoteException, AnalysisException {
 		DatasetManager datasetManager = new DatasetManager();
-		String path = "OutputFiles" + "/" + queryName + ".tab";
-		datasetManager.registerDataset(queryName, path);		
+		datasetManager.registerDataset(queryName, path);
+		datasetManager.computeLabeledColumn(ruleSet);
+		
+		try {
+			datasetManager.computeProfileOfDataset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 

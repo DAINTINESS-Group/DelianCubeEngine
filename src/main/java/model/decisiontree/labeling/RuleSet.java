@@ -1,8 +1,14 @@
 package model.decisiontree.labeling;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RuleSet {
+@SuppressWarnings("serial")
+public class RuleSet implements Serializable{
+
+	/**
+	 * 
+	 */
 	private final String newColumnName;
 	private final List<Rule> rules;
 

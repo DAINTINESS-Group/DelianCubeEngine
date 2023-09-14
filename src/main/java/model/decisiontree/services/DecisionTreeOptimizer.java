@@ -29,6 +29,18 @@ public class DecisionTreeOptimizer {
             if (hasTooManyDistinctValues(column)) {
                 columnsToDrop.add(column);
             }
+            if(column.equals("_c4")) {
+            	columnsToDrop.add(column);
+            	System.out.println("Removed empty column!");
+            }
+        }
+        
+        StructField[] fields = dataset.schema().fields();
+        for (StructField field : fields) {
+        	if(field.name().equals("countOfDetailedCells")) {
+        		columnsToDrop.add(field.name());
+            	System.out.println("Removed irrelevant column!");
+        	}
         }
         return columnsToDrop.toArray(new String[0]);
     }

@@ -46,6 +46,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
+
+
 /**
  * Test class for SimpleQueryProcessorEngine AND for the ENTIRE ENGINE
  * Main test to be checked: AnswerCubeQueriesFromFile()
@@ -456,8 +458,38 @@ public class SessionQueryProcessorEngineTest {
 		String fileReference_12_2_32 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan12_Sum1998_2_Z-Score_Outliers.tab");
         //boolean comparison_12_2_32 = FileUtils.contentEquals(fileProduced_12_2_32, fileReference_12_2_32);
         assertEquals(fileProduced_12_2_32 , fileReference_12_2_32);
+        /*
+        List<Rule> labelingRulesForPkdd99 =
+                new ArrayList<>(
+                    Arrays.asList(
+                        new Rule("measure", LabelingSystemConstants.LEQ, 40000, "low"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 60000, "rel_low"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 100000, "medium"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 200000, "high"),
+                        new Rule("measure", LabelingSystemConstants.GT, 200000, "super_high")));
+        RuleSet ruleSet = new RuleSet("measure", labelingRulesForPkdd99);
+        String queryName = "LoanQuery1";
+        String path = "OutputFiles/" + queryName + ".tab";
+        testedQPEngine.produceDecisionTree(queryName, path, ruleSet);
         
-        testedQPEngine.produceDecisionTree("CubeQueryLoan2_Copy");
+        queryName = "CubeQueryLoan2_Copy";
+        path = "OutputFiles/" + queryName + ".tab";
+        testedQPEngine.produceDecisionTree(queryName, path, ruleSet);
+        
+        List<Rule> labelingRulesForAdult =
+                new ArrayList<>(
+                    Arrays.asList(
+                        new Rule("measure", LabelingSystemConstants.LEQ, 25, "low"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 30, "rel_low"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 40, "medium"),
+                        new Rule("measure", LabelingSystemConstants.LEQ, 50, "high"),
+                        new Rule("measure", LabelingSystemConstants.GT, 60, "super_high")));
+        ruleSet = new RuleSet("measure", labelingRulesForAdult);
+        
+        queryName = "AdultCubeQuery1";
+        path = "OutputFiles/" + queryName + ".tab";
+        testedQPEngine.produceDecisionTree(queryName, path, ruleSet);
+        */
 	}//end testanswerCubeQueryFromStringWithModels
 	
 	private String getContents(String fileName) {

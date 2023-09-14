@@ -9,7 +9,8 @@ import java.util.Set;
 public class DatatypeFilterer {
 
     // Supported Data Types collected from https://spark.apache.org/docs/latest/sql-ref-datatypes.html
-    private static final Set<String> numericalDatatypes = new HashSet<String>(){{
+    @SuppressWarnings("serial")
+	private static final Set<String> numericalDatatypes = new HashSet<String>(){{
                 add(DataTypes.ByteType.toString());
                 add(DataTypes.ShortType.toString());
                 add(DataTypes.IntegerType.toString());
@@ -19,7 +20,8 @@ public class DatatypeFilterer {
                 add(DataTypes.createDecimalType().toString());
     }};
 
-    private static final Set<String> stringDatatypes = new HashSet<String>(){{
+    @SuppressWarnings("serial")
+	private static final Set<String> stringDatatypes = new HashSet<String>(){{
         add(DataTypes.StringType.toString());
     }};
 
