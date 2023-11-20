@@ -21,6 +21,7 @@
             <items>
               <MenuItem id="runQueryMI" fx:id="runQueryMI" mnemonicParsing="false" onAction="#handleRunQueryString" text="Run Query" />
               <MenuItem id="runStoredQMI" fx:id="runStoredQMI" mnemonicParsing="false" onAction="#runStoredQueries" text="Run Stored Queries" />
+               <MenuItem id="runStoredQMI" fx:id="runStoredQMI" mnemonicParsing="false" onAction="#runChartQuery" text="Run Chart Query" />
               <MenuItem id="closeMI" fx:id="closeMI" mnemonicParsing="false" onAction="#handleClose" text="Close" />
             </items>
           </Menu>

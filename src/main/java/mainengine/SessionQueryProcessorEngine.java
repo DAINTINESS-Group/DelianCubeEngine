@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
 import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
+import chartManagement.ChartManager;
+import client.ChartQueryObject;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
@@ -94,6 +96,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	private List<BasicStoredCube> registeredCubesList;
 	private InterestingnessManager interestMng;
 	private int historyCounter = 0;
+	
+	private ChartManager chartManager;
 
 /**
  * Simple constructor for the class
@@ -150,6 +154,27 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		initializeInterestMgr(historyFolder, expValuesFolder, expLabelsFolder, beliefFolder, k);
 		System.out.println("DONE WITH INIT");
 	}
+	
+	public void initializeConnectionWithChartQueryMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
+			String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException {
+		schemaName = userInputList.get("schemaName");
+		this.connectionType = typeOfConnection;
+		cubeManager = new CubeManager(typeOfConnection, userInputList);
+		session = new Session(cubeManager);
+		sessionId = session.initialize(typeOfConnection, userInputList);
+		registeredDimensions = cubeManager.getDimensions();
+		registeredCubesList = cubeManager.getCubes();
+		queryHistoryMng = new QueryHistoryManager(sessionId);
+		initializeChartManager();
+		System.out.println("DONE WITH INIT");
+	}
+	
+	private void initializeChartManager()
+	{
+		chartManager = new ChartManager(session.getCubeManager());
+	}
+	
+	
 	private void initializeInterestMgr(String historyFolder, String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException {
 		if(historyFolder.equals("") && expValuesFolder.equals("") && expLabelsFolder.equals("") && beliefFolder.equals("")) {
 			interestMng = new InterestingnessManager(session.getCubeManager(), k);
@@ -869,6 +894,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		return results;
 
 	}//end answerCubeQueryWithInterestMeasures
+
+	@Override
+	public ResultFileMetadata answerCubeQueryFromChartQueryObjectWithMetadata(ChartQueryObject chartQueryObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 

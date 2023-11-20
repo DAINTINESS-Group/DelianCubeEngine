@@ -237,7 +237,21 @@ public class MainAppController extends AbstractController {
 		
 	}
 	
-	
+	@FXML
+	public int runChartQuery()
+	{
+		VBox dwLayout = null;
+		int launchResult = -100;
+
+		ChartQueryEditorController chartQueryEditorCtrl = new ChartQueryEditorController(this.getApplication(), this, this.getScene(), this.getStage()); 		
+		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
+		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
+				"ChartQueryEditor.fxml", chartQueryEditorCtrl, dwLayout);
+		//queryEditorCtrl.doSth();
+
+		
+		return launchResult;
+	}
 	
 }//end class MAinAppController
 

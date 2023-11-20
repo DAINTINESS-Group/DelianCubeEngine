@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.apache.spark.sql.AnalysisException;
 
+import client.ChartQueryObject;
 import model.decisiontree.labeling.RuleSet;
 
 
@@ -290,6 +291,8 @@ public interface IMainEngine extends IServer {
 	 * @see answerCubeQueryFromString
 	 */
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
+
+	ResultFileMetadata answerCubeQueryFromChartQueryObjectWithMetadata(ChartQueryObject chartQueryObject);
 
 	
 	/**
