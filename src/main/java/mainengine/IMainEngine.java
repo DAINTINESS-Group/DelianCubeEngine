@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.apache.spark.sql.AnalysisException;
 
-import client.ChartQueryObject;
+import chartRequestManagement.ChartRequest;
 import model.decisiontree.labeling.RuleSet;
 
 
@@ -292,8 +292,9 @@ public interface IMainEngine extends IServer {
 	 */
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
 
-	ResultFileMetadata answerCubeQueryFromChartQueryObjectWithMetadata(ChartQueryObject chartQueryObject);
+	//ResultFileMetadata answerCubeQueryFromChartQueryObjectWithMetadata(ChartQueryObject chartQueryObject);
 
+    ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException;
 	
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.

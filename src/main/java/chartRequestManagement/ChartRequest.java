@@ -1,13 +1,13 @@
-package client;
+package chartRequestManagement;
 
-public class ChartQueryObject
+public class ChartRequest
 {
 	
 	private String chart;
 	private String query;
 	
 	
-	public ChartQueryObject(String chart, String query)
+	public ChartRequest(String chart, String query)
 	{
 		this.chart = chart;
 		this.query = query;
