@@ -38,7 +38,11 @@ import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
 import chartManagement.ChartManager;
+<<<<<<< HEAD
 import chartRequestManagement.ChartRequest;
+=======
+import client.ChartQueryObject;
+>>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
@@ -896,6 +900,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//end answerCubeQueryWithInterestMeasures
 
 	@Override
+<<<<<<< HEAD
 	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException {
 		// TODO Auto-generated method stub
 		String outputLocation = answerCubeQueryFromString(chartRequest.getQuery());
@@ -918,6 +923,13 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 
 
+=======
+	public ResultFileMetadata answerCubeQueryFromChartQueryObjectWithMetadata(ChartQueryObject chartQueryObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+>>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
 
 
 }//end class

@@ -15,7 +15,11 @@
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
+<<<<<<< HEAD
     <HBox spacing="15" alignment="CENTER_LEFT">
+=======
+    <HBox spacing="10" alignment="CENTER">
+>>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
         <VBox spacing="5">
             <CheckBox text="barchart" />
             <CheckBox text="scatterplot" />
