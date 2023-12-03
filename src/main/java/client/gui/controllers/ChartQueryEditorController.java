@@ -1,25 +1,21 @@
 package client.gui.controllers;
 
-<<<<<<< HEAD
+
 import java.awt.Checkbox;
-=======
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-<<<<<<< HEAD
+
 import chartRequestManagement.ChartRequestBuilderImpl;
 import chartRequestManagement.ChartRequest;
 import chartRequestManagement.IChartRequestBuilder;
 import client.ClientRMITransferer;
-=======
-import client.ChartQueryBuilderImpl;
-import client.ChartQueryObject;
+
 import client.ClientRMITransferer;
-import client.IChartQueryBuilder;
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 import client.gui.application.AbstractApplication;
 import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.ExitController;
@@ -54,10 +50,7 @@ public class ChartQueryEditorController extends AbstractController
 	
 	public ChartQueryEditorController(AbstractApplication anApp, AbstractController aCallerController, Scene aScene, Stage aStage) {
 		super(anApp, aCallerController, aScene, aStage);
-<<<<<<< HEAD
-		
-=======
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 	}
 
 	
@@ -69,7 +62,7 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	private int runQuery()
+	private int runQuery() throws RemoteException
 	{
 		String queryString = null;
 		int result = -100;
@@ -81,29 +74,29 @@ public class ChartQueryEditorController extends AbstractController
 			a.show();
 			return -100;
 		}
-<<<<<<< HEAD
+
 		//result = executeAndDisplaySimpleQuery(queryString); //temporary!
 		//String specifiedChart = getSpecifiedChart();
 		String specifiedChart = "barchart";
 		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
 		ChartRequest chartRequest = chartRequestBuilder.build(specifiedChart, queryString);
 		result = executeAndDisplayChartQuery(chartRequest);
-=======
+
 		result = executeAndDisplaySimpleQuery(queryString); //temporary!
-		String specifiedChart = getSpecifiedChart();
-		IChartQueryBuilder chartQueryBuilder = new ChartQueryBuilderImpl();
-		ChartQueryObject chartQueryObject = chartQueryBuilder.build(specifiedChart, queryString);
+		//String specifiedChart = getSpecifiedChart();
+		IChartRequestBuilder chartQueryBuilder = new ChartRequestBuilderImpl();
+		ChartRequest chartQueryObject = chartQueryBuilder.build(specifiedChart, queryString);
 		//executeAndDisplayChartQuery(chartQueryObject);
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 		
 		return result;
 	}//end handleClose
 	
-<<<<<<< HEAD
-	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject)
-=======
-	public int executeAndDisplayChartQuery(ChartQueryObject chartQueryObject) throws RemoteException
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
+	
+
+	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws RemoteException
+
 	{
 		String remoreResultFileLocation = null;
 		String remoteInfoFileLocation = null;
@@ -116,7 +109,7 @@ public class ChartQueryEditorController extends AbstractController
 		ResultFileMetadata resMetadata = null;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
-<<<<<<< HEAD
+
 		//resMetadata = serverEngine.answerCubeQueryFromChartQueryObjectWithMetadata(chartQueryObject);
 		try {
 			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(chartQueryObject.getQuery());
@@ -139,7 +132,6 @@ public class ChartQueryEditorController extends AbstractController
 			e.printStackTrace();
 		}
 
-=======
 		resMetadata = serverEngine.answerCubeQueryFromChartQueryObjectWithMetadata(chartQueryObject);
 		if(resMetadata != null) {
 			remoreResultFileLocation = resMetadata.getResultFile();
@@ -154,7 +146,7 @@ public class ChartQueryEditorController extends AbstractController
 			System.out.println("Remote METADATA: NULL" );
 			return -1;
 		}
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 
 		
 		if(remoreResultFileLocation.length() == 0) {	
@@ -177,7 +169,7 @@ public class ChartQueryEditorController extends AbstractController
 		return result;
 	}
 	
-<<<<<<< HEAD
+
 //	public int executeAndDisplaySimpleQuery(String queryString) {
 //		String remoreResultFileLocation = null;
 //		String remoteInfoFileLocation = null;
@@ -233,7 +225,7 @@ public class ChartQueryEditorController extends AbstractController
 //		}
 //		return result;
 //	}//end method
-=======
+
 	public int executeAndDisplaySimpleQuery(String queryString) {
 		String remoreResultFileLocation = null;
 		String remoteInfoFileLocation = null;
@@ -289,7 +281,7 @@ public class ChartQueryEditorController extends AbstractController
 		}
 		return result;
 	}//end method
->>>>>>> 14e359ccfe763a800f7148740fbb0df990e31c4b
+
 	
 	private int displayResultInDataWindow(String resultFileLocation) {
 		DataWindowController controller = new DataWindowController(resultFileLocation);
