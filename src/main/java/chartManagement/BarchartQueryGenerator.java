@@ -12,6 +12,7 @@ public class BarchartQueryGenerator implements IChartQueryGenerator{
 		return null;
 	}
 
+	
 	@Override
 	public void executeQueries() {
 		// TODO Auto-generated method stub
