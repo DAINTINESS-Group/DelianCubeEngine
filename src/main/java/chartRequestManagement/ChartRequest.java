@@ -1,6 +1,8 @@
 package chartRequestManagement;
 
-public class ChartRequest
+import java.io.Serializable;
+
+public class ChartRequest implements Serializable
 {
 	
 	private String chart;

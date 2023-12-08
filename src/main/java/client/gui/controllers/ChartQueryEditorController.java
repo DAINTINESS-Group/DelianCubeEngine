@@ -4,6 +4,7 @@ package client.gui.controllers;
 import java.awt.Checkbox;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	private int runQuery() throws RemoteException
+	private int runQuery() throws RemoteException, FileNotFoundException
 	{
 		String queryString = null;
 		int result = -100;
@@ -82,11 +83,8 @@ public class ChartQueryEditorController extends AbstractController
 		ChartRequest chartRequest = chartRequestBuilder.build(specifiedChart, queryString);
 		result = executeAndDisplayChartQuery(chartRequest);
 
-		result = executeAndDisplaySimpleQuery(queryString); //temporary!
-		//String specifiedChart = getSpecifiedChart();
-		IChartRequestBuilder chartQueryBuilder = new ChartRequestBuilderImpl();
-		ChartRequest chartQueryObject = chartQueryBuilder.build(specifiedChart, queryString);
-		//executeAndDisplayChartQuery(chartQueryObject);
+		//result = executeAndDisplaySimpleQuery(queryString); //temporary!
+		
 
 		
 		return result;
@@ -95,10 +93,10 @@ public class ChartQueryEditorController extends AbstractController
 
 	
 
-	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws RemoteException
+	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws RemoteException, FileNotFoundException
 
 	{
-		String remoreResultFileLocation = null;
+		String remoteResultFileLocation = null;
 		String remoteInfoFileLocation = null;
 		String remoteFolderName = null;
 		
@@ -112,15 +110,15 @@ public class ChartQueryEditorController extends AbstractController
 
 		//resMetadata = serverEngine.answerCubeQueryFromChartQueryObjectWithMetadata(chartQueryObject);
 		try {
-			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(chartQueryObject.getQuery());
 			
+			resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
 			if(resMetadata != null) {
-				remoreResultFileLocation = resMetadata.getResultFile();
+				remoteResultFileLocation = resMetadata.getResultFile();
 				remoteInfoFileLocation = resMetadata.getResultInfoFile();
 				remoteFolderName = resMetadata.getLocalFolder();
 			
 				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-				System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
+				System.out.println("Remote result file METADATA: " + remoteResultFileLocation);
 				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
 			}
 			else {
@@ -132,14 +130,14 @@ public class ChartQueryEditorController extends AbstractController
 			e.printStackTrace();
 		}
 
-		resMetadata = serverEngine.answerCubeQueryFromChartQueryObjectWithMetadata(chartQueryObject);
+		resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
 		if(resMetadata != null) {
-			remoreResultFileLocation = resMetadata.getResultFile();
+			remoteResultFileLocation = resMetadata.getResultFile();
 			remoteInfoFileLocation = resMetadata.getResultInfoFile();
 			remoteFolderName = resMetadata.getLocalFolder();
 		
 			System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-			System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
+			System.out.println("Remote result file METADATA: " + remoteResultFileLocation);
 			System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
 		}
 		else {
@@ -149,13 +147,13 @@ public class ChartQueryEditorController extends AbstractController
 
 
 		
-		if(remoreResultFileLocation.length() == 0) {	
+		if(remoteResultFileLocation.length() == 0) {	
 			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
 			a.show();
 			return -1;
 		}
 		else {
-			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
+			localFileLocation = downloadResult(remoteResultFileLocation, serverEngine);
 			result = displayResultInDataWindow(localFileLocation);
 //			OLD WAY OF GETTING INFO FILE
 //			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
@@ -269,7 +267,7 @@ public class ChartQueryEditorController extends AbstractController
 		}
 		else {
 			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
-			result = displayResultInDataWindow(localFileLocation);
+			result = displayResultInDataWindow(localFileLocation); //TODO DISPLAY BAR CHART OR OTHER
 //			OLD WAY OF GETTING INFO FILE
 //			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
 //			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();

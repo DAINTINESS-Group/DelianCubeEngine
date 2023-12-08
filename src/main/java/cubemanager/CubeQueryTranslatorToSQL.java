@@ -60,6 +60,7 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		/*Create WhereClausse */
 		HashMap<String, String> existingJoinFilters = new HashMap<String,String>();
 		for(String[] sigmaExpr: sigmaExpressions){
+			
 			for(int i = 0;i < referCube.getDimensionsList().size(); i++) {
 				Dimension dimension = referCube.getDimensionsList().get(i);
 				String[] tmp=sigmaExpr[0].split("\\.");
