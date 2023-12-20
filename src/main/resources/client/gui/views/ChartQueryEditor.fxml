@@ -6,26 +6,99 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ComboBox?>
+<?import java.lang.String?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      prefWidth="400" prefHeight="300" spacing="10" alignment="CENTER">
-
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
-
-    <HBox spacing="15" alignment="CENTER_LEFT">
-
+      prefWidth="500" prefHeight="500" spacing="10" style="-fx-padding: 15 15 15 15;">
+      
+	<fx:define>
+        <ToggleGroup fx:id="group" />
+    </fx:define>
+    
+	<HBox spacing="5">
+        <Label text="Cube Name:" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="cubeNameTextField" promptText="Enter Cube Name" />
+        
+        <Button text="List available Columns" onAction="#listColumns" />
+    </HBox>
     
 
+	<VBox spacing="5">
+		<Label text="Define Groupers:" style="-fx-font-weight: bold;"/>
+	    <HBox spacing="5">
+	    	<Label text="Data Series Grouper 1 (x-axis):" />
+	    	<TextField fx:id="dataSeries1"  />
+	    	<Label text="Data Series Grouper 2:" />
+	    	<TextField fx:id="x_axis"  />
+	    </HBox>
+    </VBox>
+    
+       
+   <VBox spacing="10">
+   		<Label text="Define Measure:" style="-fx-font-weight: bold;"/>
+   		<HBox spacing="5">
+	    	<Label text="Measure Column (y-axis):" />
+	    	<TextField fx:id="y_axis"  />
+	    	
+		    <Label text="Select Aggregation Function:"/>
+		    <ComboBox fx:id="aggregationChooser" value="MAX">
+		        <!-- Add options to the ChoiceBox -->
+		        <items>
+		            <javafx.collections.FXCollections fx:factory="observableArrayList">
+		                <String fx:value="MAX" />
+		                <String fx:value="MIN" />
+		                <String fx:value="AVG" />
+		                <String fx:value="SUM" />
+		            </javafx.collections.FXCollections>
+		        </items>
+		    </ComboBox>
+		</HBox>
+	</VBox>
+	
+	<VBox spacing="10">
+   		<Label text="Define Filter:" style="-fx-font-weight: bold;"/>
+   		<HBox spacing="5">
+	    	<Label text="Filter Column Name: " />
+	    	<TextField fx:id="whereColumn"  />
+	    	
+		    <Label text="Filter Column Value:"/>
+		    <TextField fx:id="whereColumnValue"  />
+		</HBox>
+	</VBox>
+    
+
+    <HBox spacing="10" alignment="TOP_LEFT">
+		<Label text="Specify Chart:" style="-fx-font-weight: bold;" />
         <VBox spacing="5">
-            <CheckBox text="barchart" />
-            <CheckBox text="scatterplot" />
-            <CheckBox text="linechart" />
+                <RadioButton fx:id="barchart" text="Bar Chart" toggleGroup="$group">
+			        <HBox.margin>
+			            <Insets right="3.0"/>
+			        </HBox.margin>
+			    </RadioButton>
+			
+			    <RadioButton fx:id="scatterplot" text="Scatter Plot" toggleGroup="$group">
+			        <HBox.margin>
+			            <Insets right="30.0" bottom="10.0"/>
+			        </HBox.margin>
+			    </RadioButton>    
+				<RadioButton fx:id="linechart" text="Time Series" toggleGroup="$group">
+			        <HBox.margin>
+			            <Insets right="30.0" bottom="10.0"/>
+			        </HBox.margin>
+			    </RadioButton>     
             
         </VBox>
-		<Button text="Run Query" onAction="#runQuery" />
+		
     </HBox>
-    <TextArea fx:id="textArea" prefHeight="378.0" prefWidth="600.0" />
+    
+
+    
+    <Button text="Run Query" onAction="#runQuery" />
+
 </VBox>

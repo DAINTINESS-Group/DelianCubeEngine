@@ -127,6 +127,17 @@ public class Table {
     	}
     }
     
+    public List<String> returnTableColumns(){
+    	
+    	List<String> columns =  new ArrayList<String>();
+    	for(Attribute item : LstAttr){
+    		columns.add(item.getName());
+    	}
+    	return columns;
+    }
+    
+    
+    
     public String getTableName(){
     	return tableName;
     }

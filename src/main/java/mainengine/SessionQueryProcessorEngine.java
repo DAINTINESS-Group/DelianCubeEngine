@@ -38,6 +38,7 @@ import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
 import chartManagement.ChartManager;
+import chartManagement.IChartQueryGenerator;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
@@ -897,12 +898,15 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//end answerCubeQueryWithInterestMeasures
 
 	@Override
-	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException {
+	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException { //TODO
 		// TODO Auto-generated method stub
-		System.out.println("chart: " + chartRequest.getQuery());
+		System.out.println("query: " + chartRequest.getQuery());
+		System.out.println("chart: " + chartRequest.getChart());
+		initializeChartManager();
 		String outputLocation = answerCubeQueryFromString(chartRequest.getQuery());
+		IChartQueryGenerator chartQueryGenerator = chartManager.createChartQuery(chartRequest.getChart());
 		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-
+		//TODO outputInfoLocation to take as string
 		ResultFileMetadata resMetadata = new ResultFileMetadata();
 		resMetadata.setComponentResultFiles(null);
 		resMetadata.setComponentResultInfoFiles(null);
@@ -914,8 +918,15 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
 		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
 
+
 		return resMetadata;
 		
+	}
+
+	@Override
+	public List<String> getAvailableColumnNamesFromCubeName(String cubeName) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -8,7 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import chartRequestManagement.ChartRequestBuilderImpl;
 import chartRequestManagement.ChartRequest;
@@ -23,10 +26,19 @@ import client.gui.utils.ExitController;
 import client.gui.utils.LauncherForViewControllerPairs;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
@@ -34,27 +46,51 @@ import mainengine.ResultFileMetadata;
 public class ChartQueryEditorController extends AbstractController 
 {
 	
-	@FXML
-	private TextArea textArea;
-	
     @FXML
-    private CheckBox barchart;
+    private TextField cubeNameTextField;
 
     @FXML
-    private CheckBox scatterplot;
+    private TextField dataSeries1;
 
     @FXML
-    private CheckBox linechart;
+    private TextField x_axis;
 
-   
-	
+    @FXML
+    private TextField y_axis;
+
+    @FXML
+    private ComboBox<String> aggregationChooser;
+
+    @FXML
+    private TextField whereColumn;
+
+    @FXML
+    private TextField whereColumnValue;
+
+    @FXML
+    private ToggleGroup group;
+
+    @FXML
+    private RadioButton barchart;
+
+    @FXML
+    private RadioButton scatterplot;
+
+    @FXML
+    private RadioButton linechart;
+
+    @FXML
+    private Button runQuery;
+    
+    
 	
 	public ChartQueryEditorController(AbstractApplication anApp, AbstractController aCallerController, Scene aScene, Stage aStage) {
 		super(anApp, aCallerController, aScene, aStage);
+		
 
 	}
 
-	
+
 	
 	@FXML
 	private void handleClose() {
@@ -63,31 +99,20 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	private int runQuery() throws RemoteException, FileNotFoundException
+	private void runQuery() throws RemoteException, FileNotFoundException
 	{
-		String queryString = null;
-		int result = -100;
-		
-		queryString = textArea.getText();
-		
-		if(queryString.length() == 0) {
-			CustomAlertDialog a = new CustomAlertDialog("Empty query", null, "Your query string is empty", this.stage); 
-			a.show();
-			return -100;
-		}
-
-		//result = executeAndDisplaySimpleQuery(queryString); //temporary!
-		//String specifiedChart = getSpecifiedChart();
-		String specifiedChart = "barchart";
+		String queryString = constructQuery();
+		queryString = "ANALYZE min(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
+		String chartSpecification = "Barchart";//plotSelected();
+		System.out.println(queryString);
+		System.out.println(plotSelected());
+		//construct a builder that will build the chart request
 		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
-		ChartRequest chartRequest = chartRequestBuilder.build(specifiedChart, queryString);
-		result = executeAndDisplayChartQuery(chartRequest);
-
-		//result = executeAndDisplaySimpleQuery(queryString); //temporary!
+		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
 		
-
+		int result = executeAndDisplayChartQuery(chartQueryObject);
 		
-		return result;
+//		
 	}//end handleClose
 	
 
@@ -168,117 +193,44 @@ public class ChartQueryEditorController extends AbstractController
 	}
 	
 
-//	public int executeAndDisplaySimpleQuery(String queryString) {
-//		String remoreResultFileLocation = null;
-//		String remoteInfoFileLocation = null;
-//		String remoteFolderName = null;
-//		
-//		String localFileLocation;
-//		String localInfoFileLocation;
-//		
-//		int result;
-//		ResultFileMetadata resMetadata = null;
-//		
-//		IMainEngine serverEngine = this.getApplication().getServer();
-//		try {
-//			//USED TO GET DATA BY THE answerCubeQueryFromString
-//			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
-//			
-//			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(queryString);
-//			if(resMetadata != null) {
-//				remoreResultFileLocation = resMetadata.getResultFile();
-//				remoteInfoFileLocation = resMetadata.getResultInfoFile();
-//				remoteFolderName = resMetadata.getLocalFolder();
-//			
-//				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-//				System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
-//				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
-//			}
-//			else {
-//				System.out.println("Remote METADATA: NULL" );
-//				return -1;
-//			}
-//		} catch (RemoteException e) {
-//			System.out.println("Cannot execute query answering!");
-//			e.printStackTrace();
-//		}
-//
-//		
-//		if(remoreResultFileLocation.length() == 0) {	
-//			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
-//			a.show();
-//			return -1;
-//		}
-//		else {
-//			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
-//			result = displayResultInDataWindow(localFileLocation);
-////			OLD WAY OF GETTING INFO FILE
-////			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
-////			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
-////			System.out.println("Remote result file: " + remoreResultFileLocation);
-////			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
-//
-//			localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
-//	
-//		}
-//		return result;
-//	}//end method
+	@FXML
+    private void listColumns() {
+        String cubeName = cubeNameTextField.getText();
+        
+        // Call a service method to get available columns based on cubeName
+        
+        IMainEngine serverEngine = this.getApplication().getServer();		
+        List<String> availableColumns = null;//serverEngine.getAvailableColumnNamesFromCubeName(cubeName);
+        		
+        // Display the available columns in a new window or dialog
+        showAvailableColumnsDialog(availableColumns);
+    }
 
-	public int executeAndDisplaySimpleQuery(String queryString) {
-		String remoreResultFileLocation = null;
-		String remoteInfoFileLocation = null;
-		String remoteFolderName = null;
-		
-		String localFileLocation;
-		String localInfoFileLocation;
-		
-		int result;
-		ResultFileMetadata resMetadata = null;
-		
-		IMainEngine serverEngine = this.getApplication().getServer();
-		try {
-			//USED TO GET DATA BY THE answerCubeQueryFromString
-			//remoreResultFileLocation = serverEngine.answerCubeQueryFromStringExtraInfo(queryString);
-			
-			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(queryString);
-			if(resMetadata != null) {
-				remoreResultFileLocation = resMetadata.getResultFile();
-				remoteInfoFileLocation = resMetadata.getResultInfoFile();
-				remoteFolderName = resMetadata.getLocalFolder();
-			
-				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-				System.out.println("Remote result file METADATA: " + remoreResultFileLocation);
-				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
-			}
-			else {
-				System.out.println("Remote METADATA: NULL" );
-				return -1;
-			}
-		} catch (RemoteException e) {
-			System.out.println("Cannot execute query answering!");
-			e.printStackTrace();
-		}
 
-		
-		if(remoreResultFileLocation.length() == 0) {	
-			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
-			a.show();
-			return -1;
-		}
-		else {
-			localFileLocation = downloadResult(remoreResultFileLocation, serverEngine);
-			result = displayResultInDataWindow(localFileLocation); //TODO DISPLAY BAR CHART OR OTHER
-//			OLD WAY OF GETTING INFO FILE
-//			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
-//			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
-//			System.out.println("Remote result file: " + remoreResultFileLocation);
-//			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
 
-			localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
-	
-		}
-		return result;
-	}//end method
+	private void showAvailableColumnsDialog(List<String> availableColumns) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Available Columns");
+        alert.setHeaderText(null);
+        
+        // Build the content of the dialog based on availableColumns
+        StringBuilder contentText = new StringBuilder();
+        for (String column : availableColumns) {
+            contentText.append(column).append("\n");
+        }
+
+        alert.setContentText(contentText.toString());
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+
+        alert.showAndWait();
+    	
+	}
+
+
+
+
 
 	
 	private int displayResultInDataWindow(String resultFileLocation) {
@@ -318,20 +270,47 @@ public class ChartQueryEditorController extends AbstractController
 		return localName;
 	}//end method
 	
-
-	public String getSpecifiedChart()
-	{
-		String chart = "";
-		if(barchart.isSelected())
-		{
-			chart = "barchart";
-		}else if(scatterplot.isSelected())
-		{
-			chart = "scatterplot";
-		}else if(linechart.isSelected()) {
-			chart = "linechart";
-		}
-		return chart;
-	}
 	
+	public String constructQuery()
+	{
+		String producedString = "";
+	
+		producedString += "CubeName:" + cubeNameTextField.getText() + "\n";
+		producedString += "Name:LoanQuery11_S1_CG-Prtl" + "\n";
+		producedString += "AggrFunc:" + aggregationChooser.getValue() + "\n";
+		producedString += "Measure:" + y_axis.getText() + "\n";
+		producedString += "Gamma:"  + x_axis.getText()  +  "," + dataSeries1.getText() +"\n" ;
+		producedString += "Sigma:" +  whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'";
+		
+		return producedString;
+	}
+
+	
+	public String plotSelected()
+	{
+		Toggle selectedToggle = group.getSelectedToggle();
+		String answer = "";
+		
+		if (selectedToggle != null) {
+		    // Cast the selected Toggle to RadioButton
+		    RadioButton selectedRadioButton = (RadioButton) selectedToggle;
+
+		    // Now you can check which RadioButton is selected
+		    if (selectedRadioButton == barchart) {
+		        // User selected barchart
+		        answer = "Barchart";
+		    } else if (selectedRadioButton == scatterplot) {
+		        // User selected scatterplot
+		        answer = "Scatterplot";
+		    } else if (selectedRadioButton == linechart) {
+		        // User selected linechart
+		        answer = "Linechart";
+		    }
+		} else {
+		    // No RadioButton selected
+		    answer = null;
+		}
+		return answer;
+	}
+
 }

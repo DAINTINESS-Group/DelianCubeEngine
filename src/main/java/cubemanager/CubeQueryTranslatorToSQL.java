@@ -50,6 +50,8 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		referCube = cubeQuery.getReferCube();
 		extractionMethod = cubeQuery.getExtractionMethod(); //must have been "new" before though
 		
+		System.out.println("cube : " + referCube);
+		
 		if(measure.get(0).getAttribute() !=null ) 
 			extractionMethod.addReturnedFields(aggregateFunction,measure.get(0).getAttribute().getName());
 		else

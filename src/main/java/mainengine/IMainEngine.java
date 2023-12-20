@@ -296,6 +296,8 @@ public interface IMainEngine extends IServer {
 
     ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException;
 
+	List<String> getAvailableColumnNamesFromCubeName(String cubeName) throws RemoteException;
+
 	
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.
