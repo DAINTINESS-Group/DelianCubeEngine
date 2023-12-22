@@ -902,7 +902,13 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		// TODO Auto-generated method stub
 		System.out.println("query: " + chartRequest.getQuery());
 		System.out.println("chart: " + chartRequest.getChart());
+		
 		initializeChartManager();
+		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
+		
+		chartManager.generateQueries();
+		ResultFileMetadata resMetadata = chartManager.executeQueries();
+		/*initializeChartManager();
 		String outputLocation = answerCubeQueryFromString(chartRequest.getQuery());
 		IChartQueryGenerator chartQueryGenerator = chartManager.createChartQuery(chartRequest.getChart());
 		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
@@ -916,18 +922,14 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 		System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
 		System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());
+		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());*/
 
 
 		return resMetadata;
 		
 	}
 
-	@Override
-	public List<String> getAvailableColumnNamesFromCubeName(String cubeName) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 
 

@@ -2,9 +2,10 @@ package client.gui.controllers;
 
 
 import java.awt.Checkbox;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -99,13 +100,14 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	private void runQuery() throws RemoteException, FileNotFoundException
+	private void runQuery() throws IOException
 	{
 		String queryString = constructQuery();
-		queryString = "ANALYZE min(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
-		String chartSpecification = "Barchart";//plotSelected();
 		System.out.println(queryString);
-		System.out.println(plotSelected());
+		//queryString = "ANALYZE MIN(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
+		String chartSpecification = "Barchart";//plotSelected();
+		//System.out.println(queryString);
+		//System.out.println(plotSelected());
 		//construct a builder that will build the chart request
 		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
 		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
@@ -118,7 +120,7 @@ public class ChartQueryEditorController extends AbstractController
 
 	
 
-	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws RemoteException, FileNotFoundException
+	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws IOException
 
 	{
 		String remoteResultFileLocation = null;
@@ -139,12 +141,12 @@ public class ChartQueryEditorController extends AbstractController
 			resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
 			if(resMetadata != null) {
 				remoteResultFileLocation = resMetadata.getResultFile();
-				remoteInfoFileLocation = resMetadata.getResultInfoFile();
+				//remoteInfoFileLocation = resMetadata.getResultInfoFile();
 				remoteFolderName = resMetadata.getLocalFolder();
 			
 				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
 				System.out.println("Remote result file METADATA: " + remoteResultFileLocation);
-				System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
+				//System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
 			}
 			else {
 				System.out.println("Remote METADATA: NULL" );
@@ -154,23 +156,6 @@ public class ChartQueryEditorController extends AbstractController
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
-		if(resMetadata != null) {
-			remoteResultFileLocation = resMetadata.getResultFile();
-			remoteInfoFileLocation = resMetadata.getResultInfoFile();
-			remoteFolderName = resMetadata.getLocalFolder();
-		
-			System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-			System.out.println("Remote result file METADATA: " + remoteResultFileLocation);
-			System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
-		}
-		else {
-			System.out.println("Remote METADATA: NULL" );
-			return -1;
-		}
-
-
 		
 		if(remoteResultFileLocation.length() == 0) {	
 			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
@@ -178,15 +163,16 @@ public class ChartQueryEditorController extends AbstractController
 			return -1;
 		}
 		else {
-			localFileLocation = downloadResult(remoteResultFileLocation, serverEngine);
-			result = displayResultInDataWindow(localFileLocation);
+			//localFileLocation = downloadResult(remoteResultFileLocation, serverEngine);
+			fetchData(remoteFolderName, remoteResultFileLocation);
+			result = 0;//displayResultInDataWindow(localFileLocation);
 //			OLD WAY OF GETTING INFO FILE
 //			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
 //			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
 //			System.out.println("Remote result file: " + remoreResultFileLocation);
 //			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
 
-			localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
+			//localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
 	
 		}
 		return result;
@@ -273,19 +259,26 @@ public class ChartQueryEditorController extends AbstractController
 	
 	public String constructQuery()
 	{
-		String producedString = "";
+		String producedString = "ANALYZE ";
 	
-		producedString += "CubeName:" + cubeNameTextField.getText() + "\n";
-		producedString += "Name:LoanQuery11_S1_CG-Prtl" + "\n";
-		producedString += "AggrFunc:" + aggregationChooser.getValue() + "\n";
-		producedString += "Measure:" + y_axis.getText() + "\n";
-		producedString += "Gamma:"  + x_axis.getText()  +  "," + dataSeries1.getText() +"\n" ;
-		producedString += "Sigma:" +  whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'";
-		
+		producedString += getMeasureAccordingToAggrFunction(aggregationChooser.getValue(), y_axis.getText())
+					      + " FROM " + cubeNameTextField.getText()
+					      + " FOR " + whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'"
+					      + " GROUP BY " + dataSeries1.getText() + "," + x_axis.getText() + " AS first_query";
 		return producedString;
+		
+		
 	}
 
 	
+	private String getMeasureAccordingToAggrFunction(String aggrFunc, String value) {
+		// TODO Auto-generated method stub
+		
+		return aggrFunc + "(" + value + ")";
+	}
+
+
+
 	public String plotSelected()
 	{
 		Toggle selectedToggle = group.getSelectedToggle();
@@ -311,6 +304,16 @@ public class ChartQueryEditorController extends AbstractController
 		    answer = null;
 		}
 		return answer;
+	}
+	
+	public static void fetchData(String localFolder,String resultFile) throws IOException {
+		String str;
+		File reportFile = new File(localFolder + resultFile);
+		BufferedReader br = new BufferedReader(new FileReader(reportFile));
+		while((str = br.readLine()) != null) {
+			System.out.println(str);
+		}
+		br.close();
 	}
 
 }

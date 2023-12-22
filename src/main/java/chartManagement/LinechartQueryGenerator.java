@@ -2,20 +2,21 @@ package chartManagement;
 
 import java.util.List;
 
+import mainengine.ResultFileMetadata;
 import model.abstracts.AbstractModel;
 
 public class LinechartQueryGenerator implements IChartQueryGenerator{
 
 	@Override
-	public String generateQueries() {
+	public void generateQueries() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
-	public void executeQueries() {
+	public ResultFileMetadata executeQueries() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

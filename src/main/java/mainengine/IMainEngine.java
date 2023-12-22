@@ -296,7 +296,6 @@ public interface IMainEngine extends IServer {
 
     ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException;
 
-	List<String> getAvailableColumnNamesFromCubeName(String cubeName) throws RemoteException;
 
 	
 	/**

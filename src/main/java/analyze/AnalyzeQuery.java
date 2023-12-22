@@ -4,7 +4,7 @@ import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
 /**
- * Class that contains the information about an Query that is necessary for the production
+ * Class that contains the information about a Query that is necessary for the production
  * of the ANALYZE operator result
  * @author mariosjkb
  */
