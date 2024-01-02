@@ -11,8 +11,9 @@
 	<classpathentry kind="lib" path="libs/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-8.0.22.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX11"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-19">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -39,5 +40,20 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/ant-javafx.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/dt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/javafx-mx.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/jconsole.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/packager.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/sa-jdi.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/lib/tools.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/charsets.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/jce.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/jfr.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/jfxswt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/jsse.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/management-agent.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/resources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Aggeliki_Dougia/Desktop/JRE_VERSIONS/jdk-8/openlogic-openjdk-8u392-b08-windows-x64/openlogic-openjdk-8u392-b08-windows-64/jre/lib/rt.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

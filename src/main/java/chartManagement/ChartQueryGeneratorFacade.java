@@ -3,7 +3,7 @@ package chartManagement;
 public class ChartQueryGeneratorFacade 
 {
 	
-	IChartQueryGenerator createChartQueryGenerator(String type)
+	IChartQueryNModelGenerator createChartQueryGenerator(String type)
 	{
 		if(type.equals("Barchart"))
 		{

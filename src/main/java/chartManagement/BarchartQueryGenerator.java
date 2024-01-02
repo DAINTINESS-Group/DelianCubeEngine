@@ -5,7 +5,7 @@ import java.util.List;
 import mainengine.ResultFileMetadata;
 import model.abstracts.AbstractModel;
 
-public class BarchartQueryGenerator implements IChartQueryGenerator{
+public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 
 	@Override
 	public void generateQueries() {

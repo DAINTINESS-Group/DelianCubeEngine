@@ -22,6 +22,7 @@ package mainengine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 //import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import org.apache.spark.sql.AnalysisException;
 
+import analyze.AnalyzeQuery;
 import chartRequestManagement.ChartRequest;
 
 import model.decisiontree.labeling.RuleSet;
@@ -294,7 +296,7 @@ public interface IMainEngine extends IServer {
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
 
 
-    ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException;
+    String[][] answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException, IOException;
 
 
 	

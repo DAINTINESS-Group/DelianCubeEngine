@@ -5,7 +5,7 @@ import java.util.List;
 import mainengine.ResultFileMetadata;
 import model.abstracts.AbstractModel;
 
-public class LinechartQueryGenerator implements IChartQueryGenerator{
+public class LinechartQueryGenerator implements IChartQueryNModelGenerator{
 
 	@Override
 	public void generateQueries() {

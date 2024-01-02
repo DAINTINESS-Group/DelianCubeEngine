@@ -5,7 +5,7 @@ import java.util.List;
 import mainengine.ResultFileMetadata;
 import model.abstracts.AbstractModel;
 
-public class ScatterplotQueryGenerator implements IChartQueryGenerator{
+public class ScatterplotQueryGenerator implements IChartQueryNModelGenerator{
 
 	@Override
 	public void generateQueries() {

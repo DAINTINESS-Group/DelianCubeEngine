@@ -5,7 +5,7 @@ import java.util.List;
 import mainengine.ResultFileMetadata;
 import model.abstracts.AbstractModel;
 
-public interface IChartQueryGenerator {
+public interface IChartQueryNModelGenerator {
 	
 	
 	void generateQueries();

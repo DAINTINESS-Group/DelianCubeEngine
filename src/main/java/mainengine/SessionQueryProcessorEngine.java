@@ -38,7 +38,7 @@ import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
 import chartManagement.ChartManager;
-import chartManagement.IChartQueryGenerator;
+import chartManagement.IChartQueryNModelGenerator;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
@@ -59,6 +59,7 @@ import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import model.decisiontree.services.DatasetManager;
 import analyze.AnalyzeOperator;
+import analyze.AnalyzeQuery;
 import result.Result;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
@@ -898,7 +899,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//end answerCubeQueryWithInterestMeasures
 
 	@Override
-	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException { //TODO
+	public String[][] answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws IOException { //TODO
 		// TODO Auto-generated method stub
 		System.out.println("query: " + chartRequest.getQuery());
 		System.out.println("chart: " + chartRequest.getChart());
@@ -907,25 +908,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
 		
 		chartManager.generateQueries();
-		ResultFileMetadata resMetadata = chartManager.executeQueries();
-		/*initializeChartManager();
-		String outputLocation = answerCubeQueryFromString(chartRequest.getQuery());
-		IChartQueryGenerator chartQueryGenerator = chartManager.createChartQuery(chartRequest.getChart());
-		String outputInfoLocation = this.printQueryInfo(this.currentCubeQuery,  "OutputFiles" + File.separator);
-		//TODO outputInfoLocation to take as string
-		ResultFileMetadata resMetadata = new ResultFileMetadata();
-		resMetadata.setComponentResultFiles(null);
-		resMetadata.setComponentResultInfoFiles(null);
-		resMetadata.setLocalFolder("OutputFiles" + File.separator);
-		resMetadata.setResultFile(outputLocation);
-		resMetadata.setResultInfoFile(outputInfoLocation);
-
-		System.out.println("@SRV: FOLDER\t" + resMetadata.getLocalFolder());
-		System.out.println("@SRV: DATA FILE\t" + resMetadata.getResultFile());
-		System.out.println("@SRV: INFO FILE\t" + resMetadata.getResultInfoFile());*/
+		
 
 
-		return resMetadata;
+		return chartManager.executeQueries();
 		
 	}
 

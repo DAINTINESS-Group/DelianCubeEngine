@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import analyze.AnalyzeQuery;
 import chartRequestManagement.ChartRequestBuilderImpl;
 import chartRequestManagement.ChartRequest;
 import chartRequestManagement.IChartRequestBuilder;
@@ -27,6 +29,12 @@ import client.gui.utils.ExitController;
 import client.gui.utils.LauncherForViewControllerPairs;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -112,7 +120,7 @@ public class ChartQueryEditorController extends AbstractController
 		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
 		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
 		
-		int result = executeAndDisplayChartQuery(chartQueryObject);
+		executeAndDisplayChartQuery(chartQueryObject);
 		
 //		
 	}//end handleClose
@@ -131,53 +139,39 @@ public class ChartQueryEditorController extends AbstractController
 		String localInfoFileLocation;
 		
 		int result;
-		ResultFileMetadata resMetadata = null;
+		String[][] resMetadata = null;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
 
-		//resMetadata = serverEngine.answerCubeQueryFromChartQueryObjectWithMetadata(chartQueryObject);
-		try {
-			
-			resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
-			if(resMetadata != null) {
-				remoteResultFileLocation = resMetadata.getResultFile();
-				//remoteInfoFileLocation = resMetadata.getResultInfoFile();
-				remoteFolderName = resMetadata.getLocalFolder();
-			
-				System.out.println("Remote _info_ file FOLDER: " + remoteFolderName);
-				System.out.println("Remote result file METADATA: " + remoteResultFileLocation);
-				//System.out.println("Remote _info_ file METADATA: " + remoteInfoFileLocation);
-			}
-			else {
-				System.out.println("Remote METADATA: NULL" );
-				return -1;
-			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
+		displayChart(resMetadata);
+		return resMetadata.length;
 		
-		if(remoteResultFileLocation.length() == 0) {	
-			CustomAlertDialog a = new CustomAlertDialog("Invalid query, no result", null, "The query did not return any result", this.stage); 
-			a.show();
-			return -1;
-		}
-		else {
-			//localFileLocation = downloadResult(remoteResultFileLocation, serverEngine);
-			fetchData(remoteFolderName, remoteResultFileLocation);
-			result = 0;//displayResultInDataWindow(localFileLocation);
-//			OLD WAY OF GETTING INFO FILE
-//			FileInfoProvider infoProvider = new FileInfoProvider(remoreResultFileLocation);
-//			infoFileLocation = infoProvider.getNameForInfoFile(remoreResultFileLocation);    //getInfoFileAbsoluteLocation();
-//			System.out.println("Remote result file: " + remoreResultFileLocation);
-//			System.out.println("Remote _info_ file: " + remoteInfoFileLocation);
-
-			//localInfoFileLocation = downloadResult(remoteInfoFileLocation, serverEngine);
-	
-		}
-		return result;
 	}
 	
+	public void displayChart(String[][] resMetadata)
+	{
+		Toggle selectedToggle = group.getSelectedToggle();
+		String answer = "";
+		
+		if (selectedToggle != null) {
+		    // Cast the selected Toggle to RadioButton
+		    RadioButton selectedRadioButton = (RadioButton) selectedToggle;
+
+		    // Now you can check which RadioButton is selected
+		    if (selectedRadioButton == barchart) {
+		        // User selected barchart
+		        createAndDisplayBarChart(resMetadata);
+		    } else if (selectedRadioButton == scatterplot) {
+		        // User selected scatterplot
+		        createAndDisplayScatterPlot(resMetadata);
+		    } else if (selectedRadioButton == linechart) {
+		        // User selected linechart
+		        createAndDisplayLineChart(resMetadata);
+		    }
+		} 
+		
+	}
 
 	@FXML
     private void listColumns() {
@@ -191,6 +185,8 @@ public class ChartQueryEditorController extends AbstractController
         // Display the available columns in a new window or dialog
         showAvailableColumnsDialog(availableColumns);
     }
+	
+	
 
 
 
@@ -306,14 +302,101 @@ public class ChartQueryEditorController extends AbstractController
 		return answer;
 	}
 	
-	public static void fetchData(String localFolder,String resultFile) throws IOException {
-		String str;
-		File reportFile = new File(localFolder + resultFile);
-		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-		while((str = br.readLine()) != null) {
-			System.out.println(str);
-		}
-		br.close();
-	}
+//	public static void fetchData(String localFolder,String resultFile) throws IOException {
+//		String str;
+//		File reportFile = new File(localFolder + resultFile);
+//		BufferedReader br = new BufferedReader(new FileReader(reportFile));
+//		while((str = br.readLine()) != null) {
+//			System.out.println(str);
+//		}
+//		br.close();
+//	}
+	
+/*********************************** Chart Display functions ***********************************************************/	
+    private void createAndDisplayLineChart(String[][] resMetadata) {
+        
+        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
+        NumberAxis yAxis = new NumberAxis();
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+
+        // Create a series for the chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Chart Series");
+
+        
+        
+        for(int i=1; i<resMetadata.length-1; i++)
+        {
+        	String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
+        	int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length-2]);
+        	series.getData().add(new XYChart.Data<>(xValue, yValue));
+        }
+        
+        // Add the series to the chart
+        lineChart.getData().add(series);
+
+        // Create a new stage for the LineChart
+        Stage chartStage = new Stage();
+        chartStage.setTitle("Line Chart");
+        chartStage.setScene(new Scene(lineChart, 800, 600));
+
+        // Show the stage
+        chartStage.show();
+
+    }
+    
+    private void createAndDisplayBarChart(String[][] resMetadata) {
+        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+
+        // Create a series for the chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Chart Series");
+
+        for (int i = 1; i < resMetadata.length - 1; i++) {
+            String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
+            int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length - 2]);
+            series.getData().add(new XYChart.Data<>(xValue, yValue));
+        }
+        
+        // Add the series to the chart
+        barChart.getData().add(series);
+
+        // Create a new stage for the BarChart
+        Stage chartStage = new Stage();
+        chartStage.setTitle("Bar Chart");
+        chartStage.setScene(new Scene(barChart, 800, 600));
+
+        // Show the stage
+        chartStage.show();
+    }
+    
+    private void createAndDisplayScatterPlot(String[][] resMetadata) {
+        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
+        NumberAxis yAxis = new NumberAxis();
+        ScatterChart<String, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
+
+        // Create a series for the chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Chart Series");
+
+        for (int i = 1; i < resMetadata.length - 1; i++) {
+            String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
+            int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length - 2]);
+            series.getData().add(new XYChart.Data<>(xValue, yValue));
+        }
+        
+        // Add the series to the chart
+        scatterChart.getData().add(series);
+
+        // Create a new stage for the BarChart
+        Stage chartStage = new Stage();
+        chartStage.setTitle("Scatter Chart");
+        chartStage.setScene(new Scene(scatterChart, 800, 600));
+
+        // Show the stage
+        chartStage.show();  
+    }
 
 }
