@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import analyze.AnalyzeOperator;
 import analyze.AnalyzeQuery;
+import chartManagement.report.ChartReportQuery;
 import cubemanager.CubeManager;
 import mainengine.ResultFileMetadata;
 
@@ -19,12 +20,15 @@ public class ChartManager {
 	private AnalyzeOperator operator;
 	private ResultFileMetadata resultQueries;
 	ArrayList<AnalyzeQuery> producedQueries;
+	ArrayList<AnalyzeQuery> BaseAndSiblingQueries;
+	private ChartReportQuery chartReportQuery;
 	
 	public ChartManager(CubeManager cubeManager)
 	{
 		this.cubeManager = cubeManager;
 		this.chartQueryGeneratorFacade = new ChartQueryGeneratorFacade();
-		
+		this.BaseAndSiblingQueries = new ArrayList<AnalyzeQuery>();
+		this.chartReportQuery = new ChartReportQuery("File");
 	}
 	
 	public IChartQueryNModelGenerator createChartQuery(String type)
@@ -49,41 +53,37 @@ public class ChartManager {
 	{
 		resultQueries = operator.execute();
 		producedQueries = operator.getAnalyzeQueries();
-		System.out.println("size here!!!!! ->   " + producedQueries.size());
+		
 		
 	}
 	
-	public  String [][] executeQueries() throws IOException
-	{
-		String [][] result;
-		String [][] produced;
-//		System.out.println("ChartManager test: ");
-//		System.out.println("size here passed!!!!! ->   " + producedQueries.size());
+	private void removeDrillDownQueries() {
 		for(AnalyzeQuery query: producedQueries)
 		{
-			if((query.getType().toString()).equals("Base"))
+			if(!(query.getType().toString()).equals("Drill_Down"))
 			{
-				System.out.print("i get here!"); 
-				result = query.getAnalyzeQueryResult().getResultArray();
-				produced = new String[result.length][result[1].length];
-				
-				for(int i=1; i<result.length; i++)
-				{
-					for(int j=0; j<result[i].length; j++)
-					{
-						System.out.print(result[i][j] + " ");
-						produced[i-1][j] = result[i][j];
-					}
-					System.out.println();
-				}
-				System.out.println();
-				return produced;
-				
+				BaseAndSiblingQueries.add(query);
 			}
-
+			
 		}
 		
-		return null;
+	}
+
+	public  ResultFileMetadata executeQueries() throws IOException
+	{
+		removeDrillDownQueries();
+		String [][] result;
+		String [][] produced = null;
+//		System.out.println("ChartManager test: ");
+//		System.out.println("size here passed!!!!! ->   " + producedQueries.size());
+		
+		chartReportQuery.reportChartQueryDetails(BaseAndSiblingQueries);
+		
+		ResultFileMetadata resultFile = new ResultFileMetadata();
+		resultFile.setLocalFolder(chartReportQuery.getLocalFolder());
+		resultFile.setResultFile(chartReportQuery.getLocalFilename());
+		
+		return resultFile;
 	}
 
 }

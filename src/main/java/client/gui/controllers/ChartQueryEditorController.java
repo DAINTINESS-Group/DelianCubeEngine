@@ -113,7 +113,7 @@ public class ChartQueryEditorController extends AbstractController
 		String queryString = constructQuery();
 		System.out.println(queryString);
 		//queryString = "ANALYZE MIN(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
-		String chartSpecification = "Barchart";//plotSelected();
+		String chartSpecification = plotSelected();
 		//System.out.println(queryString);
 		//System.out.println(plotSelected());
 		//construct a builder that will build the chart request
@@ -139,17 +139,17 @@ public class ChartQueryEditorController extends AbstractController
 		String localInfoFileLocation;
 		
 		int result;
-		String[][] resMetadata = null;
+		ResultFileMetadata resMetadata = null;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
 
 		resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
 		displayChart(resMetadata);
-		return resMetadata.length;
+		return 0;
 		
 	}
 	
-	public void displayChart(String[][] resMetadata)
+	public void displayChart(ResultFileMetadata resMetadata) throws IOException
 	{
 		Toggle selectedToggle = group.getSelectedToggle();
 		String answer = "";
@@ -302,18 +302,10 @@ public class ChartQueryEditorController extends AbstractController
 		return answer;
 	}
 	
-//	public static void fetchData(String localFolder,String resultFile) throws IOException {
-//		String str;
-//		File reportFile = new File(localFolder + resultFile);
-//		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-//		while((str = br.readLine()) != null) {
-//			System.out.println(str);
-//		}
-//		br.close();
-//	}
-	
-/*********************************** Chart Display functions ***********************************************************/	
-    private void createAndDisplayLineChart(String[][] resMetadata) {
+
+/*********************************** Chart Display functions 
+ * @throws IOException ***********************************************************/	
+    private void createAndDisplayLineChart(ResultFileMetadata resMetadata) throws IOException {
         
         CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
         NumberAxis yAxis = new NumberAxis();
@@ -321,82 +313,102 @@ public class ChartQueryEditorController extends AbstractController
 
         // Create a series for the chart
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Chart Series");
-
         
+        String str;
+		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+		BufferedReader br = new BufferedReader(new FileReader(reportFile));
+		while((str = br.readLine()) != null) {
+			if(str.equals("Type: Base")) {
+				str = br.readLine();
+				str = br.readLine();
+				str = br.readLine();
+				while(!((str = br.readLine()).equals(""))) {
+					String line [] = str.split("\t");
+					
+					int yValue = Integer.parseInt(line[2]);
+					String xValue = line[0] + "\t" + line[1];
+					
+					series.getData().add(new XYChart.Data<>(xValue, yValue));
+				}
+				lineChart.getData().add(series);
+				Stage chartStage = new Stage();
+				chartStage.setTitle("Line Chart\n Type: Base");
+		        chartStage.setScene(new Scene(lineChart, 800, 600));
+		        chartStage.show();
+			}
+		}
+		br.close();
+		
         
-        for(int i=1; i<resMetadata.length-1; i++)
-        {
-        	String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
-        	int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length-2]);
-        	series.getData().add(new XYChart.Data<>(xValue, yValue));
-        }
-        
-        // Add the series to the chart
-        lineChart.getData().add(series);
-
-        // Create a new stage for the LineChart
-        Stage chartStage = new Stage();
-        chartStage.setTitle("Line Chart");
-        chartStage.setScene(new Scene(lineChart, 800, 600));
-
-        // Show the stage
-        chartStage.show();
 
     }
     
-    private void createAndDisplayBarChart(String[][] resMetadata) {
+    private void createAndDisplayBarChart(ResultFileMetadata resMetadata) throws NumberFormatException, IOException {
         CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
 
         // Create a series for the chart
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Chart Series");
+       
 
-        for (int i = 1; i < resMetadata.length - 1; i++) {
-            String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
-            int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length - 2]);
-            series.getData().add(new XYChart.Data<>(xValue, yValue));
-        }
-        
-        // Add the series to the chart
-        barChart.getData().add(series);
-
-        // Create a new stage for the BarChart
-        Stage chartStage = new Stage();
-        chartStage.setTitle("Bar Chart");
-        chartStage.setScene(new Scene(barChart, 800, 600));
-
-        // Show the stage
-        chartStage.show();
+        String str;
+		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+		BufferedReader br = new BufferedReader(new FileReader(reportFile));
+		while((str = br.readLine()) != null) {
+			if(str.equals("Type: Base")) {
+				str = br.readLine();
+				str = br.readLine();
+				str = br.readLine();
+				while(!((str = br.readLine()).equals(""))) {
+					String line [] = str.split("\t");
+					
+					int yValue = Integer.parseInt(line[2]);
+					String xValue = line[0] + "\t" + line[1];
+					
+					series.getData().add(new XYChart.Data<>(xValue, yValue));
+				}
+				barChart.getData().add(series);
+				Stage chartStage = new Stage();
+				chartStage.setTitle("Bar Chart\n Type: Base");
+		        chartStage.setScene(new Scene(barChart, 800, 600));
+		        chartStage.show();
+			}
+		}
+		br.close();
     }
     
-    private void createAndDisplayScatterPlot(String[][] resMetadata) {
+    private void createAndDisplayScatterPlot(ResultFileMetadata resMetadata) throws NumberFormatException, IOException {
         CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
         NumberAxis yAxis = new NumberAxis();
         ScatterChart<String, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
 
         // Create a series for the chart
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Chart Series");
-
-        for (int i = 1; i < resMetadata.length - 1; i++) {
-            String xValue = resMetadata[i][0] + "\t" + resMetadata[i][1];
-            int yValue = Integer.parseInt(resMetadata[i][resMetadata[i].length - 2]);
-            series.getData().add(new XYChart.Data<>(xValue, yValue));
-        }
-        
-        // Add the series to the chart
-        scatterChart.getData().add(series);
-
-        // Create a new stage for the BarChart
-        Stage chartStage = new Stage();
-        chartStage.setTitle("Scatter Chart");
-        chartStage.setScene(new Scene(scatterChart, 800, 600));
-
-        // Show the stage
-        chartStage.show();  
+        String str;
+		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+		BufferedReader br = new BufferedReader(new FileReader(reportFile));
+		while((str = br.readLine()) != null) {
+			if(str.equals("Type: Base")) {
+				str = br.readLine();
+				str = br.readLine();
+				str = br.readLine();
+				while(!((str = br.readLine()).equals(""))) {
+					String line [] = str.split("\t");
+//					System.out.println("line: " + str);
+					int yValue = Integer.parseInt(line[2]);
+					String xValue = line[0] + "\t" + line[1];
+					
+					series.getData().add(new XYChart.Data<>(xValue, yValue));
+				}
+				scatterChart.getData().add(series);
+				Stage chartStage = new Stage();
+				chartStage.setTitle("Scatter Chart\n Type: Base");
+		        chartStage.setScene(new Scene(scatterChart, 800, 600));
+		        chartStage.show();
+			}
+		}
+		br.close();  
     }
 
 }

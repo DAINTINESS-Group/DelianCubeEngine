@@ -87,7 +87,7 @@ public class AnalyzeOperator {
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);
 				String[][] resultArray = result.getResultArray();
-				System.out.println("Aggeliki test"); //check
+				
 				if(resultArray!=null) {
 					for(int i=0; i<resultArray.length; i++)
 					{

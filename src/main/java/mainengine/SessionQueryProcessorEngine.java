@@ -898,8 +898,9 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	}//end answerCubeQueryWithInterestMeasures
 
+	//Chart Query Methods
 	@Override
-	public String[][] answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws IOException { //TODO
+	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws IOException { //TODO
 		// TODO Auto-generated method stub
 		System.out.println("query: " + chartRequest.getQuery());
 		System.out.println("chart: " + chartRequest.getChart());

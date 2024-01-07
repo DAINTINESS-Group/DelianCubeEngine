@@ -25,6 +25,7 @@ public class AnalyzeOperatorClient {
 	public static void fetchData(String localFolder,String resultFile) throws IOException {
 		String str;
 		File reportFile = new File(localFolder + resultFile);
+		
 		BufferedReader br = new BufferedReader(new FileReader(reportFile));
 		while((str = br.readLine()) != null) {
 			System.out.println(str);
