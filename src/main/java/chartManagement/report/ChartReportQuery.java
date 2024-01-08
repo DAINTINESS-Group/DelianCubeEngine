@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import analyze.AnalyzeQuery;
 
@@ -94,10 +96,11 @@ public class ChartReportQuery {
 		String resultInFile = "";	
 		
 		String [][] result =  query.getAnalyzeQueryResult().getResultArray();
-		
+	
 		resultInFile += "Type: Base\n";
 		resultInFile += "Details: " + details;
 		resultInFile += "|Grouper 1|Grouper 2|Measure|\n";
+		
 		for(int i=2; i<result.length; i++)
 		{
 			for(int j=0; j<result[i].length-1; j++)

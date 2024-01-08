@@ -303,112 +303,135 @@ public class ChartQueryEditorController extends AbstractController
 	}
 	
 
-/*********************************** Chart Display functions 
- * @throws IOException ***********************************************************/	
+/*********************************** Chart Display functions  ***********************************************************/	
+	
     private void createAndDisplayLineChart(ResultFileMetadata resMetadata) throws IOException {
-        
-        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
-        NumberAxis yAxis = new NumberAxis();
-        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+        try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
+            String str;
 
-        // Create a series for the chart
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
+            while ((str = br.readLine()) != null) {
+                if (str.equals("Type: Base")) {
+                	
+                	skipLines(br, 3);
+                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Base");
+                    scatterChart.getData().add(readDataFromFile(br));
+                    displayChart(scatterChart, "Line Chart\n Type: Base");
+                    
+                } else if (str.equals("Type: Sibling")) {
+                    skipLines(br, 6);
+
+                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart 2\n Type: Sibling");
+                    scatterChart.getData().add(readDataFromFile(br));
+                    displayChart(scatterChart, "Line Chart \n Type: Sibling");
+                }
+            }
+        }
         
-        String str;
-		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
-		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-		while((str = br.readLine()) != null) {
-			if(str.equals("Type: Base")) {
-				str = br.readLine();
-				str = br.readLine();
-				str = br.readLine();
-				while(!((str = br.readLine()).equals(""))) {
-					String line [] = str.split("\t");
-					
-					int yValue = Integer.parseInt(line[2]);
-					String xValue = line[0] + "\t" + line[1];
-					
-					series.getData().add(new XYChart.Data<>(xValue, yValue));
-				}
-				lineChart.getData().add(series);
-				Stage chartStage = new Stage();
-				chartStage.setTitle("Line Chart\n Type: Base");
-		        chartStage.setScene(new Scene(lineChart, 800, 600));
-		        chartStage.show();
-			}
-		}
-		br.close();
 		
         
 
     }
     
     private void createAndDisplayBarChart(ResultFileMetadata resMetadata) throws NumberFormatException, IOException {
-        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+    	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+        try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
+            String str;
 
-        // Create a series for the chart
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-       
+            while ((str = br.readLine()) != null) {
+                if (str.equals("Type: Base")) {
+                	
+                	skipLines(br, 3);
+                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart\n Type: Base");
+                    barChart.getData().add(readDataFromFile(br));
+                    displayChart(barChart, "Bar Chart\n Type: Base");
+                    
+                } else if (str.equals("Type: Sibling")) {
+                    skipLines(br, 6);
 
-        String str;
-		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
-		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-		while((str = br.readLine()) != null) {
-			if(str.equals("Type: Base")) {
-				str = br.readLine();
-				str = br.readLine();
-				str = br.readLine();
-				while(!((str = br.readLine()).equals(""))) {
-					String line [] = str.split("\t");
-					
-					int yValue = Integer.parseInt(line[2]);
-					String xValue = line[0] + "\t" + line[1];
-					
-					series.getData().add(new XYChart.Data<>(xValue, yValue));
-				}
-				barChart.getData().add(series);
-				Stage chartStage = new Stage();
-				chartStage.setTitle("Bar Chart\n Type: Base");
-		        chartStage.setScene(new Scene(barChart, 800, 600));
-		        chartStage.show();
-			}
-		}
-		br.close();
+                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart 2\n Type: Sibling");
+                    barChart.getData().add(readDataFromFile(br));
+                    displayChart(barChart, "Bar Chart \n Type: Sibling");
+                }
+            }
+        }
     }
     
     private void createAndDisplayScatterPlot(ResultFileMetadata resMetadata) throws NumberFormatException, IOException {
-        CategoryAxis xAxis = new CategoryAxis(); // Use CategoryAxis for string values on X-axis
-        NumberAxis yAxis = new NumberAxis();
-        ScatterChart<String, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
+    	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+        try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
+            String str;
 
-        // Create a series for the chart
+            while ((str = br.readLine()) != null) {
+                if (str.equals("Type: Base")) {
+                	
+                	skipLines(br, 3);
+                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart\n Type: Base");
+                    scatterChart.getData().add(readDataFromFile(br));
+                    displayChart(scatterChart, "Scatter Chart\n Type: Base");
+                    
+                } else if (str.equals("Type: Sibling")) {
+                    skipLines(br, 6);
+
+                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart 2\n Type: Sibling");
+                    scatterChart.getData().add(readDataFromFile(br));
+                    displayChart(scatterChart, "Scatter Chart \n Type: Sibling");
+                }
+            }
+        }
+    }
+    
+    private XYChart<String, Number> createChartAccordingToTypeAndTitle(String type, String title) {
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        
+        if(type.equals("Scatter"))
+        {
+        	 ScatterChart<String, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
+        	 scatterChart.setTitle(title);
+             return scatterChart;
+             
+        }else if(type.equals("Bar")){
+        	 BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        	 barChart.setTitle(title);
+        	 return barChart;
+        }else {
+        	LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        	lineChart.setTitle(title);
+        	return lineChart;
+        }
+        
+       
+        
+    }
+    
+    private XYChart.Series<String, Number> readDataFromFile(BufferedReader br) throws IOException {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         String str;
-		File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
-		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-		while((str = br.readLine()) != null) {
-			if(str.equals("Type: Base")) {
-				str = br.readLine();
-				str = br.readLine();
-				str = br.readLine();
-				while(!((str = br.readLine()).equals(""))) {
-					String line [] = str.split("\t");
-//					System.out.println("line: " + str);
-					int yValue = Integer.parseInt(line[2]);
-					String xValue = line[0] + "\t" + line[1];
-					
-					series.getData().add(new XYChart.Data<>(xValue, yValue));
-				}
-				scatterChart.getData().add(series);
-				Stage chartStage = new Stage();
-				chartStage.setTitle("Scatter Chart\n Type: Base");
-		        chartStage.setScene(new Scene(scatterChart, 800, 600));
-		        chartStage.show();
-			}
-		}
-		br.close();  
+
+        while (!((str = br.readLine()).equals(""))) {
+            String[] line = str.split("\t");
+            int yValue = Integer.parseInt(line[2]);
+            String xValue = line[0] + " \t" + line[1];
+
+            series.getData().add(new XYChart.Data<>(xValue, yValue));
+        }
+
+        return series;
     }
+    
+    private void displayChart(XYChart<String, Number> scatterChart, String title) {
+        Stage chartStage = new Stage();
+        chartStage.setTitle(title);
+        chartStage.setScene(new Scene(scatterChart, 800, 600));
+        chartStage.show();
+    }
+    
+    private void skipLines(BufferedReader br, int linesToSkip) throws IOException {
+        for (int i = 0; i < linesToSkip; i++) {
+            br.readLine(); // Skip the specified number of lines
+        }
+    }
+   
 
 }
