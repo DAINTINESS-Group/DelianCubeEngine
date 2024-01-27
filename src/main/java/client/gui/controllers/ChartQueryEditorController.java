@@ -41,11 +41,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -91,13 +93,40 @@ public class ChartQueryEditorController extends AbstractController
     @FXML
     private Button runQuery;
     
+    @FXML
+    private VBox textFieldContainer;
+
     
-	
+
+
+    
+
 	public ChartQueryEditorController(AbstractApplication anApp, AbstractController aCallerController, Scene aScene, Stage aStage) {
 		super(anApp, aCallerController, aScene, aStage);
 		
 
 	}
+	
+    @FXML
+    private void addTextField() {
+        // Create a new TextField
+    	textFieldContainer.setVisible(true);
+    	
+        HBox newHBox = new HBox(5);
+        
+        Label additionalLabel = new Label("Additional Filter Column Name:");
+        
+        TextField additionalName = new TextField();
+        
+        Label additionalLabelValue = new Label("Additional Filter Column Value:");
+        
+        TextField additionalValue = new TextField();
+        
+        newHBox.getChildren().addAll(additionalLabel,additionalName,  additionalLabelValue, additionalValue);
+
+        // Add the new HBox to the VBox
+        textFieldContainer.getChildren().add(newHBox);
+    }
 
 
 	
@@ -411,6 +440,7 @@ public class ChartQueryEditorController extends AbstractController
 
         while (!((str = br.readLine()).equals(""))) {
             String[] line = str.split("\t");
+            System.out.println(str);
             int yValue = Integer.parseInt(line[2]);
             String xValue = line[0] + " \t" + line[1];
 
