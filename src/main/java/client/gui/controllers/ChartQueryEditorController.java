@@ -288,7 +288,7 @@ public class ChartQueryEditorController extends AbstractController
 	
 		producedString += getMeasureAccordingToAggrFunction(aggregationChooser.getValue(), y_axis.getText())
 					      + " FROM " + cubeNameTextField.getText()
-					      + " FOR " + whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'"
+					      + " FOR " + whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'" + forStatement()
 					      + " GROUP BY " + dataSeries1.getText() + "," + x_axis.getText() + " AS first_query";
 		return producedString;
 		
@@ -300,6 +300,25 @@ public class ChartQueryEditorController extends AbstractController
 		// TODO Auto-generated method stub
 		
 		return aggrFunc + "(" + value + ")";
+	}
+	
+	public String forStatement()
+	{
+		String producedForCondition = "";
+		
+		for(int i=0; i< textFieldContainer.getChildren().size(); i++)
+		{
+			HBox additionalField = (HBox) textFieldContainer.getChildren().get(i);
+            TextField additionalNameField = (TextField) additionalField.getChildren().get(1);
+            TextField additionalValueField = (TextField) additionalField.getChildren().get(3);
+            
+            String additionalName = additionalNameField.getText();
+            String additionalValue = additionalValueField.getText();
+            String statement= " AND " + additionalName + "=" + "'" + additionalValue + "'"; 
+            producedForCondition +=statement;
+		}
+		
+		return producedForCondition;
 	}
 
 
@@ -338,7 +357,7 @@ public class ChartQueryEditorController extends AbstractController
     	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
-
+            int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
                 if (str.equals("Type: Base")) {
                 	
@@ -349,8 +368,8 @@ public class ChartQueryEditorController extends AbstractController
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
-
-                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart 2\n Type: Sibling");
+                    counterSiblings++;
+                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart " + counterSiblings + "\n Type: Sibling");
                     scatterChart.getData().add(readDataFromFile(br));
                     displayChart(scatterChart, "Line Chart \n Type: Sibling");
                 }
@@ -366,7 +385,7 @@ public class ChartQueryEditorController extends AbstractController
     	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
-
+            int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
                 if (str.equals("Type: Base")) {
                 	
@@ -377,8 +396,8 @@ public class ChartQueryEditorController extends AbstractController
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
-
-                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart 2\n Type: Sibling");
+                    counterSiblings++;
+                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart " + counterSiblings + "\n Type: Sibling");
                     barChart.getData().add(readDataFromFile(br));
                     displayChart(barChart, "Bar Chart \n Type: Sibling");
                 }
@@ -390,7 +409,7 @@ public class ChartQueryEditorController extends AbstractController
     	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
-
+            int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
                 if (str.equals("Type: Base")) {
                 	
@@ -401,10 +420,11 @@ public class ChartQueryEditorController extends AbstractController
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
-
-                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart 2\n Type: Sibling");
+                    counterSiblings++;
+                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart " + counterSiblings + "\n Type: Sibling");
                     scatterChart.getData().add(readDataFromFile(br));
                     displayChart(scatterChart, "Scatter Chart \n Type: Sibling");
+                    
                 }
             }
         }

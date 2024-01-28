@@ -121,22 +121,20 @@ public class ChartReportQuery {
 		String resultInFile = "";	
 		
 		String [][] result =  query.getAnalyzeQueryResult().getResultArray();
-		String [] records = new String[result.length-2];
-		int counter = 0;
+		
 		resultInFile += "Type: Base\n";
 		resultInFile += "Details: " + details;
 		resultInFile += "|Grouper 1|Grouper 2|Measure|\n";
-		String formatGroup1;
+		
 		for(int i=2; i<result.length; i++)
 		{
-			String recordWithTabs = "";
+			
 			for(int j=0; j<result[i].length-1; j++)
 			{
-				recordWithTabs += result[i][j];
+				
 				resultInFile += result[i][j] + "\t";
 			}
-			records[counter] =  recordWithTabs;
-			counter+=1; //TODO Make a function that will take the ArrayList and returns a sorted ArrayList
+			
 			resultInFile += "\n";
 		}
 		resultInFile += "\n";
@@ -221,13 +219,23 @@ public class ChartReportQuery {
         // Skip the header
         
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        SimpleDateFormat dateFormat = null;
 
         for (int dataIndex = 6; dataIndex< lines.length; dataIndex++) {
             String[] parts = lines[dataIndex].split("\t");
             Date date = null;
+            if(dataIndex==6) {
+            	String dateFormatOfSibling = checkDateFormat(parts[0]);
+            	if(dateFormatOfSibling.equals("yyyy"))
+            	{
+            		dateFormat = new SimpleDateFormat("yyyy");
+            	}else {
+            		dateFormat = new SimpleDateFormat("yyyy-MM");
+            	}
+            }
 
             try {
+            	
                 date = dateFormat.parse(parts[0]);
             } catch (ParseException e) {
                 e.printStackTrace();

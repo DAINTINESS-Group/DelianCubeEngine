@@ -72,8 +72,7 @@ public class ChartManager {
 	public  ResultFileMetadata executeQueries() throws IOException
 	{
 		removeDrillDownQueries();
-		String [][] result;
-		String [][] produced = null;
+		
 //		System.out.println("ChartManager test: ");
 //		System.out.println("size here passed!!!!! ->   " + producedQueries.size());
 		
