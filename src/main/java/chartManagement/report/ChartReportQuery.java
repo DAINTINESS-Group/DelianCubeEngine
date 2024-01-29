@@ -153,7 +153,7 @@ public class ChartReportQuery {
 	}
 	
     public static String checkDateFormat(String dateString) {
-        String[] formatsToCheck = {"yyyy", "yyyy-MM-dd"};
+        String[] formatsToCheck = {"yyyy", "yyyy-MM"};
 
         for (String format : formatsToCheck) {
             try {
@@ -235,7 +235,6 @@ public class ChartReportQuery {
             }
 
             try {
-            	
                 date = dateFormat.parse(parts[0]);
             } catch (ParseException e) {
                 e.printStackTrace();
