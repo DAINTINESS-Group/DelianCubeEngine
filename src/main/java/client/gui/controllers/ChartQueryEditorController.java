@@ -174,10 +174,47 @@ public class ChartQueryEditorController extends AbstractController
 
 		resMetadata = serverEngine.answerCubeQueryFromChartRequest(chartQueryObject);
 		displayChart(resMetadata);
+//		displayExampleChart();
 		return 0;
 		
 	}
 	
+	public void displayExampleChart() {
+		// TODO Auto-generated method stub
+		String[] cities = {"London", "Athens", "Frankfurt"};
+        int[] values = {1, 2, 3, 4, 5};
+
+        // Create X and Y axes
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        for (int i = 0; i < cities.length; i++) {
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName(cities[i]);
+
+            // Add data to the series
+            for (int j = 0; j < values.length; j++) {
+                series.getData().add(new XYChart.Data<>(String.valueOf(values[j]), getDataForCity(i, j)));
+            }
+
+            // Add the series to the chart
+            barChart.getData().add(series);
+        }
+        
+        Stage chartStage = new Stage();
+        chartStage.setTitle("test");
+        chartStage.setScene(new Scene(barChart, 800, 600));
+        chartStage.show();
+		
+	}
+	
+    // Replace this method with your actual data retrieval logic for each city
+    private double getDataForCity(int cityIndex, int valueIndex) {
+        // Replace this with your actual data retrieval logic
+        return Math.random() * 10;
+    }
+
+
 	public void displayChart(ResultFileMetadata resMetadata) throws IOException
 	{
 		Toggle selectedToggle = group.getSelectedToggle();

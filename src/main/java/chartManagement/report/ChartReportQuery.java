@@ -3,13 +3,17 @@ package chartManagement.report;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
 
 import analyze.AnalyzeQuery;
 import chartManagement.utils.DataPoint;
@@ -45,16 +49,14 @@ public class ChartReportQuery {
 				if(query.getType().toString().equals("Base")) 
 				{
 					List<DataPoint> records = readDataFromStringForBaseQuery(reportBaseQuery(query));
-					records.sort(Comparator.comparing(DataPoint:: getDate));
 					resultQuery += "Type: Base\n" + "Details:\n" + "|Grouper 1|Grouper 2|Measure|\n";
-					resultQuery += returnSortedRecords(records);
+					resultQuery += sortResults(records);
 					
 					
 				}else if(query.getType().toString().equals("Sibling")) {
 					List<DataPoint> records = readDataFromStringForSiblingQuery(reportSiblingQuery(query));
-					records.sort(Comparator.comparing(DataPoint:: getDate));
 					resultQuery += returnSiblingHeader(query);
-					resultQuery +=  returnSortedRecords(records);
+					resultQuery +=  sortResults(records);
 				}
 				
 			}
@@ -249,6 +251,60 @@ public class ChartReportQuery {
 
         return data;
     }
+    
+    public String sortResults(List<DataPoint> points)
+    {
+    	String produced = "";
+    	ArrayList<String> groupers1List =  new ArrayList<String>();
+    	ArrayList<String> groupers2List = new ArrayList<String>();
+    	
+    	for(DataPoint point: points)
+    	{
+    		if(!groupers1List.contains(point.getGrouper1()))
+    		{
+    			groupers1List.add(point.getGrouper1());
+    		}
+    		
+    		if(!groupers2List.contains(point.getGrouper2()))
+    		{
+    			groupers2List.add(point.getGrouper2());
+    		}
+    		
+    	}
+    	String[] groupers1Array = groupers1List.toArray(new String[0]);
+    	String[] groupers2Array = groupers2List.toArray(new String[0]);
+    	Arrays.sort(groupers1Array);
+    	Arrays.sort(groupers2Array);
+    	
+    	for(String first_group: groupers1Array)
+    	{
+    		for(String second_group: groupers2Array)
+    		{
+    			produced += first_group + "\t" + second_group + "\t" + returnMeasureForRecord(points, first_group, second_group);
+    			produced += '\n';
+    		}
+    		
+    	}
+    	produced += '\n';
+    	
+    	return produced;
+    	
+    }
 
-	
+	public int returnMeasureForRecord(List<DataPoint> points, String grouper1, String grouper2)
+	{
+		for(DataPoint point: points)
+		{
+			
+			if(point.getGrouper1().equals(grouper1) && point.getGrouper2().equals(grouper2)) 
+			{
+				return point.getMeasure();
+			}
+			
+			
+		}
+		
+		return 0;
+		
+	}
 }
