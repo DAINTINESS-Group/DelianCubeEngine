@@ -907,7 +907,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		
 		initializeChartManager();
 		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
-		
+		chartManager.setChartType(chartRequest.getChart());
 		chartManager.generateQueries();
 		
 

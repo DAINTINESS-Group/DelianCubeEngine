@@ -9,7 +9,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -47,6 +50,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -428,14 +432,29 @@ public class ChartQueryEditorController extends AbstractController
                 	
                 	skipLines(br, 3);
                     BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart\n Type: Base");
-                    barChart.getData().add(readDataFromFile(br));
+                    Map<String, Map<String, Integer>> data = parseFile(br);
+
+                    // Add series to the chart
+                    
+                    for (String seriesName : data.keySet()) {
+                        addSeries(barChart, seriesName, data.get(seriesName));
+                    }
+
+                    //barChart.getData().add(readDataFromFile(br));
                     displayChart(barChart, "Bar Chart\n Type: Base");
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
                     counterSiblings++;
                     BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart " + counterSiblings + "\n Type: Sibling");
-                    barChart.getData().add(readDataFromFile(br));
+                    Map<String, Map<String, Integer>> data = parseFile(br);
+                    
+                    // Add series to the chart
+                    for (String seriesName : data.keySet()) {
+                        addSeries(barChart, seriesName, data.get(seriesName));
+                    }
+
+                    //barChart.getData().add(readDataFromFile(br));
                     displayChart(barChart, "Bar Chart \n Type: Sibling");
                 }
             }
@@ -491,10 +510,11 @@ public class ChartQueryEditorController extends AbstractController
         
     }
     
-    private XYChart.Series<String, Number> readDataFromFile(BufferedReader br) throws IOException {
+    
+    private XYChart.Series<String, Number> readDataFromFile(BufferedReader br) throws IOException { //TODO make it read the xValues and and the series and run for them
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         String str;
-
+        
         while (!((str = br.readLine()).equals(""))) {
             String[] line = str.split("\t");
             System.out.println(str);
@@ -515,10 +535,54 @@ public class ChartQueryEditorController extends AbstractController
     }
     
     private void skipLines(BufferedReader br, int linesToSkip) throws IOException {
-        for (int i = 0; i < linesToSkip; i++) {
+        for (int i = 0; i < linesToSkip-1; i++) {
             br.readLine(); // Skip the specified number of lines
         }
     }
    
+    private Map<String, Map<String, Integer>> parseFile(BufferedReader br) {
+        Map<String, Map<String, Integer>> data = new HashMap<>();
+
+        
+            String line;
+            try {
+				while (!(line = br.readLine()).equals("")) {
+				    String[] parts = line.split("\t");
+				    if (parts.length == 3) {
+				        String month = parts[0];
+				        String seriesName = parts[1];
+				        int measure = Integer.parseInt(parts[2]);
+
+				        data.computeIfAbsent(seriesName, k -> new HashMap<>()).put(month, measure);
+				    }
+				}
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+        return data;
+    }
+    
+    private void addSeries(BarChart<String, Number> barChart, String seriesName, Map<String, Integer> seriesData) {
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(seriesName);
+        List<String> sortedMonths = new ArrayList<>(seriesData.keySet());
+        Collections.sort(sortedMonths);
+        // Add data to the series based on parsed data
+        for (String month : sortedMonths) {
+            series.getData().add(new XYChart.Data<>(month, seriesData.get(month)));
+        }
+        // Add the series to the chart
+        barChart.getData().add(series);
+    }
+    
+    
+
+    
+
 
 }

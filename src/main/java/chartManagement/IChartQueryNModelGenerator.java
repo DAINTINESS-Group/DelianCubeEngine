@@ -8,12 +8,14 @@ import model.abstracts.AbstractModel;
 public interface IChartQueryNModelGenerator {
 	
 	
-	void generateQueries();
+	String generateQueries(String [] sortedResultsWithTypeOfVisualization);
 	
 	ResultFileMetadata executeQueries();
 	
 	List<AbstractModel> generateModels();
 	
 	float assessModelSignificance();
+
+	
 
 }

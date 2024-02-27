@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import analyze.AnalyzeOperator;
 import analyze.AnalyzeQuery;
-import chartManagement.report.ChartReportQuery;
 import cubemanager.CubeManager;
 import mainengine.ResultFileMetadata;
 
@@ -21,14 +20,15 @@ public class ChartManager {
 	private ResultFileMetadata resultQueries;
 	ArrayList<AnalyzeQuery> producedQueries;
 	ArrayList<AnalyzeQuery> BaseAndSiblingQueries;
-	private ChartReportQuery chartReportQuery;
+	private VisualizationManager visualizationManager;
+	private String chartType;
 	
 	public ChartManager(CubeManager cubeManager)
 	{
 		this.cubeManager = cubeManager;
 		this.chartQueryGeneratorFacade = new ChartQueryGeneratorFacade();
 		this.BaseAndSiblingQueries = new ArrayList<AnalyzeQuery>();
-		this.chartReportQuery = new ChartReportQuery("File");
+		this.visualizationManager = new VisualizationManager();
 	}
 	
 	public IChartQueryNModelGenerator createChartQuery(String type)
@@ -68,19 +68,25 @@ public class ChartManager {
 		}
 		
 	}
+	
+	public void setChartType(String type)
+	{
+		this.chartType = type;
+		IChartQueryNModelGenerator chartQueryNModelGenerator = createChartQuery(type);
+		visualizationManager.setQueryNModelGenerator(chartQueryNModelGenerator);
+	}
 
 	public  ResultFileMetadata executeQueries() throws IOException
 	{
 		removeDrillDownQueries();
 		
-//		System.out.println("ChartManager test: ");
-//		System.out.println("size here passed!!!!! ->   " + producedQueries.size());
+
 		
-		chartReportQuery.reportChartQueryDetails(BaseAndSiblingQueries);
+		visualizationManager.reportChartQueryDetails(BaseAndSiblingQueries, this.chartType);
 		
 		ResultFileMetadata resultFile = new ResultFileMetadata();
-		resultFile.setLocalFolder(chartReportQuery.getLocalFolder());
-		resultFile.setResultFile(chartReportQuery.getLocalFilename());
+		resultFile.setLocalFolder(visualizationManager.getLocalFolder());
+		resultFile.setResultFile(visualizationManager.getLocalFilename());
 		
 		return resultFile;
 	}

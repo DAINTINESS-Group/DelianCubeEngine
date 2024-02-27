@@ -7,12 +7,8 @@ import model.abstracts.AbstractModel;
 
 public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 
-	@Override
-	public void generateQueries() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	
 	
 	@Override
 	public ResultFileMetadata executeQueries() {
@@ -30,6 +26,15 @@ public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 	public float assessModelSignificance() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	@Override
+	public String generateQueries(String[] sortedResultsWithTypeOfVisualization) {
+		// TODO Auto-generated method stub
+		String typeOfVisualization = sortedResultsWithTypeOfVisualization[1];
+		String producedLineOfVisualization = "Visualization : " + typeOfVisualization + "\n";
+		return producedLineOfVisualization;
 	}
 
 }
