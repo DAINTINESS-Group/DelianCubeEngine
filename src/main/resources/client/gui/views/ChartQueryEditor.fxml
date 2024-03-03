@@ -91,7 +91,7 @@
 			            <Insets right="30.0" bottom="10.0"/>
 			        </HBox.margin>
 			    </RadioButton>    
-				<RadioButton fx:id="linechart" text="Time Series" toggleGroup="$group">
+				<RadioButton fx:id="linechart" text="Line Chart" toggleGroup="$group">
 			        <HBox.margin>
 			            <Insets right="30.0" bottom="10.0"/>
 			        </HBox.margin>

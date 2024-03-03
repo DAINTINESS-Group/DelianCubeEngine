@@ -1,10 +1,8 @@
 package client.gui.controllers;
 
 
-import java.awt.Checkbox;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -145,7 +143,6 @@ public class ChartQueryEditorController extends AbstractController
 	{
 		String queryString = constructQuery();
 		System.out.println(queryString);
-		//queryString = "ANALYZE MIN(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
 		String chartSpecification = plotSelected();
 		//System.out.println(queryString);
 		//System.out.println(plotSelected());
@@ -164,14 +161,7 @@ public class ChartQueryEditorController extends AbstractController
 	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws IOException
 
 	{
-		String remoteResultFileLocation = null;
-		String remoteInfoFileLocation = null;
-		String remoteFolderName = null;
-		
-		String localFileLocation;
-		String localInfoFileLocation;
-		
-		int result;
+
 		ResultFileMetadata resMetadata = null;
 		
 		IMainEngine serverEngine = this.getApplication().getServer();
@@ -183,40 +173,7 @@ public class ChartQueryEditorController extends AbstractController
 		
 	}
 	
-	public void displayExampleChart() {
-		// TODO Auto-generated method stub
-		String[] cities = {"London", "Athens", "Frankfurt"};
-        int[] values = {1, 2, 3, 4, 5};
 
-        // Create X and Y axes
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        for (int i = 0; i < cities.length; i++) {
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName(cities[i]);
-
-            // Add data to the series
-            for (int j = 0; j < values.length; j++) {
-                series.getData().add(new XYChart.Data<>(String.valueOf(values[j]), getDataForCity(i, j)));
-            }
-
-            // Add the series to the chart
-            barChart.getData().add(series);
-        }
-        
-        Stage chartStage = new Stage();
-        chartStage.setTitle("test");
-        chartStage.setScene(new Scene(barChart, 800, 600));
-        chartStage.show();
-		
-	}
-	
-    // Replace this method with your actual data retrieval logic for each city
-    private double getDataForCity(int cityIndex, int valueIndex) {
-        // Replace this with your actual data retrieval logic
-        return Math.random() * 10;
-    }
 
 
 	public void displayChart(ResultFileMetadata resMetadata) throws IOException
@@ -243,60 +200,11 @@ public class ChartQueryEditorController extends AbstractController
 		
 	}
 
-	@FXML
-    private void listColumns() {
-        String cubeName = cubeNameTextField.getText();
-        
-        // Call a service method to get available columns based on cubeName
-        
-        IMainEngine serverEngine = this.getApplication().getServer();		
-        List<String> availableColumns = null;//serverEngine.getAvailableColumnNamesFromCubeName(cubeName);
-        		
-        // Display the available columns in a new window or dialog
-        showAvailableColumnsDialog(availableColumns);
-    }
-	
-	
-
-
-
-	private void showAvailableColumnsDialog(List<String> availableColumns) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Available Columns");
-        alert.setHeaderText(null);
-        
-        // Build the content of the dialog based on availableColumns
-        StringBuilder contentText = new StringBuilder();
-        for (String column : availableColumns) {
-            contentText.append(column).append("\n");
-        }
-
-        alert.setContentText(contentText.toString());
-
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.setAlwaysOnTop(true);
-
-        alert.showAndWait();
-    	
-	}
 
 
 
 
 
-	
-	private int displayResultInDataWindow(String resultFileLocation) {
-		DataWindowController controller = new DataWindowController(resultFileLocation);
-		VBox dwLayout = null;
-		int launchResult = -100;
-		
-		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
-		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"DataWindow.fxml", controller, dwLayout);
-		controller.autoloadFile();
-		
-		return launchResult;
-	}//end method displayResultInDataWindow
 	
 	
 
@@ -320,7 +228,7 @@ public class ChartQueryEditorController extends AbstractController
 		}
 		
 		return localName;
-	}//end method
+	}
 	
 	
 	public String constructQuery()
@@ -343,7 +251,7 @@ public class ChartQueryEditorController extends AbstractController
 		return aggrFunc + "(" + value + ")";
 	}
 	
-	public String forStatement()
+	private String forStatement()
 	{
 		String producedForCondition = "";
 		
@@ -396,23 +304,44 @@ public class ChartQueryEditorController extends AbstractController
 	
     private void createAndDisplayLineChart(ResultFileMetadata resMetadata) throws IOException {
     	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+    	
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
             int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
+            	
                 if (str.equals("Type: Base")) {
                 	
                 	skipLines(br, 3);
-                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Base");
-                    scatterChart.getData().add(readDataFromFile(br));
-                    displayChart(scatterChart, "Line Chart\n Type: Base");
+                    LineChart<String, Number> lineChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Base");
+                    lineChart.getData().add(readDataFromFile(br));
+                    displayChart(lineChart, "Line Chart\n Type: Base");
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
-                    counterSiblings++;
-                    LineChart<String, Number> scatterChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart " + counterSiblings + "\n Type: Sibling");
-                    scatterChart.getData().add(readDataFromFile(br));
-                    displayChart(scatterChart, "Line Chart \n Type: Sibling");
+                    Map<String, ArrayList<String []>> multiplies;
+                    
+                    multiplies = returnSeriesDatasets(br);
+                    if(multiplies.keySet().size()==1)
+                    {
+                    	LineChart<String, Number> producedChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Sibling");
+                    	producedChart.getData().add(convertMapToSeries(multiplies));
+                    	displayChart(producedChart, "Line Chart\n Type: Sibling");
+                    	
+                    			
+                    }else {
+	                	FlowPane pane = new FlowPane();
+	                	for(String key: multiplies.keySet())
+	                	 {
+	                		 LineChart<String, Number> producedChart = (LineChart<String, Number>) createMultipleChartsForGivenTypeAndData(multiplies.get(key), key,"Line");
+	                		 pane.getChildren().add(producedChart);
+	                	 }
+	                	 Scene scene = new Scene(pane, 595, 350);
+	                     stage.setTitle("Line Chart");
+	                     stage.setScene(scene);
+	                     stage.show();
+//                    
+                    }
                 }
             }
         }
@@ -428,59 +357,88 @@ public class ChartQueryEditorController extends AbstractController
             String str;
             int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
+            	
+            	BarChart<String, Number> barChart = null;
+            	String type = null;
+            	
                 if (str.equals("Type: Base")) {
                 	
                 	skipLines(br, 3);
-                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart\n Type: Base");
-                    Map<String, Map<String, Integer>> data = parseFile(br);
-
-                    // Add series to the chart
+                    barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart\n Type: Base");
+                    type = "Base";
+                   
+                   
                     
-                    for (String seriesName : data.keySet()) {
-                        addSeries(barChart, seriesName, data.get(seriesName));
-                    }
-
-                    //barChart.getData().add(readDataFromFile(br));
-                    displayChart(barChart, "Bar Chart\n Type: Base");
-                    
-                } else if (str.equals("Type: Sibling")) {
+                } 
+                if(str.equals("Type: Sibling")){
+                	
                     skipLines(br, 6);
                     counterSiblings++;
-                    BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart " + counterSiblings + "\n Type: Sibling");
+                    barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart " + counterSiblings + "\n Type: Sibling");
+                    type= "Sibling";
+                    
+
+                    
+                    
+                }
+                
+                if(barChart!= null)
+                {
                     Map<String, Map<String, Integer>> data = parseFile(br);
                     
-                    // Add series to the chart
-                    for (String seriesName : data.keySet()) {
+                	for (String seriesName : data.keySet()) {
                         addSeries(barChart, seriesName, data.get(seriesName));
                     }
-
-                    //barChart.getData().add(readDataFromFile(br));
-                    displayChart(barChart, "Bar Chart \n Type: Sibling");
+                        
+                    displayChart(barChart, "Bar Chart \n Type: " + type);
                 }
+
+                
+                
             }
         }
     }
     
     private void createAndDisplayScatterPlot(ResultFileMetadata resMetadata) throws NumberFormatException, IOException {
     	File reportFile = new File(resMetadata.getLocalFolder() + "/" + resMetadata.getResultFile());
+    	
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
             int counterSiblings = 0;
             while ((str = br.readLine()) != null) {
+            	
                 if (str.equals("Type: Base")) {
                 	
                 	skipLines(br, 3);
-                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart\n Type: Base");
-                    scatterChart.getData().add(readDataFromFile(br));
-                    displayChart(scatterChart, "Scatter Chart\n Type: Base");
+                    ScatterChart<String, Number> lineChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Line Chart\n Type: Base");
+                    lineChart.getData().add(readDataFromFile(br));
+                    displayChart(lineChart, "Line Chart\n Type: Base");
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
-                    counterSiblings++;
-                    ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart " + counterSiblings + "\n Type: Sibling");
-                    scatterChart.getData().add(readDataFromFile(br));
-                    displayChart(scatterChart, "Scatter Chart \n Type: Sibling");
+                    Map<String, ArrayList<String []>> multiplies;
                     
+                    multiplies = returnSeriesDatasets(br);
+                    if(multiplies.keySet().size()==1)
+                    {
+                    	ScatterChart<String, Number> producedChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Line Chart\n Type: Sibling");
+                    	producedChart.getData().add(convertMapToSeries(multiplies));
+                    	displayChart(producedChart, "Line Chart\n Type: Sibling");
+                    	
+                    			
+                    }else {
+	                	FlowPane pane = new FlowPane();
+	                	for(String key: multiplies.keySet())
+	                	 {
+	                		ScatterChart<String, Number> producedChart = (ScatterChart<String, Number>) createMultipleChartsForGivenTypeAndData(multiplies.get(key), key,"Scatter");
+	                		 pane.getChildren().add(producedChart);
+	                	 }
+	                	 Scene scene = new Scene(pane, 595, 350);
+	                     stage.setTitle("Line Chart");
+	                     stage.setScene(scene);
+	                     stage.show();
+//                    
+                    }
                 }
             }
         }
@@ -489,6 +447,8 @@ public class ChartQueryEditorController extends AbstractController
     private XYChart<String, Number> createChartAccordingToTypeAndTitle(String type, String title) {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Time");
+        yAxis.setLabel("Measure");
         
         if(type.equals("Scatter"))
         {
@@ -517,7 +477,7 @@ public class ChartQueryEditorController extends AbstractController
         
         while (!((str = br.readLine()).equals(""))) {
             String[] line = str.split("\t");
-            System.out.println(str);
+          
             int yValue = Integer.parseInt(line[2]);
             String xValue = line[0] + " \t" + line[1];
 
@@ -525,6 +485,25 @@ public class ChartQueryEditorController extends AbstractController
         }
 
         return series;
+    }
+    
+    private XYChart.Series<String, Number> convertMapToSeries( Map<String, ArrayList<String []>> array)
+    {
+    	
+    	XYChart.Series<String, Number> series = new XYChart.Series<>();
+    	
+    	String grouper1 = array.keySet().iterator().next();
+    	ArrayList<String []> grouper2WithMeasure = array.get(grouper1);
+    	
+    	for(String [] record : grouper2WithMeasure)
+    	{
+    		int yValue = Integer.parseInt(record[1]);
+    		String xValue = record[0];
+    		
+    		series.getData().add(new XYChart.Data<>(xValue, yValue));
+    	}
+    	return series;
+    	
     }
     
     private void displayChart(XYChart<String, Number> scatterChart, String title) {
@@ -540,13 +519,13 @@ public class ChartQueryEditorController extends AbstractController
         }
     }
    
-    private Map<String, Map<String, Integer>> parseFile(BufferedReader br) {
+    private Map<String, Map<String, Integer>> parseFile(BufferedReader br) throws IOException {
         Map<String, Map<String, Integer>> data = new HashMap<>();
 
         
             String line;
             try {
-				while (!(line = br.readLine()).equals("")) {
+            	while ((line = br.readLine()) != null && !line.equals("")) {
 				    String[] parts = line.split("\t");
 				    if (parts.length == 3) {
 				        String month = parts[0];
@@ -559,11 +538,7 @@ public class ChartQueryEditorController extends AbstractController
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-
         return data;
     }
     
@@ -581,7 +556,80 @@ public class ChartQueryEditorController extends AbstractController
     }
     
     
+    private Map<String, ArrayList<String []>> returnSeriesDatasets(BufferedReader br) throws IOException
+    {
+    	
+    	Map<String, ArrayList<String []>> seriesDatasets = new HashMap<>();
+    	String line;
+    	
+    	while(!(line = br.readLine()).equals(""))
+    	{
+    		String[] parts = line.split("\t");
+    		String [] arrayGrouperWithMeasure; 
+		    if (parts.length == 3) 
+		    {
+		    	String grouper1 = parts[0];
+		    	String grouper2 = parts[1];
+		    	String measure = parts[2];
+		    	
+		    	arrayGrouperWithMeasure = new String[2];
+		    	arrayGrouperWithMeasure[0] = grouper1;
+		    	arrayGrouperWithMeasure[1] = measure;
+		    	
+		    	if(seriesDatasets.containsKey(grouper2)) {
+		    		seriesDatasets.get(grouper2).add(arrayGrouperWithMeasure);
+		    		
+		    	}else {
+		    		ArrayList<String []> records = new ArrayList<>();
+		    		records.add(arrayGrouperWithMeasure);
+		    		seriesDatasets.put(grouper2, records);
+		    	}
+		    }
+    	}
+		return seriesDatasets;
+    	
+    }
+    
 
+	public XYChart<String, Number> createMultipleChartsForGivenTypeAndData(ArrayList<String []> data, String grouper2,String chartType) {
+        
+    	CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Time");
+        yAxis.setLabel("Measure");
+        XYChart<String, Number> chart;
+        XYChart.Series<String, Number> series;
+        if(chartType.equals("Line"))
+        {
+        	chart = new LineChart<>(xAxis, yAxis);
+        	series = new LineChart.Series<>();
+        }else {
+        	chart = new ScatterChart<>(xAxis, yAxis);
+        	series = new ScatterChart.Series<>();
+        }
+         
+         
+        
+      //Setting data
+        XYChart.Data<String, Number> record;
+        for (int i = 0; i < data.size(); i++) {
+        	
+        	if(chartType.equals("Line"))
+        	{
+        		record = new LineChart.Data<>(data.get(i)[0], Integer.parseInt(data.get(i)[1]));
+        	}else {
+        		record = new ScatterChart.Data<>(data.get(i)[0], Integer.parseInt(data.get(i)[1]));
+        	}
+        	
+           
+           series.getData().add(record);
+        }
+        chart.getData().add(series);
+        chart.setPrefSize(300, 300);
+        chart.setTitle(grouper2);
+        
+        return chart;
+     }
     
 
 
