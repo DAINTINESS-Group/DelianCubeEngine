@@ -204,6 +204,39 @@
             <artifactId>gson</artifactId>
             <version>2.10</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.testfx/testfx-core -->
+		<dependency>
+		    <groupId>org.testfx</groupId>
+		    <artifactId>testfx-core</artifactId>
+		    <version>4.0.16-alpha</version>
+		    <scope>test</scope>
+		</dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.testfx/testfx-junit -->
+		<dependency>
+		    <groupId>org.testfx</groupId>
+		    <artifactId>testfx-junit</artifactId>
+		    <version>4.0.15-alpha</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>18.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
+		<dependency>
+		    <groupId>org.hamcrest</groupId>
+		    <artifactId>hamcrest</artifactId>
+		    <version>2.2</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		
     </dependencies>
     <!-- Dependencies END HERE -->
 

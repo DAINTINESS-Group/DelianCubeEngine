@@ -109,10 +109,15 @@ public class ChartQueryEditorController extends AbstractController
 
 	}
 	
+	public ChartQueryEditorController()
+	{
+		
+	}
+	
     @FXML
-    private void addTextField() {
+	public void addTextField() {
         // Create a new TextField
-    	textFieldContainer.setVisible(true);
+    	getTextFieldContainer().setVisible(true);
     	
         HBox newHBox = new HBox(5);
         
@@ -127,7 +132,7 @@ public class ChartQueryEditorController extends AbstractController
         newHBox.getChildren().addAll(additionalLabel,additionalName,  additionalLabelValue, additionalValue);
 
         // Add the new HBox to the VBox
-        textFieldContainer.getChildren().add(newHBox);
+        getTextFieldContainer().getChildren().add(newHBox);
     }
 
 
@@ -139,14 +144,12 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	private void runQuery() throws IOException
+	public void runQuery() throws IOException
 	{
 		String queryString = constructQuery();
 		System.out.println(queryString);
 		String chartSpecification = plotSelected();
-		//System.out.println(queryString);
-		//System.out.println(plotSelected());
-		//construct a builder that will build the chart request
+		
 		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
 		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
 		
@@ -186,13 +189,13 @@ public class ChartQueryEditorController extends AbstractController
 		    RadioButton selectedRadioButton = (RadioButton) selectedToggle;
 
 		    // Now you can check which RadioButton is selected
-		    if (selectedRadioButton == barchart) {
+		    if (selectedRadioButton == getBarchart()) {
 		        // User selected barchart
 		        createAndDisplayBarChart(resMetadata);
-		    } else if (selectedRadioButton == scatterplot) {
+		    } else if (selectedRadioButton == getScatterplot()) {
 		        // User selected scatterplot
 		        createAndDisplayScatterPlot(resMetadata);
-		    } else if (selectedRadioButton == linechart) {
+		    } else if (selectedRadioButton == getLinechart()) {
 		        // User selected linechart
 		        createAndDisplayLineChart(resMetadata);
 		    }
@@ -235,10 +238,10 @@ public class ChartQueryEditorController extends AbstractController
 	{
 		String producedString = "ANALYZE ";
 	
-		producedString += getMeasureAccordingToAggrFunction(aggregationChooser.getValue(), y_axis.getText())
-					      + " FROM " + cubeNameTextField.getText()
-					      + " FOR " + whereColumn.getText() + "=" + "'" + whereColumnValue.getText() + "'" + forStatement()
-					      + " GROUP BY " + dataSeries1.getText() + "," + x_axis.getText() + " AS first_query";
+		producedString += getMeasureAccordingToAggrFunction(getAggregationChooser().getValue(), getY_axis().getText())
+					      + " FROM " + getCubeNameTextField().getText()
+					      + " FOR " + getWhereColumn().getText() + "=" + "'" + getWhereColumnValue().getText() + "'" + forStatement()
+					      + " GROUP BY " + getDataSeries1().getText() + "," + getX_axis().getText() + " AS first_query";
 		return producedString;
 		
 		
@@ -255,9 +258,9 @@ public class ChartQueryEditorController extends AbstractController
 	{
 		String producedForCondition = "";
 		
-		for(int i=0; i< textFieldContainer.getChildren().size(); i++)
+		for(int i=0; i< getTextFieldContainer().getChildren().size(); i++)
 		{
-			HBox additionalField = (HBox) textFieldContainer.getChildren().get(i);
+			HBox additionalField = (HBox) getTextFieldContainer().getChildren().get(i);
             TextField additionalNameField = (TextField) additionalField.getChildren().get(1);
             TextField additionalValueField = (TextField) additionalField.getChildren().get(3);
             
@@ -282,13 +285,13 @@ public class ChartQueryEditorController extends AbstractController
 		    RadioButton selectedRadioButton = (RadioButton) selectedToggle;
 
 		    // Now you can check which RadioButton is selected
-		    if (selectedRadioButton == barchart) {
+		    if (selectedRadioButton == getBarchart()) {
 		        // User selected barchart
 		        answer = "Barchart";
-		    } else if (selectedRadioButton == scatterplot) {
+		    } else if (selectedRadioButton == getScatterplot()) {
 		        // User selected scatterplot
 		        answer = "Scatterplot";
-		    } else if (selectedRadioButton == linechart) {
+		    } else if (selectedRadioButton == getLinechart()) {
 		        // User selected linechart
 		        answer = "Linechart";
 		    }
@@ -630,6 +633,104 @@ public class ChartQueryEditorController extends AbstractController
         
         return chart;
      }
+
+	public TextField getCubeNameTextField() {
+		return cubeNameTextField;
+	}
+
+	public void setCubeNameTextField(TextField cubeNameTextField) {
+		this.cubeNameTextField = cubeNameTextField;
+	}
+
+	public TextField getDataSeries1() {
+		return dataSeries1;
+	}
+
+	public void setDataSeries1(TextField dataSeries1) {
+		this.dataSeries1 = dataSeries1;
+	}
+
+	public TextField getX_axis() {
+		return x_axis;
+	}
+
+	public void setX_axis(TextField x_axis) {
+		this.x_axis = x_axis;
+	}
+
+	public TextField getY_axis() {
+		return y_axis;
+	}
+
+	public void setY_axis(TextField y_axis) {
+		this.y_axis = y_axis;
+	}
+
+	public ComboBox<String> getAggregationChooser() {
+		return aggregationChooser;
+	}
+
+	public void setAggregationChooser(ComboBox<String> aggregationChooser) {
+		this.aggregationChooser = aggregationChooser;
+	}
+
+	public TextField getWhereColumn() {
+		return whereColumn;
+	}
+
+	public void setWhereColumn(TextField whereColumn) {
+		this.whereColumn = whereColumn;
+	}
+
+	public TextField getWhereColumnValue() {
+		return whereColumnValue;
+	}
+
+	public void setWhereColumnValue(TextField whereColumnValue) {
+		this.whereColumnValue = whereColumnValue;
+	}
+
+	public VBox getTextFieldContainer() {
+		return textFieldContainer;
+	}
+
+	public void setTextFieldContainer(VBox textFieldContainer) {
+		this.textFieldContainer = textFieldContainer;
+	}
+
+	public RadioButton getBarchart() {
+		return barchart;
+	}
+
+	public void setBarchart(RadioButton barchart) {
+		this.barchart = barchart;
+	}
+
+	public RadioButton getScatterplot() {
+		return scatterplot;
+	}
+
+	public void setScatterplot(RadioButton scatterplot) {
+		this.scatterplot = scatterplot;
+	}
+
+	public RadioButton getLinechart() {
+		return linechart;
+	}
+
+	public void setLinechart(RadioButton linechart) {
+		this.linechart = linechart;
+	}
+
+	public void setGroup(ToggleGroup toggleGroup) {
+		this.group = toggleGroup;
+		
+	}
+
+	public ToggleGroup getGroup() {
+		// TODO Auto-generated method stub
+		return this.group;
+	}
     
 
 

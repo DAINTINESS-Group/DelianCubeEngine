@@ -167,7 +167,7 @@ public class VisualizationManager {
 	}
 	
     public static String checkDateFormat(String dateString) {
-        String[] formatsToCheck = {"yyyy", "yyyy-MM"};
+        String[] formatsToCheck = {"yyyy-MM","yyyy"};
 
         for (String format : formatsToCheck) {
             try {
@@ -182,7 +182,7 @@ public class VisualizationManager {
         return null; // If none of the formats match
     }
     
-    private static List<DataPoint> readDataFromStringForBaseQuery(String dataString) {
+    public static List<DataPoint> readDataFromStringForBaseQuery(String dataString) {
         List<DataPoint> data = new ArrayList<>();
         
         String[] lines = dataString.split("\n");
@@ -226,7 +226,7 @@ public class VisualizationManager {
     	
     }
     
-    private static List<DataPoint> readDataFromStringForSiblingQuery(String dataString) {
+    public static List<DataPoint> readDataFromStringForSiblingQuery(String dataString) {
         List<DataPoint> data = new ArrayList<>();
 
         String[] lines = dataString.split("\n");
@@ -347,7 +347,7 @@ public class VisualizationManager {
 		return "default";
 	}
 	
-	private String processResultsForVisualization(String [] sortedResultsWithTypeOfVisualization) //TODO change type to string
+	public String processResultsForVisualization(String [] sortedResultsWithTypeOfVisualization) //TODO change type to string
 	{
 		return chartQueryNModelGenerator.generateQueries(sortedResultsWithTypeOfVisualization); //return queries with what visualization(small multiplies)
 	}
