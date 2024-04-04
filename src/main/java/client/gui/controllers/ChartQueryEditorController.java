@@ -18,6 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import analyze.AnalyzeQuery;
 import chartRequestManagement.ChartRequestBuilderImpl;
+import chartRequestManagement.ChartRequestFactory;
 import chartRequestManagement.ChartRequest;
 import chartRequestManagement.IChartRequestBuilder;
 import client.ClientRMITransferer;
@@ -149,8 +150,8 @@ public class ChartQueryEditorController extends AbstractController
 		String queryString = constructQuery();
 		System.out.println(queryString);
 		String chartSpecification = plotSelected();
-		
-		IChartRequestBuilder chartRequestBuilder = new ChartRequestBuilderImpl();
+		ChartRequestFactory chartRequestFactory = new ChartRequestFactory();
+		IChartRequestBuilder chartRequestBuilder = chartRequestFactory.createRequest();
 		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
 		
 		executeAndDisplayChartQuery(chartQueryObject);
