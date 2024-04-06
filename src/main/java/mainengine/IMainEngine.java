@@ -296,6 +296,14 @@ public interface IMainEngine extends IServer {
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
 
 
+    /**
+     * 
+     * @param chartRequest
+     * @return
+     * @throws RemoteException
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException, IOException;
 
 

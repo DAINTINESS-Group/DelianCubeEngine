@@ -902,8 +902,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws IOException { //TODO
 		// TODO Auto-generated method stub
-		System.out.println("query: " + chartRequest.getQuery());
-		System.out.println("chart: " + chartRequest.getChart());
 		
 		initializeChartManager();
 		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
