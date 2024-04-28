@@ -174,7 +174,7 @@ public class DataWindowQueryWithModelsController extends AbstractController {
 				//these two lines must be maintained with the new FXML file + the new controller
 				DataWindowController controller = new DataWindowController(nextModelFile);
 				launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-						"DataWindow.fxml", controller, dwLayout);
+						"DataWindow.fxml", controller, dwLayout, null);
 				controller.autoloadFile();
 				
 				//Just logging what happened.

@@ -36,5 +36,7 @@ public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 		String producedLineOfVisualization = "Visualization : " + typeOfVisualization + "\n";
 		return producedLineOfVisualization;
 	}
+	
+
 
 }

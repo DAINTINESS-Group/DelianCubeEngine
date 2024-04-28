@@ -56,7 +56,7 @@ public class LauncherForViewControllerPairs {
 	 * @return 0 is all OK, negative value otherwise.
 	 */
 	public Integer launchViewControllerPairNoFXController(AbstractApplication mainApp, AbstractController callerController, Stage callerStage, Boolean needsNewStage, 
-			String launchedFXMLView, AbstractController launchedController, Parent rootNodeLayout) {
+			String launchedFXMLView, AbstractController launchedController, Parent rootNodeLayout, String title) {
 
 
 		//either you reuse the old stage or make a new one. 
@@ -110,6 +110,7 @@ public class LauncherForViewControllerPairs {
 		//Set up the pointers as required by AbstracController
 		launchedController.setScene(launchedScene);
 		launchedController.setStage(launchedStage);
+		if(title!=null) setWindowTitle(launchedController.getStage(),title);
 		launchedController.setApplication(mainApp);
 		launchedController.setCallerController(callerController);
 		
@@ -118,6 +119,12 @@ public class LauncherForViewControllerPairs {
 		launchedStage.show();
 
 		return 0;
+	}
+	
+	public void setWindowTitle(Stage stage,String title)
+	{
+		
+		stage.setTitle(title);
 	}
 	
 	

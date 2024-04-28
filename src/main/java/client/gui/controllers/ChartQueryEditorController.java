@@ -106,7 +106,7 @@ public class ChartQueryEditorController extends AbstractController
 
 	public ChartQueryEditorController(AbstractApplication anApp, AbstractController aCallerController, Scene aScene, Stage aStage) {
 		super(anApp, aCallerController, aScene, aStage);
-		
+	
 
 	}
 	

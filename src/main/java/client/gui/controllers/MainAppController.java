@@ -88,7 +88,7 @@ public class MainAppController extends AbstractController {
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"DataWindow.fxml", controller, dwLayout);
+				"DataWindow.fxml", controller, dwLayout,null);
 
 		//Just logging what happened.
 		String prevText = textLogger.getText();
@@ -108,7 +108,7 @@ public class MainAppController extends AbstractController {
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"TextEditor.fxml", controller, dwLayout);
+				"TextEditor.fxml", controller, dwLayout,null);
 
 		//Just logging what happened.
 		String prevText = textLogger.getText();
@@ -171,7 +171,7 @@ public class MainAppController extends AbstractController {
 				
 				LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 				launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-						"DataWindow.fxml", controller, dwLayout);
+						"DataWindow.fxml", controller, dwLayout, null);
 				controller.autoloadFile();
 				
 				//Just logging what happened.
@@ -197,7 +197,7 @@ public class MainAppController extends AbstractController {
 		QueryEditorController queryEditorCtrl = new QueryEditorController(this.getApplication(), this, this.getScene(), this.getStage()); 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"QueryEditor.fxml", queryEditorCtrl, dwLayout);
+				"QueryEditor.fxml", queryEditorCtrl, dwLayout,null);
 		//queryEditorCtrl.doSth();
 
 		
@@ -246,7 +246,7 @@ public class MainAppController extends AbstractController {
 		ChartQueryEditorController chartQueryEditorCtrl = new ChartQueryEditorController(this.getApplication(), this, this.getScene(), this.getStage()); 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"ChartQueryEditor.fxml", chartQueryEditorCtrl, dwLayout);
+				"ChartQueryEditor.fxml", chartQueryEditorCtrl, dwLayout, "Chart Query Editor");
 		//queryEditorCtrl.doSth();
 
 		

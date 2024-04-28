@@ -100,6 +100,11 @@ public abstract class AbstractController {
 	protected Stage stage = null;	
 
 	
+	public void setWindowTitle(Stage stage,String title)
+	{
+		setStage(stage);
+		this.stage.setTitle(title);
+	}
 
 } //end class Abstract Controller
 

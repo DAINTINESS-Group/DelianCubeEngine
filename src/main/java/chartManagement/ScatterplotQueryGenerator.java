@@ -34,5 +34,15 @@ public class ScatterplotQueryGenerator implements IChartQueryNModelGenerator{
 		String producedLineOfVisualization = "Visualization : " + typeOfVisualization + "\n";
 		return producedLineOfVisualization;
 	}
+	
+	public AbstractModel generateCorrelationModel()
+	{
+		return null;
+	}
+	
+	public AbstractModel generateLinearRegressionModel()
+	{
+		return null;
+	}
 
 }

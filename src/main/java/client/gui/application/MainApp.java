@@ -94,10 +94,9 @@ public class MainApp extends AbstractApplication {
 		
 		MainAppController controller = new MainAppController(service);
 		int launchResult = -100;
-		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this, null, primaryStage, false, 
-				"MainApp.fxml", controller, rootLayout);
+				"MainApp.fxml", controller, rootLayout,"Delian Cubes Client Application");
 		
 		if(launchResult < 0) {
 			System.out.println("Launch Result was (miserably): " + launchResult + "\n");

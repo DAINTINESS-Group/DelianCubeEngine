@@ -145,7 +145,7 @@ public class QueryEditorController extends AbstractController {
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"HelpWindow.fxml", controller, dwLayout);
+				"HelpWindow.fxml", controller, dwLayout, null);
 		controller.setup();
 		
 		return launchResult;
@@ -373,7 +373,7 @@ public class QueryEditorController extends AbstractController {
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"DataWindow.fxml", controller, dwLayout);
+				"DataWindow.fxml", controller, dwLayout,null);
 		controller.autoloadFile();
 		
 		return launchResult;
@@ -489,7 +489,7 @@ public class QueryEditorController extends AbstractController {
 		
 		LauncherForViewControllerPairs launcher = new LauncherForViewControllerPairs();
 		launchResult = launcher.launchViewControllerPairNoFXController(this.getApplication(), this, this.getStage(), true, 
-				"DataWindowQueryWithModels.fxml", controller, dwLayout);
+				"DataWindowQueryWithModels.fxml", controller, dwLayout,null);
 		controller.autoloadFile();
 		
 		return launchResult;

@@ -61,11 +61,11 @@ public class AssessOperatorClient {
     private static CubeManager initCubeMangerB() {
         String typeOfConnection = "RDBMS";
         HashMap<String, String> userInputList = new HashMap<>();
-        userInputList.put("schemaName", "pkdd99_star_1M");
+        userInputList.put("schemaName", "pkdd99_star");
         userInputList.put("username", "CinecubesUser");
         userInputList.put("password", "Cinecubes");
         userInputList.put("cubeName", "loan");
-        userInputList.put("inputFolder", "pkdd99_star_1M");
+        userInputList.put("inputFolder", "pkdd99_star");
         CubeManager cubeManager = new CubeManager(typeOfConnection, userInputList);
         Session session = new Session(cubeManager);
         try {
