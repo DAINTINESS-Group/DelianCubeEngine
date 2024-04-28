@@ -29,7 +29,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	analyze.AnalyzeWrongExpressions.class,
 	assess.benchmarks.BenchmarkFactoryTest.class,
 	assess.labelers.CustomLabelingSchemeTest.class,
-	assess.AssessQueryParserTest.class})
+	assess.AssessQueryParserTest.class,
+	chartManagement.ChartQueryEditorControllerTest.class,
+	chartManagement.VisualizationManagerTest.class})
 public class AllTests {
 
 }
