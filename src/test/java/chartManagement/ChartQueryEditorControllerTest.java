@@ -29,7 +29,7 @@ public class ChartQueryEditorControllerTest extends  ApplicationTest
 
     @Test
     public void testConstructQuery() {
-        // Set up input fields
+        // Set up input fields (Arrange)
         controller.setCubeNameTextField(new TextField("SalesCube"));
         controller.setDataSeries1(new TextField("Product"));
         controller.setX_axis(new TextField("Month"));
@@ -46,7 +46,7 @@ public class ChartQueryEditorControllerTest extends  ApplicationTest
         ((TextField) additionalFilter.getChildren().get(1)).setText("ProductCategory");
         ((TextField) additionalFilter.getChildren().get(3)).setText("Electronics");
 
-        // Call the method
+        // Call the method (Act)
         String query = controller.constructQuery();
 
         // Expected query string

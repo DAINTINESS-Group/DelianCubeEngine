@@ -140,7 +140,7 @@ public class VisualizationManagerTest {
     	
     	//Assert
     	assertEquals(expectedData.get(0).getGrouper1(),actualData.get(0).getGrouper1());
-    	assertEquals(expectedData.get(1).getMeasure(), actualData.get(1).getMeasure());
+    	assertEquals(expectedData.get(1).getMeasure(), actualData.get(1).getMeasure(),0.001); //delta value for comparing float numbers
     	assertEquals(expectedData.get(2).getGrouper2(), actualData.get(2).getGrouper2());
     }
     
@@ -173,7 +173,7 @@ public class VisualizationManagerTest {
     	
     	//Assert
     	assertEquals(expectedData.get(0).getGrouper1(),actualData.get(0).getGrouper1());
-    	assertEquals(expectedData.get(1).getMeasure(), actualData.get(1).getMeasure());
+    	assertEquals(expectedData.get(1).getMeasure(), actualData.get(1).getMeasure(),0.001); //delta value for comparing float numbers
     	assertEquals(expectedData.get(2).getGrouper2(), actualData.get(2).getGrouper2());
     }
     

@@ -8,9 +8,9 @@ public class DataPoint
 	private Date date;
     private String grouper1;
     private String grouper2;
-    private int measure;
+    private double measure;
 
-    public DataPoint(Date date, String grouper1, String grouper2, int measure) {
+    public DataPoint(Date date, String grouper1, String grouper2, double measure) {
         this.date = date;
         this.grouper1 = grouper1;
         this.grouper2 = grouper2;
@@ -30,7 +30,7 @@ public class DataPoint
         return grouper2;
     }
 
-    public int getMeasure() {
+    public double getMeasure() {
         return measure;
     }
     

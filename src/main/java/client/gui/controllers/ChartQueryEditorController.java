@@ -388,7 +388,7 @@ public class ChartQueryEditorController extends AbstractController
                 
                 if(barChart!= null)
                 {
-                    Map<String, Map<String, Integer>> data = parseFile(br);
+                    Map<String, Map<String, Double>> data = parseFile(br);
                     
                 	for (String seriesName : data.keySet()) {
                         addSeries(barChart, seriesName, data.get(seriesName));
@@ -482,7 +482,7 @@ public class ChartQueryEditorController extends AbstractController
         while (!((str = br.readLine()).equals(""))) {
             String[] line = str.split("\t");
           
-            int yValue = Integer.parseInt(line[2]);
+            double yValue = Double.parseDouble(line[2]);
             String xValue = line[0] + " \t" + line[1];
 
             series.getData().add(new XYChart.Data<>(xValue, yValue));
@@ -501,7 +501,7 @@ public class ChartQueryEditorController extends AbstractController
     	
     	for(String [] record : grouper2WithMeasure)
     	{
-    		int yValue = Integer.parseInt(record[1]);
+    		double yValue = Double.parseDouble(record[1]);
     		String xValue = record[0];
     		
     		series.getData().add(new XYChart.Data<>(xValue, yValue));
@@ -523,8 +523,8 @@ public class ChartQueryEditorController extends AbstractController
         }
     }
    
-    private Map<String, Map<String, Integer>> parseFile(BufferedReader br) throws IOException {
-        Map<String, Map<String, Integer>> data = new HashMap<>();
+    private Map<String, Map<String, Double>> parseFile(BufferedReader br) throws IOException {
+        Map<String, Map<String, Double>> data = new HashMap<>();
 
         
             String line;
@@ -534,7 +534,7 @@ public class ChartQueryEditorController extends AbstractController
 				    if (parts.length == 3) {
 				        String month = parts[0];
 				        String seriesName = parts[1];
-				        int measure = Integer.parseInt(parts[2]);
+				        double measure = Double.parseDouble(parts[2]);
 
 				        data.computeIfAbsent(seriesName, k -> new HashMap<>()).put(month, measure);
 				    }
@@ -546,14 +546,14 @@ public class ChartQueryEditorController extends AbstractController
         return data;
     }
     
-    private void addSeries(BarChart<String, Number> barChart, String seriesName, Map<String, Integer> seriesData) {
+    private void addSeries(BarChart<String, Number> barChart, String seriesName, Map<String, Double> map) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName(seriesName);
-        List<String> sortedMonths = new ArrayList<>(seriesData.keySet());
+        List<String> sortedMonths = new ArrayList<>(map.keySet());
         Collections.sort(sortedMonths);
         // Add data to the series based on parsed data
         for (String month : sortedMonths) {
-            series.getData().add(new XYChart.Data<>(month, seriesData.get(month)));
+            series.getData().add(new XYChart.Data<>(month, map.get(month)));
         }
         // Add the series to the chart
         barChart.getData().add(series);

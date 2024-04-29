@@ -204,7 +204,8 @@ public class VisualizationManager {
 
             String grouper1 = parts[0];
             String grouper2 = parts[1];
-            int measure = Integer.parseInt(parts[2]);
+            
+            Double measure = Double.parseDouble(parts[2]);
           
           
             data.add(new DataPoint(date, grouper1, grouper2, measure));
@@ -257,7 +258,7 @@ public class VisualizationManager {
 
             String grouper1 = parts[0];
             String grouper2 = parts[1];
-            int measure = Integer.parseInt(parts[2]);
+            Double measure = Double.parseDouble(parts[2]);
 
             data.add(new DataPoint(date, grouper1, grouper2, measure));
         }
@@ -320,7 +321,7 @@ public class VisualizationManager {
     	
     }
 
-	private int returnMeasureForRecord(List<DataPoint> points, String grouper1, String grouper2)
+	private double returnMeasureForRecord(List<DataPoint> points, String grouper1, String grouper2)
 	{
 		for(DataPoint point: points)
 		{
