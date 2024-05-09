@@ -45,12 +45,16 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -100,13 +104,19 @@ public class ChartQueryEditorController extends AbstractController
     private VBox textFieldContainer;
 
     
-
+    private Stage stage;
+    
+    private AbstractApplication app;
+    
+    private Scene scene;
 
     
 
 	public ChartQueryEditorController(AbstractApplication anApp, AbstractController aCallerController, Scene aScene, Stage aStage) {
 		super(anApp, aCallerController, aScene, aStage);
-	
+		this.stage = aStage;
+		this.app = anApp;
+		this.scene = aScene;
 
 	}
 	
@@ -312,6 +322,7 @@ public class ChartQueryEditorController extends AbstractController
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
             int counterSiblings = 0;
+            List<ChartModel> chartModels = null;
             while ((str = br.readLine()) != null) {
             	
                 if (str.equals("Type: Base")) {
@@ -320,6 +331,9 @@ public class ChartQueryEditorController extends AbstractController
                     LineChart<String, Number> lineChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Base");
                     lineChart.getData().add(readDataFromFile(br));
                     displayChart(lineChart, "Line Chart\n Type: Base");
+                    
+                    
+    				
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
@@ -347,11 +361,33 @@ public class ChartQueryEditorController extends AbstractController
 //                    
                     }
                 }
+                if(str.equals("Models produced for the charts:")) {
+                	chartModels = new ArrayList<>();
+                	skipLines(br,2);
+                	while((str = br.readLine()) != null) {
+                		String [] modelDescriptionMatrix = str.split("\t");
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2]);
+                			chartModels.add(chartModel);
+                		}else if(modelDescriptionMatrix.length>3) {
+                			StringBuilder sb = new StringBuilder();
+                		    for (int i = 2; i < modelDescriptionMatrix.length; i++) {
+                		        sb.append(modelDescriptionMatrix[i]);
+                		        if (i < modelDescriptionMatrix.length - 1) {
+                		            sb.append("\n");
+                		        }
+                		    }
+                		    String parameters = sb.toString();
+                		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters);
+                		    chartModels.add(chartModel);
+                		}
+                	}
+                	displayModels("Models For Chart And Auxiliary Queries",chartModels);
+                }
             }
+            
+            
         }
-        
-		
-        
 
     }
     
@@ -360,6 +396,7 @@ public class ChartQueryEditorController extends AbstractController
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
             int counterSiblings = 0;
+            List<ChartModel> chartModels = null;
             while ((str = br.readLine()) != null) {
             	
             	BarChart<String, Number> barChart = null;
@@ -396,10 +433,34 @@ public class ChartQueryEditorController extends AbstractController
                         
                     displayChart(barChart, "Bar Chart \n Type: " + type);
                 }
-
+                
+                if(str.equals("Models produced for the charts:")) {
+                	chartModels = new ArrayList<>();
+                	skipLines(br,2);
+                	while((str = br.readLine()) != null) {
+                		String [] modelDescriptionMatrix = str.split("\t");
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2]);
+                			chartModels.add(chartModel);
+                		}else if(modelDescriptionMatrix.length>3) {
+                			StringBuilder sb = new StringBuilder();
+                		    for (int i = 2; i < modelDescriptionMatrix.length; i++) {
+                		        sb.append(modelDescriptionMatrix[i]);
+                		        if (i < modelDescriptionMatrix.length - 1) {
+                		            sb.append("\n");
+                		        }
+                		    }
+                		    String parameters = sb.toString();
+                		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters);
+                		    chartModels.add(chartModel);
+                		}
+                	}
+                }
                 
                 
             }
+            
+            displayModels("Models For Chart And Auxiliary Queries",chartModels);
         }
     }
     
@@ -409,6 +470,7 @@ public class ChartQueryEditorController extends AbstractController
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
             int counterSiblings = 0;
+            List<ChartModel> chartModels = null;
             while ((str = br.readLine()) != null) {
             	
                 if (str.equals("Type: Base")) {
@@ -443,6 +505,29 @@ public class ChartQueryEditorController extends AbstractController
 	                     stage.show();
 //                    
                     }
+                }
+                if(str.equals("Models produced for the charts:")) {
+                	chartModels = new ArrayList<>();
+                	skipLines(br,2);
+                	while((str = br.readLine()) != null) {
+                		String [] modelDescriptionMatrix = str.split("\t");
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2]);
+                			chartModels.add(chartModel);
+                		}else if(modelDescriptionMatrix.length>3) {
+                			StringBuilder sb = new StringBuilder();
+                		    for (int i = 2; i < modelDescriptionMatrix.length; i++) {
+                		        sb.append(modelDescriptionMatrix[i]);
+                		        if (i < modelDescriptionMatrix.length - 1) {
+                		            sb.append("\n");
+                		        }
+                		    }
+                		    String parameters = sb.toString();
+                		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters);
+                		    chartModels.add(chartModel);
+                		}
+                	}
+                	displayModels("Models For Chart And Auxiliary Queries",chartModels);
                 }
             }
         }
@@ -510,10 +595,43 @@ public class ChartQueryEditorController extends AbstractController
     	
     }
     
-    private void displayChart(XYChart<String, Number> scatterChart, String title) {
+    private void displayModels(String title, List<ChartModel> lista) {
+    	Stage modelsStage = new Stage();
+        modelsStage.setTitle(title);
+
+        // Create table view
+        TableView<ChartModel> tableView = new TableView<>();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
+        // Define columns
+        TableColumn<ChartModel, String> column1 = new TableColumn<>("Model");
+        column1.setCellValueFactory(new PropertyValueFactory<>("model"));
+        column1.setPrefWidth(12);
+
+        TableColumn<ChartModel, String> column2 = new TableColumn<>("Type");
+        column2.setCellValueFactory(new PropertyValueFactory<>("typeQuery"));
+        column2.setPrefWidth(10);
+
+        TableColumn<ChartModel, String> column3 = new TableColumn<>("Result");
+        column3.setCellValueFactory(new PropertyValueFactory<>("result"));
+        
+        tableView.getColumns().addAll(column1, column2,column3);
+        
+        List<ChartModel> chartModelsProduced = lista;
+        
+        for (int i = 0; i < lista.size(); i++) {
+            tableView.getItems().add(lista.get(i));
+        }
+
+        // Set scene
+        modelsStage.setScene(new Scene(tableView, 300, 600));
+        modelsStage.show();
+    }
+    
+    private void displayChart(XYChart<String, Number> typeChart, String title) {
         Stage chartStage = new Stage();
         chartStage.setTitle(title);
-        chartStage.setScene(new Scene(scatterChart, 800, 600));
+        chartStage.setScene(new Scene(typeChart, 800, 600));
         chartStage.show();
     }
     
@@ -620,9 +738,9 @@ public class ChartQueryEditorController extends AbstractController
         	
         	if(chartType.equals("Line"))
         	{
-        		record = new LineChart.Data<>(data.get(i)[0], Integer.parseInt(data.get(i)[1]));
+        		record = new LineChart.Data<>(data.get(i)[0], Double.parseDouble(data.get(i)[1]));
         	}else {
-        		record = new ScatterChart.Data<>(data.get(i)[0], Integer.parseInt(data.get(i)[1]));
+        		record = new ScatterChart.Data<>(data.get(i)[0], Double.parseDouble(data.get(i)[1]));
         	}
         	
            
@@ -733,6 +851,52 @@ public class ChartQueryEditorController extends AbstractController
 		return this.group;
 	}
     
+	/*--------------------------------*/
+	public static class ChartModel {
+		
+		
+		private String model;
+		
+		private String typeQuery;
+		
+		private String result;
+		
+		
+		
+		public ChartModel(String aModel, String aTypeQuery,String  aResult) {
+			this.model = aModel;
+			this.typeQuery = aTypeQuery;
+			this.result = aResult;
+		}
+		
+		
+		public String getModel() {
+	        return model;
+	    }
+
+	    public void setModel(String model) {
+	        this.model = model;
+	    }
+
+	    public String getTypeQuery() {
+	        return typeQuery;
+	    }
+
+	    public void setTypeQuery(String typeQuery) {
+	        this.typeQuery = typeQuery;
+	    }
+
+	    public String getResult() {
+	        return result;
+	    }
+
+	    public void setResult(String result) {
+	        this.result = result;
+	    }
+
+		
+
+	}
 
 
 }

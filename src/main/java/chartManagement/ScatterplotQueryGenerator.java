@@ -8,6 +8,7 @@ import model.abstracts.AbstractModel;
 public class ScatterplotQueryGenerator implements IChartQueryNModelGenerator{
 
 	
+	private String type = "Scatterplot";
 
 	@Override
 	public ResultFileMetadata executeQueries() {
@@ -43,6 +44,12 @@ public class ScatterplotQueryGenerator implements IChartQueryNModelGenerator{
 	public AbstractModel generateLinearRegressionModel()
 	{
 		return null;
+	}
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 
 }

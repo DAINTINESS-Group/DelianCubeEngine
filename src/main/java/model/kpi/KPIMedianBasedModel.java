@@ -175,4 +175,10 @@ public class KPIMedianBasedModel extends AbstractModel {
 	private KPIMedianBasedModelComponent lowComponent = null;
 	private KPIMedianBasedModelComponent okComponent = null;
 	private KPIMedianBasedModelComponent highComponent = null;
+	
+	@Override
+	public void setFileName(String filename, String fileLocation) {
+		// TODO Auto-generated method stub
+		
+	}
 }//end class

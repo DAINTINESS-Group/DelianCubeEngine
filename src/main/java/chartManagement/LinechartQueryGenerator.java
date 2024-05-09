@@ -7,7 +7,7 @@ import model.abstracts.AbstractModel;
 
 public class LinechartQueryGenerator implements IChartQueryNModelGenerator{
 
-	
+	private String type = "LineChart";
 
 	@Override
 	public ResultFileMetadata executeQueries() {
@@ -33,6 +33,12 @@ public class LinechartQueryGenerator implements IChartQueryNModelGenerator{
 		String typeOfVisualization = "default";
 		String producedLineOfVisualization = "Visualization : " + typeOfVisualization + "\n";
 		return producedLineOfVisualization;
+	}
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 
 }

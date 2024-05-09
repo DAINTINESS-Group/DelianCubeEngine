@@ -16,6 +16,6 @@ public interface IChartQueryNModelGenerator {
 	
 	float assessModelSignificance();
 
-	
+	String getType();
 
 }

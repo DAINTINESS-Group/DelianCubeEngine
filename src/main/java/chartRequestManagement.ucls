@@ -5,7 +5,7 @@
   <class id="1" language="java" name="chartRequestManagement.ChartRequestBuilderImpl" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartRequestManagement/ChartRequestBuilderImpl.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="685" y="490"/>    
+    <position height="-1" width="-1" x="600" y="278"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -15,7 +15,7 @@
   <interface id="2" language="java" name="chartRequestManagement.IChartRequestBuilder" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartRequestManagement/IChartRequestBuilder.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1057" y="616"/>    
+    <position height="-1" width="-1" x="848" y="370"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -25,7 +25,7 @@
   <class id="3" language="java" name="chartRequestManagement.ChartRequestFactory" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartRequestManagement/ChartRequestFactory.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1004" y="243"/>    
+    <position height="-1" width="-1" x="723" y="20"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -34,7 +34,7 @@
   </class>  
   <class id="4" language="java" name="chartRequestManagement.ChartRequest" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartRequestManagement/ChartRequest.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="597" y="700"/>    
+    <position height="-1" width="-1" x="662" y="614"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -52,36 +52,40 @@
     </display>  
   </class>  
   <dependency id="6">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="7">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="1"/>  
   </dependency>  
-  <dependency id="8">    
-    <end type="SOURCE" refId="2"/>    
+  <dependency id="7">    
+    <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="8">    
+    <bendpoint x="716" y="157"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
   </dependency>  
   <dependency id="9">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
-  <dependency id="10">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <realization id="11">    
+  <realization id="10">    
+    <bendpoint x="701" y="370"/>    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
   </dependency>  
-  <dependency id="13">    
+  <dependency id="12">    
+    <bendpoint x="402" y="540"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="13">    
+    <bendpoint x="952" y="175"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

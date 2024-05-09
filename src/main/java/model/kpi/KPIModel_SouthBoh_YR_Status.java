@@ -146,4 +146,10 @@ public class KPIModel_SouthBoh_YR_Status extends AbstractModel {
 	private KPI_SouthBohYR_ModelComponent lowComponent = null;
 	private KPI_SouthBohYR_ModelComponent okComponent = null;
 	private KPI_SouthBohYR_ModelComponent highComponent = null;
+	
+	@Override
+	public void setFileName(String filename, String fileLocation) {
+		// TODO Auto-generated method stub
+		
+	}
 }//end class

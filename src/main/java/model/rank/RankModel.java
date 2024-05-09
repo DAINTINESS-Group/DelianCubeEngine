@@ -150,6 +150,12 @@ public class RankModel extends AbstractModel {
 	private RankModelComponent rankComponent;
 	private RankModelComponent maxComponent;
 	private RankModelComponent minComponent;
+	
+	@Override
+	public void setFileName(String filename, String fileLocation) {
+		// TODO Auto-generated method stub
+		
+	}
 }//end class
 
 

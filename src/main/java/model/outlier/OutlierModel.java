@@ -186,5 +186,10 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 	private OutlierModelComponent zScoreOutlierComponent;
 	private OutlierModelComponent zScoreNonOutlierComponent;
 	public static final Double ABS_ZSCORE_OUTLIER_THRESHOLD = 2.2;
+	@Override
+	public void setFileName(String filename, String fileLocation) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }//end class

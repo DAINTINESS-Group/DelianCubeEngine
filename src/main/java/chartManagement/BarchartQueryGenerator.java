@@ -8,7 +8,7 @@ import model.abstracts.AbstractModel;
 public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 
 	
-	
+	private String type = "Barchart";
 	
 	@Override
 	public ResultFileMetadata executeQueries() {
@@ -35,6 +35,12 @@ public class BarchartQueryGenerator implements IChartQueryNModelGenerator{
 		String typeOfVisualization = sortedResultsWithTypeOfVisualization[1];
 		String producedLineOfVisualization = "Visualization : " + typeOfVisualization + "\n";
 		return producedLineOfVisualization;
+	}
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return type;
 	}
 	
 

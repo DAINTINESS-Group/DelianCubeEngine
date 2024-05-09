@@ -189,5 +189,11 @@ public class KmeansApache extends AbstractModel {
 	private static int NUM_CLUSTERS = 3;
 	private static int NUM_ITERATIONS = 10000;
 	
+	@Override
+	public void setFileName(String filename, String fileLocation) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }//end class
