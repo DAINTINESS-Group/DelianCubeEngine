@@ -6,32 +6,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.abstracts.AbstractModel;
 
-public class TrendModel extends AbstractModel implements IChartModel{
+public class TrendModel extends ChartModel{
 
-	private String fileName;
-	private String fileLocation;
+
 	private String result [][];
-	
-	private String reportedResult = "";
 	
 	@Override
 	public int compute() {
 		// TODO Auto-generated method stub
-		result = readResultsFromFileAndSaveTo2DMatrix(this.fileLocation, this.fileName);
+		result = readResultsFromFileAndSaveTo2DMatrix();
 		if(result!=null) {
 	    	
-//	    	System.out.println("From Dominance read:\t");
-//	    	printAs2DStringArray();
-	    	//TODO make a function that will split the array into smaller arrays, one to one query
+
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultTrend = findTrendInArray(query);
 	    		System.out.println(resultTrend);
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultTrend + "\n";
 	    	}
-	    	//TODO if grouper 2 column second has different values then look for dominance ...otherwise no
 	    	
 	    }
 		return 0;
@@ -122,21 +115,10 @@ public class TrendModel extends AbstractModel implements IChartModel{
 	@Override
 	public String getInfoContent() {
 		// TODO Auto-generated method stub
-		return "A Trend model created by Aggeliki Dougia";
+		return "Trend model (Uptrend/Downtrend)";
 	}
 
-	@Override
-	public void setFolderAndFilename(String fileLocation, String filename) {
-		this.fileLocation = fileLocation;
-		this.fileName = filename;
-		
-	}
 
-	@Override
-	public String printAs2DStringArrayForChartReportModel() {
-		// TODO Auto-generated method stub
-		return this.reportedResult;
-	}
 	
 	public Boolean findIfGrouper2ColumnContainsOnlyOneSeries(String[][] array, int columnIndex) {
         String value = "";
@@ -165,7 +147,7 @@ public class TrendModel extends AbstractModel implements IChartModel{
         		index+=1;
         		continue;
         	}
-            String grouper2 = row[1]; // Assuming Grouper 2 is at index 1
+            String grouper2 = row[1]; 
             Double measure = Double.parseDouble(row[2]); // Assuming Measure is at index 2
 
             // If the key doesn't exist, create a new list and put it into the map
@@ -198,11 +180,6 @@ public class TrendModel extends AbstractModel implements IChartModel{
         return true; // All values are decreasing
     }
 
-	@Override
-	public void setFileName(String filename, String fileLocation) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	
 

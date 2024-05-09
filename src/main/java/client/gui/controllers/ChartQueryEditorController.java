@@ -29,6 +29,7 @@ import client.gui.application.AbstractApplication;
 import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.ExitController;
 import client.gui.utils.LauncherForViewControllerPairs;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
@@ -629,6 +630,7 @@ public class ChartQueryEditorController extends AbstractController
     }
     
     private void displayChart(XYChart<String, Number> typeChart, String title) {
+  
         Stage chartStage = new Stage();
         chartStage.setTitle(title);
         chartStage.setScene(new Scene(typeChart, 800, 600));
@@ -746,8 +748,9 @@ public class ChartQueryEditorController extends AbstractController
            
            series.getData().add(record);
         }
+        
         chart.getData().add(series);
-        chart.setPrefSize(300, 300);
+        chart.setPrefSize(350, 350);
         chart.setTitle(grouper2);
         
         return chart;

@@ -2,16 +2,10 @@ package chartManagement.models;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.fitting.SimpleCurveFitter;
-import org.apache.commons.math3.fitting.WeightedObservedPoints;
-import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import model.abstracts.AbstractModel;
 
-public class RegressionModel extends AbstractModel implements IChartModel{
+public class RegressionModel extends ChartModel{
 	
 	enum RegressionType{
 		LINEAR,
@@ -19,29 +13,24 @@ public class RegressionModel extends AbstractModel implements IChartModel{
 		NON_LINEAR
 	}
 	
-	private String fileName;
-	private String fileLocation;
+
 	private String result [][];
 	
-	private String reportedResult = "";
-	
+
 	
 
 	@Override
 	public int compute() {
-		result = readResultsFromFileAndSaveTo2DMatrix(this.fileLocation, this.fileName);
+		result = readResultsFromFileAndSaveTo2DMatrix();
 		if(result!=null) {
 	    	
-//	    	System.out.println("From Dominance read:\t");
-//	    	printAs2DStringArray();
-	    	//TODO make a function that will split the array into smaller arrays, one to one query
+
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultRegression = findRegressionInArray(query);
 	    		System.out.println(resultRegression);
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultRegression + "\n";
 	    	}
-	    	//TODO if grouper 2 column second has different values then look for dominance ...otherwise no
 	    	
 	    }
 		return 0;
@@ -144,11 +133,7 @@ public class RegressionModel extends AbstractModel implements IChartModel{
 		
 	}
 
-	@Override
-	public String printAs2DStringArrayForChartReportModel() {
-		// TODO Auto-generated method stub
-		return this.reportedResult;
-	}
+
 	
 	public Boolean findIfGrouper2ColumnContainsOnlyOneSeries(String[][] array, int columnIndex) {
         String value = "";
@@ -167,10 +152,5 @@ public class RegressionModel extends AbstractModel implements IChartModel{
         return hasOnlyOneSeries;
     }
 
-	@Override
-	public void setFileName(String filename, String fileLocation) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

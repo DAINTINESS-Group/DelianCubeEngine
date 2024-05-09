@@ -1,54 +1,32 @@
 package chartManagement.models;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
-import model.abstracts.AbstractModel;
-import result.Result;
 
-public class DominanceModel extends AbstractModel implements IChartModel{
+public class DominanceModel extends ChartModel{
 	
-	private String fileName;
-	private String fileLocation;
+
 	private String result [][];
 	
-	private String reportedResult = "";
-	
-	public DominanceModel() {
-		super();
-	}
 
-	public DominanceModel(Result aResult) {
-		super(aResult);
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public int compute() {
 	    // TODO Auto-generated method stub
 	    
-	    result = readResultsFromFileAndSaveTo2DMatrix(this.fileLocation, this.fileName);
+	    result = readResultsFromFileAndSaveTo2DMatrix();
 	    if(result!=null) {
-	    	
-//	    	System.out.println("From Dominance read:\t");
-//	    	printAs2DStringArray();
-	    	//TODO make a function that will split the array into smaller arrays, one to one query
+
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultDominance = findDominanceInArray(query);
 	    		System.out.println(resultDominance);
-	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultDominance + "\n";
+	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t"   + resultDominance + "\n";
 	    	}
 	    	//TODO if grouper 2 column second has different values then look for dominance ...otherwise no
 	    	
@@ -160,10 +138,7 @@ public class DominanceModel extends AbstractModel implements IChartModel{
 		return "A dominance model created by Aggeliki Dougia";
 	}
 	
-	public void setFileName(String filename, String fileLocation) {
-		 this.fileName = filename;
-		 this.fileLocation = fileLocation;
-	}
+
 	
 	public List<String[][]> extractArrayListWithSmallerArrays(String [][] bigArray){
 		List<String[][]> smallerArrays = new ArrayList<>();
@@ -191,18 +166,7 @@ public class DominanceModel extends AbstractModel implements IChartModel{
 
 	}
 
-	@Override
-	public String printAs2DStringArrayForChartReportModel() {
-		// TODO Auto-generated method stub
-		return this.reportedResult;
-	}
 
-	@Override
-	public void setFolderAndFilename(String fileLocation, String filename) {
-		this.fileLocation = fileLocation;
-		this.fileName = filename;
-		
-	}
 
 
 	

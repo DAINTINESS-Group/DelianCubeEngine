@@ -7,28 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import model.abstracts.AbstractModel;
 
-public class ContributorModel extends AbstractModel implements IChartModel{
+public class ContributorModel extends ChartModel{
 
-	private String fileName;
-	private String fileLocation;
+
 	private String result [][];
 	
-	private String reportedResult = "";
-	
-	@Override
-	public String printAs2DStringArrayForChartReportModel() {
-		// TODO Auto-generated method stub
-		return this.reportedResult;
-	}
+
 
 	@Override
 	public int compute() { //TODO
-	    result = readResultsFromFileAndSaveTo2DMatrix(this.fileLocation, this.fileName);
+	    result = readResultsFromFileAndSaveTo2DMatrix();
 	    if(result!=null) {
 	    	
-//	    
+	    
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultContribution = findContributionInArray(query);
@@ -101,12 +93,7 @@ public class ContributorModel extends AbstractModel implements IChartModel{
 		return result;
 	}
 
-	@Override
-	public void setFolderAndFilename(String fileLocation, String filename) {
-		this.fileLocation = fileLocation;
-		this.fileName = filename;
-		
-	}
+
 
 	@Override
 	public String getModelName() {
@@ -127,6 +114,7 @@ public class ContributorModel extends AbstractModel implements IChartModel{
 		return result;
 	}
 
+	
 	@Override
 	public String getInfoContent() {
 		// TODO Auto-generated method stub
@@ -150,10 +138,6 @@ public class ContributorModel extends AbstractModel implements IChartModel{
         return hasOnlyOneSeries;
     }
 
-	@Override
-	public void setFileName(String filename, String fileLocation) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }

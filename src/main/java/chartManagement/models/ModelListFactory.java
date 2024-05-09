@@ -8,30 +8,32 @@ import model.abstracts.AbstractModel;
 
 public class ModelListFactory {
 	
-	public List<IChartModel> createModelsForChartType(IChartQueryNModelGenerator chartModel) {
-		List<IChartModel> models = new ArrayList<>();
+	
+	
+	public List<ChartModel> createModelsForChartType(IChartQueryNModelGenerator chartModel) {
+		List<ChartModel> models = new ArrayList<>();
 		
-		if(chartModel.getType().equals("Barchart")) {
-			IChartModel dominanceFinder =  new DominanceModel();
+		switch(chartModel.getType()) {
+		
+			case("Barchart"):
 			
-			IChartModel contributor = new ContributorModel();
+				models.add(new DominanceModel());
+				models.add(new ContributorModel());
+				break;
+				
+			case("LineChart"): 
+			case("Scatterplot"):
 			
+				models.add( new TrendModel());
+				models.add(new ModalityModel());
+				models.add(new RegressionModel());
+				break;
+				
+			default:
+				return null;
 			
-			models.add(dominanceFinder);
-
-			models.add(contributor);
-
-		}else if(chartModel.getType().equals("LineChart") || chartModel.getType().equals("Scatterplot")){
-			IChartModel TrendFinder =  new TrendModel();
-			IChartModel regressionModel = new RegressionModel();
-			IChartModel modalityFinder = new ModalityModel();
-			
-			models.add(TrendFinder);
-			models.add(modalityFinder);
-			models.add(regressionModel);
-		}else {
-			return null;
 		}
+		
 		return models;
 		
 	}

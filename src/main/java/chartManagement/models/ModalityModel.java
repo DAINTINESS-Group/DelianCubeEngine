@@ -7,24 +7,16 @@ import java.util.Map;
 
 import model.abstracts.AbstractModel;
 
-public class ModalityModel extends AbstractModel implements IChartModel{
+public class ModalityModel extends ChartModel{
 
-	private String fileName;
-	private String fileLocation;
+
 	private String result [][];
 	
-	private String reportedResult = "";
-	
-	@Override
-	public String printAs2DStringArrayForChartReportModel() {
-		// TODO Auto-generated method stub
-		return this.reportedResult;
-	}
 
 	@Override
 	public int compute() {
 		// TODO Auto-generated method stub
-		result = readResultsFromFileAndSaveTo2DMatrix(this.fileLocation, this.fileName);
+		result = readResultsFromFileAndSaveTo2DMatrix();
 		if(result!=null) {
 	    	
 //	    	System.out.println("From Dominance read:\t");
@@ -120,12 +112,6 @@ public class ModalityModel extends AbstractModel implements IChartModel{
 		return query[2][1] + " has no clear Modality.";
 	}
 
-	@Override
-	public void setFileName(String filename, String fileLocation) {
-		// TODO Auto-generated method stub
-		
-		
-	}
 
 	@Override
 	public String getModelName() {
@@ -178,7 +164,7 @@ public class ModalityModel extends AbstractModel implements IChartModel{
         		index+=1;
         		continue;
         	}
-            String grouper2 = row[1]; // Assuming Grouper 2 is at index 1
+            String grouper2 = row[1]; 
             Double measure = Double.parseDouble(row[2]); // Assuming Measure is at index 2
 
             // If the key doesn't exist, create a new list and put it into the map
@@ -191,10 +177,5 @@ public class ModalityModel extends AbstractModel implements IChartModel{
         return dataMap;
 	}
 
-	@Override
-	public void setFolderAndFilename(String fileLocation, String filename) {
-		this.fileLocation = fileLocation;
-		this.fileName = filename;
-		
-	}
+
 }

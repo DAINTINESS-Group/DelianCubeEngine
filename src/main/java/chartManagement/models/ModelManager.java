@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import chartManagement.IChartQueryNModelGenerator;
-import model.abstracts.AbstractModel;
+
 
 public class ModelManager {
 	
@@ -34,7 +34,7 @@ public class ModelManager {
 	
 	
 	
-	public List<IChartModel> returnModelList()
+	public List<ChartModel> returnModelList()
 	{
 		return modelListFactory.createModelsForChartType(chartGenerator);
 	}
@@ -42,15 +42,15 @@ public class ModelManager {
 
 	public void reportModelsForChartType() throws IOException {
 		// TODO Auto-generated method stub
-		List<IChartModel> models = returnModelList();
+		List<ChartModel> models = returnModelList();
 		FileWriter fileWriter = null;
 		File report = new File(localFolder +  "/" + localFilename);
 		try {
 			fileWriter = new FileWriter(report, true);
 			System.out.println("i will write to: " + localFolder + "/" + localFilename);
 			fileWriter.write("Models produced for the charts:\n");
-			fileWriter.write("Model" + "\t" + "Type\t" + "Result\t" +"\n");
-			for(IChartModel model : models)
+			fileWriter.write("Model" + "\t" + "Type\t" + "Details\t" + "Result\t" +"\n");
+			for(ChartModel model : models)
 			{
 //				System.out.println("i will write to: " + localFolder + "/" + localFilename + " for model : " + model.getModelName() );
 				model.setFolderAndFilename(localFolder, localFilename);
