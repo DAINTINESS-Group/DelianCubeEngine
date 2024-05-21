@@ -2,17 +2,16 @@ package chartManagement;
 
 import java.util.List;
 
-import mainengine.ResultFileMetadata;
-import model.abstracts.AbstractModel;
+import chartManagement.models.ChartModel;
+
 
 public interface IChartQueryNModelGenerator {
 	
 	
 	String generateQueries(String [] sortedResultsWithTypeOfVisualization);
 	
-	ResultFileMetadata executeQueries();
 	
-	List<AbstractModel> generateModels();
+	List<ChartModel> generateModels();
 	
 	float assessModelSignificance();
 

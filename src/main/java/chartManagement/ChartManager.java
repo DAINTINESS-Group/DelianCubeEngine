@@ -1,13 +1,8 @@
 package chartManagement;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+
 
 import analyze.AnalyzeOperator;
 import analyze.AnalyzeQuery;
@@ -20,7 +15,6 @@ public class ChartManager {
 	private CubeManager cubeManager;
 	private ChartQueryGeneratorFacade chartQueryGeneratorFacade;
 	private AnalyzeOperator operator;
-	private ResultFileMetadata resultQueries;
 	ArrayList<AnalyzeQuery> producedQueries;
 	ArrayList<AnalyzeQuery> BaseAndSiblingQueries;
 	private VisualizationManager visualizationManager;
@@ -54,7 +48,7 @@ public class ChartManager {
 	
 	public void generateQueries()
 	{
-		resultQueries = operator.execute();
+		operator.execute();
 		producedQueries = operator.getAnalyzeQueries();
 		
 		
@@ -79,7 +73,7 @@ public class ChartManager {
 		modelManager.setQueryNModelGenerator(chartQueryNModelGenerator);
 	}
 
-	public  ResultFileMetadata executeQueries() throws IOException{
+	public  ResultFileMetadata executeQueries() throws Exception{
 		removeDrillDownQueries();
 		
 

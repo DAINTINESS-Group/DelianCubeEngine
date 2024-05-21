@@ -15,27 +15,25 @@ public class ModalityModel extends ChartModel{
 
 	@Override
 	public int compute() {
-		// TODO Auto-generated method stub
+
 		result = readResultsFromFileAndSaveTo2DMatrix();
 		if(result!=null) {
 	    	
-//	    	System.out.println("From Dominance read:\t");
-//	    	printAs2DStringArray();
-	    	//TODO make a function that will split the array into smaller arrays, one to one query
+
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultModality = findModalityInArray(query);
 	    		System.out.println(resultModality);
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultModality + "\n";
 	    	}
-	    	//TODO if grouper 2 column second has different values then look for dominance ...otherwise no
+	    	return 0;
 	    	
 	    }
-		return 0;
+		return -1;
 	}
 
-	private String findModalityInArray(String[][] query) {
-		// TODO Auto-generated method stub
+	public String findModalityInArray(String[][] query) {
+
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query,1)) {
 			return findModalityForOneCategoryInSeries(query);
 		}
@@ -44,7 +42,7 @@ public class ModalityModel extends ChartModel{
 	}
 
 	private String findModalityForMultipleCategoriesInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+	
 		String result = "";
 		Map<String, List<Double>> data = returnMapFromString2Darray(query);
 		
@@ -57,7 +55,7 @@ public class ModalityModel extends ChartModel{
 	}
 
 	private String findModality(List<Double> measurements) {
-		// TODO Auto-generated method stub
+
 		List<Double> differences = new ArrayList<>();
         for (int i = 0; i < measurements.size() - 1; i++) {
             differences.add(measurements.get(i+1)- measurements.get(i));
@@ -69,10 +67,10 @@ public class ModalityModel extends ChartModel{
                 signChanges++;
             }
         }
-        if(signChanges<=1) {
+        if(signChanges==1) {
         	return "has Unimodality.";
         }
-        else if(signChanges ==2) {
+        else if(signChanges ==3) {
         	return "has Bimodality.";
         }
 		
@@ -81,7 +79,7 @@ public class ModalityModel extends ChartModel{
 	}
 
 	private String findModalityForOneCategoryInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+
 		List<Double> values = new ArrayList<>();
 		
 		for(int i=2; i<query.length; i++) {
@@ -102,10 +100,10 @@ public class ModalityModel extends ChartModel{
             }
         }
         
-        if(signChanges<=1) {
+        if(signChanges==1) {
         	return query[2][1] + " has Unimodality.";
         }
-        else if(signChanges ==2) {
+        else if(signChanges ==3) {
         	return query[2][1] + " has Bimodality.";
         }
 		
@@ -115,13 +113,13 @@ public class ModalityModel extends ChartModel{
 
 	@Override
 	public String getModelName() {
-		// TODO Auto-generated method stub
+
 		return "modality";
 	}
 
 	@Override
 	public String[][] printAs2DStringArray() {
-		// TODO Auto-generated method stub
+
 		for (int i = 0; i < this.result.length; i++) {
 			
             for(int j=0; j<this.result[i].length; j++) {
@@ -134,7 +132,7 @@ public class ModalityModel extends ChartModel{
 
 	@Override
 	public String getInfoContent() {
-		// TODO Auto-generated method stub
+
 		return "Unimodality or Bimodality finder model ";
 	}
 	

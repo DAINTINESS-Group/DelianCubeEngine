@@ -900,7 +900,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	//Chart Query Methods
 	@Override
-	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws IOException { //TODO
+	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws Exception { //TODO
 		// TODO Auto-generated method stub
 		
 		initializeChartManager();

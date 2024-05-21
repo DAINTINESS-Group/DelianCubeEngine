@@ -14,7 +14,7 @@ public class TrendModel extends ChartModel{
 	
 	@Override
 	public int compute() {
-		// TODO Auto-generated method stub
+		
 		result = readResultsFromFileAndSaveTo2DMatrix();
 		if(result!=null) {
 	    	
@@ -25,13 +25,13 @@ public class TrendModel extends ChartModel{
 	    		System.out.println(resultTrend);
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultTrend + "\n";
 	    	}
-	    	
+	    	return 0;
 	    }
-		return 0;
+		return -1;
 	}
 
-	private String findTrendInArray(String[][] query) {
-		// TODO Auto-generated method stub
+	public String findTrendInArray(String[][] query) {
+		
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query,1)) {
 			return findTrendForOneCategoryInSeries(query);
 		}
@@ -40,7 +40,7 @@ public class TrendModel extends ChartModel{
 	}
 
 	private String findTrendForMultipleCategoriesInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+		
 		String result = "";
 		Map<String, List<Double>> data = returnMapFromString2Darray(query);
 		
@@ -63,7 +63,7 @@ public class TrendModel extends ChartModel{
 	}
 
 	private String findTrendForOneCategoryInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+		
 		List<String> values = new ArrayList<>();
 		
 		for(int i=2; i<query.length; i++) {
@@ -80,13 +80,13 @@ public class TrendModel extends ChartModel{
 		List<String> descendingOrderValues = new ArrayList<>(values);
 		Collections.sort(descendingOrderValues, Collections.reverseOrder());
 		if(originalIsInSpecifiedOrder(values, descendingOrderValues)) {
-			return query[2][1] + " has a  downTrend.";
+			return query[2][1] + " has a downtrend.";
 		}
-		return query[2][1] + " has no clear Trend.";
+		return query[2][1] + " has no clear trend.";
 	}
 
 	private boolean originalIsInSpecifiedOrder(List<String> values, List<String> orderedValues) {
-		// TODO Auto-generated method stub
+	
 		
 		return values.equals(orderedValues);
 	}
@@ -95,13 +95,12 @@ public class TrendModel extends ChartModel{
 
 	@Override
 	public String getModelName() {
-		// TODO Auto-generated method stub
+	
 		return "Trend";
 	}
 
 	@Override
 	public String[][] printAs2DStringArray() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < this.result.length; i++) {
 					
             for(int j=0; j<this.result[i].length; j++) {
@@ -114,7 +113,6 @@ public class TrendModel extends ChartModel{
 
 	@Override
 	public String getInfoContent() {
-		// TODO Auto-generated method stub
 		return "Trend model (Uptrend/Downtrend)";
 	}
 

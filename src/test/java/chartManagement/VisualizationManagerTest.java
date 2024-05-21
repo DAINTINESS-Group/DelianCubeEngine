@@ -70,22 +70,20 @@ public class VisualizationManagerTest {
 		
 		//Assert
         assertNotNull(report);
-        // You might add more specific assertions based on the expected content of the report
-        // For example, you can verify that the report contains certain expected strings and data
         assertTrue(report.contains("Type: Base"));
         assertTrue(report.contains("|Grouper 1|Grouper 2|Measure|"));
         
 	}
 	
     @Test
-    public void testDateFormatYYYY() {
+    public void testDateFormatYYYY() throws Exception {
         String dateString = "2024";
         VisualizationManager manager = new VisualizationManager();
         assertEquals("yyyy", manager.checkDateFormat(dateString));
     }
 
     @Test
-    public void testDateFormatYYYY_MM() {
+    public void testDateFormatYYYY_MM() throws Exception {
         String dateString = "2024-03";
         VisualizationManager manager = new VisualizationManager();
         assertEquals("yyyy-MM", manager.checkDateFormat(dateString));
@@ -145,7 +143,7 @@ public class VisualizationManagerTest {
     }
     
     @Test
-    public void testReadDataFromStringForSiblingQuery() throws ParseException
+    public void testReadDataFromStringForSiblingQuery() throws Exception
     {
     	//Arrange
     	VisualizationManager visualizationManager = new VisualizationManager();

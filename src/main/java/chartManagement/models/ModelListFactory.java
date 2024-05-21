@@ -10,10 +10,10 @@ public class ModelListFactory {
 	
 	
 	
-	public List<ChartModel> createModelsForChartType(IChartQueryNModelGenerator chartModel) {
+	public List<ChartModel> createModelsForChartType(IChartQueryNModelGenerator chartQueryNModelGenerator) {
 		List<ChartModel> models = new ArrayList<>();
 		
-		switch(chartModel.getType()) {
+		switch(chartQueryNModelGenerator.getType()) {
 		
 			case("Barchart"):
 			

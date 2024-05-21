@@ -15,14 +15,14 @@ public abstract class ChartModel {
 	protected String reportedResult = "";
 	
 	
-	abstract public String[][] printAs2DStringArray();
+	public abstract String[][] printAs2DStringArray();
 	
-	abstract int compute();
+	public abstract int compute();
 
 	
-	abstract String getModelName();
+	public abstract String getModelName();
 	
-	abstract public String getInfoContent();
+	public abstract String getInfoContent();
 	
 	
 	public String [][] readResultsFromFileAndSaveTo2DMatrix(){

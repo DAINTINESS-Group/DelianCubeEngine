@@ -31,13 +31,12 @@ public class RegressionModel extends ChartModel{
 	    		System.out.println(resultRegression);
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultRegression + "\n";
 	    	}
-	    	
+	    	return 0;
 	    }
-		return 0;
+		return -1;
 	}
 
-	private String findRegressionInArray(String[][] query) {
-		// TODO Auto-generated method stub
+	public String findRegressionInArray(String[][] query) {
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query,1)) {
 			return findRegressionForOneCategoryInSeries(query);
 		}
@@ -46,7 +45,7 @@ public class RegressionModel extends ChartModel{
 	}
 
 	private String findRegressionForMultipleCategoriesInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+
 		List<String> categories = new ArrayList<>();
 		for(int i=2; i<query.length; i++) {
 			if(!categories.contains(query[i][1])) {
@@ -77,17 +76,17 @@ public class RegressionModel extends ChartModel{
 		String regexYYYYdd = "\\d{4}";
 		for(int i=2; i<query.length; i++) {
 			
-			double x = -200;
+			double x=-1;
 			double y;
 			
-			if(query[i][0].matches(regexYYYY)) {
+			if (query[i][0].matches(regexYYYY)) {
 				String month = query[i][0].split("-")[1];
 				x = Double.parseDouble(month);
-			}else if(query[i][0].matches(regexYYYYdd)) {
+			} else if(query[i][0].matches(regexYYYYdd)) {
 				x = Double.parseDouble(query[i][0]);
 			}
 			y = Double.parseDouble(query[i][2]);
-			if(x!=-200) {
+			if(x!=-1) {
 				regression.addData(x, y);
 			}
 			
@@ -103,13 +102,12 @@ public class RegressionModel extends ChartModel{
 
 	@Override
 	public String getModelName() {
-		// TODO Auto-generated method stub
 		return "Regression";
 	}
 
 	@Override
 	public String[][] printAs2DStringArray() {
-		// TODO Auto-generated method stub
+
 		for (int i = 0; i < this.result.length; i++) {
 			
             for(int j=0; j<this.result[i].length; j++) {
@@ -122,16 +120,11 @@ public class RegressionModel extends ChartModel{
 
 	@Override
 	public String getInfoContent() {
-		// TODO Auto-generated method stub
+
 		return "coefficients for regression from Apache common";
 	}
 
-	@Override
-	public void setFolderAndFilename(String fileLocation, String filename) {
-		this.fileLocation = fileLocation;
-		this.fileName = filename;
-		
-	}
+
 
 
 	

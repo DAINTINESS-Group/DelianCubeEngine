@@ -156,7 +156,7 @@ public class ChartQueryEditorController extends AbstractController
 	}//end handleClose
 	
 	@FXML
-	public void runQuery() throws IOException
+	public void runQuery() throws Exception
 	{
 		String queryString = constructQuery();
 		System.out.println(queryString);
@@ -173,7 +173,7 @@ public class ChartQueryEditorController extends AbstractController
 
 	
 
-	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws IOException
+	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws Exception
 
 	{
 

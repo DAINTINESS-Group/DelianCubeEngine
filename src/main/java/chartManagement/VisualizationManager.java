@@ -33,7 +33,7 @@ public class VisualizationManager {
 		this.localFolder = "OutputFiles";
 	}
 	
-	public void reportChartQueryDetails(ArrayList<AnalyzeQuery> chartQueries, String chartType)
+	public void reportChartQueryDetails(ArrayList<AnalyzeQuery> chartQueries, String chartType) throws Exception
 	{
 		this.localFilename = this.filename + "-ChartQueries_Report.md";
 		
@@ -72,15 +72,14 @@ public class VisualizationManager {
 			chartReporter.write(resultQuery);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new Exception("Reporting the chart details in file has failed");
 		} finally {
 	        try {
 	            if (chartReporter != null) {
 	                chartReporter.close();
 	            }
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	        	throw new Exception("File was't closed normally for wriiting");
 	        }
 	    }
 		
@@ -141,11 +140,9 @@ public class VisualizationManager {
 		resultInFile += "Details: " + details;
 		resultInFile += "|Grouper 1|Grouper 2|Measure|\n";
 		
-		for(int i=2; i<result.length; i++)
-		{
+		for(int i=2; i<result.length; i++){
 			
-			for(int j=0; j<result[i].length-1; j++)
-			{
+			for(int j=0; j<result[i].length-1; j++){
 				
 				resultInFile += result[i][j] + "\t";
 			}
@@ -166,7 +163,7 @@ public class VisualizationManager {
 		return localFolder;
 	}
 	
-    public static String checkDateFormat(String dateString) {
+    public static String checkDateFormat(String dateString) throws Exception {
         String[] formatsToCheck = {"yyyy-MM","yyyy"};
 
         for (String format : formatsToCheck) {
@@ -179,10 +176,10 @@ public class VisualizationManager {
             }
         }
 
-        return null; // If none of the formats match
+        throw new Exception("Date format cannot be parsed."); // If none of the formats match
     }
     
-    public static List<DataPoint> readDataFromStringForBaseQuery(String dataString) {
+    public static List<DataPoint> readDataFromStringForBaseQuery(String dataString) throws ParseException {
         List<DataPoint> data = new ArrayList<>();
         
         String[] lines = dataString.split("\n");
@@ -199,7 +196,7 @@ public class VisualizationManager {
             try {
                 date = dateFormat.parse(parts[0]);
             } catch (ParseException e) {
-                e.printStackTrace();
+                throw new ParseException(date.toString(), dataIndex);
             }
 
             String grouper1 = parts[0];
@@ -227,7 +224,7 @@ public class VisualizationManager {
     	
     }
     
-    public static List<DataPoint> readDataFromStringForSiblingQuery(String dataString) {
+    public static List<DataPoint> readDataFromStringForSiblingQuery(String dataString) throws Exception {
         List<DataPoint> data = new ArrayList<>();
 
         String[] lines = dataString.split("\n");

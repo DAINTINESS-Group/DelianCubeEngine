@@ -40,30 +40,34 @@ public class ModelManager {
 	}
 
 
-	public void reportModelsForChartType() throws IOException {
-		// TODO Auto-generated method stub
+	public void reportModelsForChartType() throws Exception {
 		List<ChartModel> models = returnModelList();
 		FileWriter fileWriter = null;
 		File report = new File(localFolder +  "/" + localFilename);
 		try {
 			fileWriter = new FileWriter(report, true);
-			System.out.println("i will write to: " + localFolder + "/" + localFilename);
+			//System.out.println("i will write to: " + localFolder + "/" + localFilename);
 			fileWriter.write("Models produced for the charts:\n");
 			fileWriter.write("Model" + "\t" + "Type\t" + "Details\t" + "Result\t" +"\n");
 			for(ChartModel model : models)
 			{
-//				System.out.println("i will write to: " + localFolder + "/" + localFilename + " for model : " + model.getModelName() );
+
 				model.setFolderAndFilename(localFolder, localFilename);
-				model.compute();
-				fileWriter.write(model.printAs2DStringArrayForChartReportModel());
+				if(model.compute()==0) {
+					fileWriter.write(model.printAs2DStringArrayForChartReportModel());
+				} else {
+					
+					throw new Exception("Reading of query results for " + model.getModelName() + "has failed.");
+				}
+				
 				
 				
 			}
 			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new IOException();
 			
 		}finally {
 			fileWriter.close();
@@ -73,7 +77,6 @@ public class ModelManager {
 
 
 	public void setQueryNModelGenerator(IChartQueryNModelGenerator chartQueryNModelGenerator) {
-		// TODO Auto-generated method stub
 		this.chartGenerator = chartQueryNModelGenerator;
 		
 	}

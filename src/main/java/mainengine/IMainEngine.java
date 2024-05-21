@@ -303,8 +303,9 @@ public interface IMainEngine extends IServer {
      * @throws RemoteException
      * @throws FileNotFoundException
      * @throws IOException
+     * @throws Exception 
      */
-    ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException, IOException;
+    ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException, IOException, Exception;
 
 
 	

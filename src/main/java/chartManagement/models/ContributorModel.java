@@ -16,7 +16,7 @@ public class ContributorModel extends ChartModel{
 
 
 	@Override
-	public int compute() { //TODO
+	public int compute() {
 	    result = readResultsFromFileAndSaveTo2DMatrix();
 	    if(result!=null) {
 	    	
@@ -28,14 +28,14 @@ public class ContributorModel extends ChartModel{
 	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultContribution + "\n";
 	    	}
 	    	
-	    	
+	    	return 0;
 	    }
-	
-		return 0;
+	    return -1;
+		
 	}
 
-	private String findContributionInArray(String[][] query) {
-		// TODO Auto-generated method stub
+	public String findContributionInArray(String[][] query) {
+		
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query, 1)) {
 			return "The query result has only one Category (" + query[2][1] +  ") for Series (100% contribution).";
 		}
@@ -43,7 +43,7 @@ public class ContributorModel extends ChartModel{
 	}
 
 	private String findIfContributionExistsInSeries(String[][] query) {
-		// TODO Auto-generated method stub
+
 		Map<String, List<String []>> datesWithDominatorCategoriesValues = new HashMap<>();
 		for(int i=2; i<query.length; i++) {
 			String grouper1 = query[i][0];
@@ -97,13 +97,11 @@ public class ContributorModel extends ChartModel{
 
 	@Override
 	public String getModelName() {
-		// TODO Auto-generated method stub
 		return "Contributor";
 	}
 
 	@Override
 	public String[][] printAs2DStringArray() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < this.result.length; i++) {
 			
             for(int j=0; j<this.result[i].length; j++) {
@@ -117,7 +115,6 @@ public class ContributorModel extends ChartModel{
 	
 	@Override
 	public String getInfoContent() {
-		// TODO Auto-generated method stub
 		return "Model to print how much a category contributes to the sum";
 	}
 	
