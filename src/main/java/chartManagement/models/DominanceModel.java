@@ -43,7 +43,7 @@ public class DominanceModel extends ChartModel{
 		return findIfDominanceExistsInSeries(query);
 	}
 	
-	private String findIfDominanceExistsInSeries(String[][] query) {
+	private String findIfDominanceExistsInSeries(String[][] query) { //TODO na th valw mesa sthn findDominanceInArray
 
         Map<String, String> datesWithDominantCategory = new HashMap<>();
         Map<String, Double> maxMeasuresPerDate = new HashMap<>();

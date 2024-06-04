@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import cubemanager.physicalschema.Attribute;
 import cubemanager.physicalschema.DataSourceDescription;
@@ -103,6 +104,10 @@ public class Database extends DataSourceDescription{
 
 	@Override
 	public void registerCubeBase(HashMap<String, String> userInputList) {
+		for(Entry<String, String> entry : userInputList.entrySet()) {
+			System.out.println("key: " + entry.getKey() + " value: " + entry.getValue());
+		}
+		System.out.println();
 		DBName = userInputList.get("schemaName");
 		Username = userInputList.get("username");
 		Password = userInputList.get("password");

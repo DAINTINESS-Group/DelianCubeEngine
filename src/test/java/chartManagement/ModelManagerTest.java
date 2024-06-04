@@ -13,7 +13,7 @@ import chartManagement.models.DominanceModel;
 import chartManagement.models.ModalityModel;
 import chartManagement.models.ModelManager;
 import chartManagement.models.RegressionModel;
-import chartManagement.models.TrendModel;
+import chartManagement.models.AbsoluteTrendModel;
 
 public class ModelManagerTest {
 	
@@ -139,9 +139,9 @@ public class ModelManagerTest {
 		String [][] insertedArrayNoTrend =  {{"1998-01", "Greece","10"}, {"1998-02", "Greece","8"}, {"1998-03", "Greece","7"}, {"1998-04", "Greece","7.5"}, {"1998-05", "Greece", "5"}};
 		
 		//Act
-		String result = new TrendModel().findTrendInArray(insertedArrayForUptrend);
-		String result2 = new TrendModel().findTrendInArray(insertedArrayForDowntrend);
-		String result3 = new TrendModel().findTrendInArray(insertedArrayNoTrend);
+		String result = new AbsoluteTrendModel().findTrendInArray(insertedArrayForUptrend);
+		String result2 = new AbsoluteTrendModel().findTrendInArray(insertedArrayForDowntrend);
+		String result3 = new AbsoluteTrendModel().findTrendInArray(insertedArrayNoTrend);
 		
 		//Assert
 		assertEquals(result, "Greece has an uptrend.");

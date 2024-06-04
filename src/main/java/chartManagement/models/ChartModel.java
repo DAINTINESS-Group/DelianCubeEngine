@@ -17,7 +17,7 @@ public abstract class ChartModel {
 	
 	public abstract String[][] printAs2DStringArray();
 	
-	public abstract int compute();
+	public abstract int compute(); //Todo return double
 
 	
 	public abstract String getModelName();

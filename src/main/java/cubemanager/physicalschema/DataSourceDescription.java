@@ -40,20 +40,21 @@ public abstract class DataSourceDescription {
 			
 			
 			
-			
+			System.out.println("name of table: " + nameTbl);
 			Table retTbl = null;
 			for (int i = 0; i < this.Tbl.size(); i++) {
 				if (this.Tbl.get(i). getTableName().equals(nameTbl))
 					retTbl = this.Tbl.get(i);
 			}
 			if (retTbl == null) {
-				System.err.println("Sql Table no exist");
+				System.err.println("Sql Table no exist " + nameTbl);
 				System.exit(1);
 			}
 			return retTbl;
 		}
 		
 		public Attribute getFieldOfSqlTable(String table, String field) {
+			System.err.println("table passed: " + table);
 			return this.getConnectionTableInstance(table).getAttribute(field);
 		}
 		

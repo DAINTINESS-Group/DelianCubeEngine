@@ -64,9 +64,10 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		}
 		// do this to erase the spare comma at the end of the expression
 		gamma = gamma.substring(0,gamma.length()-1) + "\n";
-		
+		System.out.println("TEST B : " + dimensions);
 		// set-up sigma expressions
 		for(String s:sigmaExpressions) {
+			
 			sigma += dimensions.get(s) + "." + s + "=" + sigmaExpressionsToValues.get(s) + ",";
 		}
 		// do this to erase the spare comma at the end of the expression
@@ -80,7 +81,7 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		queryParams.put("Measure", measure);
 		queryParams.put("Gamma", gamma);
 		queryParams.put("Sigma", sigma);
-		
+		System.out.println("TEST TEST : " + queryParams.get("Sigma"));
 		try {
 			analyzeCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
 		} catch (RemoteException e) {

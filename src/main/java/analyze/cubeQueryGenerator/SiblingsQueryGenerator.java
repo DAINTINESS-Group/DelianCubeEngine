@@ -55,6 +55,7 @@ public class SiblingsQueryGenerator implements CubeQueryGenerator {
 		
 		// create the SQL Query, execute it and get the result
 		String SQLQuery = "SELECT DISTINCT " + parent + " FROM " + tableName + " WHERE " + whereClauseExpression + ";";
+		System.out.println(SQLQuery);
 		queryResult = cubeManager.getCubeBase().executeQueryToProduceResult(SQLQuery, queryResult);
 		String[][] result = queryResult.getResultArray();
 		if(result == null) {
