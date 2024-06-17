@@ -15,8 +15,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import analyze.AnalyzeQuery;
+import chartManagement.utils.ChartVisModel;
 import chartManagement.utils.DataPoint;
 
 public class VisualizationManager {
@@ -27,10 +29,13 @@ public class VisualizationManager {
 	private String localFilename;
 	private IChartQueryNModelGenerator chartQueryNModelGenerator;
 	
+	private List<ChartVisModel> chartVisModels;
+	
 	public VisualizationManager()
 	{
 		this.filename = "File";
 		this.localFolder = "OutputFiles";
+		this.chartVisModels = new ArrayList<>();
 	}
 	
 	public void reportChartQueryDetails(ArrayList<AnalyzeQuery> chartQueries, String chartType) throws Exception
@@ -43,10 +48,10 @@ public class VisualizationManager {
 		
 			chartReporter = new FileWriter(localFolder +  "/" + localFilename);
 			chartReporter.write("Details For Designing:\n");
-			chartReporter.write("Chart queries produced: " + chartQueries.size() + "\n\n");
+			List<AnalyzeQuery> chartQueriesWithResults = chartQueries.stream().filter(q ->q.getAnalyzeQueryResult()!=null && q.getAnalyzeQueryResult().getResultArray()!=null).collect(Collectors.toList());
+			chartReporter.write("Chart queries produced: " + chartQueriesWithResults.size() + "\n\n");
 			
-			for(AnalyzeQuery query: chartQueries)
-			{
+			for(AnalyzeQuery query: chartQueriesWithResults) {
 				List<DataPoint> records = null;
 				String producedQueryVisualization;
 				String typeHeader = null;
@@ -71,6 +76,8 @@ public class VisualizationManager {
 			}
 			chartReporter.write(resultQuery);
 			
+				
+			
 		} catch (IOException e) {
 			throw new Exception("Reporting the chart details in file has failed");
 		} finally {
@@ -86,7 +93,67 @@ public class VisualizationManager {
 
 		
 	}
+	public List<ChartVisModel> reportChartQueryDetailsForChartResponse(ArrayList<AnalyzeQuery> chartQueries, String chartType) throws Exception
+	{
+		
+		
+		
+		List<AnalyzeQuery> chartQueriesWithResults = chartQueries.stream()
+													.filter(q ->q.getAnalyzeQueryResult()!=null && 
+													q.getAnalyzeQueryResult().getResultArray()!=null)
+													.collect(Collectors.toList());
+		int counterSiblings =1;
+		for(AnalyzeQuery query: chartQueriesWithResults) {
+			
+			ChartVisModel visModel = new ChartVisModel();
+			List<DataPoint> records = null;
+			
+			
+			if (query.getType().toString().equals("Base")) {
+				records = readDataFromStringForBaseQuery(reportBaseQuery(query));
+				visModel.setChartType("Base");
+				
+			} else if(query.getType().toString().equals("Sibling")) {
+				records = readDataFromStringForSiblingQuery(reportSiblingQuery(query));
+				visModel.setChartType("Sibling" + counterSiblings);
+				counterSiblings +=1;
+			}
+			
+			Collections.sort(records, new Comparator<DataPoint>() {
+	            @Override
+	            public int compare(DataPoint dp1, DataPoint dp2) {
+	                return dp1.getGrouper1().compareTo(dp2.getGrouper1());
+	            }
+	        });
+			
+			visModel.setDataPoints(records);
+			List<String> series = records.stream().map(s -> s.getGrouper2()).distinct().collect(Collectors.toList());
+			visModel.setSeries(series);
+			int sizeSeries = series.size();
+			visModel.setChartVisType(decideType(sizeSeries));
+			
+			List<String> x_axisValues = records.stream().map(x-> x.getGrouper1()).distinct().collect(Collectors.toList());
+			visModel.setX_axisValues(x_axisValues);
+			visModel.setSqlExpression(getAnalyzeExpression(query));
+			
+			chartVisModels.add(visModel);
+		}
+		
+			
+		  
+		
+		return chartVisModels;
+		
+	}
 	
+	
+	
+	private String getAnalyzeExpression(AnalyzeQuery query) {
+		// TODO Auto-generated method stub
+		
+		return query.getAnalyzeCubeQuery().toString();
+	}
+
 	public void setQueryNModelGenerator(IChartQueryNModelGenerator chartQueryNModelGenerator)
 	{
 		this.chartQueryNModelGenerator = chartQueryNModelGenerator;
@@ -104,11 +171,15 @@ public class VisualizationManager {
 		resultInFile += "Type: Sibling\n";
 		resultInFile += "Details: " + details;
 		resultInFile += "|Grouper 1|Grouper 2|Measure|\n";
-		for(int i=2; i<result.length; i++)
-		{
-			for(int j=0; j<result[i].length-1; j++)
+		if (null!= result) {
+			
+			for(int i=2; i<result.length; i++)
 			{
-				resultInFile += result[i][j] + "\t";
+				for(int j=0; j<result[i].length-1; j++)
+				{
+					resultInFile += result[i][j] + "\t";
+				}
+				
 			}
 			resultInFile += "\n";
 		}
@@ -139,15 +210,17 @@ public class VisualizationManager {
 		resultInFile += "Type: Base\n";
 		resultInFile += "Details: " + details;
 		resultInFile += "|Grouper 1|Grouper 2|Measure|\n";
-		
-		for(int i=2; i<result.length; i++){
-			
-			for(int j=0; j<result[i].length-1; j++){
+		if (result!= null) {
+			for(int i=2; i<result.length; i++){
 				
-				resultInFile += result[i][j] + "\t";
+				for(int j=0; j<result[i].length-1; j++){
+					
+					resultInFile += result[i][j] + "\t";
+				}
+				
+				resultInFile += "\n";
 			}
 			
-			resultInFile += "\n";
 		}
 		resultInFile += "\n";
 		return resultInFile;
@@ -164,7 +237,7 @@ public class VisualizationManager {
 	}
 	
     public static String checkDateFormat(String dateString) throws Exception {
-        String[] formatsToCheck = {"yyyy-MM","yyyy"};
+        String[] formatsToCheck = {"yyyy-MM","yyyy","yyyy-MM-dd"};
 
         for (String format : formatsToCheck) {
             try {
@@ -179,20 +252,28 @@ public class VisualizationManager {
         throw new Exception("Date format cannot be parsed."); // If none of the formats match
     }
     
-    public static List<DataPoint> readDataFromStringForBaseQuery(String dataString) throws ParseException {
+    public static List<DataPoint> readDataFromStringForBaseQuery(String dataString) throws Exception {
         List<DataPoint> data = new ArrayList<>();
         
         String[] lines = dataString.split("\n");
         
-        // Skip the header
+        
         
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat dateFormat = null;
 
         for (int dataIndex = 3; dataIndex< lines.length; dataIndex++) {
+        	
             String[] parts = lines[dataIndex].split("\t");
             Date date = null;
-
+            String dateFormatOfBasic = checkDateFormat(parts[0]);
+            if(dateFormatOfBasic.equals("yyyy")) {
+        		dateFormat = new SimpleDateFormat("yyyy");
+        	} else if (dateFormatOfBasic.equals("yyyy-MM")) {
+        		dateFormat = new SimpleDateFormat("yyyy-MM");
+        	} else {
+        		dateFormat = new  SimpleDateFormat("yyyy-MM-dd");
+        	}
             try {
                 date = dateFormat.parse(parts[0]);
             } catch (ParseException e) {
@@ -233,34 +314,75 @@ public class VisualizationManager {
         
 
         SimpleDateFormat dateFormat = null;
-
+        System.out.println("AGGELIKI TEST : " + lines.length);
         for (int dataIndex = 6; dataIndex< lines.length; dataIndex++) {
+        	
             String[] parts = lines[dataIndex].split("\t");
-            Date date = null;
-            if(dataIndex==6) {
-            	String dateFormatOfSibling = checkDateFormat(parts[0]);
+            if(parts.length > 3) {
+            	
+            	List<DataPoint> multipleRecordsInOneLine = readDataListFromOneRow(parts);
+            	data.addAll(multipleRecordsInOneLine);
+            	
+            } else {
+            	Date date = null;
+                if(dataIndex==6) {
+                	String dateFormatOfSibling = checkDateFormat(parts[0]);
+                	if(dateFormatOfSibling.equals("yyyy")) {
+                		dateFormat = new SimpleDateFormat("yyyy");
+                	} else if (dateFormatOfSibling.equals("yyyy-MM")) {
+                		dateFormat = new SimpleDateFormat("yyyy-MM");
+                	} else {
+                		dateFormat = new  SimpleDateFormat("yyyy-MM-dd");
+                	}
+                }
+
+                try {
+                    date = dateFormat.parse(parts[0]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String grouper1 = parts[0];
+                String grouper2 = parts[1];
+                Double measure = Double.parseDouble(parts[2]);
+
+                data.add(new DataPoint(date, grouper1, grouper2, measure));
+            }
+            
+        }
+        return data;
+    }
+    
+    private static List<DataPoint> readDataListFromOneRow(String[] dataRow) throws Exception {
+    	
+    	List<DataPoint> data = new ArrayList<>();
+    	SimpleDateFormat dateFormat = null;
+    	for (int i=0; i< dataRow.length/3; i++) {
+    		int index_of_points = i*3; 
+    		Date date = null;
+            
+            	String dateFormatOfSibling = checkDateFormat(dataRow[index_of_points]);
             	if(dateFormatOfSibling.equals("yyyy"))
             	{
             		dateFormat = new SimpleDateFormat("yyyy");
             	}else {
             		dateFormat = new SimpleDateFormat("yyyy-MM");
             	}
-            }
+            
 
             try {
-                date = dateFormat.parse(parts[0]);
+                date = dateFormat.parse(dataRow[index_of_points]);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            String grouper1 = parts[0];
-            String grouper2 = parts[1];
-            Double measure = Double.parseDouble(parts[2]);
+            String grouper1 = dataRow[index_of_points];
+            String grouper2 = dataRow[index_of_points+1];
+            Double measure = Double.parseDouble(dataRow[index_of_points+2]);
 
             data.add(new DataPoint(date, grouper1, grouper2, measure));
-        }
-
-        return data;
+    	}
+    	return data;
     }
     
     public String [] sortResults(List<DataPoint> points)
@@ -345,7 +467,7 @@ public class VisualizationManager {
 		return "default";
 	}
 	
-	public String processResultsForVisualization(String [] sortedResultsWithTypeOfVisualization) //TODO change type to string
+	public String processResultsForVisualization(String [] sortedResultsWithTypeOfVisualization) 
 	{
 		return chartQueryNModelGenerator.generateQueries(sortedResultsWithTypeOfVisualization); //return queries with what visualization(small multiplies)
 	}

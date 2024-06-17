@@ -6,15 +6,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+
+import chartManagement.utils.ChartVisModel;
 
 
 public class DominanceModel extends ChartModel{
 	
 
 	private String result [][];
-	
+	private double score;
 
 
 	@Override
@@ -22,12 +25,21 @@ public class DominanceModel extends ChartModel{
 	    
 	    result = readResultsFromFileAndSaveTo2DMatrix();
 	    if(result!=null) {
-
+	    	
+	    	int counterOfSiblings = 1;
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultDominance = findDominanceInArray(query);
-	    		System.out.println(resultDominance);
-	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t"   + resultDominance + "\n";
+	    		String typeQuery =  query[0][2].trim();
+	    		if(typeQuery.equals("Sibling")) {
+	    			
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultDominance + reportScore() + "\n";
+	    			counterOfSiblings+=1;
+
+	    		}else {
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultDominance + reportScore() + "\n";
+
+	    		}
 	    	}
 	    	
 	    	return 0;
@@ -38,14 +50,10 @@ public class DominanceModel extends ChartModel{
 	public String findDominanceInArray(String[][] query) {
 
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query, 1)) {
-			return "No Dominance, The query result has only one Category (" +  query[2][1] + ") for Series.";
+			this.score = 0;
+			return "No Dominance, The query result has only one Category (" +  query[query.length-1][1] + ") for Series.";
 		}
-		return findIfDominanceExistsInSeries(query);
-	}
-	
-	private String findIfDominanceExistsInSeries(String[][] query) { //TODO na th valw mesa sthn findDominanceInArray
-
-        Map<String, String> datesWithDominantCategory = new HashMap<>();
+		Map<String, String> datesWithDominantCategory = new HashMap<>();
         Map<String, Double> maxMeasuresPerDate = new HashMap<>();
 
         // Populate maxMeasuresPerDate and datesWithDominantCategory
@@ -63,13 +71,30 @@ public class DominanceModel extends ChartModel{
         // Check if there's consistency in dominant category across dates
         Set<String> uniqueCategories = new HashSet<>(datesWithDominantCategory.values());
         if (uniqueCategories.size() == 1) {
+        	this.score = 1;
             return "Dominator Value for query: " + uniqueCategories.iterator().next();
         } else {
-            return "There isn't a Dominator in Series with Categories: " + String.join(", ", uniqueCategories);
+        	Map<String, Double> categoryCount = new HashMap<>();
+
+            // Iterate over the entries of the original map and count the values
+            for (Map.Entry<String, String> entry : datesWithDominantCategory.entrySet()) {
+                String category = entry.getValue();
+                categoryCount.put(category, categoryCount.getOrDefault(category, (double) 0) + 1);
+            }
+            categoryCount.forEach((category, count) -> {
+                double proportion = (double) count / datesWithDominantCategory.size();
+                categoryCount.put(category, proportion);
+            });
+            Map.Entry<String, Double> maxEntry = categoryCount.entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue())
+                    .orElseThrow(() -> new RuntimeException("No entries in the map"));
+            this.score = maxEntry.getValue();
+            return "There isn't a clear Dominator in Series with Categories: " + String.join(", ", uniqueCategories);
         }
-    
-		
 	}
+	
+	
 
 	private String getCategories(List<String> collection) {
 	
@@ -122,6 +147,24 @@ public class DominanceModel extends ChartModel{
 	public String getInfoContent() {
 
 		return "A dominance model created by Aggeliki Dougia";
+	}
+
+	@Override
+	public double getScoreOfModel() {
+		// TODO Auto-generated method stub
+		return this.score;
+	}
+
+	@Override
+	public String reportScore() {
+		// TODO Auto-generated method stub
+		return "\t with score: " + getScoreOfModel();
+	}
+
+	@Override
+	public double computeScore(ChartVisModel model) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 

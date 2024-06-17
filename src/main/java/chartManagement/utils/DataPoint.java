@@ -1,10 +1,13 @@
 package chartManagement.utils;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DataPoint 
+public class DataPoint implements Serializable
 {
 
+
+	private static final long serialVersionUID = -6585082144060930958L;
 	private Date date;
     private String grouper1;
     private String grouper2;

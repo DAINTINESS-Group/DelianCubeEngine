@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import chartManagement.utils.ChartVisModel;
+import chartManagement.utils.DataPoint;
 
 
 public class ContributorModel extends ChartModel{
 
 
 	private String result [][];
-	
+	private double score;
 
 
 	@Override
@@ -20,12 +25,20 @@ public class ContributorModel extends ChartModel{
 	    result = readResultsFromFileAndSaveTo2DMatrix();
 	    if(result!=null) {
 	    	
-	    
+	    	int counterOfSiblings = 1;
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultContribution = findContributionInArray(query);
-	    		System.out.println(resultContribution);
-	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultContribution + "\n";
+	    		String typeQuery =  query[0][2].trim();
+	    		if(typeQuery.equals("Sibling")) {
+	    			
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultContribution + reportScore() + "\n";
+	    			counterOfSiblings+=1;
+
+	    		}else {
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultContribution + reportScore() + "\n";
+
+	    		}
 	    	}
 	    	
 	    	return 0;
@@ -37,13 +50,10 @@ public class ContributorModel extends ChartModel{
 	public String findContributionInArray(String[][] query) {
 		
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query, 1)) {
-			return "The query result has only one Category (" + query[2][1] +  ") for Series (100% contribution).";
+			this.score = 0;
+			return "The query result has only one Category (" + query[query.length-1][1] +  ") for Series (100% contribution).";
 		}
-		return findIfContributionExistsInSeries(query);
-	}
-
-	private String findIfContributionExistsInSeries(String[][] query) {
-
+		
 		Map<String, List<String []>> datesWithDominatorCategoriesValues = new HashMap<>();
 		for(int i=2; i<query.length; i++) {
 			String grouper1 = query[i][0];
@@ -66,8 +76,14 @@ public class ContributorModel extends ChartModel{
 	                .mapToDouble(arr -> Double.parseDouble(arr[1])) // Convert the measure to double
 	                .sum(); // Sum all the measures
 			
-			for(String[] $ : categoriesWithMeasures) {
+			for (String[] $ : categoriesWithMeasures) {
 				String percentage = df.format((Double.parseDouble($[1])/sumMeasures)*100);
+				if ("sum".equals(getAggrFunc())) { //i have done then half of it
+					if (this.score < Double.parseDouble(percentage)) {
+						this.score = Double.parseDouble(percentage);
+					}
+				}
+				
 				$[1] = percentage + "%";
 				
 			}
@@ -86,12 +102,82 @@ public class ContributorModel extends ChartModel{
 			}
 			result += "\t";
 		}
-		
-		
-		
-		
+		this.score = computeScoreForEveryGrouper1Value(sortedMap);
 		return result;
+		
 	}
+	
+	private double computeScoreForEveryGrouper1Value(Map<String, List<String []>> map) {
+		
+		DecimalFormat df = new DecimalFormat("#.##");
+		
+		if("sum".equals(getAggrFunc())) {
+			
+			double sumForAllDatesAndCategories = 0;
+			Map<String, Double> categoryWithSumMeasure = new HashMap<>();
+			for (Map.Entry<String, List<String []>> entry : map.entrySet()) {
+				
+				List<String[]> categoriesWithMeasures = entry.getValue();
+				
+				for (String[] categoryWithMeasure : categoriesWithMeasures) {
+					
+					if(!categoryWithSumMeasure.containsKey(categoryWithMeasure[0])) {
+						
+						categoryWithSumMeasure.put(categoryWithMeasure[0], Double.valueOf(categoryWithMeasure[1]));
+					} else {
+						
+						double tempSum = categoryWithSumMeasure.get(categoryWithMeasure[0]);
+						categoryWithSumMeasure.replace(categoryWithMeasure[0], tempSum + Double.valueOf(categoryWithMeasure[1]));
+					}
+					
+					sumForAllDatesAndCategories += Double.valueOf(categoryWithMeasure[1]);
+					
+				}
+			
+			}
+			
+			List<Double> lista = categoryWithSumMeasure.values().stream().collect(Collectors.toList());
+			Double maxi = lista.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
+			return maxi/sumForAllDatesAndCategories;
+			
+		} else {
+			
+			double countOfAllDates = map.size();
+			Map<String, List<Double>> categoryWithMeasures = new HashMap<>();
+			for (Map.Entry<String, List<String []>> entry : map.entrySet()) {
+				
+				List<String[]> categoriesWithMeasures = entry.getValue();
+				
+				for (String[] categoryWithMeasure : categoriesWithMeasures) {
+					
+					double measure = Double.valueOf(categoryWithMeasure[1].replace("%", ""));
+					if(!categoryWithMeasures.containsKey(categoryWithMeasure[0])) {
+						
+						List<Double> measures = new ArrayList<>();
+						measures.add(measure);
+						categoryWithMeasures.put(categoryWithMeasure[0], measures);
+					} else {
+						
+						List<Double> measures = categoryWithMeasures.get(categoryWithMeasure[0]);
+						measures.add(measure);
+						categoryWithMeasures.replace(categoryWithMeasure[0], measures);
+					}
+					
+					
+					
+				}
+				countOfAllDates += 1;
+			
+			}
+			List<Integer> counts = categoryWithMeasures.values().stream().map(x -> x.size()).collect(Collectors.toList());
+			int maxi = counts.stream().mapToInt(Integer:: intValue).max().getAsInt();
+			return maxi/countOfAllDates;
+		}
+		
+		
+	}
+
+	
 
 
 
@@ -135,6 +221,46 @@ public class ContributorModel extends ChartModel{
         return hasOnlyOneSeries;
     }
 
+	@Override
+	public double getScoreOfModel() {
+		// TODO Auto-generated method stub
+		return this.score;
+	}
+
+	@Override
+	public String reportScore() {
+		// TODO Auto-generated method stub
+		return "\t with score: " + getScoreOfModel();
+	}
+
+	@Override
+	public double computeScore(ChartVisModel model) {
+		List<Double> measurements = model.getDataPoints().stream().map(m -> m.getMeasure()).collect(Collectors.toList());
+		Double sumOfAllMeasurements = 0.0;
+		for(Double measurement: measurements) {
+			sumOfAllMeasurements+= measurement;
+		}
+		Double max_percentage = 0.0;
+		String contributor ="";
+	
+		for(DataPoint dp: model.getDataPoints()) {
+			Double measurement = dp.getMeasure();
+			String grouper1 = dp.getGrouper1();
+			if((measurement/sumOfAllMeasurements) >= max_percentage) {
+				max_percentage = (measurement/sumOfAllMeasurements);
+				contributor = grouper1;
+			}
+		}
+		
+		if(max_percentage >= 0.5) {
+			setScoreResult("Series have a mega contributor for x = " + contributor);
+		} else {
+			setScoreResult("Series haven't a mega contributor.");
+		}
+		return max_percentage;
+	}
+	
+	
 	
 
 }

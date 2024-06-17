@@ -2,11 +2,14 @@ package chartManagement;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.List;
 
 import analyze.AnalyzeOperator;
 import analyze.AnalyzeQuery;
 import chartManagement.models.ModelManager;
+import chartManagement.utils.ChartResponse;
+import chartManagement.utils.ChartScoreModel;
+import chartManagement.utils.ChartVisModel;
 import cubemanager.CubeManager;
 import mainengine.ResultFileMetadata;
 
@@ -20,6 +23,7 @@ public class ChartManager {
 	private VisualizationManager visualizationManager;
 	private ModelManager modelManager;
 	private String chartType;
+	private String aggrFunc;
 	
 	public ChartManager(CubeManager cubeManager)
 	{
@@ -39,7 +43,22 @@ public class ChartManager {
 	public void createConnectionWithAnalyzeOperator(String incomingQuery,String schemaName, String connectionType){
 		
 		operator = new AnalyzeOperator(incomingQuery, cubeManager, schemaName, connectionType);
+		extractAggregationFunctionFromAnalyzeQuery(incomingQuery);
 		
+	}
+	
+	private void extractAggregationFunctionFromAnalyzeQuery(String incomingQuery) {
+		int analyzeIndex = incomingQuery.indexOf("ANALYZE");
+        String aggrFunc = "";
+        if (analyzeIndex != -1) {
+            // Find the position of the first '(' after "ANALYZE"
+            int openParenIndex = incomingQuery.indexOf('(', analyzeIndex);
+            
+            if (openParenIndex != -1) {
+            	aggrFunc = incomingQuery.substring(analyzeIndex + 7, openParenIndex).trim();
+            }
+        }
+        this.aggrFunc = aggrFunc;
 	}
 	
 	public AnalyzeOperator getOperator(){
@@ -66,6 +85,8 @@ public class ChartManager {
 		
 	}
 	
+	
+	
 	public void setChartType(String type){
 		this.chartType = type;
 		IChartQueryNModelGenerator chartQueryNModelGenerator = createChartQuery(type);
@@ -82,6 +103,7 @@ public class ChartManager {
 		
 		modelManager.setLocalFolderAndLocalFilename(visualizationManager.getLocalFolder() ,visualizationManager.getLocalFilename());
 		modelManager.reportModelsForChartType();
+		modelManager.setAggrFunc(aggrFunc);
 		
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(visualizationManager.getLocalFolder());
@@ -90,6 +112,18 @@ public class ChartManager {
 		
 		
 		return resultFile;
+	}
+	
+	public ChartResponse executeQueriesAndReturnToChartResponse() throws Exception {
+		
+		removeDrillDownQueries();
+		List<ChartVisModel> chartVisModels = visualizationManager.reportChartQueryDetailsForChartResponse(BaseAndSiblingQueries, this.chartType);
+		List<ChartScoreModel> chartScoreModels = modelManager.getScoreModelsForChartVisModels(chartVisModels);
+		ChartResponse response = new ChartResponse();
+		response.setChartScoreModels(chartScoreModels);
+		response.setChartVisModels(chartVisModels);
+		return response;
+		
 	}
 
 }

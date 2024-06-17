@@ -8,21 +8,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import chartManagement.utils.ChartVisModel;
+
 public abstract class ChartModel {
 	
 	protected String fileLocation;
 	protected String  fileName;
 	protected String reportedResult = "";
+	protected String aggrFunc;
+	protected String scoreResult;
 	
 	
 	public abstract String[][] printAs2DStringArray();
 	
 	public abstract int compute(); //Todo return double
+	
+	public abstract double computeScore(ChartVisModel model);
+	
+
 
 	
 	public abstract String getModelName();
 	
 	public abstract String getInfoContent();
+	
+	public abstract double getScoreOfModel();
+	
+	public abstract String reportScore();
 	
 	
 	public String [][] readResultsFromFileAndSaveTo2DMatrix(){
@@ -160,6 +172,20 @@ public abstract class ChartModel {
 	public String printAs2DStringArrayForChartReportModel() {
 		return this.reportedResult;
 	}
-
 	
+	public void setAggrFunc (String func) {
+		this.aggrFunc = func;
+	}
+	
+	public String getAggrFunc () {
+		return this.aggrFunc;
+	}
+
+	public void setScoreResult(String result) {
+		scoreResult = result;
+	}
+	
+	public String getScoreResult() {
+		return scoreResult;
+	}
 }

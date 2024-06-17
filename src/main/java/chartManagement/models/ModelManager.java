@@ -3,9 +3,12 @@ package chartManagement.models;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import chartManagement.IChartQueryNModelGenerator;
+import chartManagement.utils.ChartScoreModel;
+import chartManagement.utils.ChartVisModel;
 
 
 public class ModelManager {
@@ -17,6 +20,8 @@ public class ModelManager {
 	private ModelListFactory modelListFactory;
 	
 	private IChartQueryNModelGenerator chartGenerator;
+	
+	private String aggrFunc;
 	
 
 	public ModelManager()
@@ -34,9 +39,16 @@ public class ModelManager {
 	
 	
 	
-	public List<ChartModel> returnModelList()
-	{
+	public List<ChartModel> returnModelList() {
 		return modelListFactory.createModelsForChartType(chartGenerator);
+	}
+	
+	public Boolean isChartModelTypeOfContributor(ChartModel model) {
+		if (model instanceof ContributorModel) {
+			return true;
+		}
+		
+		return false;
 	}
 
 
@@ -53,11 +65,14 @@ public class ModelManager {
 			{
 
 				model.setFolderAndFilename(localFolder, localFilename);
-				if(model.compute()==0) {
+				if (isChartModelTypeOfContributor(model)) {
+					model.setAggrFunc(getAggrFunc());
+				}
+				if (model.compute()==0) {
 					fileWriter.write(model.printAs2DStringArrayForChartReportModel());
 				} else {
 					
-					throw new Exception("Reading of query results for " + model.getModelName() + "has failed.");
+					throw new Exception("Reading of query results for " + model.getModelName() + " has failed.");
 				}
 				
 				
@@ -73,6 +88,35 @@ public class ModelManager {
 			fileWriter.close();
 		}
 		
+	}
+	
+	public List<ChartScoreModel> getScoreModelsForChartVisModels(List<ChartVisModel> chartVisModels) {
+		List<ChartModel> chartModels = returnModelList();
+		List<ChartScoreModel> scoreModels = new ArrayList<>();
+		
+		for(ChartModel chartModel: chartModels) {
+			for(ChartVisModel visModel: chartVisModels) {
+				
+				ChartScoreModel scoreModel = new ChartScoreModel();
+				scoreModel.setScore(chartModel.computeScore(visModel));
+				scoreModel.setName(chartModel.getModelName());
+				scoreModel.setChartVisModel(visModel);
+				scoreModel.setResult(chartModel.getScoreResult());
+				scoreModels.add(scoreModel);
+			}
+		}
+		
+		return scoreModels;
+	}
+
+
+	private String getAggrFunc() {
+		// TODO Auto-generated method stub
+		return this.aggrFunc;
+	}
+	
+	public void setAggrFunc(String func) {
+		this.aggrFunc = func;
 	}
 
 

@@ -17,16 +17,17 @@ public class ModelListFactory {
 		
 			case("Barchart"):
 			
-				models.add(new DominanceModel());
-				models.add(new ContributorModel());
-				break;
+				//models.add(new DominanceModel());
+				//models.add(new ContributorModel());
+				//break;
 				
 			case("LineChart"): 
 			case("Scatterplot"):
-			
+				models.add(new KendallBasedTrendModel());
 				models.add( new AbsoluteTrendModel());
 				models.add(new ModalityModel());
 				models.add(new RegressionModel());
+				models.add(new ContributorModel());
 				break;
 				
 			default:

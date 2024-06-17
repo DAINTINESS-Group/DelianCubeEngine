@@ -4,32 +4,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import chartManagement.utils.ChartVisModel;
 import model.abstracts.AbstractModel;
 
 public class ModalityModel extends ChartModel{
 
 
 	private String result [][];
-	
+	private double score;
 
 	@Override
 	public int compute() {
 
-		result = readResultsFromFileAndSaveTo2DMatrix();
-		if(result!=null) {
+	    result = readResultsFromFileAndSaveTo2DMatrix();
+	    if(result!=null) {
 	    	
-
+	    	int counterOfSiblings = 1;
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultModality = findModalityInArray(query);
-	    		System.out.println(resultModality);
-	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultModality + "\n";
+	    		String typeQuery =  query[0][2].trim();
+	    		if(typeQuery.equals("Sibling")) {
+	    			
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultModality + reportScore() + "\n";
+	    			counterOfSiblings+=1;
+
+	    		}else {
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultModality + reportScore() + "\n";
+
+	    		}
 	    	}
-	    	return 0;
 	    	
+	    	return 0;
 	    }
-		return -1;
+	    return -1;
 	}
 
 	public String findModalityInArray(String[][] query) {
@@ -38,7 +48,7 @@ public class ModalityModel extends ChartModel{
 			return findModalityForOneCategoryInSeries(query);
 		}
 	
-		return findModalityForMultipleCategoriesInSeries(query);
+		return "";//findModalityForMultipleCategoriesInSeries(query);
 	}
 
 	private String findModalityForMultipleCategoriesInSeries(String[][] query) {
@@ -60,13 +70,28 @@ public class ModalityModel extends ChartModel{
         for (int i = 0; i < measurements.size() - 1; i++) {
             differences.add(measurements.get(i+1)- measurements.get(i));
         }
+        if (differences.size() < 2) {
+        	this.score = 0;
+        	return "There isn't a modality (points < 3).";
+        }
         
         int signChanges = 0;
+        this.score = 0;
+        double sumOfScore = 0;
         for (int i = 1; i < differences.size(); i++) {
             if (differences.get(i) * differences.get(i-1) < 0) {
                 signChanges++;
+                if(areBothValuesPositive (measurements, i-1)) {
+                	this.score = computeScoreForPositiveValues(measurements,i-1);
+                } else {
+                	//for negative and zero TODO
+                	this.score = computeScoreForNegativeValues(measurements,i-1);
+                }
+                sumOfScore += this.score;
             }
         }
+        this.score = sumOfScore/(differences.size()-1);
+        
         if(signChanges==1) {
         	return "has Unimodality.";
         }
@@ -77,6 +102,24 @@ public class ModalityModel extends ChartModel{
 		return "has no clear Modality.";
 		
 	}
+	
+	private double computeScoreForNegativeValues(List<Double> values, int index) {
+		double number1 = values.get(index);
+		double number2 = values.get(index+1);
+		
+		double offset = Math.abs(Math.min(number1, number2));
+		
+		double start = number1 + offset + 1;
+		double end = number2 + offset +1;
+		if(start>= end) {
+			return (start - end)/start;
+		} else {
+			return (end - start)/end;
+		}
+		
+	}
+	
+	
 
 	private String findModalityForOneCategoryInSeries(String[][] query) {
 
@@ -94,22 +137,57 @@ public class ModalityModel extends ChartModel{
         }
         
         int signChanges = 0;
+        this.score = 0;
+        double sumOfScore = 0;
         for (int i = 1; i < differences.size(); i++) {
             if (differences.get(i) * differences.get(i-1) < 0) {
                 signChanges++;
+                if(areBothValuesPositive (values, i-1)) {
+                	this.score = computeScoreForPositiveValues(values,i-1);
+                } else {
+                	this.score = computeScoreForNegativeValues(values,i-1);
+                }
+                
+                sumOfScore += this.score;
             }
         }
+        this.score = sumOfScore/(differences.size()-1);
         
         if(signChanges==1) {
-        	return query[2][1] + " has Unimodality.";
+        	return query[2][1] + " have Unimodality.";
         }
         else if(signChanges ==3) {
-        	return query[2][1] + " has Bimodality.";
+        	return query[2][1] + " have Bimodality.";
         }
 		
-		return query[2][1] + " has no clear Modality.";
+		return query[2][1] + " have no clear Modality.";
 	}
 
+	private double computeScoreForPositiveValues(List<Double> values, int index) {
+		
+		double number1 = Math.abs(values.get(index));
+		double number2 = Math.abs(values.get(index+1));
+		
+		if(number1>= number2) {
+			return (number1 - number2)/number1;
+		} else {
+			return (number2 - number1)/number2;
+		}
+		
+	}
+
+	private Boolean areBothValuesPositive (List<Double> values, int indexOfDifference) {
+		
+		double number1 = values.get(indexOfDifference);
+		double number2 = values.get(indexOfDifference +1);
+		
+		if (number1 > 0 && number2 >0 ) {
+			
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public String getModelName() {
@@ -174,6 +252,27 @@ public class ModalityModel extends ChartModel{
         
         return dataMap;
 	}
+
+	@Override
+	public double getScoreOfModel() {
+		// TODO Auto-generated method stub
+		return this.score;
+	}
+
+	@Override
+	public String reportScore() {
+		// TODO Auto-generated method stub
+		return "\t with score: " + getScoreOfModel();
+	}
+
+	@Override
+	public double computeScore(ChartVisModel model) {
+		List<Double> measures = model.getDataPoints().stream().map(m -> m.getMeasure()).collect(Collectors.toList());
+		String result = findModality(measures);
+		setScoreResult("Series " + result);
+		return this.score;
+	}
+	
 
 
 }

@@ -9,27 +9,41 @@ import java.util.Map;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
+import chartManagement.utils.ChartVisModel;
+import chartManagement.utils.DataPoint;
+
 public class KendallBasedTrendModel extends ChartModel{
 
 	
 private String result [][];
+
+private double score;
 	
 	@Override
 	public int compute() {
 		
-		result = readResultsFromFileAndSaveTo2DMatrix();
-		if(result!=null) {
+	    result = readResultsFromFileAndSaveTo2DMatrix();
+	    if(result!=null) {
 	    	
-
+	    	int counterOfSiblings = 1;
 	    	List<String[][]> smallerLists = extractArrayListWithSmallerArrays(result);
 	    	for(String [][] query: smallerLists) {
 	    		String resultTrend = findTrendInArray(query);
-	    		System.out.println(resultTrend);
-	    		reportedResult += getModelName() + "\t" + query[0][2] + "\t" + resultTrend + "\n";
+	    		String typeQuery =  query[0][2].trim();
+	    		if(typeQuery.equals("Sibling")) {
+	    			
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultTrend + reportScore() + "\n";
+	    			counterOfSiblings+=1;
+
+	    		}else {
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultTrend + reportScore() + "\n";
+
+	    		}
 	    	}
+	    	
 	    	return 0;
 	    }
-		return -1;
+	    return -1;
 	}
 
 	public String findTrendInArray(String[][] query) {
@@ -38,7 +52,7 @@ private String result [][];
 			return findTrendForOneCategoryInSeries(query);
 		}
 	
-		return findTrendForMultipleCategoriesInSeries(query);
+		return "";//findTrendForMultipleCategoriesInSeries(query);
 	}
 
 	private String findTrendForMultipleCategoriesInSeries(String[][] query) {
@@ -49,7 +63,8 @@ private String result [][];
 				categories.add(query[i][1]);
 			}
 		}
-		
+        this.score = 0;
+        double sum_scoreForAllSeries = 0;
 		String result = "";
 		for(String category: categories) {
 			String [][] arrayForCategory = {{"Default_row_col_1","Default_row_col_1","Default_row_col_1"},
@@ -61,8 +76,10 @@ private String result [][];
 				}
 			}
 			result += findTrendForOneCategoryInSeries(arrayForCategory) + "\t";
+			sum_scoreForAllSeries += this.score;
 			
 		}
+		this.score = sum_scoreForAllSeries/categories.size();
 		return result;
 	}
 
@@ -97,13 +114,16 @@ private String result [][];
 		double kendallCoefficient = kendallsCorrelation.correlation(x_values, y_values);
 		String result = "";
 		if (kendallCoefficient >= 0.5 && kendallCoefficient <1) {
+			
 			result = " has an uptrend.";
 			
 		} else if (kendallCoefficient > -0.5 && kendallCoefficient< 0.5) {
+			
 			result = " has no clear trend.";
 		} else {
-			result = " has a downtrend";
+			result = " has a downtrend.";
 		}
+		this.score = Math.abs(kendallCoefficient);
 		return query[2][0] + result;
 	}
 
@@ -179,6 +199,12 @@ private String result [][];
         
         return dataMap;
 	}
+
+	@Override
+	public double getScoreOfModel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 //	 // Method to check if there's an uptrend
 //    private static boolean isUptrend(List<Double> measures) {
@@ -199,4 +225,52 @@ private String result [][];
 //        }
 //        return true; // All values are decreasing
 //    }
+	
+	@Override
+	public String reportScore() {
+		// TODO Auto-generated method stub
+		return "\t with score: " + getScoreOfModel();
+	}
+
+	@Override
+	public double computeScore(ChartVisModel model) {
+		List<DataPoint> points = model.getDataPoints();
+		KendallsCorrelation kendallsCorrelation = new KendallsCorrelation();
+		double kendallCoefficient =0;
+		String regexYYYY = "\\d{4}-\\d{2}";
+		String regexYYYYdd = "\\d{4}";
+		double [] x_axis = new double[points.size()];
+		double [] y_axis = new double[points.size()];
+		int counter=0;
+		for(DataPoint point: points) {
+			Double x = -1.0;
+			Double y;
+			String x_value = point.getGrouper1();
+			if (x_value.matches(regexYYYY)) {
+				String month = x_value.split("-")[1];
+				x = Double.parseDouble(month);
+			} else if(x_value.matches(regexYYYYdd)) {
+				x = Double.parseDouble(x_value);
+			}
+			y = point.getMeasure();
+			if(x!=-1.0) {
+				x_axis[counter] = x;
+				y_axis[counter] = y;
+				counter +=1;
+			}
+			
+		}
+		
+		kendallCoefficient = kendallsCorrelation.correlation(x_axis, y_axis);
+		if(kendallCoefficient<-0.5) {
+			setScoreResult("Series have a Kendall based downtrend.");
+		} else if(kendallCoefficient> 0.5) {
+			setScoreResult("Series have a Kendall based uptrend.");
+		} else {
+			setScoreResult("Series haven't a Kendall based trend.");
+		}
+		return kendallCoefficient;	
+	}
+	
+	
 }

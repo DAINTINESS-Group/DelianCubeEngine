@@ -70,6 +70,9 @@ public class AnalyzeReport {
 	
 	// Method that creates the report file based on the info gained from the Analyze Query objects
 	public void createTextReportFile() {
+		System.out.println("AGGELIKI 'S TEST : " + analyzeQueries.get(0)
+		.getAnalyzeCubeQuery()
+		.getName());
 		String fileName = analyzeQueries.get(0)
 										.getAnalyzeCubeQuery()
 										.getName()

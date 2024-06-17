@@ -113,7 +113,7 @@ public class VisualizationManagerTest {
     }
 
     @Test
-    public void testReadDataFromStringForBaseQuery() throws ParseException
+    public void testReadDataFromStringForBaseQuery() throws Exception
     {
     	//Arrange
     	VisualizationManager visualizationManager = new VisualizationManager();

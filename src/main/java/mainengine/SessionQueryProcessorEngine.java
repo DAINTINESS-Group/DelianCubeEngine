@@ -39,6 +39,7 @@ import org.apache.spark.sql.AnalysisException;
 import assess.AssessOperator;
 import chartManagement.ChartManager;
 import chartManagement.IChartQueryNModelGenerator;
+import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
@@ -141,7 +142,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		registeredDimensions = cubeManager.getDimensions();
 		registeredCubesList = cubeManager.getCubes();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
-		System.out.println("DONE WITH INIT");
+		System.out.println("DONE WITH INIT CENTRAL");
 	}
 
 	public void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder,
@@ -169,7 +170,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		registeredCubesList = cubeManager.getCubes();
 		queryHistoryMng = new QueryHistoryManager(sessionId);
 		initializeChartManager();
-		System.out.println("DONE WITH INIT");
+		System.out.println("DONE WITH INIT FROM ChartQueryMng");
 	}
 	
 	private void initializeChartManager()
@@ -912,6 +913,19 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 		return chartManager.executeQueries();
 		
+	}
+
+	@Override
+	public ChartResponse answerCubeQueryFromChartRequestTest(ChartRequest chartRequest) throws Exception {
+		
+		initializeChartManager();
+		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
+		chartManager.setChartType(chartRequest.getChart());
+		chartManager.generateQueries();
+		
+
+
+		return chartManager.executeQueriesAndReturnToChartResponse();
 	}
 
 
