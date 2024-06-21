@@ -235,7 +235,12 @@
 		    <version>2.2</version>
 		    <scope>test</scope>
 		</dependency>
-		
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+		<dependency>
+		    <groupId>org.openjfx</groupId>
+		    <artifactId>javafx-swing</artifactId>
+		    <version>21.0.1</version>
+		</dependency>
 		
     </dependencies>
     <!-- Dependencies END HERE -->

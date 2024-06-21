@@ -78,19 +78,21 @@ public class ModalityModel extends ChartModel{
         int signChanges = 0;
         this.score = 0;
         double sumOfScore = 0;
+        int segments =0;
         for (int i = 1; i < differences.size(); i++) {
             if (differences.get(i) * differences.get(i-1) < 0) {
                 signChanges++;
                 if(areBothValuesPositive (measurements, i-1)) {
                 	this.score = computeScoreForPositiveValues(measurements,i-1);
                 } else {
-                	//for negative and zero TODO
+                	
                 	this.score = computeScoreForNegativeValues(measurements,i-1);
                 }
                 sumOfScore += this.score;
+                segments+=1;
             }
         }
-        this.score = sumOfScore/(differences.size()-1);
+        this.score = sumOfScore/(segments);
         
         if(signChanges==1) {
         	return "has Unimodality.";

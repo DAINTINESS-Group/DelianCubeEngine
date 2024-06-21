@@ -228,14 +228,14 @@ public class AbsoluteTrendModel extends ChartModel{
 		List<Double> measures = model.getDataPoints().stream().map(m -> m.getMeasure()).collect(Collectors.toList());
 		
 		if(isUptrend(measures)) {
-			setScoreResult("Series have an absolute uptrend.");
+			setScoreResult("Series has an absolute uptrend.");
 			return 1;
 		} else if(isDowntrend(measures)) {
-			setScoreResult("Series have an absolute downtrend.");
+			setScoreResult("Series has an absolute downtrend.");
 			return -1;
 		}
 		
-		setScoreResult("Series haven't a clear trend.");
+		setScoreResult("Series hasn't a clear trend.");
 		return 0;
 	}
 

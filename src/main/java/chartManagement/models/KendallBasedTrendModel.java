@@ -263,11 +263,11 @@ private double score;
 		
 		kendallCoefficient = kendallsCorrelation.correlation(x_axis, y_axis);
 		if(kendallCoefficient<-0.5) {
-			setScoreResult("Series have a Kendall based downtrend.");
+			setScoreResult("Series has a Kendall based downtrend.");
 		} else if(kendallCoefficient> 0.5) {
-			setScoreResult("Series have a Kendall based uptrend.");
+			setScoreResult("Series has a Kendall based uptrend.");
 		} else {
-			setScoreResult("Series haven't a Kendall based trend.");
+			setScoreResult("Series hasn't a Kendall based trend.");
 		}
 		return kendallCoefficient;	
 	}

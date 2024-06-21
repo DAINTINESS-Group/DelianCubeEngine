@@ -253,9 +253,9 @@ public class ContributorModel extends ChartModel{
 		}
 		
 		if(max_percentage >= 0.5) {
-			setScoreResult("Series have a mega contributor for x = " + contributor);
+			setScoreResult("Series has a mega contributor for x = " + contributor);
 		} else {
-			setScoreResult("Series haven't a mega contributor.");
+			setScoreResult("Series hasn't a mega contributor.");
 		}
 		return max_percentage;
 	}
