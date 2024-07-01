@@ -24,7 +24,7 @@ public class ModelListFactory {
 			case("LineChart"): 
 			case("Scatterplot"):
 				models.add(new KendallBasedTrendModel());
-				models.add( new AbsoluteTrendModel());
+				models.add(new AbsoluteTrendModel());
 				models.add(new ModalityModel());
 				models.add(new RegressionModel());
 				models.add(new ContributorModel());

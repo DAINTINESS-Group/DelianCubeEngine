@@ -28,11 +28,11 @@ public class ModalityModel extends ChartModel{
 	    		String typeQuery =  query[0][2].trim();
 	    		if(typeQuery.equals("Sibling")) {
 	    			
-	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultModality + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultModality + "\n"; //+ reportScore() + "\n";
 	    			counterOfSiblings+=1;
 
 	    		}else {
-	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultModality + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultModality + "\n";  //reportScore() + "\n";
 
 	    		}
 	    	}
@@ -48,7 +48,7 @@ public class ModalityModel extends ChartModel{
 			return findModalityForOneCategoryInSeries(query);
 		}
 	
-		return "";//findModalityForMultipleCategoriesInSeries(query);
+		return findModalityForMultipleCategoriesInSeries(query);
 	}
 
 	private String findModalityForMultipleCategoriesInSeries(String[][] query) {
@@ -156,13 +156,13 @@ public class ModalityModel extends ChartModel{
         this.score = sumOfScore/(differences.size()-1);
         
         if(signChanges==1) {
-        	return query[2][1] + " have Unimodality.";
+        	return query[2][1] + " has Unimodality.";
         }
         else if(signChanges ==3) {
-        	return query[2][1] + " have Bimodality.";
+        	return query[2][1] + " has Bimodality.";
         }
 		
-		return query[2][1] + " have no clear Modality.";
+		return query[2][1] + " has no clear Modality.";
 	}
 
 	private double computeScoreForPositiveValues(List<Double> values, int index) {

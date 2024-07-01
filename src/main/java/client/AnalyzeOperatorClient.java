@@ -46,20 +46,20 @@ public class AnalyzeOperatorClient {
 		// connection to dataset
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
-		userInputList.put("schemaName", "foodmart_reduced");	//		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("schemaName", "pkdd99_star_1m");	//		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser"); //		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes"); //		userInputList.put("password", "Cinecubes");
-		userInputList.put("cubeName", "sales");     //		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "foodmart_reduced");//		userInputList.put("inputFolder", "pkdd99_star");
+		userInputList.put("cubeName", "loan");     //		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star_1M");//		userInputList.put("inputFolder", "pkdd99_star");
 		
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Connection is successful.");
 		
 		// Analyze intentional query execution
 		String analyzeIntentionalExpression2 = "ANALYZE min(store_sales) FROM sales FOR year ='1997'  AND  store_country ='Mexico' GROUP BY year_quarter,store_country AS first_query";                          
-		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' AND year='1998' GROUP BY district_name,month AS first_query";
+		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' GROUP BY district_name,month,status AS first_query";
 		for(int i = 0;i < 5;i++) {
-			ResultFileMetadata resultMetadata = service.analyze(analyzeIntentionalExpression2);
+			ResultFileMetadata resultMetadata = service.analyze(analyzeIntentionalExpression);
 			String localFolder = resultMetadata.getLocalFolder();
 			String resultFile = resultMetadata.getResultFile();
 			fetchData(localFolder,resultFile);

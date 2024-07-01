@@ -309,7 +309,7 @@ public interface IMainEngine extends IServer {
     ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws RemoteException, FileNotFoundException, IOException, Exception;
 
 
-	ChartResponse answerCubeQueryFromChartRequestTest(ChartRequest chartRequest) throws Exception;
+	ChartResponse answerCubeQueryFromChartRequestAndReturnAsChartResponse(ChartRequest chartRequest) throws Exception;
 	/**
 	 * @deprecated	Not to be used in the context of the DelianCubeEngine project.
 	 * This is an old-to-be-removed method, from Cinecubes, that turns on/off audio and MS word generation

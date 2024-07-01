@@ -21,7 +21,7 @@ public abstract class ChartModel {
 	
 	public abstract String[][] printAs2DStringArray();
 	
-	public abstract int compute(); //Todo return double
+	public abstract int compute(); //Todo return double in future!
 	
 	public abstract double computeScore(ChartVisModel model);
 	

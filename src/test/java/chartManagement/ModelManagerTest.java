@@ -30,9 +30,9 @@ public class ModelManagerTest {
 		List<ChartModel> models = modelManager.returnModelList();
 		
 		//Assert
-		assertEquals(2,models.size());
-		assertEquals("Dominance", models.get(0).getModelName());
-		assertEquals("Contributor", models.get(1).getModelName());
+		assertEquals(5,models.size());
+		assertEquals("Kendall's based Trend", models.get(0).getModelName());
+		assertEquals("Absolute Trend", models.get(1).getModelName());
 		
 		
 	}
@@ -80,11 +80,11 @@ public class ModelManagerTest {
 		//Act
 		String result = new ContributorModel().findContributionInArray(queryWith100Contribution);
 		String result2 = new ContributorModel().findContributionInArray(queryWithPartialContribution);
-		String expectedResult2 = "1998-01: Greece (20%) ,Germany (80%)\t1998-02: Greece (50%) ,Germany (50%)\t1998-03: Greece (70%) ,Germany (30%)\t1998-04: Greece (75%) ,Germany (25%)\t";
+		String expectedResult2 = "Series that contributes the most for each date: 1998-01: Germany, 1998-02: Germany, 1998-03: Greece, 1998-04: Greece,";
 		
 		//Assert 
-		assertEquals(result, "The query result has only one Category (" + queryWith100Contribution[2][1] +  ") for Series (100% contribution).");
-		assertEquals(result2.trim().replaceAll("\\s+", " "), expectedResult2.trim().replaceAll("\\s+", " "));
+		assertEquals(result, "The query result has only one series (Greece. No contribution!");
+		assertEquals(result2.trim().replaceAll("\\s+", " "), expectedResult2);
 	}
 	
 	

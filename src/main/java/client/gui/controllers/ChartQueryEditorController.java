@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.sun.javafx.charts.Legend;
 
 import analyze.AnalyzeQuery;
 import chartManagement.utils.ChartResponse;
@@ -37,12 +38,15 @@ import client.gui.utils.CustomAlertDialog;
 import client.gui.utils.DatastoryReporter;
 import client.gui.utils.ExitController;
 import client.gui.utils.LauncherForViewControllerPairs;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.BarChart;
@@ -72,6 +76,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
 import mainengine.ResultFileMetadata;
@@ -172,20 +177,50 @@ public class ChartQueryEditorController extends AbstractController
 	@FXML
 	public void runQuery() throws Exception
 	{
+		long startTime = System.nanoTime();
+		
+		
+		ChartRequest chartQueryObject = convertUserInput2ChartRequest();
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Conversion of User Input to ChartRequest Object time: " + Double.toString(time/1000000) + " ms");
+		executeAndDisplayChartQuery(chartQueryObject);
+		//long finalTime = System.nanoTime();
+		//System.out.println("Conversion of User Input to ChartRequest Object time: " + Double.toString((finalTime-startTime)/1000000) + " ms");
+	}//end handleClose
+	
+	
+	public void runExperimentQuery(String region) throws Exception
+	{
+		long startTime = System.nanoTime();
+		String query = "ANALYZE min(amount) FROM loan FOR region ='" + region +  "' GROUP BY district_name,month,status AS first_query";
+		String chart = "Barchart";
+		ChartRequest chartQueryObject = convertUserInput2ChartRequest(query, chart);
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Conversion of User Input to ChartRequest Object time: " + Double.toString(time/1000000) + " ms");
+		executeAndDisplayChartQuery(chartQueryObject);
+		//long finalTime = System.nanoTime();
+		//System.out.println("Conversion of User Input to ChartRequest Object time: " + Double.toString((finalTime-startTime)/1000000) + " ms");
+	}//end handleClose
+
+	public ChartRequest convertUserInput2ChartRequest() {
 		String queryString = constructQuery();
-		System.out.println(queryString);
 		String chartSpecification = plotSelected();
 		ChartRequestFactory chartRequestFactory = new ChartRequestFactory();
 		IChartRequestBuilder chartRequestBuilder = chartRequestFactory.createRequest();
 		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
-		
-		executeAndDisplayChartQuery(chartQueryObject);
-		
-//		
-	}//end handleClose
+		return chartQueryObject;
+	}
 	
-
-	
+	public ChartRequest convertUserInput2ChartRequest(String query, String chart) {
+		String queryString = query;
+		String chartSpecification = chart;
+		ChartRequestFactory chartRequestFactory = new ChartRequestFactory();
+		IChartRequestBuilder chartRequestBuilder = chartRequestFactory.createRequest();
+		ChartRequest chartQueryObject = chartRequestBuilder.build(chartSpecification, queryString);
+		return chartQueryObject;
+	}
 
 	public int executeAndDisplayChartQuery(ChartRequest chartQueryObject) throws Exception
 
@@ -196,7 +231,7 @@ public class ChartQueryEditorController extends AbstractController
 		IMainEngine serverEngine = this.getApplication().getServer();
 
 		//
-		ChartResponse chartResponse = serverEngine.answerCubeQueryFromChartRequestTest(chartQueryObject);
+		ChartResponse chartResponse = serverEngine.answerCubeQueryFromChartRequestAndReturnAsChartResponse(chartQueryObject);
 		Boolean readFromFile = false;
 		for(ChartVisModel model : chartResponse.getChartVisModels()) {
 			if(model.getSeries().size()>1) {
@@ -218,6 +253,8 @@ public class ChartQueryEditorController extends AbstractController
 		return 0;
 		
 	}
+	
+
 	
 
 
@@ -273,7 +310,7 @@ public class ChartQueryEditorController extends AbstractController
 	private void createAndDisplayLineChartForChartResponse(ChartResponse chartResponse) {
     	List<ChartVisModel> visModels = chartResponse.getChartVisModels();
 		 for(ChartVisModel visModel : visModels) {
-			 String type = visModel.getchartType();
+			 String type = visModel.getQueryType();
 			 LineChart<String, Number> lineChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: " + type);
 			 XYChart.Series<String, Number> series = new XYChart.Series<>();
 			 List<DataPoint> points = visModel.getDataPoints();
@@ -283,6 +320,23 @@ public class ChartQueryEditorController extends AbstractController
 			 }
 			 
 			 lineChart.getData().add(series);
+			 
+	        // Change the line color to blue
+	        series.getNode().setStyle("-fx-stroke: blue;");
+
+	        // Change the point color to blue
+	        for (XYChart.Data<String, Number> data : series.getData()) {
+	            data.getNode().setStyle("-fx-background-color: blue, white; -fx-background-insets: 0, 2;");
+	        }
+	        // Customize the legend items
+	        Legend legend = (Legend) lineChart.lookup(".chart-legend");
+	        if (legend != null) {
+	            for (Legend.LegendItem legendItem : legend.getItems()) {
+	                Node symbol = legendItem.getSymbol();
+	                symbol.setStyle("-fx-background-color: blue, white;");
+	            }
+	        }
+			 
 			 displayChart(lineChart, "Line Chart\n Type: " + type, "");
 			
 		 }
@@ -294,7 +348,7 @@ public class ChartQueryEditorController extends AbstractController
 	private void createAndDisplayScatterChartForChartResponse(ChartResponse chartResponse) {
     	List<ChartVisModel> visModels = chartResponse.getChartVisModels();
 		 for(ChartVisModel visModel : visModels) {
-			 String type = visModel.getchartType();
+			 String type = visModel.getQueryType();
 			 ScatterChart<String, Number> scatterChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Scatter Chart\n Type: " + type);
 			 XYChart.Series<String, Number> series = new XYChart.Series<>();
 			 List<DataPoint> points = visModel.getDataPoints();
@@ -304,9 +358,20 @@ public class ChartQueryEditorController extends AbstractController
 			 }
 			 
 			 scatterChart.getData().add(series);
+		        for (XYChart.Data<String, Number> data : series.getData()) {
+		            data.getNode().setStyle("-fx-background-color: blue, white; -fx-background-insets: 0, 2;");
+		        }
+	        Legend legend = (Legend) scatterChart.lookup(".chart-legend");
+	        if (legend != null) {
+	            for (Legend.LegendItem legendItem : legend.getItems()) {
+	                Node symbol = legendItem.getSymbol();
+	                symbol.setStyle("-fx-background-color: blue;");
+	            }
+	        }
 			 displayChart(scatterChart, "Scatter Chart\n Type: " + type,"");
 			 
 		 }
+		 
 		 List<Data> comparisons = displayComparisonBetweenTheModelsFromChartRequest("Comparison between queries", chartResponse);
 		 List<QueryInfoData> queries = displayQueriesInfo("Chart type Info", chartResponse);
 		 createDatastory( chartResponse, comparisons, queries);
@@ -315,25 +380,40 @@ public class ChartQueryEditorController extends AbstractController
     }
 	
 	private void createAndDisplayBarChartForChartResponse(ChartResponse chartResponse) {
+		
     	List<ChartVisModel> visModels = chartResponse.getChartVisModels();
 		 for(ChartVisModel visModel : visModels) {
-			 String type = visModel.getchartType();
+			 String type = visModel.getQueryType();
 			 BarChart<String, Number> barChart = (BarChart<String, Number>) createChartAccordingToTypeAndTitle("Bar","Bar Chart\n Type: " + type);
 			 XYChart.Series<String, Number> series = new XYChart.Series<>();
 			 List<DataPoint> points = visModel.getDataPoints();
-			 
+			 System.out.println("Points size = " + points.size());
 			 for(DataPoint point: points) {
 				 series.getData().add(new XYChart.Data<>(point.getGrouper1(), point.getMeasure()));
 			 }
 			 
 			 barChart.getData().add(series);
-			 displayChart(barChart, "Bar Chart\n Type: " + type,"");
+			 for(XYChart.Data<String, Number> data : series.getData()) {
+				 data.getNode().setStyle("-fx-bar-fill: blue;");
+			 }
+	        Legend legend = (Legend) barChart.lookup(".chart-legend");
+	        if (legend != null) {
+	            for (Legend.LegendItem legendItem : legend.getItems()) {
+	                Node symbol = legendItem.getSymbol();
+	                symbol.setStyle("-fx-background-color: blue;");
+	            }
+	        }
+			displayChart(barChart, "Bar Chart\n Type: " + type,"");
 			
 			
 		 }
 		 List<Data> comparisons = displayComparisonBetweenTheModelsFromChartRequest("Comparison between queries", chartResponse);
 		 List<QueryInfoData> queries = displayQueriesInfo("Chart type Info", chartResponse);
+		 long startTime = System.nanoTime();
 		 createDatastory( chartResponse, comparisons, queries);
+         long endTime = System.nanoTime();
+ 		double time = endTime - startTime;
+ 		System.out.println("Creation of Datastory time: " + Double.toString(time/1000000) + " ms");
 	}
 
 
@@ -359,7 +439,7 @@ public class ChartQueryEditorController extends AbstractController
         table.getColumns().add(originalCol);
         List<ChartVisModel> visModels = chartResponse.getChartVisModels();
         List<String> distinctScoreModels = chartResponse.getChartScoreModels().stream().map(m -> m.getName()).distinct().collect(Collectors.toList());
-        List<String> siblings = visModels.stream().filter(m -> !m.getchartType().equals("Base")).map(m-> m.getchartType()).collect(Collectors.toList());
+        List<String> siblings = visModels.stream().filter(m -> !m.getQueryType().equals("Base")).map(m-> m.getQueryType()).collect(Collectors.toList());
       
         for (int i = 0; i < siblings.size(); i++) {
             final int index = i;
@@ -449,7 +529,7 @@ public class ChartQueryEditorController extends AbstractController
         table.getColumns().add(typeCol);
         table.getColumns().add(sqlExpressionCol);
         
-        List<QueryInfoData> queries = visModels.stream().map(m -> new QueryInfoData(m.getchartType(),extractGeneralType(m.getchartType()), m.getSqlExpression())).collect(Collectors.toList());
+        List<QueryInfoData> queries = visModels.stream().map(m -> new QueryInfoData(m.getQueryType(),extractGeneralType(m.getQueryType()), m.getSqlExpression())).collect(Collectors.toList());
         table.getItems().addAll(queries);
         
         
@@ -473,7 +553,7 @@ public class ChartQueryEditorController extends AbstractController
 		
 		List<ChartScoreModel> modelsWithSpecifiedModelName = scoreModelsList.stream().filter(m -> m.getName().equals(scoreModelName)).collect(Collectors.toList());
 		List<ChartScoreModel> modelsWithSpecifiedAnalyzeType = modelsWithSpecifiedModelName.stream().
-																filter(m -> m.getChartVisModel().getchartType().equals(analyzeQueryType))
+																filter(m -> m.getChartVisModel().getQueryType().equals(analyzeQueryType))
 																.collect(Collectors.toList());
 		
 		if(modelsWithSpecifiedAnalyzeType.size()==1) {
@@ -569,7 +649,7 @@ public class ChartQueryEditorController extends AbstractController
     	
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
-            int counterSiblings = 0;
+            int counterSiblings = 1;
             List<ChartModel> chartModels = null;
             while ((str = br.readLine()) != null) {
             	
@@ -579,7 +659,7 @@ public class ChartQueryEditorController extends AbstractController
                     LineChart<String, Number> lineChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Base");
                     lineChart.getData().add(readDataFromFile(br));
                     String sqlExpression = constructSQLExpressionForBasic(constructQuery());
-                    displayChart(lineChart, "Line Chart\n Type: Base\n","test2");
+                    displayChart(lineChart, "Line Chart\n Type: Base\n","Base");
                     
                     
     				
@@ -594,7 +674,7 @@ public class ChartQueryEditorController extends AbstractController
                     {
                     	LineChart<String, Number> producedChart = (LineChart<String, Number>) createChartAccordingToTypeAndTitle("Line","Line Chart\n Type: Sibling");
                     	producedChart.getData().add(convertMapToSeries(multiplies));
-                    	displayChart(producedChart, "Line Chart\n Type: Sibling" + counterSiblings,"test2");
+                    	displayChart(producedChart, "Line Chart\n Type: Sibling" + counterSiblings,"Sibling" + counterSiblings);
                     	
                     			
                     }else {
@@ -604,22 +684,25 @@ public class ChartQueryEditorController extends AbstractController
 	                		 LineChart<String, Number> producedChart = (LineChart<String, Number>) createMultipleChartsForGivenTypeAndData(multiplies.get(key), key,"Line");
 	                		 pane.getChildren().add(producedChart);
 	                	 }
-	                	 Scene scene = new Scene(pane, 595, 350);
-	                     stage.setTitle("Line Chart");
-	                     stage.setScene(scene);
-	                     stage.show();
+	                	 displayChartWithSmallMultiplies(pane,"Line Chart\n Type: Sibling" + counterSiblings,"Sibling" + counterSiblings);
+	                	 
+//	                	 Scene scene = new Scene(pane, 595, 350);
+//	                     stage.setTitle("Line Chart");
+//	                     stage.setScene(scene);
+//	                     stage.show();
 //                    
                     }
+                    counterSiblings+=1;
                 }
                 if(str.equals("Models produced for the charts:")) {
                 	chartModels = new ArrayList<>();
                 	skipLines(br,2);
                 	while((str = br.readLine()) != null) {
                 		String [] modelDescriptionMatrix = str.split("\t");
-                		if(modelDescriptionMatrix.length==4) {
-                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2],  modelDescriptionMatrix[3]);
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2],  "");
                 			chartModels.add(chartModel);
-                		}else if(modelDescriptionMatrix.length>4) {
+                		}else if(modelDescriptionMatrix.length>3) {
                 			StringBuilder sb = new StringBuilder();
                 		    for (int i = 2; i < modelDescriptionMatrix.length; i++) {
                 		        sb.append(modelDescriptionMatrix[i]);
@@ -627,7 +710,7 @@ public class ChartQueryEditorController extends AbstractController
                 		            sb.append("\n");
                 		        }
                 		    }
-                		    String score = modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
+                		    String score = "";//modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
                 		    String parameters = sb.toString();
                 		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters, score);
                 		    
@@ -635,6 +718,7 @@ public class ChartQueryEditorController extends AbstractController
                 		}
                 	}
                 	displayModels("Models For Chart And Auxiliary Queries",chartModels);
+                	createDatastoryForMultipleSeries(chartModels);
                 }
             }
             
@@ -696,8 +780,8 @@ public class ChartQueryEditorController extends AbstractController
                 	for (String seriesName : data.keySet()) {
                         addSeries(barChart, seriesName, data.get(seriesName));
                     }
-                        
-                    displayChart(barChart, "Bar Chart \n Type: " + type,"test2");
+                    String filename = (type.equals("Base")) ? "Base" : type+counterSiblings;   
+                    displayChart(barChart, "Bar Chart \n Type: " + type,filename);
                 }
                 
                 if(str.equals("Models produced for the charts:")) {
@@ -705,10 +789,10 @@ public class ChartQueryEditorController extends AbstractController
                 	skipLines(br,2);
                 	while((str = br.readLine()) != null) {
                 		String [] modelDescriptionMatrix = str.split("\t");
-                		if(modelDescriptionMatrix.length==4) {
-                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2], modelDescriptionMatrix[3]);
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2], "");
                 			chartModels.add(chartModel);
-                		}else if(modelDescriptionMatrix.length>4) {
+                		}else if(modelDescriptionMatrix.length>3) {
                 			StringBuilder sb = new StringBuilder();
                 		    for (int i = 2; i < modelDescriptionMatrix.length-1; i++) {
                 		        sb.append(modelDescriptionMatrix[i]);
@@ -716,7 +800,7 @@ public class ChartQueryEditorController extends AbstractController
                 		            sb.append("\n");
                 		        }
                 		    }
-                		    String score = modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
+                		    String score = "";//modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
                 		    String parameters = sb.toString();
                 		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters, score);
                 		    chartModels.add(chartModel);
@@ -728,6 +812,13 @@ public class ChartQueryEditorController extends AbstractController
             }
             
             displayModels("Models For Chart And Auxiliary Queries",chartModels);
+            long startTime = System.nanoTime();
+            createDatastoryForMultipleSeries(chartModels);
+            long endTime = System.nanoTime();
+    		double time = endTime - startTime;
+    		System.out.println("Creation of Datastory time: " + Double.toString(time/1000000) + " ms");
+            
+            
         }
     }
     
@@ -736,7 +827,7 @@ public class ChartQueryEditorController extends AbstractController
     	
         try (BufferedReader br = new BufferedReader(new FileReader(reportFile))) {
             String str;
-            int counterSiblings = 0;
+            int counterSiblings = 1;
             List<ChartModel> chartModels = null;
             while ((str = br.readLine()) != null) {
             	
@@ -745,7 +836,7 @@ public class ChartQueryEditorController extends AbstractController
                 	skipLines(br, 3);
                     ScatterChart<String, Number> lineChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Line Chart\n Type: Base");
                     lineChart.getData().add(readDataFromFile(br));
-                    displayChart(lineChart, "Line Chart\n Type: Base","test2");
+                    displayChart(lineChart, "Line Chart\n Type: Base","Base");
                     
                 } else if (str.equals("Type: Sibling")) {
                     skipLines(br, 6);
@@ -756,7 +847,7 @@ public class ChartQueryEditorController extends AbstractController
                     {
                     	ScatterChart<String, Number> producedChart = (ScatterChart<String, Number>) createChartAccordingToTypeAndTitle("Scatter","Line Chart\n Type: Sibling");
                     	producedChart.getData().add(convertMapToSeries(multiplies));
-                    	displayChart(producedChart, "Line Chart\n Type: Sibling","test2");
+                    	displayChart(producedChart, "Scatterplot \n Type: Sibling", "Sibling" + counterSiblings);
                     	
                     			
                     }else {
@@ -766,12 +857,15 @@ public class ChartQueryEditorController extends AbstractController
 	                		ScatterChart<String, Number> producedChart = (ScatterChart<String, Number>) createMultipleChartsForGivenTypeAndData(multiplies.get(key), key,"Scatter");
 	                		 pane.getChildren().add(producedChart);
 	                	 }
-	                	 Scene scene = new Scene(pane, 595, 350);
-	                     stage.setTitle("Line Chart");
-	                     stage.setScene(scene);
-	                     stage.show();
+	                	 displayChartWithSmallMultiplies(pane, "Scatterplot \n Type: Sibling", "Sibling" + counterSiblings);
+	                	 
+//	                	 Scene scene = new Scene(pane, 595, 350);
+//	                     stage.setTitle("Line Chart");
+//	                     stage.setScene(scene);
+//	                     stage.show();
 //                    
                     }
+                    counterSiblings+=1;
                 }
                 if(str.equals("Models produced for the charts:")) {
                 	chartModels = new ArrayList<>();
@@ -779,8 +873,8 @@ public class ChartQueryEditorController extends AbstractController
 //                	int counterOfSiblings = 1;
                 	while((str = br.readLine()) != null) {
                 		String [] modelDescriptionMatrix = str.split("\t");
-                		if(modelDescriptionMatrix.length==4) {
-                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2], modelDescriptionMatrix[3]);
+                		if(modelDescriptionMatrix.length==3) {
+                			ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0],modelDescriptionMatrix[1],modelDescriptionMatrix[2], "");
 //                			chartModel.setNo(String.valueOf(counterOfSiblings));
                 			chartModels.add(chartModel);
                 		}else if(modelDescriptionMatrix.length>3) {
@@ -792,7 +886,7 @@ public class ChartQueryEditorController extends AbstractController
                 		            sb.append("\n");
                 		        }
                 		    } 
-                		    String score = modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
+                		    String score = "";//modelDescriptionMatrix[modelDescriptionMatrix.length - 1];
                 		    String parameters = sb.toString();
                 		    ChartModel chartModel = new ChartModel(modelDescriptionMatrix[0], modelDescriptionMatrix[1], parameters, score);
 //                		    chartModel.setNo(String.valueOf(counterOfSiblings));
@@ -802,6 +896,7 @@ public class ChartQueryEditorController extends AbstractController
 //                		counterOfSiblings +=1;
                 	}
                 	displayModels("Models For Chart And Auxiliary Queries",chartModels);
+                	createDatastoryForMultipleSeries(chartModels);
                 }
             }
         }
@@ -870,14 +965,14 @@ public class ChartQueryEditorController extends AbstractController
     }
     
     private void displayModels(String title, List<ChartModel> lista) {
-    	Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText("Model execution is not currently supported");
-
-        
-        alert.showAndWait();
-/*    	Stage modelsStage = new Stage();
+//    	Alert alert = new Alert(AlertType.INFORMATION);
+//        alert.setTitle("Information");
+//        alert.setHeaderText(null);
+//        alert.setContentText("Model execution is not currently supported");
+//
+//        
+//        alert.showAndWait();
+    	Stage modelsStage = new Stage();
         modelsStage.setTitle(title);
 
         // Create table view
@@ -896,10 +991,10 @@ public class ChartQueryEditorController extends AbstractController
         TableColumn<ChartModel, String> column3 = new TableColumn<>("Result");
         column3.setCellValueFactory(new PropertyValueFactory<>("result"));
         
-        TableColumn<ChartModel, String> column4 = new TableColumn<>("Score");
-        column4.setCellValueFactory(new PropertyValueFactory<>("score"));
+//        TableColumn<ChartModel, String> column4 = new TableColumn<>("Score");
+//        column4.setCellValueFactory(new PropertyValueFactory<>("score"));
         
-        tableView.getColumns().addAll(column1, column2,column3, column4);
+        tableView.getColumns().addAll(column1, column2,column3);
         
         List<ChartModel> chartModelsProduced = lista;
         
@@ -910,7 +1005,7 @@ public class ChartQueryEditorController extends AbstractController
         // Set scene
         modelsStage.setScene(new Scene(tableView, 300, 600));
         modelsStage.show();
-        displayComparisonBetweenTheModels("Test", lista); */
+        //displayComparisonBetweenTheModels("Test", lista);
     }
     
     private void displayComparisonBetweenTheModels(String title, List<ChartModel> lista) {
@@ -962,6 +1057,17 @@ public class ChartQueryEditorController extends AbstractController
         
     }
     
+    private void displayChartWithSmallMultiplies(FlowPane pane,String title, String filename) {
+    	
+	 Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+     Scene scene = new Scene(pane, screenBounds.getWidth(), screenBounds.getHeight());
+     stage.setTitle(title);
+     stage.setScene(scene);
+     stage.show();
+     saveChartAsPNG(stage,filename);
+     
+    }
+    
     private void createDatastory(ChartResponse chartResponse, List<Data> comparisons, List<QueryInfoData> queries) {
     	
         DatastoryReporter reporter = new DatastoryReporter();
@@ -976,20 +1082,44 @@ public class ChartQueryEditorController extends AbstractController
         	List<ChartScoreModel> mathModels = chartResponse.getChartScoreModels().stream()
         										.filter($ -> $.getChartVisModel().equals(model)).collect(Collectors.toList());
         	List<String> modelResults = mathModels.stream().map($-> $.getResult()).collect(Collectors.toList());
-        	String sumResult = "";
-        	for(String res: modelResults ) {
-        		sumResult += res + "<br>";
-        	}
-        	reporter.addImageWithText(imagesPath  + model.getchartType() + ".png",model.getchartType()+ "Image", 
-        			"Query with name: " + model.getchartType() + "<br>" 
-        			+ "SQL expression: " + model.getSqlExpression() + "<br>"
-        			+ "extracted phenomena: <br>" +
-        			sumResult);
+            String sumResult = "<ul>";
+            for(String res: modelResults ) {
+                sumResult += "<li>" + res + "</li>";
+            }
+            sumResult += "</ul>";
+            reporter.addImageWithText(imagesPath  + model.getQueryType() + ".png",model.getQueryType()+ "Image", 
+                    "<div class='container'><div><strong>Query with name: </strong>" + model.getQueryType() + "<br>" 
+                    + "<strong>SQL expression: </strong><br>" + model.getSqlExpression() + "<br>"
+                    + "<strong>Extracted phenomena: </strong>" + sumResult + "</div></div>");
         }
-        reporter.addH2("Summarization of most important phenomena found in queries:");
+        reporter.addH2("Comparison between original query and sibling queries:");
         reporter.addText(summarizePhenomenaForAllQueries(chartResponse,comparisons));
         reporter.finalizeReport();
         reporter.saveReport(outputFolderPath + "reporter.html");
+    }
+    
+    private void createDatastoryForMultipleSeries(List<ChartModel> chartModels) {
+    	 DatastoryReporter reporter = new DatastoryReporter();
+         String imagesPath = "ChartImages/";
+         String outputFolderPath = "OutputFiles/";
+         List<String> queries = chartModels.stream().map(query -> query.getTypeQuery()).distinct().collect(Collectors.toList());
+         
+         reporter.addTitle("Chart Queries Report: ");
+         reporter.addH2("The results for the original query and auxiliary queries are summarized below.");
+         for(String query : queries) {
+        	 Map<String, String> mathModels = chartModels.stream().filter(q -> q.getTypeQuery().equals(query)).collect(Collectors.toMap(ChartModel::getModel, ChartModel::getResult));
+        	 String sumResults = "<ul>";
+        	 for (Map.Entry<String, String> entry : mathModels.entrySet()) {
+        		    sumResults += "<li>" + entry.getValue() + "</li>";
+        	 }
+             sumResults += "</ul>";
+             reporter.addImageWithText(imagesPath  + query + ".png",query+ "Image", 
+                     "<div class='container'><div><strong>Query with name: </strong>" + query + "<br>" 
+                     + "<strong>Extracted phenomena: </strong>" + sumResults + "</div></div>");
+             reporter.finalizeReport();
+             reporter.saveReport(outputFolderPath + "reporter.html");
+         }
+         
     }
     
     private String summarizePhenomenaForAllQueries(ChartResponse chartResponse, List<Data> comparisons) {
@@ -1002,7 +1132,7 @@ public class ChartQueryEditorController extends AbstractController
     	List<String> uniqueModels = comparisons.stream().filter(data -> data.getUnique().equals("✓")).map(data -> data.getCharacteristic()).collect(Collectors.toList());
     	List<String> commonModels = comparisons.stream().filter(data -> data.getCommon().equals("✓")).map(data -> data.getCharacteristic()).collect(Collectors.toList());
     	if (uniqueModels.isEmpty()) {
-    		producedSummary +="Original query hasn't a unique Model in comparison with it's siblings. <br>";
+    		producedSummary +="Original query has not a unique Model in comparison with it's siblings. <br>";
     	} else {
     		switch(uniqueModels.size()) {
     			case 1:
@@ -1035,7 +1165,7 @@ public class ChartQueryEditorController extends AbstractController
     			
     	}
     	if(commonModels.isEmpty()) {
-    		producedSummary +="Original query hasn't any common model phenomena with it's siblings. <br>";
+    		producedSummary +="Original query has not any common model phenomena with it's siblings. <br>";
     	} else {
     		switch(commonModels.size()) {
 			case 1:
@@ -1075,7 +1205,7 @@ public class ChartQueryEditorController extends AbstractController
     private String takeStringResultForScoreModel(ChartResponse chartResponse, String nameQuery, String modelName) {
     	String result = "";
     	List<ChartScoreModel> scoreModelsWithRequestedModelName = chartResponse.getChartScoreModels().stream().filter(m -> m.getName().equals(modelName)).collect(Collectors.toList()); 
-    	List<ChartScoreModel> scoreModelsWithRequestedModelNameAndNameQuery = scoreModelsWithRequestedModelName.stream().filter(m -> m.getChartVisModel().getchartType().equals(nameQuery)).collect(Collectors.toList());
+    	List<ChartScoreModel> scoreModelsWithRequestedModelNameAndNameQuery = scoreModelsWithRequestedModelName.stream().filter(m -> m.getChartVisModel().getQueryType().equals(nameQuery)).collect(Collectors.toList());
     	
     	if(scoreModelsWithRequestedModelNameAndNameQuery.size()==1) {
     		result = scoreModelsWithRequestedModelNameAndNameQuery.get(0).getResult();
@@ -1085,21 +1215,25 @@ public class ChartQueryEditorController extends AbstractController
     
     private void saveChartAsPNG(Stage stage,String filename) {
     	
-    	 
-    	
-	         Platform.runLater(() -> {
-	        	 Scene scene = stage.getScene();
-	             WritableImage image = scene.snapshot(null);
-	
-	        // Save the snapshot to a file
-	        File file = new File("OutputFiles/ChartImages/" + filename + ".png");
-	        try {
-	            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-         });
-    	
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                Scene scene = stage.getScene();
+                WritableImage image = scene.snapshot(null);
+
+                // Save the snapshot to a file
+                File file = new File("OutputFiles/ChartImages/" + filename + ".png");
+                try {
+                    ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                stop();
+            }
+        };
+
+        timer.start();
     }
     
     private void saveTableAsPNG(TableView<?> tableView, String filename) {
@@ -1472,6 +1606,7 @@ public class ChartQueryEditorController extends AbstractController
             return sqlExpression.get();
         }
     }
+
 
 
 }

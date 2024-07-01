@@ -40,6 +40,7 @@ public class VisualizationManager {
 	
 	public void reportChartQueryDetails(ArrayList<AnalyzeQuery> chartQueries, String chartType) throws Exception
 	{
+		long startTime = System.nanoTime();
 		this.localFilename = this.filename + "-ChartQueries_Report.md";
 		
 		String resultQuery = "";
@@ -90,14 +91,16 @@ public class VisualizationManager {
 	        }
 	    }
 		
-
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Execution Of Queries And Report Chart time :" +  Double.toString(time/1000000) + " ms");
 		
 	}
 	public List<ChartVisModel> reportChartQueryDetailsForChartResponse(ArrayList<AnalyzeQuery> chartQueries, String chartType) throws Exception
 	{
 		
 		
-		
+		long startTime = System.nanoTime();
 		List<AnalyzeQuery> chartQueriesWithResults = chartQueries.stream()
 													.filter(q ->q.getAnalyzeQueryResult()!=null && 
 													q.getAnalyzeQueryResult().getResultArray()!=null)
@@ -111,11 +114,11 @@ public class VisualizationManager {
 			
 			if (query.getType().toString().equals("Base")) {
 				records = readDataFromStringForBaseQuery(reportBaseQuery(query));
-				visModel.setChartType("Base");
+				visModel.setQueryType("Base");
 				
 			} else if(query.getType().toString().equals("Sibling")) {
 				records = readDataFromStringForSiblingQuery(reportSiblingQuery(query));
-				visModel.setChartType("Sibling" + counterSiblings);
+				visModel.setQueryType("Sibling" + counterSiblings);
 				counterSiblings +=1;
 			}
 			
@@ -138,8 +141,9 @@ public class VisualizationManager {
 			
 			chartVisModels.add(visModel);
 		}
-		
-			
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Execution Of Queries And Report Chart time : " +  Double.toString(time/1000000) + " ms" );	
 		  
 		
 		return chartVisModels;

@@ -16,7 +16,7 @@ public class ChartVisModel implements Serializable{
 	
 	private String chartVisType;
 	
-	private String chartType;
+	private String queryType;
 	
 	private List<String> x_axisValues;
 	
@@ -33,8 +33,8 @@ public class ChartVisModel implements Serializable{
 		return chartVisType;
 	}
 	
-	public String getchartType() {
-		return chartType;
+	public String getQueryType() {
+		return queryType;
 	}
 	
 	public List<String> getX_axisValues() {
@@ -57,8 +57,8 @@ public class ChartVisModel implements Serializable{
 		chartVisType = achartVisType;
 	}
 	
-	public  void setChartType(String type) {
-		chartType = type;
+	public  void setQueryType(String type) {
+		queryType = type;
 	}
 	
 	public void setX_axisValues(List<String> values) {

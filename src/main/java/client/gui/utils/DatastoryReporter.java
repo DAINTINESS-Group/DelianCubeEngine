@@ -18,9 +18,10 @@ public class DatastoryReporter {
         htmlContent.append("<title>Chart Queries Report</title>\n");
         htmlContent.append("<style>\n");
         htmlContent.append(".container { display: flex; align-items: center; }\n");
-        //htmlContent.append(".container img { width: 500px; height: 500px; margin-right: 10px; }\n");
-        htmlContent.append(".container img { flex: 2; width: 100%; height: auto; margin-right: 10px; }\n");
-        htmlContent.append(".container p { flex: 1; }\n");
+        htmlContent.append(".container img { width: 700px; height: 500px; margin-right: 30px; }\n");
+//        htmlContent.append(".container img { flex: 2; width: 100%; height: auto; margin-right: 10px; }\n");
+//        htmlContent.append(".container p { flex: 1; }\n");
+        htmlContent.append(".container div { max-width: 100%; }\n");
         htmlContent.append("h1 { text-align: center; }\n");
         htmlContent.append("h2 { text-align: center; } \n");
         htmlContent.append("</style>\n");

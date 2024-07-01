@@ -32,11 +32,11 @@ public class RegressionModel extends ChartModel{
 	    		String typeQuery =  query[0][2].trim();
 	    		if(typeQuery.equals("Sibling")) {
 	    			
-	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultRegression + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultRegression + "\n";// + reportScore() + "\n";
 	    			counterOfSiblings+=1;
 
 	    		}else {
-	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultRegression + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultRegression + "\n";// + reportScore() + "\n";
 
 	    		}
 	    	}
@@ -51,7 +51,7 @@ public class RegressionModel extends ChartModel{
 			return findRegressionForOneCategoryInSeries(query);
 		}
 	
-		return "";//findRegressionForMultipleCategoriesInSeries(query);
+		return findRegressionForMultipleCategoriesInSeries(query);
 	}
 
 	private String findRegressionForMultipleCategoriesInSeries(String[][] query) {
@@ -199,7 +199,7 @@ public class RegressionModel extends ChartModel{
 		double intercept = regression.getIntercept();
 		double slope = regression.getSlope();
 		setScoreResult("Linear ' regression coefficients: intercept: " + intercept + " and slope:" + slope);
-		return normalizeToRange(regression.getMeanSquareError());
+		return 1- Math.abs(normalizeToRange(regression.getMeanSquareError()));
 	}
 	
     private double normalizeToRange(double mse) {

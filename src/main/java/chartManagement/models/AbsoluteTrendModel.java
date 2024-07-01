@@ -29,11 +29,11 @@ public class AbsoluteTrendModel extends ChartModel{
 	    		String typeQuery =  query[0][2].trim();
 	    		if(typeQuery.equals("Sibling")) {
 	    			
-	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultTrend + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultTrend + "\n"; // + reportScore() + "\n";
 	    			counterOfSiblings+=1;
 
 	    		}else {
-	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultTrend + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultTrend + "\n";// + reportScore() + "\n";
 
 	    		}
 	    	}
@@ -49,7 +49,7 @@ public class AbsoluteTrendModel extends ChartModel{
 			return findTrendForOneCategoryInSeries(query);
 		}
 	
-		return "";//findTrendForMultipleCategoriesInSeries(query);
+		return findTrendForMultipleCategoriesInSeries(query);
 	}
 
 	private String findTrendForMultipleCategoriesInSeries(String[][] query) {
@@ -71,9 +71,12 @@ public class AbsoluteTrendModel extends ChartModel{
             }
 
             // Call findTrendForOneCategoryInSeries for each category
-            String trendResult = findTrendForOneCategoryInSeries(subset);
-            sum_scoreForAllSeries += this.score;
-            result += grouper2 + ": " + trendResult + "\t";
+            if(subset.length>2) {
+            	String trendResult = findTrendForOneCategoryInSeries(subset);
+                sum_scoreForAllSeries += this.score;
+                result += grouper2 + ": " + trendResult + "\t";
+            }
+            
         }
         this.score = sum_scoreForAllSeries/data.size();
         return result;
@@ -82,13 +85,12 @@ public class AbsoluteTrendModel extends ChartModel{
 	private String findTrendForOneCategoryInSeries(String[][] query) {
 		
 		List<String> values = new ArrayList<>();
-		
 		for(int i=2; i<query.length; i++) {
 			
 			values.add(query[i][2]);
 			
 		}
-		
+	
 		List<String> ascendingOrderValues =  new ArrayList<>(values);
 		Collections.sort(ascendingOrderValues);
 		if(originalIsInSpecifiedOrder(values, ascendingOrderValues)) {
@@ -235,7 +237,7 @@ public class AbsoluteTrendModel extends ChartModel{
 			return -1;
 		}
 		
-		setScoreResult("Series hasn't a clear trend.");
+		setScoreResult("Series has not a clear trend.");
 		return 0;
 	}
 

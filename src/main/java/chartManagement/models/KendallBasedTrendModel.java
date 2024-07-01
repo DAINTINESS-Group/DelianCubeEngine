@@ -32,11 +32,11 @@ private double score;
 	    		String typeQuery =  query[0][2].trim();
 	    		if(typeQuery.equals("Sibling")) {
 	    			
-	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultTrend + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultTrend + "\n";// + reportScore() + "\n";
 	    			counterOfSiblings+=1;
 
 	    		}else {
-	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultTrend + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultTrend + "\n"; // + reportScore() + "\n";
 
 	    		}
 	    	}
@@ -52,7 +52,7 @@ private double score;
 			return findTrendForOneCategoryInSeries(query);
 		}
 	
-		return "";//findTrendForMultipleCategoriesInSeries(query);
+		return findTrendForMultipleCategoriesInSeries(query);
 	}
 
 	private String findTrendForMultipleCategoriesInSeries(String[][] query) {
@@ -124,7 +124,7 @@ private double score;
 			result = " has a downtrend.";
 		}
 		this.score = Math.abs(kendallCoefficient);
-		return query[2][0] + result;
+		return query[2][1] + result;
 	}
 
 	private boolean originalIsInSpecifiedOrder(List<String> values, List<String> orderedValues) {
@@ -267,7 +267,7 @@ private double score;
 		} else if(kendallCoefficient> 0.5) {
 			setScoreResult("Series has a Kendall based uptrend.");
 		} else {
-			setScoreResult("Series hasn't a Kendall based trend.");
+			setScoreResult("Series has not a Kendall based trend.");
 		}
 		return kendallCoefficient;	
 	}

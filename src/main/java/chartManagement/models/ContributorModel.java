@@ -32,11 +32,11 @@ public class ContributorModel extends ChartModel{
 	    		String typeQuery =  query[0][2].trim();
 	    		if(typeQuery.equals("Sibling")) {
 	    			
-	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultContribution + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + String.valueOf(counterOfSiblings) + "\t" + resultContribution + "\n"; //+ reportScore() + "\n";
 	    			counterOfSiblings+=1;
 
 	    		}else {
-	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultContribution + reportScore() + "\n";
+	    			reportedResult += getModelName() + "\t" + typeQuery + "\t" + resultContribution + "\n";// + reportScore() + "\n";
 
 	    		}
 	    	}
@@ -51,7 +51,7 @@ public class ContributorModel extends ChartModel{
 		
 		if(findIfGrouper2ColumnContainsOnlyOneSeries(query, 1)) {
 			this.score = 0;
-			return "The query result has only one Category (" + query[query.length-1][1] +  ") for Series (100% contribution).";
+			return "The query result has only one series (" + query[query.length-1][1] +  ". No contribution!";
 		}
 		
 		Map<String, List<String []>> datesWithDominatorCategoriesValues = new HashMap<>();
@@ -88,19 +88,29 @@ public class ContributorModel extends ChartModel{
 				
 			}
 		}
-		String result = "";
+		String result = "Series that contributes the most for each date: ";
 		for (Map.Entry<String, List<String []>> entry : sortedMap.entrySet()) {
 			
-			result += entry.getKey() + ": ";
+			result += entry.getKey() + ": "; //ate
 			List<String[]> categoriesWithMeasures = entry.getValue();
+			String seriesWithGreatestPercentage ="";
+			double greatestPercentage = 0.0; 
 			for(String[] $ : categoriesWithMeasures) {
-				
-				result+= $[0] + " (" + $[1] + ") ";
-				if(!$.equals(categoriesWithMeasures.get(categoriesWithMeasures.size()-1))) {
-					result+= ",";
+//				
+//				result+= $[0] + " (" + $[1] + ") ";
+				double percentage = Double.parseDouble($[1].replace("%",""));
+				if(percentage >= greatestPercentage) {
+					greatestPercentage = percentage;
+					seriesWithGreatestPercentage = $[0];
 				}
 			}
-			result += "\t";
+			result += seriesWithGreatestPercentage + ", ";
+//				if(!$.equals(categoriesWithMeasures.get(categoriesWithMeasures.size()-1))) {
+//					result+= ",";
+//				}
+//			}
+//			result += "\t";
+			
 		}
 		this.score = computeScoreForEveryGrouper1Value(sortedMap);
 		return result;
@@ -255,7 +265,7 @@ public class ContributorModel extends ChartModel{
 		if(max_percentage >= 0.5) {
 			setScoreResult("Series has a mega contributor for x = " + contributor);
 		} else {
-			setScoreResult("Series hasn't a mega contributor.");
+			setScoreResult("Series has not a mega contributor.");
 		}
 		return max_percentage;
 	}

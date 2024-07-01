@@ -118,11 +118,11 @@ public class MainApp extends AbstractApplication {
 		// Cube LOAN and queries
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("schemaName", "pkdd99_star_100k");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99_star");
+		userInputList.put("inputFolder", "pkdd99_star_100K");
 		try {
 			service.initializeConnection(typeOfConnection, userInputList);
 		} catch (RemoteException e) {

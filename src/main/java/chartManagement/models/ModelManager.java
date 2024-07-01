@@ -53,6 +53,7 @@ public class ModelManager {
 
 
 	public void reportModelsForChartType() throws Exception {
+		long startTime = System.nanoTime();
 		List<ChartModel> models = returnModelList();
 		FileWriter fileWriter = null;
 		File report = new File(localFolder +  "/" + localFilename);
@@ -87,10 +88,14 @@ public class ModelManager {
 		}finally {
 			fileWriter.close();
 		}
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Execution Of Models time: " + Double.toString(time/1000000) + " ms");
 		
 	}
 	
 	public List<ChartScoreModel> getScoreModelsForChartVisModels(List<ChartVisModel> chartVisModels) {
+		long startTime = System.nanoTime();
 		List<ChartModel> chartModels = returnModelList();
 		List<ChartScoreModel> scoreModels = new ArrayList<>();
 		
@@ -105,7 +110,9 @@ public class ModelManager {
 				scoreModels.add(scoreModel);
 			}
 		}
-		
+		long endTime = System.nanoTime();
+		double time = endTime - startTime;
+		System.out.println("Execution Of Models time: " + Double.toString(time/1000000) + " ms");
 		return scoreModels;
 	}
 

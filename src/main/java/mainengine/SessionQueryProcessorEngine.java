@@ -916,7 +916,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}
 
 	@Override
-	public ChartResponse answerCubeQueryFromChartRequestTest(ChartRequest chartRequest) throws Exception {
+	public ChartResponse answerCubeQueryFromChartRequestAndReturnAsChartResponse(ChartRequest chartRequest) throws Exception {
 		
 		initializeChartManager();
 		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
