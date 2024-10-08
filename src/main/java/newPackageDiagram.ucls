@@ -8,12 +8,12 @@
   </package>  
   <package id="2" language="java" name="cubemanager" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/cubemanager" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="276" y="302"/>    
+    <position height="-1" width="-1" x="315" y="268"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="3" language="java" name="extractionmethod" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/extractionmethod" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="698" y="458"/>    
+    <position height="-1" width="-1" x="715" y="457"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="4" language="java" name="interestingnessengine" project="DelianCubeEngine" 
@@ -53,22 +53,22 @@
   </package>  
   <package id="11" language="java" name="cubemanager.logicaltophysicalmapping" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/cubemanager/logicaltophysicalmapping" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="354" y="429"/>    
+    <position height="-1" width="-1" x="322" y="461"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="12" language="java" name="cubemanager.cubebase" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/cubemanager/cubebase" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="572" y="336"/>    
+    <position height="-1" width="-1" x="653" y="361"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="13" language="java" name="cubemanager.sparkschema" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/cubemanager/sparkschema" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="221" y="520"/>    
+    <position height="-1" width="-1" x="234" y="545"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="14" language="java" name="cubemanager.relationalstarschema" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/cubemanager/relationalstarschema" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="655" y="528"/>    
+    <position height="-1" width="-1" x="651" y="562"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
   <package id="15" language="java" name="cubemanager.physicalschema" project="DelianCubeEngine" 
@@ -88,34 +88,37 @@
   </package>  
   <package id="18" language="java" name="assess" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/assess" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1087" y="311"/>    
+    <position height="-1" width="-1" x="1060" y="312"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
-  <dependency id="19">    
-    <bendpoint x="552" y="423"/>    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
+  <package id="19" language="java" name="cubemanager.cubealgebra" project="DelianCubeEngine" 
+    file="/DelianCubeEngine/src/main/java/cubemanager/cubealgebra" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="335" y="364"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
   <dependency id="20">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="10"/>  
-  </dependency>  
-  <dependency id="21">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="6"/>  
-  </dependency>  
-  <dependency id="22">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="18"/>  
-  </dependency>  
-  <dependency id="23">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <dependency id="24">    
     <bendpoint x="68" y="178"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <dependency id="21">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="22">    
+    <bendpoint x="403" y="225"/>    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="23">    
+    <bendpoint x="1039" y="21"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="18"/>  
+  </dependency>  
+  <dependency id="24">    
+    <bendpoint x="859" y="406"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="7"/>  
   </dependency>  
   <dependency id="25">    
     <bendpoint x="848" y="172"/>    
@@ -123,35 +126,95 @@
     <end type="TARGET" refId="7"/>  
   </dependency>  
   <dependency id="26">    
-    <end type="SOURCE" refId="15"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="27">    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <dependency id="28">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="17"/>  
-  </dependency>  
-  <dependency id="29">    
-    <end type="SOURCE" refId="13"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <dependency id="30">    
-    <bendpoint x="894" y="140"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="16"/>  
-  </dependency>  
-  <dependency id="31">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="14"/>  
-  </dependency>  
-  <dependency id="32">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="9"/>  
   </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="28">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <dependency id="29">    
+    <bendpoint x="522" y="272"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="30">    
+    <bendpoint x="321" y="114"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="31">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="32">    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
   <dependency id="33">    
+    <bendpoint x="496" y="358"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="34">    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="35">    
+    <bendpoint x="321" y="645"/>    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="36">    
+    <bendpoint x="801" y="417"/>    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="37">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <dependency id="38">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="39">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="40">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <dependency id="41">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="18"/>  
+  </dependency>  
+  <dependency id="42">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <dependency id="43">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="44">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="13"/>  
+  </dependency>  
+  <dependency id="45">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="46">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="47">    
     <bendpoint x="108" y="416"/>    
     <bendpoint x="125" y="604"/>    
     <bendpoint x="299" y="674"/>    
@@ -159,118 +222,82 @@
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="7"/>  
   </dependency>  
-  <dependency id="34">    
+  <dependency id="48">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="17"/>  
+  </dependency>  
+  <dependency id="49">    
+    <bendpoint x="673" y="301"/>    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="50">    
+    <bendpoint x="1034" y="38"/>    
+    <bendpoint x="1039" y="226"/>    
+    <bendpoint x="988" y="258"/>    
+    <bendpoint x="984" y="399"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="51">    
+    <bendpoint x="894" y="140"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="52">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="53">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <dependency id="54">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <dependency id="55">    
     <end type="SOURCE" refId="12"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
-  <dependency id="35">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="36">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <dependency id="37">    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="38">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="13"/>  
-  </dependency>  
-  <dependency id="39">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="40">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="18"/>  
-  </dependency>  
-  <dependency id="41">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="42">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <dependency id="43">    
+  <dependency id="56">    
     <bendpoint x="83" y="281"/>    
     <bendpoint x="94" y="616"/>    
     <bendpoint x="276" y="689"/>    
     <end type="SOURCE" refId="17"/>    
     <end type="TARGET" refId="7"/>  
   </dependency>  
-  <dependency id="44">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="45">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="46">    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="47">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <dependency id="48">    
-    <end type="SOURCE" refId="17"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <dependency id="49">    
-    <bendpoint x="321" y="645"/>    
-    <end type="SOURCE" refId="13"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="50">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="51">    
-    <bendpoint x="774" y="429"/>    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="52">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="11"/>  
-  </dependency>  
-  <dependency id="53">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="12"/>  
-  </dependency>  
-  <dependency id="54">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="55">    
-    <end type="SOURCE" refId="17"/>    
-    <end type="TARGET" refId="12"/>  
-  </dependency>  
-  <dependency id="56">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="12"/>  
-  </dependency>  
   <dependency id="57">    
     <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="12"/>  
+    <end type="TARGET" refId="6"/>  
   </dependency>  
   <dependency id="58">    
-    <end type="SOURCE" refId="17"/>    
-    <end type="TARGET" refId="2"/>  
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="7"/>  
   </dependency>  
   <dependency id="59">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="7"/>  
+    <bendpoint x="455" y="299"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="19"/>  
   </dependency>  
   <dependency id="60">    
     <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="12"/>  
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="61">    
+    <bendpoint x="698" y="510"/>    
+    <bendpoint x="836" y="581"/>    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="62">    
+    <bendpoint x="847" y="557"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="63">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="14"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

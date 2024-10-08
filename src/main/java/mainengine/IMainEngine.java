@@ -36,6 +36,7 @@ import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
 import model.decisiontree.labeling.RuleSet;
+import result.ResultFileMetadata;
 
 
 

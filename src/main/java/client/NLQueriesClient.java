@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 
 /**
  * A simple client used for issuing natural language queries against a specific cubebase and a specific cube

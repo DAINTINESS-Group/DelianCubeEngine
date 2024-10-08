@@ -45,6 +45,8 @@ import org.apache.spark.sql.AnalysisException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import result.ResultFileMetadata;
+
 
 
 

@@ -11,7 +11,7 @@ import chartManagement.utils.ChartResponse;
 import chartManagement.utils.ChartScoreModel;
 import chartManagement.utils.ChartVisModel;
 import cubemanager.CubeManager;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 
 public class ChartManager {
 	

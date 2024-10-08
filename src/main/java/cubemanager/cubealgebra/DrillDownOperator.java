@@ -1,9 +1,10 @@
-package mainengine;
+package cubemanager.cubealgebra;
 
 import java.util.Arrays;
 
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeQuery;
+import result.ResultFileMetadata;
 
 public class DrillDownOperator {
 

@@ -79,7 +79,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 
 public class ChartQueryEditorController extends AbstractController 
 {

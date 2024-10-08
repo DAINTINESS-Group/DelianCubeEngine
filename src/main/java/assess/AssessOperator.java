@@ -5,11 +5,12 @@ import assess.syntax.AssessQueryParser;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
-import mainengine.ResultFileMetadata;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.Cell;
+import result.ResultFileMetadata;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;

@@ -49,7 +49,8 @@ import cubemanager.cubebase.QueryHistoryManager;
 import model.decisiontree.labeling.RuleSet;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.CubeManager;
-
+import cubemanager.cubealgebra.DrillDownOperator;
+import cubemanager.cubealgebra.RollUpOperator;
 import interestingnessengine.InterestingnessManager;
 import mainengine.nlq.ITranslator;
 import mainengine.nlq.ITranslatorFactory;
@@ -62,6 +63,7 @@ import model.decisiontree.services.DatasetManager;
 import analyze.AnalyzeOperator;
 import analyze.AnalyzeQuery;
 import result.Result;
+import result.ResultFileMetadata;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
 

@@ -40,8 +40,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
 import mainengine.nlq.NLQValidator;
+import result.ResultFileMetadata;
 import mainengine.nlq.NLQValidationResults;
 
 /**

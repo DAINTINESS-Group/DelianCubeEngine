@@ -28,7 +28,7 @@ import java.util.HashMap;
 import client.ClientRMITransferer;
 //import mainengine.Foo;
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 /**
  * A simple client that 
  * (a) locates an RMI server in the HOST at PORT

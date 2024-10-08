@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
 import model.decisiontree.labeling.LabelingSystemConstants;
 import model.decisiontree.labeling.Rule;
 import model.decisiontree.labeling.RuleSet;
+import result.ResultFileMetadata;
 
 public class DecisionTreeConstructorClient {
 

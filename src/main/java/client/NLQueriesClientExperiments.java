@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 
 public class NLQueriesClientExperiments {
 	

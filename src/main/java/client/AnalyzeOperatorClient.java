@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 
 import mainengine.IMainEngine;
-import mainengine.ResultFileMetadata;
+import result.ResultFileMetadata;
 
 /**
  * Class that implements a simple client that executes Analyze intentional queries

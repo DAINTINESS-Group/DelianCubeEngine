@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import analyze.report.AnalyzeReport;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import mainengine.ResultFileMetadata;
 import result.Result;
+import result.ResultFileMetadata;
 
 
 /**
