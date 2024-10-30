@@ -177,7 +177,7 @@ public class AnalyzeTranslationManager {
 	
 	/**
 	 * Method that parses the incoming expression and checks if it contains syntax errors.
-	 * @return 0 if no errors found, else it returns -1 
+	 * @return true if no errors found, else it returns false 
 	 */
 	public boolean validateIncomingExpression() {
 		int numOfErrors = 0;

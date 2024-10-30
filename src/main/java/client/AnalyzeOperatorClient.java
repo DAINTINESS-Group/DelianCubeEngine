@@ -57,7 +57,8 @@ public class AnalyzeOperatorClient {
 		
 		// Analyze intentional query execution
 		String analyzeIntentionalExpression2 = "ANALYZE min(store_sales) FROM sales FOR year ='1997'  AND  store_country ='Mexico' GROUP BY year_quarter,store_country AS first_query";                          
-		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' GROUP BY district_name,month,status AS first_query";
+		//String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' GROUP BY district_name,month,status AS first_query";
+		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' GROUP BY district_name,month AS first_query";
 		for(int i = 0;i < 5;i++) {
 			ResultFileMetadata resultMetadata = service.analyze(analyzeIntentionalExpression);
 			String localFolder = resultMetadata.getLocalFolder();

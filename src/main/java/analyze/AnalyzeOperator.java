@@ -93,9 +93,9 @@ public class AnalyzeOperator {
 					{
 						for(int j=0; j<resultArray[i].length; j++)
 						{
-							System.out.print(resultArray[i][j] + " ");
+							//System.out.print(resultArray[i][j] + " ");
 						}
-						System.out.println();
+						//System.out.println();
 					}
 					if(resultArray != null) {
 						resultTuplesCounter += resultArray.length;

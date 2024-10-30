@@ -1,0 +1,1 @@
+product_id,INT,product_class_id,INT,brand_name,VARCHAR,product_name,VARCHAR,SKU,INT,SRP,DECIMAL,gross_weight,DOUBLE,net_weight,DOUBLE,recyclable_package,INT,low_fat,INT,units_per_case,INT,cases_per_pallet,INT,shelf_width,DOUBLE,shelf_height,DOUBLE,shelf_depth,DOUBLE,product_subcategory,VARCHAR,product_category,VARCHAR,product_department,VARCHAR,product_family,VARCHAR,All,VARCHAR

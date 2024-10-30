@@ -1,0 +1,1 @@
+time_id,INT,the_date,DATE,the_day,VARCHAR,the_month,VARCHAR,the_year,INT,day_of_month,INT,week_of_year,INT,month_of_year,INT,quarter,VARCHAR,year_and_month,VARCHAR,year_quarter,VARCHAR,All,VARCHAR
