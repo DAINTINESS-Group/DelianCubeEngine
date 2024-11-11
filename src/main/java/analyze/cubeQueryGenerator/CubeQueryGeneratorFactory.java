@@ -8,22 +8,40 @@ import cubemanager.CubeManager;
 
 public class CubeQueryGeneratorFactory {
 	public enum GeneratorType {
-		Base{
+		BASE{
 			@Override
 			public BaseQueryGenerator getInstance(CubeManager cubeManager) {
 				return new BaseQueryGenerator(cubeManager);
 			}
 		},
-		Siblings{
+		SIBLINGSOLD{
 			@Override
 			public SiblingsQueryGenerator getInstance(CubeManager cubeManager) {
 				return new SiblingsQueryGenerator(cubeManager);
 			}
 		},
-		Drill_Downs{
+		DRILLDOWNS{
 			@Override
 			public DrillDownsQueryGenerator getInstance(CubeManager cubeManager) {
 				return new DrillDownsQueryGenerator(cubeManager);
+			}
+		},
+		UPDATEDSIBLINGS{
+			@Override
+			public UpdatedSiblingsQueryGenerator getInstance(CubeManager cubeManager) {
+				return new UpdatedSiblingsQueryGenerator(cubeManager);
+			}
+		},
+		CINECUBESDRILLDOWNS{
+			@Override
+			public CinecubesDrillDownsQueryGenerator getInstance(CubeManager cubeManager) {
+				return new CinecubesDrillDownsQueryGenerator(cubeManager);
+			}
+		},
+		TRADITIONALDRILLDOWNS{
+			@Override
+			public TraditionalDrillDownsQueryGenerator getInstance(CubeManager cubeManager) {
+				return new TraditionalDrillDownsQueryGenerator(cubeManager);
 			}
 		};
 		public abstract CubeQueryGenerator getInstance(CubeManager cubeManager);

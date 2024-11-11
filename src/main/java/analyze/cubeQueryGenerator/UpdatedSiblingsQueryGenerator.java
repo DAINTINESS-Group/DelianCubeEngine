@@ -17,11 +17,11 @@ import result.Result;
  * @author mariosjkb
  *
  */
-public class NewSiblingsQueryGenerator implements CubeQueryGenerator {
+public class UpdatedSiblingsQueryGenerator implements CubeQueryGenerator {
 	
 	private CubeManager cubeManager;
 	
-	public NewSiblingsQueryGenerator(CubeManager cubeManager) {
+	public UpdatedSiblingsQueryGenerator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 	
@@ -187,7 +187,7 @@ public class NewSiblingsQueryGenerator implements CubeQueryGenerator {
 				}
 				
 				//build AnalyzeQuery
-				AnalyzeQuery analyzeSiblingQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Sibling,prevSigma,newSigma,prevGamma,newGamma);
+				AnalyzeQuery analyzeSiblingQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.UPDATED_SIBLINGS,prevSigma,newSigma,prevGamma,newGamma);
 				siblingQueries.add(analyzeSiblingQuery);
 			}
 		}

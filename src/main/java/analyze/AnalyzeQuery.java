@@ -13,7 +13,10 @@ public class AnalyzeQuery {
 	public enum TypeOfAnalyzeQuery{
 		Base,
 		Sibling,
-		Drill_Down
+		Drill_Down, 
+		UPDATED_SIBLINGS,
+		CINECUBES_DRILLDOWNS, 
+		TRADITIONAL_DRILLDOWNS
 	};
 	private CubeQuery analyzeCubeQuery;
 	

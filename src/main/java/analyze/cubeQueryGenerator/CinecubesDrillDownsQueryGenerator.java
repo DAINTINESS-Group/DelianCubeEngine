@@ -145,7 +145,7 @@ public class CinecubesDrillDownsQueryGenerator implements CubeQueryGenerator{
 					return drillDownQueries;
 				}
 				if(gammaDimension.equals(sigmaDimension)) {
-					childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),currentLevelToDescriptions.get(gammaExpression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
+					childrenValues = getChildrenValues(schemaName,expressionToTableName.get(expression),childToLevelById.get(expression),currentLevelToDescriptions.get(expression),sigmaExpressionsToValues.get(expression),connectionType);
 					if(childrenValues == null) {
 						return drillDownQueries;
 					}
@@ -201,7 +201,7 @@ public class CinecubesDrillDownsQueryGenerator implements CubeQueryGenerator{
 					}
 					newSigma = sigmas.get(j).split(",")[0].split("=")[1];
 					//build AnalyzeQuery
-					AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.Drill_Down,prevSigma,newSigma.replace("\n",""),prevGamma,newGamma);
+					AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.CINECUBES_DRILLDOWNS,prevSigma,newSigma.replace("\n",""),prevGamma,newGamma);
 					drillDownQueries.add(analyzeDrillDownQuery);
 				}
 				// clear the sigma expression ArrayList

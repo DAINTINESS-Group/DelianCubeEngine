@@ -1,0 +1,43 @@
+CubeName:sales
+Name: SalesQuery1
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month,customer_dim.state
+Sigma:date_dim.year='1997',customer_dim.country='USA',product_dim.product_subcategory='Milk'
+
+SELECT customer.state_province,date.year_and_month, sum(store_sales) as measure
+FROM sales inner join customer on sales.customer_id = customer.customer_id inner join date on sales.time_id = date.time_id inner join product on sales.product_id=product.product_id
+WHERE customer.country='USA' AND date.the_year='1997' AND product.product_subcategory='Milk'
+GROUP BY customer.state_province, date.year_and_month
+order by measure ASC;
+
+
+
+CubeName:sales
+Name: SalesQuery2
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.quarter,product_dim.product_subcategory
+Sigma:date_dim.year='1997',product_dim.product_category='Breakfast Foods',store_dim.store_country='USA'
+
+SELECT product.product_subcategory,date.year_quarter, sum(store_sales) as measure
+FROM sales inner join product on sales.product_id = product.product_id inner join date on sales.time_id = date.time_id inner join store on sales.store_id=store.store_id
+WHERE product.product_category='Breakfast Foods' AND date.the_year='1997' AND store.store_country='USA'
+GROUP BY product.product_subcategory, date.year_quarter
+order by measure ASC;
+
+
+
+CubeName:sales
+Name: SalesQuery3
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month,store_dim.region
+Sigma:date_dim.quarter='1997-Q1',store_dim.store_state='CA',promotion_dim.media='Radio'
+
+
+SELECT store.region_id,date.year_and_month, sum(store_sales) as measure
+FROM sales inner join store on sales.store_id = store.store_id inner join date on sales.time_id = date.time_id inner join promotion on sales.promotion_id=promotion.promotion_id
+WHERE store.store_state='CA' AND date.year_quarter='1997-Q1' AND promotion.media_type='Radio'
+GROUP BY store.region_id, date.year_and_month
+order by measure ASC;

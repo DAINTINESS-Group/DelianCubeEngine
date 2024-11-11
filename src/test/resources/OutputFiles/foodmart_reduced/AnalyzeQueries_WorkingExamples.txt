@@ -1,0 +1,55 @@
+CubeName:sales
+Name: 1st_working_example-AnalyzeBaseQuery
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.state
+Sigma:date_dim.year='1997', customer_dim.country='USA', product_dim.product_subcategory='Milk'
+Type: Base
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: none
+Modified Gamma Value: not modified
+CubeName:sales
+Name: 1st_working_example-AnalyzeSiblingQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.year, customer_dim.state
+Sigma:date_dim.All_date='ALL', customer_dim.country='USA', product_dim.product_subcategory='Milk'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: '1997'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: month
+Modified Gamma Value: year
+CubeName:sales
+Name: 1st_working_example-AnalyzeSiblingQuery_customer_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.country
+Sigma:customer_dim.All_customer='ALL', date_dim.year='1997', product_dim.product_subcategory='Milk'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: 'USA'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: state
+Modified Gamma Value: country
+CubeName:sales
+Name: 1st_working_example-AnalyzeDrillDownQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.date, customer_dim.state
+Sigma:date_dim.year='1997', customer_dim.country='USA', product_dim.product_subcategory='Milk'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: 'Milk'
+Modified Sigma Value: not modified
+Original Gamma Value: date_dim.month
+Modified Gamma Value: date_dim.date
+CubeName:sales
+Name: 1st_working_example-AnalyzeDrillDownQuery_customer_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.region
+Sigma:date_dim.year='1997', customer_dim.country='USA', product_dim.product_subcategory='Milk'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: 'Milk'
+Modified Sigma Value: not modified
+Original Gamma Value: customer_dim.state
+Modified Gamma Value: customer_dim.region
