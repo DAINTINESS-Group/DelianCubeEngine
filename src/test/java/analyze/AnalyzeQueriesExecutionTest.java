@@ -63,7 +63,7 @@ public class AnalyzeQueriesExecutionTest {
 		
 		String expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionExpectedResults.csv");
 			
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		
@@ -110,7 +110,7 @@ public class AnalyzeQueriesExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithoutEmptyQueriesResults.csv");
 		}
 	
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		
@@ -150,7 +150,7 @@ public class AnalyzeQueriesExecutionTest {
 		
 		String expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithSomeEmptyQueriesResults.csv");
 		
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		

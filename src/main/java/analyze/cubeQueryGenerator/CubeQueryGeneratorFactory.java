@@ -14,13 +14,13 @@ public class CubeQueryGeneratorFactory {
 				return new BaseQueryGenerator(cubeManager);
 			}
 		},
-		SIBLINGSOLD{
+		IAKOVIDISSIBLINGS{
 			@Override
 			public SiblingsQueryGenerator getInstance(CubeManager cubeManager) {
 				return new SiblingsQueryGenerator(cubeManager);
 			}
 		},
-		DRILLDOWNS{
+		IAKOVIDISDRILLDOWNS{
 			@Override
 			public DrillDownsQueryGenerator getInstance(CubeManager cubeManager) {
 				return new DrillDownsQueryGenerator(cubeManager);

@@ -131,7 +131,7 @@ public class TraditionalDrillDownsQueryGenerator implements CubeQueryGenerator{
 					e.printStackTrace();
 				}
 				//build AnalyzeQuery
-				AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.TRADITIONAL_DRILLDOWNS,prevSigma,"not modified",prevGamma,newGamma);
+				AnalyzeQuery analyzeDrillDownQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.TRADITIONAL_DRILLDOWNS,"none","not modified",prevGamma,newGamma);
 				drillDownQueries.add(analyzeDrillDownQuery);
 			}
 			// clear the gamma expression ArrayList

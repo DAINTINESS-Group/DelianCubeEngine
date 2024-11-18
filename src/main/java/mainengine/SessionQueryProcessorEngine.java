@@ -60,7 +60,7 @@ import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import model.decisiontree.services.DatasetManager;
-import analyze.AnalyzeOperator;
+import analyze.AnalyzeOperatorByIakovidis;
 import analyze.AnalyzeQuery;
 import result.Result;
 import result.ResultFileMetadata;
@@ -473,7 +473,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	@Override
 	public ResultFileMetadata analyze(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AnalyzeOperator operator = new AnalyzeOperator(incomingExpression, cubeManager,schemaName,connectionType);
+		AnalyzeOperatorByIakovidis operator = new AnalyzeOperatorByIakovidis(incomingExpression, cubeManager,schemaName,connectionType);
 		ResultFileMetadata analyzeResult = operator.execute();
 		return analyzeResult;
 	}

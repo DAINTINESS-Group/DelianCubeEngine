@@ -32,12 +32,12 @@ CubeName:sales
 Name: SalesQuery3
 AggrFunc:Sum
 Measure:store_sales
-Gamma:date_dim.month,store_dim.region
-Sigma:date_dim.quarter='1997-Q1',store_dim.store_state='CA',promotion_dim.media='Radio'
+Gamma:date_dim.month,customer_dim.region
+Sigma:date_dim.quarter='1997-Q3',customer_dim.state='CA',promotion_dim.media='Daily Paper'
 
 
-SELECT store.region_id,date.year_and_month, sum(store_sales) as measure
-FROM sales inner join store on sales.store_id = store.store_id inner join date on sales.time_id = date.time_id inner join promotion on sales.promotion_id=promotion.promotion_id
-WHERE store.store_state='CA' AND date.year_quarter='1997-Q1' AND promotion.media_type='Radio'
-GROUP BY store.region_id, date.year_and_month
+SELECT customer.customer_region_id,date.year_and_month, sum(store_sales) as measure
+FROM sales inner join customer on sales.customer_id = customer.customer_id inner join date on sales.time_id = date.time_id inner join promotion on sales.promotion_id=promotion.promotion_id
+WHERE customer.state_province='CA' AND date.year_quarter='1997-Q3' AND promotion.media_type='Daily Paper'
+GROUP BY customer.customer_region_id, date.year_and_month
 order by measure ASC;

@@ -63,7 +63,7 @@ public class AnalyzeWrongExpressions {
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		
@@ -84,7 +84,7 @@ public class AnalyzeWrongExpressions {
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		
@@ -105,7 +105,7 @@ public class AnalyzeWrongExpressions {
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
 		
-		AnalyzeOperator testAnalyzeOperator = new AnalyzeOperator(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
 		testAnalyzeOperator.execute();
 		

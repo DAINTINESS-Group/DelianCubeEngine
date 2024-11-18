@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import analyze.AnalyzeOperator;
+import analyze.AnalyzeOperatorByIakovidis;
 import analyze.AnalyzeQuery;
 import chartManagement.models.ModelManager;
 import chartManagement.utils.ChartResponse;
@@ -17,7 +17,7 @@ public class ChartManager {
 	
 	private CubeManager cubeManager;
 	private ChartQueryGeneratorFacade chartQueryGeneratorFacade;
-	private AnalyzeOperator operator;
+	private AnalyzeOperatorByIakovidis operator;
 	ArrayList<AnalyzeQuery> producedQueries;
 	ArrayList<AnalyzeQuery> BaseAndSiblingQueries;
 	private VisualizationManager visualizationManager;
@@ -42,7 +42,7 @@ public class ChartManager {
 	
 	public void createConnectionWithAnalyzeOperator(String incomingQuery,String schemaName, String connectionType){
 		
-		operator = new AnalyzeOperator(incomingQuery, cubeManager, schemaName, connectionType);
+		operator = new AnalyzeOperatorByIakovidis(incomingQuery, cubeManager, schemaName, connectionType);
 		extractAggregationFunctionFromAnalyzeQuery(incomingQuery);
 		
 	}
@@ -61,7 +61,7 @@ public class ChartManager {
         this.aggrFunc = aggrFunc;
 	}
 	
-	public AnalyzeOperator getOperator(){
+	public AnalyzeOperatorByIakovidis getOperator(){
 		return operator;
 	}
 	

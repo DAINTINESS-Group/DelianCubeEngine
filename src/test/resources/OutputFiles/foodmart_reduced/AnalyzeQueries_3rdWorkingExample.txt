@@ -1,0 +1,55 @@
+CubeName:sales
+Name: 3rd_working_example-AnalyzeBaseQuery
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.region
+Sigma:date_dim.quarter='1997-Q3', customer_dim.state='CA', promotion_dim.media='Daily Paper'
+Type: Base
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: none
+Modified Gamma Value: not modified
+CubeName:sales
+Name: 3rd_working_example-AnalyzeSiblingQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.quarter, customer_dim.region
+Sigma:date_dim.year='1997', customer_dim.state='CA', promotion_dim.media='Daily Paper'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: '1997-Q3'
+Modified Sigma Value: '1997'
+Original Gamma Value: month
+Modified Gamma Value: quarter
+CubeName:sales
+Name: 3rd_working_example-AnalyzeSiblingQuery_customer_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.state
+Sigma:customer_dim.country='USA', date_dim.quarter='1997-Q3', promotion_dim.media='Daily Paper'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: 'CA'
+Modified Sigma Value: 'USA'
+Original Gamma Value: region
+Modified Gamma Value: state
+CubeName:sales
+Name: 3rd_working_example-AnalyzeDrillDownQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.date, customer_dim.region
+Sigma:date_dim.quarter='1997-Q3', customer_dim.state='CA', promotion_dim.media='Daily Paper'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: date_dim.month
+Modified Gamma Value: date_dim.date
+CubeName:sales
+Name: 3rd_working_example-AnalyzeDrillDownQuery_customer_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, customer_dim.customer
+Sigma:date_dim.quarter='1997-Q3', customer_dim.state='CA', promotion_dim.media='Daily Paper'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: customer_dim.region
+Modified Gamma Value: customer_dim.customer

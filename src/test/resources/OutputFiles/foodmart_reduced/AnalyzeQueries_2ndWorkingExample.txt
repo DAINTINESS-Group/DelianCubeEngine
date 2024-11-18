@@ -1,0 +1,55 @@
+CubeName:sales
+Name: 2nd_working_example-AnalyzeBaseQuery
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.quarter, product_dim.product_subcategory
+Sigma:date_dim.year='1997', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA'
+Type: Base
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: none
+Modified Gamma Value: not modified
+CubeName:sales
+Name: 2nd_working_example-AnalyzeSiblingQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.year, product_dim.product_subcategory
+Sigma:date_dim.All_date='ALL', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: '1997'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: quarter
+Modified Gamma Value: year
+CubeName:sales
+Name: 2nd_working_example-AnalyzeSiblingQuery_product_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.quarter, product_dim.product_category
+Sigma:product_dim.All_product='ALL', date_dim.year='1997', store_dim.store_country='USA'
+Type: UPDATED_SIBLINGS
+Original Sigma Value: 'Breakfast Foods'
+Modified Sigma Value: 'ALL'
+Original Gamma Value: product_subcategory
+Modified Gamma Value: product_category
+CubeName:sales
+Name: 2nd_working_example-AnalyzeDrillDownQuery_date_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.month, product_dim.product_subcategory
+Sigma:date_dim.year='1997', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: date_dim.quarter
+Modified Gamma Value: date_dim.month
+CubeName:sales
+Name: 2nd_working_example-AnalyzeDrillDownQuery_product_dim
+AggrFunc:Sum
+Measure:store_sales
+Gamma:date_dim.quarter, product_dim.product
+Sigma:date_dim.year='1997', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA'
+Type: TRADITIONAL_DRILLDOWNS
+Original Sigma Value: none
+Modified Sigma Value: not modified
+Original Gamma Value: product_dim.product_subcategory
+Modified Gamma Value: product_dim.product

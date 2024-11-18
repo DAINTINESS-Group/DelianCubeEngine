@@ -1,1 +1,1 @@
-sales_id,INT,product_id,INT,time_id,INT,customer_id,INT,promotion_id,INT,store_id,INT,store_sales,DECIMAL,store_cost,DECIMAL,unit_sales,DECIMAL
+sales_id,INT,product_id,INT,time_id,INT,customer_id,INT,promotion_id,INT,store_id,INT,store_sales,DOUBLE,store_cost,DOUBLE,unit_sales,DOUBLE

@@ -15,7 +15,7 @@ import result.ResultFileMetadata;
  * @author mariosjkb
  */
 
-public class AnalyzeOperator {
+public class AnalyzeOperatorByIakovidis {
 
 	// CubeManager object to manage the cube
 	private CubeManager cubeManager;
@@ -29,7 +29,7 @@ public class AnalyzeOperator {
 	// Analyze operator result object
 	private AnalyzeReport analyzeReport;
 	
-	public AnalyzeOperator(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
+	public AnalyzeOperatorByIakovidis(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
 		this.cubeManager = cubeManager;
 		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
 		this.analyzeQueries = new ArrayList<AnalyzeQuery>();
@@ -39,6 +39,7 @@ public class AnalyzeOperator {
 	/**
 	 * Auxiliary method that checks the syntax of the incoming expression and if
 	 * the syntax is correct it constructs the necessary AnalyzeQueries.
+	 * Constructs the base query, Iakovidis' Sibling and Drill-down queries.
 	 * @return True if the AnalyzeQueries were constructed, False if not.
 	 */
 	private boolean constructAnalyzeQueries() {

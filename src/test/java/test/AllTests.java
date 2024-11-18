@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	analyze.AnalyzeTranslationManagerTest.class,
 	analyze.AnalyzeQueriesExecutionTest.class,
 	analyze.AnalyzeWrongExpressions.class,
+	analyze.AnalyzeUpdatedQueriesTranslationAndExecutionTest.class,
 	assess.benchmarks.BenchmarkFactoryTest.class,
 	assess.labelers.CustomLabelingSchemeTest.class,
 	assess.AssessQueryParserTest.class,

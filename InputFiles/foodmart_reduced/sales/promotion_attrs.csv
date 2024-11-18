@@ -1,1 +1,1 @@
-promotion_id,INT,product_district_id,INT,promotion_name,VARCHAR,media_type,VARCHAR,cost,DECIMAL,start_date,DATE,end_date,DATE,All,VARCHAR
+promotion_id,INT,product_district_id,INT,promotion_name,VARCHAR,media_type,VARCHAR,cost,DOUBLE,start_date,DATE,end_date,DATE,All,VARCHAR
