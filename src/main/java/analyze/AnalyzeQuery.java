@@ -1,5 +1,7 @@
 package analyze;
 
+import java.util.ArrayList;
+
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
@@ -16,7 +18,8 @@ public class AnalyzeQuery {
 		Drill_Down, 
 		UPDATED_SIBLINGS,
 		CINECUBES_DRILLDOWNS, 
-		TRADITIONAL_DRILLDOWNS
+		TRADITIONAL_DRILLDOWNS,
+		MQOPTIMIZER
 	};
 	private CubeQuery analyzeCubeQuery;
 	
@@ -32,6 +35,8 @@ public class AnalyzeQuery {
 	
 	private Result analyzeQueryResult;
 	
+	private ArrayList<String> analyzeMQOResult;
+	
 	public AnalyzeQuery(CubeQuery analyzeCubeQuery,TypeOfAnalyzeQuery type,String originalSigmaValue,String modifiedSigmaValue,String originalGammaValue,String modifiedGammaValue) {
 		this.analyzeCubeQuery = analyzeCubeQuery;
 		this.type = type;
@@ -43,6 +48,10 @@ public class AnalyzeQuery {
 	
 	public void setAnalyzeQueryResult(Result result) {
 		this.analyzeQueryResult = result;
+	}
+	
+	public void setAnalyzeMQOResult(ArrayList<String> mqoResult) {
+		this.analyzeMQOResult = mqoResult;
 	}
 
 	public CubeQuery getAnalyzeCubeQuery() {
@@ -71,6 +80,10 @@ public class AnalyzeQuery {
 
 	public Result getAnalyzeQueryResult() {
 		return analyzeQueryResult;
+	}
+	
+	public ArrayList<String> getAnalyzeMQOResult(){
+		return analyzeMQOResult;
 	}
 	
 	public String toString(){

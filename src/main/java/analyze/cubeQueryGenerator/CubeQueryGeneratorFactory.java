@@ -43,6 +43,12 @@ public class CubeQueryGeneratorFactory {
 			public TraditionalDrillDownsQueryGenerator getInstance(CubeManager cubeManager) {
 				return new TraditionalDrillDownsQueryGenerator(cubeManager);
 			}
+		},
+		MQOPTIMIZER{
+			@Override
+			public MQOptimizerGenerator getInstance(CubeManager cubeManager) {
+				return new MQOptimizerGenerator(cubeManager);
+			}
 		};
 		public abstract CubeQueryGenerator getInstance(CubeManager cubeManager);
 	}

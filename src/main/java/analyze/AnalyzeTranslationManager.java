@@ -110,6 +110,17 @@ public class AnalyzeTranslationManager {
 		this.queryAlias = analyzeParserManager.getQueryAlias();
 	}
 	
+	public ArrayList<String> getSigmaExpressions(){
+		return this.sigmaExpressions;
+	}
+	
+	public HashMap<String, String> getSigmaExpressionsToValues(){
+		return this.sigmaExpressionsToValues;
+	}
+	
+	public String getAggrFunc() {
+		return this.aggrFunc;
+	}
 	/**
 	 * Method that obtains all the necessary information about the analyze query sigma and gamma levels from
 	 * the cube with only one parse of the cube's dimensions.  
@@ -283,6 +294,23 @@ public class AnalyzeTranslationManager {
 		}
 		analyzeQueries.addAll(cinecubesDrillDownQueries);
 		*/
+		return analyzeQueries;
+	}
+	
+	public ArrayList<AnalyzeQuery> translateToUpdatedOptimizedCubeQueries(){
+		ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
+		CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
+		
+		//set up variables for translation
+		setUpTranslation();
+		
+		//translate to Multi-Query
+		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.MQOPTIMIZER, cubeManager);
+		analyzeQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		if(analyzeQueries.isEmpty()) {
+			cubeQueryGenerationStatus = false;
+		}
+		
 		return analyzeQueries;
 	}
 	
