@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.1.14" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
-  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+<class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="chartManagement.models.ChartModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/ChartModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="185" width="303" x="646" y="315"/>    
+    <position height="354" width="303" x="559" y="246"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -13,27 +13,27 @@
   <class id="2" language="java" name="chartManagement.models.ContributorModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/ContributorModel.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="108" width="297" x="74" y="533"/>    
+    <position height="284" width="297" x="-17" y="640"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="3" language="java" name="chartManagement.models.DominanceModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/DominanceModel.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="178" width="269" x="620" y="705"/>    
+    <position height="293" width="269" x="947" y="640"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="4" language="java" name="chartManagement.models.ModalityModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/ModalityModel.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="134" width="196" x="1080" y="457"/>    
+    <position height="156" width="196" x="256" y="386"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -43,8 +43,8 @@
   <class id="5" language="java" name="chartManagement.models.ModelListFactory" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/ModelListFactory.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="749" y="107"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    <position height="108" width="392" x="442" y="1094"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
@@ -52,7 +52,7 @@
   </class>  
   <class id="6" language="java" name="chartManagement.models.ModelManager" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/ModelManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="200" width="304" x="48" y="17"/>    
+    <position height="301" width="304" x="1051" y="1"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -62,88 +62,87 @@
   <class id="7" language="java" name="chartManagement.models.RegressionModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/RegressionModel.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="183" width="351" x="946" y="708"/>    
+    <position height="292" width="351" x="374" y="650"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="8" language="java" name="chartManagement.models.AbsoluteTrendModel" project="DelianCubeEngine" 
     file="/DelianCubeEngine/src/main/java/chartManagement/models/AbsoluteTrendModel.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="188" width="286" x="283" y="710"/>    
+    <position height="278" width="286" x="1060" y="340"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <generalization id="9">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <dependency id="10">    
-    <bendpoint x="1016" y="215"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="11">    
-    <bendpoint x="232" y="353"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <generalization id="13">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <dependency id="14">    
-    <bendpoint x="321" y="461"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <generalization id="15">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <dependency id="16">    
-    <bendpoint x="433" y="364"/>    
+  <dependency id="9">    
+    <bendpoint x="922" y="428"/>    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="1"/>  
   </dependency>  
-  <generalization id="17">    
+  <dependency id="10">    
+    <bendpoint x="152" y="996"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <generalization id="11">    
     <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="1"/>  
   </generalization>  
-  <dependency id="18">    
-    <bendpoint x="462" y="448"/>    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <generalization id="19">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <dependency id="20">    
+  <dependency id="12">    
+    <bendpoint x="1276" y="944"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="8"/>  
   </dependency>  
-  <association id="21">    
+  <generalization id="13">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <generalization id="14">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <generalization id="15">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <association id="16">    
+    <bendpoint x="1414" y="384"/>    
+    <bendpoint x="1336" y="1136"/>    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="22" name="modelListFactory">        
+      <attribute id="17" name="modelListFactory">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="23" minimum="0" maximum="1">        
+      <multiplicity id="18" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <generalization id="19">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <dependency id="20">    
+    <bendpoint x="818" y="864"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="21">    
+    <bendpoint x="590" y="964"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="22">    
+    <bendpoint x="350" y="994"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
