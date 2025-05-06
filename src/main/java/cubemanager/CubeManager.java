@@ -256,6 +256,48 @@ public class CubeManager {
 		
 		return finalResult;
 	}
+	
+	/**
+	 * Returns the {@link Result} of a {@link CubeQuery}.
+	 * <p>
+	 * The <code>CubeQuery</code> object must have been prepared before via invoking <code>createQueryFromString</code> of this object. 
+	 * Then, the execution is passed to <code>CubeBase</code> that actually orchestrates the execution of this query 
+	 * 
+	 * The method takes a CubeQuery as input and 
+	 * (a) generates an extraction method (currently SQL query only) 
+	 * (b) executes the extraction method
+	 * (c) by simply using the Result object of the extraction method, it also populates a Result object
+	 * (d) converts the resultSet of the query execution to a 2d String array
+	 * 
+	 * @param currentCubeQuery the {@link CubeQuery} that it to be executed (must have been prepared before)
+	 * @return the {@link Result} of the execution
+	 * 
+	 * 
+	 * @see CubeQuery
+	 * @see Result
+	 * @see mainengine.SimpleQueryProcessingEngine#answerCubeQueryFromString(String)
+	 */
+	public Result executeSimpleSqlQuery(CubeQuery currentCubeQuery) {
+		//return this.CBase.executeQuery(currentCubeQuery);
+
+		//1. Create an ExtractionMethod (for this method: SimpleSqlQuery)
+		ExtractionMethod extractionMethod = ExtractionMethodFactory.createSimpleExtractionMethod();  
+		currentCubeQuery.setExtractionMethod(extractionMethod);   	
+		
+		//2. Convert the cubequery to sth that the DBMS can execute, i.e., a query string
+		String queryString = produceExtractionMethod(currentCubeQuery);
+		//	if you DEBUG
+		System.out.println("\n"+queryString);		
+
+		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
+		if (finalResult == null) {
+			System.err.println("Exiting due to failure to populate the result");
+			System.exit(-100);
+			
+		}
+	
+		return finalResult;
+	}
 
 	/**
 	 * Returns the string of the extraction Method of a CubeQuery

@@ -54,10 +54,13 @@ public class AnalyzeOperatorUpdated {
 		}
 	}
 	
+	
+	
 	/**
 	 * Method that executes the AnalyzeQueries, sets the Result field of the AnalyzeQueries
 	 * and creates the report file 
 	 */
+	//#Strategy0
 	public ResultFileMetadata executeUpdatedAnalyze() {
 		//this must return a Intentional Result object, not null, not void, not int
 		int resultTuplesCounter = 0;
@@ -94,11 +97,11 @@ public class AnalyzeOperatorUpdated {
 			System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			analyzeReport.setAnalyzeQueries(analyzeQueries);
 			
-			startTime = System.nanoTime();
-			analyzeReport.createTextReportFile();
-			endTime = System.nanoTime();
-			double reportingTime = endTime - startTime;
-			System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+			//startTime = System.nanoTime();
+			//analyzeReport.createTextReportFile();
+			//endTime = System.nanoTime();
+			//double reportingTime = endTime - startTime;
+			//System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 		}
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(analyzeReport.getLocalFolder());

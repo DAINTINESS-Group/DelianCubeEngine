@@ -66,7 +66,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 		
 		testAnalyzeTranslationManager.validateIncomingExpression();
 		
-		ArrayList<AnalyzeQuery> result = testAnalyzeTranslationManager.translateToUpdatedOptimizedCubeQueries();
+		ArrayList<AnalyzeQuery> result = testAnalyzeTranslationManager.translateToOptimizedSingleCubeQueries();
 		
 		for(AnalyzeQuery aq:result) {
 			System.out.println(aq.toString());
@@ -77,7 +77,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	}
 	
 	@Test
-	public final void testAnalyzeQueryExecution() throws IOException {
+	public final void testAnalyzeQueryExecutionWithMQOBeforeResultMapping() throws IOException {
 		String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
 		
 		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
@@ -92,9 +92,9 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeOptimizerQueryExecutionResults.csv");
 		}
 	
-		AnalyzeOperatorUpdatedMQOptimizer testAnalyzeOperator = new AnalyzeOperatorUpdatedMQOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorMultiQueryToSingleQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		testAnalyzeOperator.executeUpdatedAnalyzeWithMQO();
+		testAnalyzeOperator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		
@@ -124,7 +124,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	}
 	
 	@Test
-	public final void testAnalyzeMQOExecution() throws IOException {
+	public final void testAnalyzeQueryExecutionWithMQOAfterResultMapping() throws IOException {
 		String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
 		
 		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
@@ -139,9 +139,9 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeMQOResults.csv");
 		}
 	
-		AnalyzeOperatorUpdatedMQOptimizer testAnalyzeOperator = new AnalyzeOperatorUpdatedMQOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorMultiQueryToSingleQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 		
-		testAnalyzeOperator.executeUpdatedAnalyzeWithMQO();
+		testAnalyzeOperator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

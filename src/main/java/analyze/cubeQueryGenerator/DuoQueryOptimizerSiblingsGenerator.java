@@ -12,17 +12,11 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
-
-/**
- * Class that implements the translation of the optimizer query, a query that gathers the data instead of creating the base query, 
- * the Drill-downs and the Sibling queries for the Analyze query.
- *
- */
-public class MQOptimizerGenerator implements CubeQueryGenerator {
+public class DuoQueryOptimizerSiblingsGenerator implements CubeQueryGenerator{
 	
-private CubeManager cubeManager;
+	private CubeManager cubeManager;
 	
-	public MQOptimizerGenerator(CubeManager cubeManager) {
+	public DuoQueryOptimizerSiblingsGenerator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 	
@@ -81,29 +75,19 @@ private CubeManager cubeManager;
 		retString = result[2][0];
 		return retString;
 	}
-	
 
 	@Override
-	public ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc, 
-													String measure, 
-													String cubeName,
-													ArrayList<String> sigmaExpressions, 
-													HashMap<String, String> sigmaExpressionsToValues,
-													ArrayList<String> gammaExpressions, 
-													String queryAlias, 
-													HashMap<String, String> dimensions,
-													HashMap<String, String> childToLevelById, 
-													HashMap<String, String> childToLevelByName,
-													HashMap<String, String> parentToLevelById, 
-													HashMap<String, String> parentToLevelByName,
-													HashMap<String, String> expressionToTableName, 
-													HashMap<String, String> currentLevelToDescriptions,
-													String schemaName, 
-													String connectionType) {
+	public ArrayList<AnalyzeQuery> generateCubeQueries(String aggrFunc, String measure, String cubeName,
+			ArrayList<String> sigmaExpressions, HashMap<String, String> sigmaExpressionsToValues,
+			ArrayList<String> gammaExpressions, String queryAlias, HashMap<String, String> dimensions,
+			HashMap<String, String> childToLevelById, HashMap<String, String> childToLevelByName,
+			HashMap<String, String> parentToLevelById, HashMap<String, String> parentToLevelByName,
+			HashMap<String, String> expressionToTableName, HashMap<String, String> currentLevelToDescriptions,
+			String schemaName, String connectionType) {
 		
-		ArrayList<AnalyzeQuery> optimizerQueries = new ArrayList<AnalyzeQuery>();
+		ArrayList<AnalyzeQuery> siblingsQuery = new ArrayList<AnalyzeQuery>();
 		HashMap<String,String> queryParams = new HashMap<String,String>();
-		CubeQuery optimizerCubeQuery = null;
+		CubeQuery analyzeCubeQuery = null;
 		
 		// set-up query parameters
 		cubeName = "CubeName:" + cubeName + "\n";
@@ -114,6 +98,7 @@ private CubeManager cubeManager;
 		String gamma = "Gamma:";
 		String sigma = "Sigma:";
 		
+		
 		String originalGammaExpression = null;
 		String gammaDimension = null;
 		String originalSigmaExpression = null;
@@ -123,40 +108,33 @@ private CubeManager cubeManager;
 		for(int i=0; i<gammaExpressions.size(); i++) {
 			originalGammaExpression = gammaExpressions.get(i);
 			gammaDimension = dimensions.get(originalGammaExpression);
-			if(gammaDimension == null) {
-				return optimizerQueries;
-			}
-			gamma += gammaDimension + "." + childToLevelByName.get(originalGammaExpression) + ", ";
-		}
-		
-		for(int i=0; i<gammaExpressions.size(); i++) {
-			originalGammaExpression = gammaExpressions.get(i);
-			gammaDimension = dimensions.get(originalGammaExpression);
 			dimensionsFound.add(gammaDimension);
 			prevGamma += gammaDimension + "." + originalGammaExpression + ", ";
 			if(gammaDimension == null) {
-				return optimizerQueries;
+				return siblingsQuery;
 			}
 			gamma += gammaDimension + "." + originalGammaExpression + ", ";
 		}
+		
+		
 		
 		for(int i=0; i<sigmaExpressions.size(); i++) {
 			originalSigmaExpression = sigmaExpressions.get(i);
 			sigmaDimension = dimensions.get(originalSigmaExpression);
 			if(sigmaDimension == null) {
-				return optimizerQueries;
+				return siblingsQuery;
 			}
 			prevSigma += sigmaDimension + "." + originalSigmaExpression + "=" + sigmaExpressionsToValues.get(sigmaExpressions.get(i)) + ", ";
 			String parentValue = getParentValue(schemaName,expressionToTableName.get(originalSigmaExpression),parentToLevelById.get(originalSigmaExpression),currentLevelToDescriptions.get(originalSigmaExpression),sigmaExpressionsToValues.get(originalSigmaExpression),connectionType);
 			if(parentValue == null) {
-				return optimizerQueries;
+				return siblingsQuery;
 			}			
 			for(int j=0; j<gammaExpressions.size(); j++) {
 				originalGammaExpression = gammaExpressions.get(j);
 				gammaDimension = dimensions.get(originalGammaExpression);
 				
 				if(gammaDimension == null) {
-					return optimizerQueries;
+					return siblingsQuery;
 				}
 				if(sigmaDimension.equals(gammaDimension)) {					
 					//new gamma level becomes the level of the dimension, found at the respective filter of the base query 
@@ -175,8 +153,7 @@ private CubeManager cubeManager;
 		gamma = gamma.substring(0,gamma.length()-2) + "\n";
 		sigma = sigma.substring(0,sigma.length()-2) + "\n";
 		
-		
-		String name = "Name:" + queryAlias + "-MQOptimizer" + "\n";
+		String name = "Name:" + queryAlias + "-SiblingsDuoQueryOptimizer" + "\n";
 		String cubeQString = cubeName + name + aggrFunc + measure + gamma + sigma;
 		queryParams.put("CubeName", cubeName);
 		queryParams.put("Name", name);
@@ -185,15 +162,16 @@ private CubeManager cubeManager;
 		queryParams.put("Gamma", gamma);
 		queryParams.put("Sigma", sigma);
 		try {
-			optimizerCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
+			analyzeCubeQuery = cubeManager.createCubeQueryFromString(cubeQString, queryParams);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		//build AnalyzeQuery
-		AnalyzeQuery optimizerQuery = new AnalyzeQuery(optimizerCubeQuery,TypeOfAnalyzeQuery.MQOPTIMIZER,prevSigma.substring(0,prevSigma.length()-1),sigma.substring(6,sigma.length()-1),prevGamma.substring(0,prevGamma.length()-1), gamma.substring(6,gamma.length()-1));
-		optimizerQueries.add(optimizerQuery);
 		
-		return optimizerQueries;
+		//build AnalyzeQuery
+		AnalyzeQuery optimizerQuery = new AnalyzeQuery(analyzeCubeQuery,TypeOfAnalyzeQuery.DUOQUERYSIBLINGSOPTIMIZER,prevSigma.substring(0,prevSigma.length()-1),sigma.substring(6,sigma.length()-1),prevGamma.substring(0,prevGamma.length()-1), gamma.substring(6,gamma.length()-1));
+		siblingsQuery.add(optimizerQuery);
+		
+		return siblingsQuery;
 	}
 
 }

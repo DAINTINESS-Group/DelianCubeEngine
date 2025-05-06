@@ -184,20 +184,20 @@ CREATE TABLE `sales` (
 
 USE foodmart_reduced;
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/product.csv'
-INTO TABLE product FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE product FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 product_id, product_class_id, brand_name, product_name, SKU, SRP, gross_weight, net_weight, recyclable_package, low_fat, units_per_case, cases_per_pallet, shelf_width, shelf_height, shelf_depth, 
 product_subcategory, product_category, product_department, product_family, product.All
 );
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/date.csv'
-INTO TABLE date FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE date FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 time_id, the_date, the_day, the_month, the_year, day_of_month, week_of_year, month_of_year, quarter, year_and_month, year_quarter, date.All
 );
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/customer.csv'
-INTO TABLE customer FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE customer FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 customer_id, account_num, lname, fname, mi, address1, address2, address3, address4, city, state_province, postal_code, 
 country, customer_region_id, phone1, phone2, birthdate, marital_status, yearly_income, gender, total_children, num_children_at_home, 
@@ -206,7 +206,7 @@ education, date_accnt_opened, member_card, occupation, houseowner, num_cars_owne
 ;
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/promotion.csv'
-INTO TABLE promotion FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE promotion FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 promotion_id, promotion_district_id, promotion_name, media_type, @cost, @start_date, @end_date, promotion.All
 )
@@ -217,7 +217,7 @@ end_date = NULLIF(@end_date,'')
 ;
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/store.csv'
-INTO TABLE store FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE store FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 store_id, store_type, region_id, store_name, store_number, store_street_address, store_city, 
 store_state, store_postal_code, store_country, @store_manager, @store_phone, @store_fax,
@@ -233,7 +233,7 @@ last_remodel_date = NULLIF(@last_remodel_date, '')
 ;
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/sales.csv'
-INTO TABLE sales FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n'  IGNORE 1 LINES
+INTO TABLE sales FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
 (
 sales_id, product_id, time_id, customer_id, promotion_id, store_id, store_sales, store_cost, unit_sales
 )

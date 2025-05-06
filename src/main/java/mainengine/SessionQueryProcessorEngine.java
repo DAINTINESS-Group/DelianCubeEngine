@@ -38,7 +38,6 @@ import org.apache.spark.sql.AnalysisException;
 
 import assess.AssessOperator;
 import chartManagement.ChartManager;
-import chartManagement.IChartQueryNModelGenerator;
 import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
@@ -61,7 +60,9 @@ import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import model.decisiontree.services.DatasetManager;
 import analyze.AnalyzeOperatorByIakovidis;
-import analyze.AnalyzeQuery;
+import analyze.AnalyzeOperatorMultiQueryToDuoQueryOptimizer;
+import analyze.AnalyzeOperatorUpdated;
+import analyze.AnalyzeOperatorMultiQueryToSingleQueryOptimizer;
 import result.Result;
 import result.ResultFileMetadata;
 import setup.ModeOfWork;
@@ -471,13 +472,41 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	//INTENTIONAL OPERATORS METHODS
 	@Override
-	public ResultFileMetadata analyze(String incomingExpression) throws RemoteException {
+	public ResultFileMetadata analyzeByIakovidis(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
 		AnalyzeOperatorByIakovidis operator = new AnalyzeOperatorByIakovidis(incomingExpression, cubeManager,schemaName,connectionType);
 		ResultFileMetadata analyzeResult = operator.execute();
 		return analyzeResult;
 	}
+	
+	//#Strategy0
+	@Override
+	public ResultFileMetadata analyzeUpdated(String incomingExpression) throws RemoteException {
+		cubeManager = session.getCubeManager();
+		AnalyzeOperatorUpdated operator = new AnalyzeOperatorUpdated(incomingExpression, cubeManager,schemaName,connectionType);
+		ResultFileMetadata analyzeResult = operator.executeUpdatedAnalyze();
+		return analyzeResult;
+	}
 
+	
+	//#Strategy 1
+	@Override
+	public ResultFileMetadata analyzeWithMultiQueryToSingleQueryOptimizer(String incomingExpression) throws RemoteException {
+		cubeManager = session.getCubeManager();
+		AnalyzeOperatorMultiQueryToSingleQueryOptimizer operator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression, cubeManager,schemaName,connectionType);
+		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
+		return analyzeResult;
+	}
+
+	//#Strategy2
+	@Override
+	public ResultFileMetadata analyzeWithMultiQueryToDuoQueryOptimizer(String incomingExpression) throws RemoteException {
+		cubeManager = session.getCubeManager();
+		AnalyzeOperatorMultiQueryToDuoQueryOptimizer operator = new AnalyzeOperatorMultiQueryToDuoQueryOptimizer(incomingExpression, cubeManager,schemaName,connectionType);
+		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMultiQueryToDuoQueryOptimizer();
+		return analyzeResult;
+	}
+	
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws RemoteException {
 		return new AssessOperator(session.getCubeManager())
@@ -904,7 +933,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	//Chart Query Methods
 	@Override
 	public ResultFileMetadata answerCubeQueryFromChartRequest(ChartRequest chartRequest) throws Exception { //TODO
-		// TODO Auto-generated method stub
 		
 		initializeChartManager();
 		chartManager.createConnectionWithAnalyzeOperator(chartRequest.getQuery(), schemaName, connectionType);
@@ -926,15 +954,8 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		chartManager.generateQueries();
 		
 
-
 		return chartManager.executeQueriesAndReturnToChartResponse();
 	}
-
-
-
-
-
-
 
 
 }//end class

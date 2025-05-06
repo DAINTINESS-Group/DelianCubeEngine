@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.apache.spark.sql.AnalysisException;
 
-import analyze.AnalyzeQuery;
 import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
@@ -217,11 +216,39 @@ public interface IMainEngine extends IServer {
 	
 	/**
 	 * 
-	 * @param incomingExpression The String that defines an intentional query for the analyze operator
+	 * @param incomingExpression The String that defines an intentional query for the analyze operator, a first version, created by Marios Iakovidis 
 	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
 	 * @throws RemoteException
 	 */
-	ResultFileMetadata analyze(String incomingExpression) throws RemoteException;
+	ResultFileMetadata analyzeByIakovidis(String incomingExpression) throws RemoteException;
+	
+	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the updated analyze operator
+	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata analyzeUpdated(String incomingExpression) throws RemoteException;
+	
+	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the analyze operator with multi-querying to single query optimization
+	 * @return A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata analyzeWithMultiQueryToSingleQueryOptimizer(String incomingExpression) throws RemoteException;
+	
+	
+	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the analyze operator with multi-querying to two queries optimization
+	 * @return A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 */
+	ResultFileMetadata analyzeWithMultiQueryToDuoQueryOptimizer(String incomingExpression) throws RemoteException;
 	
 	
 	/**

@@ -44,10 +44,22 @@ public class CubeQueryGeneratorFactory {
 				return new TraditionalDrillDownsQueryGenerator(cubeManager);
 			}
 		},
-		MQOPTIMIZER{
+		SINGLEQUERYOPTIMIZER{
 			@Override
-			public MQOptimizerGenerator getInstance(CubeManager cubeManager) {
-				return new MQOptimizerGenerator(cubeManager);
+			public SingleQueryOptimizerGenerator getInstance(CubeManager cubeManager) {
+				return new SingleQueryOptimizerGenerator(cubeManager);
+			}
+		},
+		DUOQUERYSIBLINGSOPTIMIZER{
+			@Override
+			public DuoQueryOptimizerSiblingsGenerator getInstance(CubeManager cubeManager) {
+				return new DuoQueryOptimizerSiblingsGenerator(cubeManager);
+			}
+		},
+		DUOQUERYDRILLDOWNSOPTIMIZER{
+			@Override
+			public DuoQueryOptimizerDrillDownsGenerator getInstance(CubeManager cubeManager) {
+				return new DuoQueryOptimizerDrillDownsGenerator(cubeManager);
 			}
 		};
 		public abstract CubeQueryGenerator getInstance(CubeManager cubeManager);

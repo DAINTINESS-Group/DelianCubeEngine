@@ -26,4 +26,8 @@ public class ExtractionMethodFactory {
 		return new SqlQuery();
 
 	}
+	
+	public static ExtractionMethod createSimpleExtractionMethod() {
+		return new SimpleSqlQuery();
+	}
 }

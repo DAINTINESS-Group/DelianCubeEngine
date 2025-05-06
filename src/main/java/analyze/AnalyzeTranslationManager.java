@@ -297,7 +297,7 @@ public class AnalyzeTranslationManager {
 		return analyzeQueries;
 	}
 	
-	public ArrayList<AnalyzeQuery> translateToUpdatedOptimizedCubeQueries(){
+	public ArrayList<AnalyzeQuery> translateToOptimizedSingleCubeQueries(){
 		ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
 		CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
 		
@@ -305,11 +305,38 @@ public class AnalyzeTranslationManager {
 		setUpTranslation();
 		
 		//translate to Multi-Query
-		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.MQOPTIMIZER, cubeManager);
+		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.SINGLEQUERYOPTIMIZER, cubeManager);
 		analyzeQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
 		if(analyzeQueries.isEmpty()) {
 			cubeQueryGenerationStatus = false;
 		}
+		
+		return analyzeQueries;
+	}
+
+	public ArrayList<AnalyzeQuery> translateToOptimizedDuoCubeQueries() {
+		ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
+		CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
+		
+		//set up variables for translation
+		setUpTranslation();
+		
+		//translate to Multi-Query
+		// translate to Sibling queries
+		CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.DUOQUERYSIBLINGSOPTIMIZER, cubeManager);
+		ArrayList<AnalyzeQuery> siblingQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		if(siblingQueries.isEmpty()) {
+			cubeQueryGenerationStatus = false;
+		}
+		analyzeQueries.addAll(siblingQueries);
+		
+		// translate to Drill-Down queries
+		queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.TRADITIONALDRILLDOWNS, cubeManager);
+		ArrayList<AnalyzeQuery> drillDownQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+		if(drillDownQueries.isEmpty()) {
+			cubeQueryGenerationStatus = false;
+		}
+		analyzeQueries.addAll(drillDownQueries);
 		
 		return analyzeQueries;
 	}

@@ -12,7 +12,7 @@ import result.Result;
 import result.ResultFileMetadata;
 
 
-public class AnalyzeOperatorUpdatedMQOptimizer {
+public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 	
 	// CubeManager object to manage the cube
 		private CubeManager cubeManager;
@@ -27,7 +27,7 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 		private AnalyzeReport analyzeReport;
 		
 		
-		public AnalyzeOperatorUpdatedMQOptimizer(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
+		public AnalyzeOperatorMultiQueryToSingleQueryOptimizer(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
 			this.cubeManager = cubeManager;
 			this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
 			this.analyzeQueries = new ArrayList<AnalyzeQuery>();
@@ -47,7 +47,7 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 			incomingExpressionIsValid = analyzeTranslationManager.validateIncomingExpression();
 			if(incomingExpressionIsValid == true) {
 				long startTime = System.nanoTime();
-				analyzeQueries = analyzeTranslationManager.translateToUpdatedOptimizedCubeQueries();
+				analyzeQueries = analyzeTranslationManager.translateToOptimizedSingleCubeQueries();
 				long endTime = System.nanoTime();
 				double queriesGenerationTime = endTime - startTime;
 				System.out.println("Analyze Cube Query Generation Time :" + Double.toString(queriesGenerationTime/1000000) + " ms");
@@ -64,7 +64,8 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 		 * Method that executes the AnalyzeQueries, sets the Result field of the AnalyzeQueries
 		 * and creates the report file 
 		 */
-		public ResultFileMetadata executeUpdatedAnalyzeWithMQO() {
+		//#Strategy1
+		public ResultFileMetadata executeAnalyzeWithMultiQueryToSingleQueryOptimizer() {
 			//this must return a Intentional Result object, not null, not void, not int
 			int resultTuplesCounter = 0;
 			int mqoResultSize =0;
@@ -92,7 +93,7 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 				//for(AnalyzeQuery aq: analyzeQueries) {
 				AnalyzeQuery aq = analyzeQueries.get(0);
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-				Result result = cubeManager.executeQuery(analyzeCubeQuery);
+				Result result = cubeManager.executeQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
 				String[][] resultArray = result.getResultArray();
 				if(resultArray!=null) {
 					resultTuplesCounter += resultArray.length;
@@ -101,7 +102,7 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 				
 				long mqoStartTime = System.nanoTime();
 				ArrayList<Cell> resultCellsMQO = result.getCells();
-				AnalyzeMQOAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMQOAuxiliaryQueryResultBuilder();	
+				AnalyzeSingleQueryOptimizerAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeSingleQueryOptimizerAuxiliaryQueryResultBuilder();	
 				ArrayList<String> mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
 													analyzeTranslationManager.getSigmaExpressions(), 
 													analyzeTranslationManager.getSigmaExpressionsToValues(),
@@ -118,11 +119,11 @@ public class AnalyzeOperatorUpdatedMQOptimizer {
 				System.out.println("Multi-Query Optimization Processing Time :" + Double.toString(mqoProcessingTime/1000000) + " ms");
 				analyzeReport.setAnalyzeQueries(analyzeQueries);
 				
-				startTime = System.nanoTime();
-				analyzeReport.createTextReportFile();
-				endTime = System.nanoTime();
-				double reportingTime = endTime - startTime;
-				System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+				//startTime = System.nanoTime();
+				//analyzeReport.createTextReportFile();
+				//endTime = System.nanoTime();
+				//double reportingTime = endTime - startTime;
+				//System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 			}
 			ResultFileMetadata resultFile = new ResultFileMetadata();
 			resultFile.setLocalFolder(analyzeReport.getLocalFolder());
