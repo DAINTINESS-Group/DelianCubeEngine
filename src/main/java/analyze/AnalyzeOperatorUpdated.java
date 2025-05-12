@@ -87,7 +87,8 @@ public class AnalyzeOperatorUpdated {
 				String[][] resultArray = result.getResultArray();
 				
 				if(resultArray!=null) {
-					resultTuplesCounter += resultArray.length;
+					// first 2 rows contain column names!
+					resultTuplesCounter += resultArray.length - 2;
 				}
 
 				aq.setAnalyzeQueryResult(result);
