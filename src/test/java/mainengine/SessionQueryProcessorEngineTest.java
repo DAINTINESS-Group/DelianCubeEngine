@@ -181,7 +181,7 @@ public class SessionQueryProcessorEngineTest {
 						"AggrFunc:Avg" + " \n" +
 						"Measure:amount" + " \n" +
 						"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
-						"Sigma:account_dim.lvl1='Liberec'";
+						"Sigma:account_dim.lvl1 = 'Liberec'";
 		testedQPEngine.answerCubeQueryFromString(testQueryString1);   /**/
 		File fileProduced1 = new File("OutputFiles/CubeQueryLoan1_FailTheTest.tab");
 		File fileReference1 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan1.tab");
@@ -196,7 +196,7 @@ public class SessionQueryProcessorEngineTest {
 				"AggrFunc:Avg" + " \n" +
 				"Measure:amount" + " \n" +
 				"Gamma:account_dim.lvl2,date_dim.lvl2" + " \n" +
-				"Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'";
+				"Sigma:account_dim.lvl1='Liberec' ,status_dim.lvl0 = 'Running Contract/OK'";
 
 		testedQPEngine.answerCubeQueryFromString(testQueryString2);   /**/
 		

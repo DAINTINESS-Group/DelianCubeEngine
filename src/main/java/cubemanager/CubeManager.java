@@ -159,10 +159,37 @@ public class CubeManager {
 					String[] tmp_sigma = temp[1].split(",");
 					sigma = new String[tmp_sigma.length][3];
 					for (int j = 0; j < tmp_sigma.length; j++) {
-						String[] split_sigma = tmp_sigma[j].trim().split("=");
-						sigma[j][0] = split_sigma[0];
-						sigma[j][1] = "=";
-						sigma[j][2] = split_sigma[1];
+						String[] split_sigma_equal = tmp_sigma[j].trim().split("=");
+						String[] split_sigma_less = tmp_sigma[j].trim().split("<");
+						String[] split_sigma_great = tmp_sigma[j].trim().split(">");
+						String[] split_sigma_in = tmp_sigma[j].trim().split("IN");
+						String[] split_sigma_not_in = tmp_sigma[j].trim().split("NOT IN");
+						String[] split_sigma_between = tmp_sigma[j].trim().split("BETWEEN");
+						if(split_sigma_equal.length > 1) {
+							sigma[j][0] = split_sigma_equal[0];
+							sigma[j][1] = "=";
+							sigma[j][2] = split_sigma_equal[1];
+						}else if(split_sigma_less.length > 1) {
+							sigma[j][0] = split_sigma_less[0];
+							sigma[j][1] = "<";
+							sigma[j][2] = split_sigma_less[1];
+						}else if(split_sigma_great.length > 1) {
+							sigma[j][0] = split_sigma_great[0];
+							sigma[j][1] = ">";
+							sigma[j][2] = split_sigma_great[1];
+						}else if(split_sigma_in.length > 1) {
+							sigma[j][0] = split_sigma_in[0];
+							sigma[j][1] = "IN";
+							sigma[j][2] = split_sigma_in[1];
+						}else if(split_sigma_not_in.length > 1) {
+							sigma[j][0] = split_sigma_not_in[0];
+							sigma[j][1] = "NOT IN";
+							sigma[j][2] = split_sigma_not_in[1];
+						}else if(split_sigma_between.length > 1) {
+							sigma[j][0] = split_sigma_between[0];
+							sigma[j][1] = "BETWEEN";
+							sigma[j][2] = split_sigma_between[1];
+						}
 					}
 				}
 			}

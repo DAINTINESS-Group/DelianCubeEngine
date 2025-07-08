@@ -67,7 +67,6 @@ public class BaseQueryGenerator implements CubeQueryGenerator {
 		System.out.println("TEST B : " + dimensions);
 		// set-up sigma expressions
 		for(String s:sigmaExpressions) {
-			
 			sigma += dimensions.get(s) + "." + s + "=" + sigmaExpressionsToValues.get(s) + ",";
 		}
 		// do this to erase the spare comma at the end of the expression

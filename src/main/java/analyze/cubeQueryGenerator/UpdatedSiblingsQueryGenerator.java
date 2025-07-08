@@ -3,6 +3,7 @@ package analyze.cubeQueryGenerator;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 

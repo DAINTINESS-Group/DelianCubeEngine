@@ -60,7 +60,6 @@ public class SparkSQPTest {
 	public final void testAnswerCubeQueriesFromFile() throws IOException {
 		//fail("Not yet implemented"); 
 		// can try failures by modifying filenames and/or paths. Keep the getAbsolutePath() comments for failure tests
-		
 		boolean comparison01 = true;
 		boolean comparison02 = true;
 		boolean comparison03 = true;
@@ -144,6 +143,7 @@ public class SparkSQPTest {
 	public final void testanswerCubeQueryFromString() throws IOException {
 		//fail("Not yet implemented");
 		// can try failures by modifying filenames and/or paths. See answerCQFromFILES for comments 
+		System.out.println("Working dir: " + new File(".").getAbsolutePath());
 
 		//GIVE STH DIFFERENT
 		String testQueryString1 = 

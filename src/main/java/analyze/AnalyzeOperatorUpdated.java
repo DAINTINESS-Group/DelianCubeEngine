@@ -53,8 +53,7 @@ public class AnalyzeOperatorUpdated {
 			return false;
 		}
 	}
-	
-	
+		
 	
 	/**
 	 * Method that executes the AnalyzeQueries, sets the Result field of the AnalyzeQueries
@@ -80,22 +79,27 @@ public class AnalyzeOperatorUpdated {
 			analyzeReport.createTextReportFile();
 		}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
 			analyzeReport.setErrorStatus(false);
-			long startTime = System.nanoTime();
+			//long startTime = System.nanoTime();
 			for(AnalyzeQuery aq: analyzeQueries) {
+				long startTime = System.nanoTime();
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
+				System.out.println(analyzeCubeQuery);
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);
 				String[][] resultArray = result.getResultArray();
-				
+				System.out.println(aq.getType());
 				if(resultArray!=null) {
 					// first 2 rows contain column names!
 					resultTuplesCounter += resultArray.length - 2;
 				}
 
 				aq.setAnalyzeQueryResult(result);
+				long endTime = System.nanoTime();
+				double executionTime = endTime - startTime;
+				System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			}
-			long endTime = System.nanoTime();
-			double executionTime = endTime - startTime;
-			System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
+			//long endTime = System.nanoTime();
+			//double executionTime = endTime - startTime;
+			//System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			analyzeReport.setAnalyzeQueries(analyzeQueries);
 			
 			//startTime = System.nanoTime();

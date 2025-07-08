@@ -104,24 +104,39 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 						ArrayList<Cell> resultCellsMQO = result.getCells(); 
 						long mqoStartTime = System.nanoTime();
 						ArrayList<String> mqoResult = new ArrayList<String>();
-						if(i==0) {//SIBLINGS QUERY
-							AnalyzeDuoQueryOptimizerSiblingsAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeDuoQueryOptimizerSiblingsAuxiliaryQueryResultBuilder();
-							mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
-									analyzeTranslationManager.getSigmaExpressions(), 
-									analyzeTranslationManager.getSigmaExpressionsToValues(),
-									aggrAdapter);
-							
-						} else {//DRILLDOWN AND BASE QUERY
+						if(i==0) {//DRILL-DOWN AND BASE QUERY
 							AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
 							mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
 									analyzeTranslationManager.getSigmaExpressions(), 
 									analyzeTranslationManager.getSigmaExpressionsToValues(),
 									aggrAdapter);
+							
+						} else {//SIBLING QUERIES
+							AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
+							/*mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
+									analyzeTranslationManager.getSigmaExpressions(), 
+									analyzeTranslationManager.getSigmaExpressionsToValues(),
+									aggrAdapter);*/
+							Result siblingResult = aq.getAnalyzeQueryResult();
+							String[][] siblingResultArray = siblingResult.getResultArray();
+							for(int j = 0;j<siblingResultArray.length;j++) {
+								if(j > 1) {
+									String resultRow = "";
+									for(int k = 0;k<siblingResultArray[j].length;k++) {
+										if(k ==0) {
+											resultRow += siblingResultArray[j][k];
+										}else {
+											resultRow += ',' + siblingResultArray[j][k];
+										}
+									}
+									mqoResult.add(resultRow);
+								}
+							}
+							
 						}
 						
-						
 						aq.setAnalyzeMQOResult(mqoResult);
-						mqoResultSize = mqoResult.size();
+						mqoResultSize += mqoResult.size();
 						long mqoEndTime = System.nanoTime();
 						mqoProcessingTime += mqoEndTime - mqoStartTime;
 

@@ -71,7 +71,7 @@ public class DuoQueryOptimizerDrillDownsGenerator implements CubeQueryGenerator{
 		sigma = sigma.substring(0,sigma.length()-2) + "\n";	
 
 		String gamma = "Gamma:";
-		String prevGamma = null;
+		String prevGamma = "";
 		for(int i=0;i<gammaExpressions.size();i++) {		
 			String gammaExpression = gammaExpressions.get(i);
 			String gammaDimension = dimensions.get(gammaExpression);
@@ -91,7 +91,8 @@ public class DuoQueryOptimizerDrillDownsGenerator implements CubeQueryGenerator{
 			gamma += gammaDimension + "." + gammaExpression + ", ";
 			
 		}
-		prevGamma = prevGamma.substring(0,gamma.length()-2) + "\n";
+
+		prevGamma = prevGamma.substring(0,prevGamma.length()-2) + "\n";
 		gamma = gamma.substring(0,gamma.length()-2) + "\n";
 		
 		String name = "Name:" + queryAlias + "-BaseAndDrillDownDuoQueryOptimizer" + "\n";

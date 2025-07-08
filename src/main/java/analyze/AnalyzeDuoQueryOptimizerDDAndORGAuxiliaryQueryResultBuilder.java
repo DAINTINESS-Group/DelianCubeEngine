@@ -124,7 +124,6 @@ public class AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder {
 		Set<String> baseGroupers = baseQueryMap.keySet();
 		//Collection<String> baseMeasures = baseQueryMap.values();
 		for(String str: baseGroupers) {
-			//System.out.println(str+", "+baseQueryMap.get(str));
 			mqoResult.add(str+", "+baseQueryMap.get(str));
 		}
 		Set<String> ddAGroupers = ddAQueryMap.keySet();
