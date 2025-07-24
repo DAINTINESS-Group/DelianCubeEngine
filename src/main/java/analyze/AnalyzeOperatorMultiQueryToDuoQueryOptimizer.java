@@ -91,6 +91,7 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 					double mqoProcessingTime = 0;
 					
 					for(int i=0; i<analyzeQueries.size(); i++) {
+						long executionStartTime = System.nanoTime();
 						AnalyzeQuery aq = analyzeQueries.get(i);
 						CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
 						Result result = cubeManager.executeSimpleSqlQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
@@ -100,6 +101,7 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 						}
 						aq.setAnalyzeQueryResult(result);
 						
+						long executionEndTime = System.nanoTime();
 						
 						ArrayList<Cell> resultCellsMQO = result.getCells(); 
 						long mqoStartTime = System.nanoTime();
@@ -119,6 +121,12 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 									aggrAdapter);*/
 							Result siblingResult = aq.getAnalyzeQueryResult();
 							String[][] siblingResultArray = siblingResult.getResultArray();
+							if (siblingResultArray == null) {
+								double executionTime = executionEndTime - executionStartTime;
+								System.out.println(aq.getType());
+								System.out.println("Query Execution Time: " + Double.toString(executionTime/1000000) + " ms");
+								continue;
+							}
 							for(int j = 0;j<siblingResultArray.length;j++) {
 								if(j > 1) {
 									String resultRow = "";
@@ -137,15 +145,15 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 						
 						aq.setAnalyzeMQOResult(mqoResult);
 						mqoResultSize += mqoResult.size();
-						long mqoEndTime = System.nanoTime();
-						mqoProcessingTime += mqoEndTime - mqoStartTime;
+						double resultHandlingEndTime = System.nanoTime();
+						double executionTime = executionEndTime - executionStartTime;
+						double resultHandlingTime = resultHandlingEndTime - executionEndTime;
+						System.out.println(aq.getType());
+						System.out.println("Query Execution Time: " + Double.toString(executionTime/1000000) + " ms");
+						System.out.println("Multi-Query Optimization with Duo Query Strategy Processing Time: " + Double.toString(resultHandlingTime/1000000) + " ms");
 
 					}
-					long endTime = System.nanoTime();
 					
-					double executionTime = endTime - startTime - mqoProcessingTime;
-					System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
-					System.out.println("Multi-Query Optimization with Duo Query Strategy Processing Time :" + Double.toString(mqoProcessingTime/1000000) + " ms");
 					analyzeReport.setAnalyzeQueries(analyzeQueries);
 					
 					//startTime = System.nanoTime();

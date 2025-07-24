@@ -192,7 +192,6 @@ public class SingleQueryOptimizerGenerator implements CubeQueryGenerator {
 		//build AnalyzeQuery
 		AnalyzeQuery optimizerQuery = new AnalyzeQuery(optimizerCubeQuery,TypeOfAnalyzeQuery.SINGLEQUERYOPTIMIZER,prevSigma.substring(0,prevSigma.length()-1),sigma.substring(6,sigma.length()-1),prevGamma.substring(0,prevGamma.length()-1), gamma.substring(6,gamma.length()-1));
 		optimizerQueries.add(optimizerQuery);
-		System.out.println(optimizerQuery);
 		return optimizerQueries;
 	}
 

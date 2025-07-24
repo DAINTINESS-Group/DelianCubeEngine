@@ -83,7 +83,6 @@ public class AnalyzeOperatorUpdated {
 			for(AnalyzeQuery aq: analyzeQueries) {
 				long startTime = System.nanoTime();
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-				System.out.println(analyzeCubeQuery);
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);
 				String[][] resultArray = result.getResultArray();
 				System.out.println(aq.getType());

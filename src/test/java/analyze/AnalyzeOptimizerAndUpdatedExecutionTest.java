@@ -55,9 +55,16 @@ public class AnalyzeOptimizerAndUpdatedExecutionTest {
 	
 	@Test
 	public final void testAnalyzeMQOExecution() throws IOException {
-		//String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
-
-		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY year, category AS Q42";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND product_name='ought' GROUP BY month, product_name AS Q1";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR birth_year='1982' AND customer_state='ME' AND year='2000' GROUP BY month, birth_month AS Q2";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR category='Music' AND time_of_day='morning' AND customer_state='AZ' GROUP BY hour, product_name AS Q3";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='1-2003' AND time_of_day='afternoon' GROUP BY month, hour AS Q4";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY month, product_name AS Q5";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' AND year='2000' GROUP BY hour, product_name AS Q6";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR quarter='2002Q2' AND customer_country='United States' GROUP BY month, customer_state AS Q7";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' GROUP BY hour, product_name AS Q8";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='12-1998' AND customer_country='United States' GROUP BY month, customer_state AS Q9";
+		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR year='2000' AND store_state='TN' GROUP BY month, store_state AS Q10";
 
 		
 		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
@@ -89,10 +96,19 @@ public class AnalyzeOptimizerAndUpdatedExecutionTest {
 	
 	@Test
 	public final void testPlainAnalyzeExecution() throws IOException {
-		//String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND product_name='ought' GROUP BY month, product_name AS Q1";
+		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR birth_year='1982' AND customer_state='ME' AND year='2000' GROUP BY month, birth_month AS Q2";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR category='Music' AND time_of_day='morning' AND customer_state='AZ' GROUP BY hour, product_name AS Q3";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='1-2003' AND time_of_day='afternoon' GROUP BY month, hour AS Q4";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY month, product_name AS Q5";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' AND year='2000' GROUP BY hour, product_name AS Q6";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR quarter='2002Q2' AND customer_country='United States' GROUP BY month, customer_state AS Q7";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' GROUP BY hour, product_name AS Q8";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='12-1998' AND customer_country='United States' GROUP BY month, customer_state AS Q9";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR year='2000' AND store_state='TN' GROUP BY month, store_state AS Q10";
 
-		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY year, category AS Q42";
 
+		
 		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
 		
 		String testResultString = "";
@@ -139,9 +155,17 @@ public class AnalyzeOptimizerAndUpdatedExecutionTest {
 	
 	@Test
 	public final void testDuoAnalyzeExecution() throws IOException {
-		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY year, category AS Q42";
+		String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND product_name='ought' GROUP BY month, product_name AS Q1";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR birth_year='1982' AND customer_state='ME' AND year='2000' GROUP BY month, birth_month AS Q2";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR category='Music' AND time_of_day='morning' AND customer_state='AZ' GROUP BY hour, product_name AS Q3";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='1-2003' AND time_of_day='afternoon' GROUP BY month, hour AS Q4";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='11-2000' AND category='Women' GROUP BY month, product_name AS Q5";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' AND year='2000' GROUP BY hour, product_name AS Q6";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR quarter='2002Q2' AND customer_country='United States' GROUP BY month, customer_state AS Q7";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR time_of_day='morning' AND category='Music' GROUP BY hour, product_name AS Q8";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month='12-1998' AND customer_country='United States' GROUP BY month, customer_state AS Q9";
+		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR year='2000' AND store_state='TN' GROUP BY month, store_state AS Q10";
 
-		//String incomingExpression = "ANALYZE sum(ss_ext_sales_price) FROM store_sales FOR month = '11-2000' AND category='Women'  GROUP BY year, category AS Q42";
 
 		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
 		
@@ -163,6 +187,9 @@ public class AnalyzeOptimizerAndUpdatedExecutionTest {
 		
 		for(AnalyzeQuery aq: testAnalyzeQueries) {
 			ArrayList<String> mqoResult = aq.getAnalyzeMQOResult();
+			if (mqoResult == null) {
+				continue;
+			}
 			for(String str: mqoResult) {
 				testResultString += str + "\n";
 			}
