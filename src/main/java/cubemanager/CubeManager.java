@@ -24,15 +24,21 @@ import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
+import cubemanager.cubebase.Hierarchy;
+import cubemanager.cubebase.Level;
+import cubemanager.cubebase.LinearHierarchy;
 import cubemanager.cubebase.Measure;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
 import result.Result;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class CubeManager {
 
@@ -41,8 +47,7 @@ public class CubeManager {
 	private CubeQueryTranslatorFactory cubeQueryTranslatorFactory;
 	private List<BasicStoredCube> registeredCubesList;
 	private List<Dimension> registeredDimensionsList;
-	//private HashMap<String, Dimension>
-
+	
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
 		cubeBase = new CubeBase(typeOfConnection, userInputList);

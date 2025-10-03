@@ -26,7 +26,6 @@ public class Session {
 		cubeManager.createCubeBase(userInputList);
 		constructDimension(userInputList.get("inputFolder"), userInputList.get("cubeName"));
 		cubeManager.setCubeQueryTranslator();
-		
 		return this.id;
 	}
 	

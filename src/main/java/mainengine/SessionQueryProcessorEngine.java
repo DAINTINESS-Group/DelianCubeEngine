@@ -60,9 +60,10 @@ import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
 import model.decisiontree.services.DatasetManager;
 import analyze.AnalyzeOperatorByIakovidis;
-import analyze.AnalyzeOperatorMultiQueryToDuoQueryOptimizer;
-import analyze.AnalyzeOperatorUpdated;
-import analyze.AnalyzeOperatorMultiQueryToSingleQueryOptimizer;
+import analyze.AnalyzeOperatorMidMultiQueryOptimizer;
+import analyze.AnalyzeOperatorMinMultiQueryOptimizer;
+import analyze.AnalyzeTranslationManager;
+import analyze.AnalyzeOperatorMaxMultiQueryOptimizer;
 import result.Result;
 import result.ResultFileMetadata;
 import setup.ModeOfWork;
@@ -477,33 +478,36 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		AnalyzeOperatorByIakovidis operator = new AnalyzeOperatorByIakovidis(incomingExpression, cubeManager,schemaName,connectionType);
 		ResultFileMetadata analyzeResult = operator.execute();
 		return analyzeResult;
-	}
+	}	
 	
 	//#Strategy0
 	@Override
-	public ResultFileMetadata analyzeUpdated(String incomingExpression) throws RemoteException {
+	public ResultFileMetadata analyzeWithMinMQO(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AnalyzeOperatorUpdated operator = new AnalyzeOperatorUpdated(incomingExpression, cubeManager,schemaName,connectionType);
-		ResultFileMetadata analyzeResult = operator.executeUpdatedAnalyze();
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, cubeManager, schemaName, connectionType);
+		AnalyzeOperatorMinMultiQueryOptimizer operator = new AnalyzeOperatorMinMultiQueryOptimizer(incomingExpression, cubeManager,connectionType,analyzeTranslationManager);
+		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMinMQO();
 		return analyzeResult;
 	}
 
 	
 	//#Strategy 1
 	@Override
-	public ResultFileMetadata analyzeWithMultiQueryToSingleQueryOptimizer(String incomingExpression) throws RemoteException {
+	public ResultFileMetadata analyzeWithMaxMQO(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AnalyzeOperatorMultiQueryToSingleQueryOptimizer operator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression, cubeManager,schemaName,connectionType);
-		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, cubeManager, schemaName, connectionType);
+		AnalyzeOperatorMaxMultiQueryOptimizer operator = new AnalyzeOperatorMaxMultiQueryOptimizer(incomingExpression, cubeManager,connectionType,analyzeTranslationManager);
+		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMaxMQO();
 		return analyzeResult;
 	}
 
 	//#Strategy2
 	@Override
-	public ResultFileMetadata analyzeWithMultiQueryToDuoQueryOptimizer(String incomingExpression) throws RemoteException {
+	public ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException {
 		cubeManager = session.getCubeManager();
-		AnalyzeOperatorMultiQueryToDuoQueryOptimizer operator = new AnalyzeOperatorMultiQueryToDuoQueryOptimizer(incomingExpression, cubeManager,schemaName,connectionType);
-		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMultiQueryToDuoQueryOptimizer();
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, cubeManager, schemaName, connectionType);
+		AnalyzeOperatorMidMultiQueryOptimizer operator = new AnalyzeOperatorMidMultiQueryOptimizer(incomingExpression, cubeManager,connectionType,analyzeTranslationManager);
+		ResultFileMetadata analyzeResult = operator.executeAnalyzeWithMidMQO();
 		return analyzeResult;
 	}
 	

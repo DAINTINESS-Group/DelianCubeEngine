@@ -1,1 +1,1 @@
-loan_id,INT,account_id,INT,date,INT,status_id,INT,amount,INT,duration,INT,payments,DOUBLE
+loan_id,INT,l_account_id,INT,date,INT,l_status_id,INT,amount,INT,duration,INT,payments,DOUBLE

@@ -1,7 +1,7 @@
 package analyze;
 
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import analyze.mqoaggregateadapt.AggregateAdapter;
 import analyze.mqoaggregateadapt.AggregateAdapterFactory;
 import analyze.report.AnalyzeReport;
@@ -11,7 +11,7 @@ import result.Cell;
 import result.Result;
 import result.ResultFileMetadata;
 
-public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
+public class AnalyzeOperatorMidMultiQueryOptimizer {
 	
 	// CubeManager object to manage the cube
 			private CubeManager cubeManager;
@@ -24,11 +24,10 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 			
 			// Analyze operator result object
 			private AnalyzeReport analyzeReport;
-			
-			
-			public AnalyzeOperatorMultiQueryToDuoQueryOptimizer(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
+						
+			public AnalyzeOperatorMidMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager, String connectionType,AnalyzeTranslationManager analyzeTranslationManager) {
 				this.cubeManager = cubeManager;
-				this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
+				this.analyzeTranslationManager = analyzeTranslationManager;
 				this.analyzeQueries = new ArrayList<AnalyzeQuery>();
 				this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
 			}
@@ -42,10 +41,9 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 			 */
 			private boolean constructUpdatedAnalyzeQueries() {
 				boolean incomingExpressionIsValid;
-				
 				//check if the incoming expression is written correctly and if so translate it to cube queries
-				incomingExpressionIsValid = analyzeTranslationManager.validateIncomingExpression();
-				if(incomingExpressionIsValid == true) {
+				incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
+				if(incomingExpressionIsValid== true) {
 					long startTime = System.nanoTime();
 					analyzeQueries = analyzeTranslationManager.translateToOptimizedDuoCubeQueries();
 					long endTime = System.nanoTime();
@@ -63,10 +61,12 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 			 * and creates the report file 
 			 */
 			//#Strategy2
-			public ResultFileMetadata executeAnalyzeWithMultiQueryToDuoQueryOptimizer() {
+			public ResultFileMetadata executeAnalyzeWithMidMQO() {
 				//this must return a Intentional Result object, not null, not void, not int
 				int resultTuplesCounter = 0;
 				int mqoResultSize =0;
+				double totalExecutionTime = 0.0;
+				double mqoResultManagementTime = 0.0;
 				boolean translationStatus = this.constructUpdatedAnalyzeQueries();
 				boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
 				if(translationStatus == false) {
@@ -107,14 +107,14 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 						long mqoStartTime = System.nanoTime();
 						ArrayList<String> mqoResult = new ArrayList<String>();
 						if(i==0) {//DRILL-DOWN AND BASE QUERY
-							AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
+							AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
 							mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
 									analyzeTranslationManager.getSigmaExpressions(), 
 									analyzeTranslationManager.getSigmaExpressionsToValues(),
 									aggrAdapter);
 							
 						} else {//SIBLING QUERIES
-							AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeDuoQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
+							AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
 							/*mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
 									analyzeTranslationManager.getSigmaExpressions(), 
 									analyzeTranslationManager.getSigmaExpressionsToValues(),
@@ -148,19 +148,23 @@ public class AnalyzeOperatorMultiQueryToDuoQueryOptimizer {
 						double resultHandlingEndTime = System.nanoTime();
 						double executionTime = executionEndTime - executionStartTime;
 						double resultHandlingTime = resultHandlingEndTime - executionEndTime;
+						totalExecutionTime += executionTime;
+						if(i==0) {
+							mqoResultManagementTime = resultHandlingTime;
+						}
 						System.out.println(aq.getType());
 						System.out.println("Query Execution Time: " + Double.toString(executionTime/1000000) + " ms");
 						System.out.println("Multi-Query Optimization with Duo Query Strategy Processing Time: " + Double.toString(resultHandlingTime/1000000) + " ms");
-
+						
 					}
 					
-					analyzeReport.setAnalyzeQueries(analyzeQueries);
+					analyzeReport.setAnalyzeQueries(analyzeQueries);			
 					
-					//startTime = System.nanoTime();
-					//analyzeReport.createTextReportFile();
-					//endTime = System.nanoTime();
-					//double reportingTime = endTime - startTime;
-					//System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+					startTime = System.nanoTime();
+					analyzeReport.createTextReportFile();
+					long endTime = System.nanoTime();
+					double reportingTime = endTime - startTime;
+					System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 				}
 				ResultFileMetadata resultFile = new ResultFileMetadata();
 				resultFile.setLocalFolder(analyzeReport.getLocalFolder());

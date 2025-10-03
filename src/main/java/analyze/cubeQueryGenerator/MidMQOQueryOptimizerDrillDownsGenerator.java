@@ -11,11 +11,11 @@ import analyze.AnalyzeQuery.TypeOfAnalyzeQuery;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 
-public class DuoQueryOptimizerDrillDownsGenerator implements CubeQueryGenerator{
+public class MidMQOQueryOptimizerDrillDownsGenerator implements CubeQueryGenerator{
 	
 	private CubeManager cubeManager;
 	
-	public DuoQueryOptimizerDrillDownsGenerator(CubeManager cubeManager) {
+	public MidMQOQueryOptimizerDrillDownsGenerator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 	

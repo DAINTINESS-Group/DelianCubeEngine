@@ -65,11 +65,11 @@ public class AnalyzeOperatorExperimentsChart1 {
 			service.initializeConnection(typeOfConnection, userInputList);
 			System.out.println("Connection is successful.");
 			
-			ResultFileMetadata resultMetadata = service.analyzeUpdated(pkdd99_incomingExpression1);
+			ResultFileMetadata resultMetadata = service.analyzeWithMinMQO(pkdd99_incomingExpression1);
 			String localFolder = resultMetadata.getLocalFolder();
 			String resultFile = resultMetadata.getResultFile();
 			//fetchData(localFolder,resultFile);
-			resultMetadata = service.analyzeWithMultiQueryToSingleQueryOptimizer(foodmart_incomingExpression3);
+			resultMetadata = service.analyzeWithMaxMQO(foodmart_incomingExpression3);
 			localFolder = resultMetadata.getLocalFolder();
 			resultFile = resultMetadata.getResultFile();
 			//fetchData(localFolder,resultFile);

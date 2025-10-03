@@ -222,14 +222,13 @@ public interface IMainEngine extends IServer {
 	 */
 	ResultFileMetadata analyzeByIakovidis(String incomingExpression) throws RemoteException;
 	
-	
 	/**
 	 * 
 	 * @param incomingExpression The String that defines an intentional query for the updated analyze operator
 	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
 	 * @throws RemoteException
 	 */
-	ResultFileMetadata analyzeUpdated(String incomingExpression) throws RemoteException;
+	ResultFileMetadata analyzeWithMinMQO(String incomingExpression) throws RemoteException;
 	
 	
 	/**
@@ -238,7 +237,7 @@ public interface IMainEngine extends IServer {
 	 * @return A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
 	 * @throws RemoteException
 	 */
-	ResultFileMetadata analyzeWithMultiQueryToSingleQueryOptimizer(String incomingExpression) throws RemoteException;
+	ResultFileMetadata analyzeWithMaxMQO(String incomingExpression) throws RemoteException;
 	
 	
 	
@@ -248,7 +247,7 @@ public interface IMainEngine extends IServer {
 	 * @return A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
 	 * @throws RemoteException
 	 */
-	ResultFileMetadata analyzeWithMultiQueryToDuoQueryOptimizer(String incomingExpression) throws RemoteException;
+	ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException;
 	
 	
 	/**

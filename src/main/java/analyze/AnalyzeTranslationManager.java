@@ -59,6 +59,10 @@ public class AnalyzeTranslationManager {
 	// A hashmap with the dimension each sigma and gamma expression belongs
 	private HashMap<String,String> dimensions;
 	
+	public HashMap<String, String> getDimensions() {
+		return dimensions;
+	}
+
 	// A hashmap that maps each sigma and gamma level to its child level
 	private HashMap<String,String> childToLevelById;
 	
@@ -69,11 +73,22 @@ public class AnalyzeTranslationManager {
 	
 	private HashMap<String,String> parentToLevelByName;
 	
+	public HashMap<String, String> getParentToLevelByName() {
+		return parentToLevelByName;
+	}
+
 	// A hashmap that maps each sigma and gamma level to its table name in the relational schema
 	private HashMap<String,String> expressionToTableName;
 	
 	// A hashmap that maps each sigma and gamma level to its description
 	private HashMap<String,String> currentLevelToDescriptions;
+	
+	public HashMap<String, String> getCurrentLevelToDescriptions() {
+		return currentLevelToDescriptions;
+	}
+
+	//A hashmap that maps each sigma and gamma level to its position in hierarchy
+	private HashMap<String,Integer> expressionToPositionInHierarchy;
 	
 	// Boolean variable that checks if there was errors during the Cube Queries translation
 	private boolean cubeQueryGenerationStatus = true;
@@ -96,6 +111,7 @@ public class AnalyzeTranslationManager {
 		this.parentToLevelByName = new HashMap<String,String>();
 		this.expressionToTableName = new HashMap<String,String>();
 		this.currentLevelToDescriptions = new HashMap<String,String>();
+		this.expressionToPositionInHierarchy = new HashMap<String,Integer>();
 	}
 	
 	/**
@@ -107,6 +123,7 @@ public class AnalyzeTranslationManager {
 		this.cubeName = analyzeParserManager.getCubeName();
 		this.sigmaExpressions = analyzeParserManager.getSigmaExpressions();
 		this.sigmaExpressionsToValues = analyzeParserManager.getSigmaExpressionsValues();
+		System.out.println(this.incomingExpression);
 		this.gammaExpressions = analyzeParserManager.getGammaExpressions();
 		this.queryAlias = analyzeParserManager.getQueryAlias();
 	}
@@ -122,6 +139,11 @@ public class AnalyzeTranslationManager {
 	public String getAggrFunc() {
 		return this.aggrFunc;
 	}
+	
+	public HashMap<String,Integer> getExpressionToPositionInHierarchy(){
+		return expressionToPositionInHierarchy;
+	}
+	
 	/**
 	 * Method that obtains all the necessary information about the analyze query sigma and gamma levels from
 	 * the cube with only one parse of the cube's dimensions.  
@@ -176,13 +198,14 @@ public class AnalyzeTranslationManager {
 						parentToLevelByName.put(expressions.get(i), parentByName);
 						expressionToTableName.put(expressions.get(i), table);
 						currentLevelToDescriptions.put(expressions.get(i), currentLevelDescription);
+						expressionToPositionInHierarchy.put(expressions.get(i), positionInHierarchy);
 					}
 				}
 			}
 		}
 	}	
 	
-	private void setUpTranslation() {
+	public void setUpTranslation() {
 		getAnalyzeQueryInfo();
 		getExpressionInfoFromCube();
 	}

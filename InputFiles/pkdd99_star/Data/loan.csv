@@ -1,4 +1,4 @@
-loan_id,account_id,date,status_id,amount,duration,payments
+loan_id,l_account_id,date,l_status_id,amount,duration,payments
 4959,2,19940105,2,80952,24,3373
 4961,19,19960429,1,30276,12,2523
 4962,25,19971208,2,30276,12,2523

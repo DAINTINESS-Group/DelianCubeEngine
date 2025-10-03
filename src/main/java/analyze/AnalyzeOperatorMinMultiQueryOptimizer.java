@@ -1,5 +1,7 @@
 package analyze;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import analyze.report.AnalyzeReport;
@@ -9,7 +11,7 @@ import result.Result;
 import result.ResultFileMetadata;
 
 
-public class AnalyzeOperatorUpdated {
+public class AnalyzeOperatorMinMultiQueryOptimizer {
 
 	// CubeManager object to manage the cube
 	private CubeManager cubeManager;
@@ -22,12 +24,13 @@ public class AnalyzeOperatorUpdated {
 	
 	// Analyze operator result object
 	private AnalyzeReport analyzeReport;
-	
-	public AnalyzeOperatorUpdated(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
+
+		
+	public AnalyzeOperatorMinMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager,String connectionType,AnalyzeTranslationManager analyzeTranslationManager) {
 		this.cubeManager = cubeManager;
-		this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
 		this.analyzeQueries = new ArrayList<AnalyzeQuery>();
 		this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
+		this.analyzeTranslationManager = analyzeTranslationManager;
 	}
 	
 	/**
@@ -38,9 +41,8 @@ public class AnalyzeOperatorUpdated {
 	 */
 	private boolean constructUpdatedAnalyzeQueries() {
 		boolean incomingExpressionIsValid;
-		
 		//check if the incoming expression is written correctly and if so translate it to cube queries
-		incomingExpressionIsValid = analyzeTranslationManager.validateIncomingExpression();
+		incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
 		if(incomingExpressionIsValid == true) {
 			long startTime = System.nanoTime();
 			analyzeQueries = analyzeTranslationManager.translateToUpdatedCubeQueries();
@@ -60,9 +62,10 @@ public class AnalyzeOperatorUpdated {
 	 * and creates the report file 
 	 */
 	//#Strategy0
-	public ResultFileMetadata executeUpdatedAnalyze() {
+	public ResultFileMetadata executeAnalyzeWithMinMQO() {
 		//this must return a Intentional Result object, not null, not void, not int
 		int resultTuplesCounter = 0;
+		double totalExecutionTime = 0.0;
 		boolean translationStatus = this.constructUpdatedAnalyzeQueries();
 		boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
 		if(translationStatus == false) {
@@ -79,7 +82,6 @@ public class AnalyzeOperatorUpdated {
 			analyzeReport.createTextReportFile();
 		}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
 			analyzeReport.setErrorStatus(false);
-			//long startTime = System.nanoTime();
 			for(AnalyzeQuery aq: analyzeQueries) {
 				long startTime = System.nanoTime();
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
@@ -94,18 +96,17 @@ public class AnalyzeOperatorUpdated {
 				aq.setAnalyzeQueryResult(result);
 				long endTime = System.nanoTime();
 				double executionTime = endTime - startTime;
+				totalExecutionTime += executionTime;
 				System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			}
-			//long endTime = System.nanoTime();
-			//double executionTime = endTime - startTime;
-			//System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 			analyzeReport.setAnalyzeQueries(analyzeQueries);
+
 			
-			//startTime = System.nanoTime();
-			//analyzeReport.createTextReportFile();
-			//endTime = System.nanoTime();
-			//double reportingTime = endTime - startTime;
-			//System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+			long startTime = System.nanoTime();
+			analyzeReport.createTextReportFile();
+			long endTime = System.nanoTime();
+			double reportingTime = endTime - startTime;
+			System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 		}
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(analyzeReport.getLocalFolder());

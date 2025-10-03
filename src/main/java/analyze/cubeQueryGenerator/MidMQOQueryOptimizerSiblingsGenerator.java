@@ -12,11 +12,11 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
-public class DuoQueryOptimizerSiblingsGenerator implements CubeQueryGenerator{
+public class MidMQOQueryOptimizerSiblingsGenerator implements CubeQueryGenerator{
 	
 	private CubeManager cubeManager;
 	
-	public DuoQueryOptimizerSiblingsGenerator(CubeManager cubeManager) {
+	public MidMQOQueryOptimizerSiblingsGenerator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 	

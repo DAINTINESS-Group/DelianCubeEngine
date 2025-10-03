@@ -46,20 +46,20 @@ public class CubeQueryGeneratorFactory {
 		},
 		SINGLEQUERYOPTIMIZER{
 			@Override
-			public SingleQueryOptimizerGenerator getInstance(CubeManager cubeManager) {
-				return new SingleQueryOptimizerGenerator(cubeManager);
+			public MaxMQOQueryOptimizerGenerator getInstance(CubeManager cubeManager) {
+				return new MaxMQOQueryOptimizerGenerator(cubeManager);
 			}
 		},
 		DUOQUERYSIBLINGSOPTIMIZER{
 			@Override
-			public DuoQueryOptimizerSiblingsGenerator getInstance(CubeManager cubeManager) {
-				return new DuoQueryOptimizerSiblingsGenerator(cubeManager);
+			public MidMQOQueryOptimizerSiblingsGenerator getInstance(CubeManager cubeManager) {
+				return new MidMQOQueryOptimizerSiblingsGenerator(cubeManager);
 			}
 		},
 		DUOQUERYDRILLDOWNSOPTIMIZER{
 			@Override
-			public DuoQueryOptimizerDrillDownsGenerator getInstance(CubeManager cubeManager) {
-				return new DuoQueryOptimizerDrillDownsGenerator(cubeManager);
+			public MidMQOQueryOptimizerDrillDownsGenerator getInstance(CubeManager cubeManager) {
+				return new MidMQOQueryOptimizerDrillDownsGenerator(cubeManager);
 			}
 		};
 		public abstract CubeQueryGenerator getInstance(CubeManager cubeManager);

@@ -92,9 +92,11 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeOptimizerQueryExecutionResults.csv");
 		}
 	
-		AnalyzeOperatorMultiQueryToSingleQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
+
+		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
 		
-		testAnalyzeOperator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
+		testAnalyzeOperator.executeAnalyzeWithMaxMQO();
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		
@@ -139,9 +141,11 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeMQOResults.csv");
 		}
 	
-		AnalyzeOperatorMultiQueryToSingleQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMultiQueryToSingleQueryOptimizer(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
+
+		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
 		
-		testAnalyzeOperator.executeAnalyzeWithMultiQueryToSingleQueryOptimizer();
+		testAnalyzeOperator.executeAnalyzeWithMaxMQO();
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

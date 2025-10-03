@@ -4,7 +4,7 @@ AggrFunc:Sum
 Measure:store_sales
 Gamma:date_dim.date, customer_dim.customer, date_dim.month, customer_dim.region, date_dim.quarter, customer_dim.state
 Sigma:date_dim.year='1997', customer_dim.country='USA', promotion_dim.media='Daily Paper'
-Type: MQOPTIMIZER
+Type: SINGLEQUERYOPTIMIZER
 Original Sigma Value: date_dim.quarter='1997-Q3', customer_dim.state='CA', promotion_dim.media='Daily Paper'
 Modified Sigma Value: date_dim.year='1997', customer_dim.country='USA', promotion_dim.media='Daily Paper'
 Original Gamma Value: date_dim.month, customer_dim.region

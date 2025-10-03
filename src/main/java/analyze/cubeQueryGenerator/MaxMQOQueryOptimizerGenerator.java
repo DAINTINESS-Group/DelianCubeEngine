@@ -18,11 +18,11 @@ import result.Result;
  * the Drill-downs and the Sibling queries for the Analyze query.
  *
  */
-public class SingleQueryOptimizerGenerator implements CubeQueryGenerator {
+public class MaxMQOQueryOptimizerGenerator implements CubeQueryGenerator {
 	
 	private CubeManager cubeManager;
 	
-	public SingleQueryOptimizerGenerator(CubeManager cubeManager) {
+	public MaxMQOQueryOptimizerGenerator(CubeManager cubeManager) {
 		this.cubeManager = cubeManager;
 	}
 	
@@ -163,6 +163,7 @@ public class SingleQueryOptimizerGenerator implements CubeQueryGenerator {
 					String newGamma = originalSigmaExpression;
 					gamma += gammaDimension + "." + newGamma + ", ";
 					sigma += sigmaDimension + "." + parentToLevelByName.get(originalSigmaExpression) + "=" + "\'" + parentValue + "\'" + ", ";
+
 					continue;
 				} 	
 			}

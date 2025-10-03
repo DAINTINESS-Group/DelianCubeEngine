@@ -1,7 +1,6 @@
 package analyze;
 
 import java.util.ArrayList;
-
 import analyze.mqoaggregateadapt.AggregateAdapter;
 import analyze.mqoaggregateadapt.AggregateAdapterFactory;
 import analyze.report.AnalyzeReport;
@@ -12,7 +11,7 @@ import result.Result;
 import result.ResultFileMetadata;
 
 
-public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
+public class AnalyzeOperatorMaxMultiQueryOptimizer {
 	
 	// CubeManager object to manage the cube
 		private CubeManager cubeManager;
@@ -25,11 +24,11 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 		
 		// Analyze operator result object
 		private AnalyzeReport analyzeReport;
+				
 		
-		
-		public AnalyzeOperatorMultiQueryToSingleQueryOptimizer(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
+		public AnalyzeOperatorMaxMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager, String connectionType, AnalyzeTranslationManager analyzeTranslationManager) {
 			this.cubeManager = cubeManager;
-			this.analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,cubeManager,schemaName,connectionType);
+			this.analyzeTranslationManager = analyzeTranslationManager;
 			this.analyzeQueries = new ArrayList<AnalyzeQuery>();
 			this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
 		}
@@ -40,11 +39,10 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 		 * Constructs the base query, Updated Sibling queries and traditional Drill-down queries.
 		 * @return True if the AnalyzeQueries were constructed, False if not.
 		 */
-		private boolean constructUpdatedAnalyzeQueries() {
+		private boolean constructUpdatedAnalyzeQueries() {	
 			boolean incomingExpressionIsValid;
 			
-			//check if the incoming expression is written correctly and if so translate it to cube queries
-			incomingExpressionIsValid = analyzeTranslationManager.validateIncomingExpression();
+			incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
 			if(incomingExpressionIsValid == true) {
 				long startTime = System.nanoTime();
 				analyzeQueries = analyzeTranslationManager.translateToOptimizedSingleCubeQueries();
@@ -65,7 +63,7 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 		 * and creates the report file 
 		 */
 		//#Strategy1
-		public ResultFileMetadata executeAnalyzeWithMultiQueryToSingleQueryOptimizer() {
+		public ResultFileMetadata executeAnalyzeWithMaxMQO() {
 			//this must return a Intentional Result object, not null, not void, not int
 			int resultTuplesCounter = 0;
 			int mqoResultSize =0;
@@ -93,6 +91,7 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 				//for(AnalyzeQuery aq: analyzeQueries) {
 				AnalyzeQuery aq = analyzeQueries.get(0);
 				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
+						
 				Result result = cubeManager.executeQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
 				String[][] resultArray = result.getResultArray();
 				if(resultArray!=null) {
@@ -102,7 +101,7 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 				
 				long mqoStartTime = System.nanoTime();
 				ArrayList<Cell> resultCellsMQO = result.getCells();
-				AnalyzeSingleQueryOptimizerAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeSingleQueryOptimizerAuxiliaryQueryResultBuilder();	
+				AnalyzeMaxMQOAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMaxMQOAuxiliaryQueryResultBuilder();	
 				ArrayList<String> mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
 													analyzeTranslationManager.getSigmaExpressions(), 
 													analyzeTranslationManager.getSigmaExpressionsToValues(),
@@ -114,16 +113,16 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 				//}
 				long endTime = System.nanoTime();
 				double mqoProcessingTime = mqoEndTime - mqoStartTime;
-				double executionTime = endTime - startTime - mqoProcessingTime;
+				double executionTime = endTime - startTime - mqoProcessingTime ;
 				System.out.println("Queries Execution Time :" + Double.toString(executionTime/1000000) + " ms");
 				System.out.println("Multi-Query Optimization Processing Time :" + Double.toString(mqoProcessingTime/1000000) + " ms");
 				analyzeReport.setAnalyzeQueries(analyzeQueries);
-				
-				//startTime = System.nanoTime();
-				//analyzeReport.createTextReportFile();
-				//endTime = System.nanoTime();
-				//double reportingTime = endTime - startTime;
-				//System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+
+				startTime = System.nanoTime();
+				analyzeReport.createTextReportFile();
+				endTime = System.nanoTime();
+				double reportingTime = endTime - startTime;
+				System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
 			}
 			ResultFileMetadata resultFile = new ResultFileMetadata();
 			resultFile.setLocalFolder(analyzeReport.getLocalFolder());
@@ -134,6 +133,8 @@ public class AnalyzeOperatorMultiQueryToSingleQueryOptimizer {
 			System.out.println("Number of generated queries: " + Integer.toString(analyzeQueries.size()) + " queries");
 			System.out.println("Number of resulted tuples: " + Integer.toString(resultTuplesCounter));
 			System.out.println("Number of resulted tuples after the multi-query optimization: " + Integer.toString(mqoResultSize));
+
+			
 			return resultFile;
 		}
 		
