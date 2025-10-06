@@ -59,7 +59,7 @@ Each query in the workload will be executed five times and the console will prin
 Package client.analyzemqoexperiments contains two clients (AnalyzeMQOQueryCharacteristicsExperiment.java and AnalyzeMQOPerformanceEvaluationExperiment.java), one for each type of experiment we conducted (Query Characteristics Experiment and Performance Evaluation Experiment). On the top of the main() class of the clients, there is the userInputList where: 
 (i) the schema name.<br>
 (ii) the credentials of the MySQL Server's user.<br>
-(iii) the cube name(provided by the cube initialization file located on the dataset's directory on InputFiles) and (iv) the directory name that is assigned to the dataset in Delian Cubes Engine are set.<br>
+(iii) the cube name(provided by the cube initialization file located on the dataset's directory on InputFiles) and <br>(iv) the directory name that is assigned to the dataset in Delian Cubes Engine are set.<br>
 Tune the above parameters with respect to the system's MySQL Server credentials and the dataset's details.
 
 ## EXECUTION
