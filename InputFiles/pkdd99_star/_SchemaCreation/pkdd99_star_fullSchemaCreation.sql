@@ -78,9 +78,9 @@ DROP TABLE IF EXISTS `loan` ;
 
 CREATE TABLE IF NOT EXISTS `loan` (
   `loan_id` INT(11) NOT NULL,
-  `account_id` INT(11) NOT NULL,
+  `l_account_id` INT(11) NOT NULL,
   `date` INT(11) NOT NULL,
-  `status_id` INT(11) NOT NULL,
+  `l_status_id` INT(11) NOT NULL,
   `amount` INT(11) NOT NULL,
   `duration` INT(11) NOT NULL,
   `payments` DOUBLE NOT NULL,
