@@ -1,4 +1,4 @@
-// $ANTLR 3.4 DescribeOperator.g 2025-12-04 15:18:21
+// $ANTLR 3.4 DescribeOperator.g 2025-12-05 11:54:24
 
     package describe.syntax;
     import describe.DescribeQuery;
@@ -74,7 +74,7 @@ public class DescribeOperatorParser extends Parser {
 
 
     	
-    	//Single object to hold everything
+    	//Single object to hold everything instead of using multiple ArrayLists and/or Hashmaps here
         private DescribeQuery query = new DescribeQuery();    
         
         public DescribeQuery getQuery(){
