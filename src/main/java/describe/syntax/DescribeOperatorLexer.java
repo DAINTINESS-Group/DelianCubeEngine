@@ -1,4 +1,4 @@
-// $ANTLR 3.4 DescribeOperator.g 2025-12-04 15:18:21
+// $ANTLR 3.4 DescribeOperator.g 2025-12-05 11:54:25
 
     package describe.syntax;
 
