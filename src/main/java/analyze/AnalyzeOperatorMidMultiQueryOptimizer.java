@@ -30,6 +30,7 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 				this.analyzeTranslationManager = analyzeTranslationManager;
 				this.analyzeQueries = new ArrayList<AnalyzeQuery>();
 				this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
+				System.out.println("$$ ---------------------------------------------------------");
 			}
 
 			
@@ -48,7 +49,7 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 					analyzeQueries = analyzeTranslationManager.translateToOptimizedDuoCubeQueries();
 					long endTime = System.nanoTime();
 					double queriesGenerationTime = endTime - startTime;
-					System.out.println("Analyze Cube Query Generation Time :" + Double.toString(queriesGenerationTime/1000000) + " ms");
+					System.out.println("$$ Analyze Cube Query Generation Time \t\t\t" + Double.toString(queriesGenerationTime/1000000));// + " ms");
 					return true;
 				}else {
 					System.err.println("ANALYZE incoming expression contains syntax errors!Please check.");
@@ -94,7 +95,7 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 						long executionStartTime = System.nanoTime();
 						AnalyzeQuery aq = analyzeQueries.get(i);
 						CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-						Result result = cubeManager.executeSimpleSqlQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
+						Result result = cubeManager.executeQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
 						String[][] resultArray = result.getResultArray();
 						if(resultArray!=null) {
 							resultTuplesCounter += resultArray.length;
@@ -124,7 +125,7 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 							if (siblingResultArray == null) {
 								double executionTime = executionEndTime - executionStartTime;
 								System.out.println(aq.getType());
-								System.out.println("Query Execution Time: " + Double.toString(executionTime/1000000) + " ms");
+								System.out.println("$$ Query Execution Time \t " + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t"+ Double.toString(executionTime/1000000));// + " ms");
 								continue;
 							}
 							for(int j = 0;j<siblingResultArray.length;j++) {
@@ -153,18 +154,18 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 							mqoResultManagementTime = resultHandlingTime;
 						}
 						System.out.println(aq.getType());
-						System.out.println("Query Execution Time: " + Double.toString(executionTime/1000000) + " ms");
-						System.out.println("Multi-Query Optimization with Duo Query Strategy Processing Time: " + Double.toString(resultHandlingTime/1000000) + " ms");
+						System.out.println("$$ Query Execution Time \t" + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(executionTime/1000000));// + " ms");
+						System.out.println("$$ Multi-Query Optimization with Duo Query Strategy Processing Time \t " + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(resultHandlingTime/1000000));// + " ms");
 						
 					}
 					
-					analyzeReport.setAnalyzeQueries(analyzeQueries);			
+					/*analyzeReport.setAnalyzeQueries(analyzeQueries);			
 					
 					startTime = System.nanoTime();
 					analyzeReport.createTextReportFile();
 					long endTime = System.nanoTime();
 					double reportingTime = endTime - startTime;
-					System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");
+					System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");*/
 				}
 				ResultFileMetadata resultFile = new ResultFileMetadata();
 				resultFile.setLocalFolder(analyzeReport.getLocalFolder());

@@ -223,7 +223,7 @@ public class AnalyzeTranslationManager {
 			numOfErrors = analyzeParserManager.parse(incomingExpression);
 			long endTime = System.nanoTime();
 			double parsingTime = endTime - startTime;
-			System.out.println("Incoming Expression Parsing Time :" + Double.toString(parsingTime/1000000) + " ms");
+			System.out.println("$$ Incoming Expression Parsing Time \t\t\t" + Double.toString(parsingTime/1000000));// + " ms");
 		} catch (RecognitionException e) {
 			e.printStackTrace();
 		}
