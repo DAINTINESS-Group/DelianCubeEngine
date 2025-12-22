@@ -1,7 +1,0 @@
-CubeName:adult
-Name:AdultCubeQuery1
-AggrFunc:Avg
-Measure:hours_per_week
-Gamma:native_country_dim.lvl2,race_dim.lvl1
-Sigma:work_dim.lvl2='With-Pay', education_dim.lvl3='Without-Post-Secondary'
-
