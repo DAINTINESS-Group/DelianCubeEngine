@@ -54,6 +54,7 @@ public class Result {
 	private ArrayList<Cell> cells;
 	private ArrayList<String> columnNames;
 	private ArrayList<String> columnLabels;
+	private int numMeasures = 1;
 
     
 	public Result(){
@@ -126,6 +127,19 @@ public class Result {
 		return columnLabels;
 	}
 	
+	//Added a numMeasures field in order to support the multimeasure queries
+	public void setNumMeasures(int n) {
+        this.numMeasures = n;
+    }
+    
+    public int getNumMeasures() {
+        return this.numMeasures;
+    }
+
+    public void addPair(String[] value) {
+        Cell c = new Cell(value, this.numMeasures);
+        cells.add(c);
+    }
 	
 
 	/**

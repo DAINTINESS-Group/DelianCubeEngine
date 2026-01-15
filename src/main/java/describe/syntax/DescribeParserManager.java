@@ -1,15 +1,19 @@
 package describe.syntax;
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.antlr.runtime.*;
 
-import describe.DescribeQuery;
+import describe.DescribeParams;
 
+/**
+ * A class that encapsulates the ANTLR parsing
+ * Instead of having fields for the measures, expressions etc.. it uses a single object DescribeParams
+ * @author Nik-Pt
+ *
+ */
 public class DescribeParserManager {
-	private DescribeQuery query;
+	private DescribeParams params;
 	
 	public DescribeParserManager() {
-		this.query = new DescribeQuery();
+		this.params = new DescribeParams();
 	}
 	
 	/**
@@ -26,12 +30,12 @@ public class DescribeParserManager {
 		DescribeOperatorParser parser = new DescribeOperatorParser(tokens);
 		
 		parser.start();
-		this.query = parser.getQuery();
+		this.params = parser.getParams();
 		
 		return parser.getNumberOfSyntaxErrors();
 	}
 
-	public DescribeQuery getQuery() {
-		return this.query;
+	public DescribeParams getParams() {
+		return this.params;
 	}
 }

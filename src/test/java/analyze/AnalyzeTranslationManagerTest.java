@@ -67,13 +67,12 @@ public class AnalyzeTranslationManagerTest {
 		testAnalyzeTranslationManager.validateIncomingExpression();
 		
 		ArrayList<AnalyzeQuery> result = testAnalyzeTranslationManager.translateToCubeQueries();
-		
 		for(AnalyzeQuery aq:result) {
 			resultedCubeQueries += aq.toString() + "\n";
 		}
 
 		assertEquals(expectedCubeQueries,resultedCubeQueries);
-
+		System.out.println(result.get(0));
 	}
 	
 	@Test

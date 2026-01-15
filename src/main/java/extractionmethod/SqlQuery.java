@@ -30,7 +30,9 @@ import java.sql.ResultSet;
 
 public class SqlQuery extends ExtractionMethod {
 
-	private String[] SelectClauseMeasure;  	/* 0-->AggregateFuncName, 1--> field */  
+	//private String[] SelectClauseMeasure;  	/* 0-->AggregateFuncName, 1--> field */  
+	private ArrayList<String[]> selectMeasures;
+	
 	private ArrayList<String[]> Selection;
 	private ArrayList<String[]> FromClause; 	/* 0-->TABLE, 1-->customName */
 	private ArrayList<String[]> WhereClause;	/* 0-->sqlfld1,1-->op,2-->sqlfld2 */
@@ -43,7 +45,9 @@ public class SqlQuery extends ExtractionMethod {
 		FromClause=new ArrayList<String[]>();
 		WhereClause=new ArrayList<String[]>();
 		GroupByClause=new ArrayList<String[]>();
-		SelectClauseMeasure=new String[2];		
+		
+		//SelectClauseMeasure=new String[2];	
+		selectMeasures = new ArrayList<>();
 	}
 
 	/**
@@ -71,7 +75,19 @@ public class SqlQuery extends ExtractionMethod {
 	public SqlQuery(String Aggregatefunc,ArrayList<String> Tables,ArrayList<String> Conditions,ArrayList<String> GroupAttr){
 		super();
 		init();
-		SelectClauseMeasure=Aggregatefunc.split("~");
+		
+		/* SelectClauseMeasure=Aggregatefunc.split("~"); */
+		if (Aggregatefunc.contains("~")) {
+			String[] parts = Aggregatefunc.split("~");
+			if (parts.length >= 2) {
+				this.addReturnedFields(parts[0], parts[1]);
+			}else {
+				this.addReturnedFields("", Aggregatefunc);
+			}
+		}else {
+			this.addReturnedFields("", Aggregatefunc);
+		}
+		
 		for(String table:Tables){
 			FromClause.add(table.split("~"));
 		}
@@ -97,8 +113,14 @@ public class SqlQuery extends ExtractionMethod {
 	public SqlQuery(String[] Aggregatefunc,ArrayList<String[]> Tables,ArrayList<String[]> Conditions,ArrayList<String[]> GroupAttr){
 		super();
 		init();
-		SelectClauseMeasure[0]=Aggregatefunc[0];
-		SelectClauseMeasure[1]=Aggregatefunc[1];
+		/*
+		 * SelectClauseMeasure[0]=Aggregatefunc[0];
+		 * SelectClauseMeasure[1]=Aggregatefunc[1];
+		 */
+		if(Aggregatefunc != null && Aggregatefunc.length >= 2) {
+			this.addReturnedFields(Aggregatefunc[0], Aggregatefunc[1]);
+		}
+		
 		FromClause.addAll(Tables);
 		WhereClause.addAll(Conditions);
 		GroupByClause.addAll(GroupAttr);
@@ -109,9 +131,12 @@ public class SqlQuery extends ExtractionMethod {
 		return FromClause;
 	}
 
-	public String[] getSelectClauseMeasure(){
-		return SelectClauseMeasure;
-	}   
+	/*
+	 * public String[] getSelectClauseMeasure(){ return SelectClauseMeasure; }
+	 */
+	public ArrayList<String[]> getSelectMeasures(){
+		return selectMeasures;
+	}
 
 	public ArrayList<String[]> getGroupByClause(){
 		return GroupByClause;
@@ -122,25 +147,82 @@ public class SqlQuery extends ExtractionMethod {
 	}
 
 //ATTN: the array SelectClauseMeasure is NOT the full SELECT clause, but just the AggF + Measure to produce AggF(Measure) as measure
+	
+	
+	/*
+	 * Updated both getSelectClause and getSelectClauseWithNoGroupers in order to now have a hardcoded alias set to "measure"
+	 */
+	
+	/*
+	 * public String getSelectClause(){ String ret_value="";
+	 * ret_value+=getGroupClause()+","; ret_value+=
+	 * SelectClauseMeasure[0]+"("+SelectClauseMeasure[1]
+	 * +") as measure,COUNT(*) as countOfDetailedCells"; return ret_value; }
+	 */
 	public String getSelectClause(){
-		String ret_value="";
-		ret_value+=getGroupClause()+",";
-		ret_value+= SelectClauseMeasure[0]+"("+SelectClauseMeasure[1]+") as measure,COUNT(*) as countOfDetailedCells";
+		String ret_value = "";
+		ret_value += getGroupClause() + ",";
+		
+		for(int i = 0; i < selectMeasures.size(); i++) {
+			String[] measure = selectMeasures.get(i);
+			String func = measure[0];
+			String attr = measure[1];
+			String alias = (measure.length > 2) ? measure[2] : null;
+			
+			//Reconstruct aggregate expression: Func(Attr) or just Attr
+			String expr;
+			if(func == null || func.isEmpty()) expr = attr;
+			else expr = func + "(" + attr + ")";
+			
+			ret_value += " " + expr;
+			
+			//Use explicit alias if provided, otherwise generate default "measureN"
+			if (alias != null && !alias.isEmpty()) {
+				ret_value += " AS " + alias;
+			} else if (!expr.toUpperCase().contains(" AS ")) {
+				if(i == 0) ret_value += " as measure";
+				else ret_value += " as measure" + (i+1);
+			}
+			ret_value += ",";
+		}
+		ret_value += "COUNT(*) as countOfDetailedCells";
 		return ret_value;
 	}
 	
+	/*
+	 * public String getSelectClauseWithNoGroupers(){ String ret_value=""; int i=0;
+	 * 
+	 * for(String[] x : Selection ){ if(i>0) ret_value+=",";
+	 * ret_value+=mergeStringTable(x); i++; }
+	 * 
+	 * ret_value+= ", " + "("+SelectClauseMeasure[1]+") as measure"; return
+	 * ret_value; }
+	 */
 	public String getSelectClauseWithNoGroupers(){
-		String ret_value="";
-		int i=0;
-
+		String ret_value = "";
+		int i = 0;
 		for(String[] x : Selection ){
-			if(i>0) ret_value+=",";
-			ret_value+=mergeStringTable(x);
+			if(i > 0) ret_value += ",";
+			ret_value += mergeStringTable(x);
 			i++;
 		}
 		
-		ret_value+= ", " + "("+SelectClauseMeasure[1]+") as measure";
+		for(int k = 0; k < selectMeasures.size(); k++) {
+			String[] measure = selectMeasures.get(k);
+			String attr = measure[1]; 
+			String alias = (measure.length > 2) ? measure[2] : null;
+			
+			ret_value += ", " + "(" + attr + ")"; 
+			
+			if (alias != null && !alias.isEmpty()) {
+				ret_value += " AS " + alias;
+			} else {
+				if(k == 0) ret_value += " as measure";
+				else ret_value += " as measure" + (k+1);
+			}
+		}
 		return ret_value;
+
 	}
 
 	public String getFromClause(){
@@ -228,12 +310,26 @@ public class SqlQuery extends ExtractionMethod {
 		return ret_value ;
 	}
 
-	/*  order_type=0 -> ASCENING
-	 *  order_type=1 -> DESCENDING
+	
+	/*order_type=0 -> ASCENING
+	 *order_type=1 -> DESCENDING
+	 *
+	 * Updated getOrderClauseByMeasure in order to have "ORDER BY "a grouper"" instead of a fixed "measure"
 	 */
 	public String getOrderClauseByMeasure(int order_type){
-		if(order_type==0) return "\nORDER BY measure ASC";
-		return "\nORDER BY measure DESC";
+		String sortColumn = "measure";
+		
+		if (selectMeasures != null && !selectMeasures.isEmpty()) {
+			String[] measure = selectMeasures.get(0);
+			String alias = (measure.length > 2) ? measure[2] : null;
+			
+			if (alias != null && !alias.trim().isEmpty()) {
+				sortColumn = alias;
+			}
+		}
+		
+		if(order_type==0) return "\nORDER BY " + sortColumn + " ASC";
+		return "\nORDER BY " + sortColumn + " DESC";
 	}
 	
 	/**
@@ -259,10 +355,23 @@ public class SqlQuery extends ExtractionMethod {
 		return ret_value;
 	}
 
+	/*
+	 * @Override public void addReturnedFields(String aggregationFuction, String
+	 * attribute){ SelectClauseMeasure[0] =aggregationFuction;
+	 * SelectClauseMeasure[1]= attribute; }
+	 */
 	@Override
-	public void addReturnedFields(String aggregationFuction, String attribute){
-		SelectClauseMeasure[0] =aggregationFuction;
-		SelectClauseMeasure[1]= attribute;
+	public void addReturnedFields(String aggregationFuction, String attribute, String alias){
+		String safeFunc = (aggregationFuction == null) ? "" : aggregationFuction;
+		String safeAttr = (attribute == null) ? "" : attribute;
+		String safeAlias = (alias == null) ? "" : alias;
+	    
+		//Store all components including the alias in a size-3 array
+	    this.selectMeasures.add(new String[] {safeFunc, safeAttr, safeAlias});
+		
+		if(this.getResult() != null) {
+			this.getResult().setNumMeasures(this.selectMeasures.size());
+		}
 	}
 
 
