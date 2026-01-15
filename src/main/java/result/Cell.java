@@ -23,60 +23,105 @@ import java.util.Arrays;
 
 /**
  * The class storing the cells of a cube
+ * 
  * @author pvassil
  *
  */
 public class Cell {
 
-	private ArrayList<String> dimensionMembers;
-	private String measure;
+	private ArrayList<String> dimensionMembers = new ArrayList<>();
+	private ArrayList<String> measures = new ArrayList<>();
 	private Integer countOfDetailedCells;
 
+	/*
+	 * public Cell(String[] values) { int numFields = values.length; String[] aux;
+	 * 
+	 * dimensionMembers = new ArrayList<String>(); aux = Arrays.copyOfRange(values,
+	 * 0, numFields-2); dimensionMembers.addAll(Arrays.asList(aux));
+	 * 
+	 * measure = values[numFields-2]; countOfDetailedCells =
+	 * Integer.parseInt(values[numFields-1]);
+	 * 
+	 * Testing @ development System.out.println("---------------");
+	 * System.out.println("Size of dim's: " + dimensionMembers.size()); for(String s
+	 * : dimensionMembers) System.out.print(s + "\t"); System.out.print("| "
+	 * +measure + "\t"); System.out.println(countOfDetailedCells);
+	 * 
+	 * }
+	 * 
+	 * Replaced the original constructor to have the ability to have multiple measures instead of just one
+	 */
 
-	public Cell(String[] values) {
-		int numFields = values.length;
-		String[] aux;
-		
-		dimensionMembers = new ArrayList<String>();
-		aux = Arrays.copyOfRange(values, 0, numFields-2);
-		dimensionMembers.addAll(Arrays.asList(aux));
-		
-		measure = values[numFields-2];
-		countOfDetailedCells = Integer.parseInt(values[numFields-1]);
-		
-	/*  Testing @ development	
-		System.out.println("---------------");
-		System.out.println("Size of dim's: " + dimensionMembers.size());
-		for(String s : dimensionMembers)
-			 System.out.print(s + "\t");
-		System.out.print("| " +measure + "\t");
-		System.out.println(countOfDetailedCells);
-    */		
-	}
+    public Cell(String[] values, int numMeasures) {
+        int totalFields = values.length;
+        
+        int countIndex = totalFields - 1;
+        this.countOfDetailedCells = Integer.parseInt(values[countIndex]);
+
+        int measuresStartIndex = countIndex - numMeasures;
+        
+        for(int i = 0; i < measuresStartIndex; i++) {
+            dimensionMembers.add(values[i]);
+        }
+
+        for(int i = measuresStartIndex; i < countIndex; i++) {
+            measures.add(values[i]);
+        }
+    }
+
+    //Legacy Constructor that defaults to 1 measure 
+    public Cell(String[] values) {
+        this(values, 1);
+    }
 
 	public ArrayList<String> getDimensionMembers() {
 		return dimensionMembers;
 	}
 
 	public String getMeasure() {
-		return measure;
-	}
+        return measures.isEmpty() ? "" : measures.get(0);
+    }
+	
+	public ArrayList<String> getMeasures() {
+        return measures;
+    }
 
 	public Integer getCountOfDetailedCells() {
 		return countOfDetailedCells;
 	}
 
-	public String toString(String delimiter) {
-		String result = new String();
-		for(int i=0; i<dimensionMembers.size();i++)
-			result = result + dimensionMembers.get(i) + delimiter;
-		result = result + measure + delimiter;
-		result = result+ countOfDetailedCells + delimiter;
-		
-		return result;
-	}
-	
+	@Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (String d : dimensionMembers) { sb.append(d).append(",");
+        
+        }
+        for (String m : measures) {
+        	sb.append(m).append(",");
+        }
+        
+        sb.append(countOfDetailedCells);
+        
+        return sb.toString();
+    }
+    
+    //Legacy toString with delimiter
+    public String toString(String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        
+        for (String d : dimensionMembers) {
+        	sb.append(d).append(delimiter);
+        }
+        for (String m : measures) {
+        	sb.append(m).append(delimiter);
+        }
+        
+        sb.append(countOfDetailedCells).append(delimiter);
+        
+        return sb.toString();
+    }
+
 	public Double toDouble() {
-		return Double.valueOf(measure);
-	}
+		return Double.valueOf(measures.get(0));}
 }

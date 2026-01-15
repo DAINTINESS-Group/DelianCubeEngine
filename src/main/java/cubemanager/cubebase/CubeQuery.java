@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 //import java.util.List;
 
+import describe.QueryMeasure;
 import extractionmethod.ExtractionMethod;
 import result.Result;
 
@@ -33,16 +34,22 @@ public class CubeQuery extends Cube {
 	// of dimension
 	private ArrayList<String[]> SigmaExpressions; // 0->dimension_name.level, 1->
 	// operator , 2->VALUE
-	private String AggregateFunction;
+	
+	/*
+	 * List that stores multiple QueryMeasure objects to support multimeasure queries
+	 * And a temporary holder for legacy aggregate functions strings
+	 */
+	private ArrayList<QueryMeasure> queryMeasures = new ArrayList<>();
+	private String tempLegacyFunction = "";
+	
 	private ExtractionMethod extractionMethod;
 	private BasicStoredCube referCube;
-
-
-
+	
 	public CubeQuery(String Name) {
 		super(Name);
 		GammaExpressions = new ArrayList<String[]>();
 		SigmaExpressions = new ArrayList<String[]>();
+		queryMeasures = new ArrayList<>();
 	}
 
 	public CubeQuery(CubeQuery oldQuery){
@@ -51,7 +58,18 @@ public class CubeQuery extends Cube {
 		SigmaExpressions = new ArrayList<String[]>();
 		copyGammaExpressions(oldQuery);
 		copySigmaExpressions(oldQuery);
-		this.AggregateFunction = (oldQuery.AggregateFunction);
+		
+		/*
+		 * Replaced: this.AggregateFunction = (oldQuery.AggregateFunction);
+		 */
+		this.queryMeasures = new ArrayList<>();
+        if(oldQuery.queryMeasures != null) {
+            for(QueryMeasure qm : oldQuery.queryMeasures) {
+                 this.queryMeasures.add(new QueryMeasure(qm.getFunction(), qm.getAttribute(), qm.getAlias()));
+            }
+        }
+        this.tempLegacyFunction = oldQuery.tempLegacyFunction;
+        
 		this.referCube = oldQuery.referCube;
 		this.cubeMeasuresList = oldQuery.cubeMeasuresList;
 	}
@@ -72,14 +90,36 @@ public class CubeQuery extends Cube {
 		this.referCube = referCube;
 	}
 
-	public void setAggregateFunction(String AggregateFunction){
-		this.AggregateFunction = AggregateFunction;
-	}
+	/*
+	 * public void setAggregateFunction(String AggregateFunction){
+	 * this.AggregateFunction = AggregateFunction; }
+	 * 
+	 * public String getAggregateFunction() { return AggregateFunction; }
+	 */
+	public void addQueryMeasure(String func, String attr, String alias) {
+        this.queryMeasures.add(new QueryMeasure(func, attr, alias));
+    }
+    
+    public ArrayList<QueryMeasure> getQueryMeasures() {
+        return queryMeasures;
+    }
+    
+    public void setAggregateFunction(String AggregateFunction){
+        this.tempLegacyFunction = AggregateFunction;
+        if (!queryMeasures.isEmpty()) {
+            queryMeasures.get(0).setFunction(AggregateFunction);
+        }
+    }
 
-	public String getAggregateFunction() {
-		return AggregateFunction;
-	}
-
+    public String getAggregateFunction() {
+        if (!queryMeasures.isEmpty()) {
+        	return queryMeasures.get(0).getFunction();
+        }
+        return tempLegacyFunction;
+    }
+    
+    
+    
 	public ArrayList<String[]> getGammaExpressions() {
 		return GammaExpressions;
 	}
@@ -127,6 +167,7 @@ public class CubeQuery extends Cube {
 		toadd[2] = value;
 		SigmaExpressions.add(toadd);
 	}
+	
 
 	/**
 	 * Reporting method that tells us what the cube query entails.
@@ -138,11 +179,36 @@ public class CubeQuery extends Cube {
 	public String toString() {
 		String ret_value = 
 				"CubeName:" + this.referCube.getName().substring(0, this.referCube.getName().length()-5) +
-				"\nName: " + this.name + 
-				"\nAggrFunc:" + AggregateFunction + "\n";
-		if (this.cubeMeasuresList.size() > 0 && this.cubeMeasuresList.get(0) != null
-				&& this.cubeMeasuresList.get(0).getAttribute() != null)
+				"\nName: " + this.name;
+		
+		String aggrStr = "";
+		if (!queryMeasures.isEmpty()) {
+			for (int i = 0; i < queryMeasures.size(); i++) {
+				if (i > 0) {
+					aggrStr += ", ";
+				}
+				String f = queryMeasures.get(i).getFunction();
+				aggrStr += (f == null ? "" : f);
+			}
+		} else {
+			aggrStr = tempLegacyFunction;
+		}
+		ret_value += "\nAggrFunc:" + aggrStr + "\n";
+
+		//Replaced the old cubeMeasuresList check
+		if (!queryMeasures.isEmpty()) {
+			ret_value += "Measure:";
+			for (int i = 0; i < queryMeasures.size(); i++) {
+				if (i > 0) ret_value += ", ";
+				ret_value += queryMeasures.get(i).getAttribute();
+			}
+			ret_value += "\n";
+		} 
+		else if (this.cubeMeasuresList.size() > 0 && this.cubeMeasuresList.get(0) != null
+				&& this.cubeMeasuresList.get(0).getAttribute() != null) {
 			ret_value += "Measure:" + this.cubeMeasuresList.get(0).getAttribute().getName() + "\n";
+		}
+		
 		ret_value += "Gamma:";
 		for (int i = 0; i < GammaExpressions.size(); i++) {
 			if (i > 0)
@@ -194,10 +260,14 @@ public class CubeQuery extends Cube {
 		return ret_value;
 	}
 
-	public void addMeasure(int id, String name){
-		Measure msrToAdd = new Measure(id, name, null);
-		cubeMeasuresList.add( msrToAdd);
-	}
+	/*
+	 * public void addMeasure(int id, String name){ Measure msrToAdd = new
+	 * Measure(id, name, null); cubeMeasuresList.add(msrToAdd); }
+	 */
+    public void addMeasure(int id, String name){
+        QueryMeasure qm = new QueryMeasure(tempLegacyFunction, name, null);
+        this.queryMeasures.add(qm);
+    }
 
 	public boolean checkIfSigmaExprIsInGamma(int toChange) {
 		boolean ret_value=false;
@@ -351,7 +421,3 @@ public class CubeQuery extends Cube {
 	
 	 
 } //end of class CubeQuery
-
-
-
-

@@ -14,7 +14,7 @@ tokens {
 
 @header {
     package describe.syntax;
-    import describe.DescribeQuery;
+    import describe.DescribeParams;
 }
 
 @lexer::header {
@@ -24,15 +24,15 @@ tokens {
 @parser::members {
 	
 	//Single object to hold everything instead of using multiple ArrayLists and/or Hashmaps here
-    private DescribeQuery query = new DescribeQuery();    
+    private DescribeParams params = new DescribeParams();    
     
-    public DescribeQuery getQuery(){
-    	return query;   
+    public DescribeParams getParams(){
+    	return params;   
     }
 }
 
 start: {
-    query = new DescribeQuery();
+    params = new DescribeParams();
 } parse;
 
 parse
@@ -40,15 +40,16 @@ parse
         (
             JOIN 
             { 
-               query.setJoined(true);
-               query.setJoinType("JOIN");
+               params.setJoined(true);
+               params.setJoinType("JOIN");
             }
             singleStatement 
             ON joinCol=WORD 
             { 
-               query.setJoinCondition($joinCol.text);
+               params.setJoinCondition($joinCol.text);
             }
         )*
+        EOF
     ;
 
 singleStatement
@@ -64,10 +65,10 @@ singleStatement
 
 cubeName
     :   WORD { 
-    		if(query.getCubeName().equals("")){
-    			query.setCubeName($WORD.text);
+    		if(params.getCubeName().equals("")){
+    			params.setCubeName($WORD.text);
     		}else{
-    			query.appendToCubeName(" JOIN " + $WORD.text);
+    			params.appendToCubeName(" JOIN " + $WORD.text);
     		}
         }
     ;
@@ -78,10 +79,18 @@ measureList
     ;
 
 measureExpression
-    : 
-        expression { 
-            query.addMeasure($expression.text);
-        }
+    : 	
+    	expr=expression
+    	
+    	//Added the greedy behavior because the parser seems to not know whether the token AS followed by a WORD belongs to the measureExpression or the singleStatement
+    	( options {greedy=true;} : AS alias=WORD )?
+    	{
+    		if ($alias != null){
+    			params.addMeasure($expr.text + " AS " + $alias.text);
+    		}else{
+    			params.addMeasure($expr.text);
+   			}
+   		}
     ;
 
 expression
@@ -107,19 +116,24 @@ sigmaExpressionsList
 sigmaExpression
     :   //Year = 2020
         w=WORD op=comparator v=val {
-            query.addSigmaExpression($w.text + $op.text + $v.text);
-            query.addSigmaValue($w.text, $v.text);
+            params.addSigmaExpression($w.text + $op.text + $v.text);
+            params.addSigmaValue($w.text, $v.text);
         }
     |   //Region IN {A, B}
         w=WORD IN LBRACE vList=valueList RBRACE {
-            query.addSigmaExpression($w.text + " IN {" + $vList.text + "}");
-            query.addSigmaValue($w.text, $vList.text);
+            params.addSigmaExpression($w.text + " IN {" + $vList.text + "}");
+            params.addSigmaValue($w.text, $vList.text);
+        }
+        //Region NOT IN {A, B}
+    |   w=WORD NOT IN LBRACE vList=valueList RBRACE {
+            params.addSigmaExpression($w.text + " NOT IN {" + $vList.text + "}");
+            params.addSigmaValue($w.text, $vList.text);
         }
     |   //Region WITH ...
         w=WORD WITH nested=nestedFilter {
-            query.addSigmaExpression($w.text + " WITH " + $nested.text);
+            params.addSigmaExpression($w.text + " WITH " + $nested.text);
             //Stores the whole nested condition as "value"
-            query.addSigmaValue($w.text, $nested.text);
+            params.addSigmaValue($w.text, $nested.text);
         }
     ;
 
@@ -137,7 +151,7 @@ gammaExpressionsList
     ;
 
 gammaExpression
-    :   WORD { query.addGammaExpression($WORD.text); }
+    :   WORD { params.addGammaExpression($WORD.text); }
     ;
 
 orderExpressionsList
@@ -147,7 +161,7 @@ orderExpressionsList
 orderExpression
 	:	w=WORD (dir=sortDirection)? {
 			String direction = ($dir.text == null) ? "" : " " + $dir.text;
-			query.addOrderExpression($w.text + direction);
+			params.addOrderExpression($w.text + direction);
 		}
 	;
 
@@ -161,12 +175,12 @@ usingList
 	;
 
 modelName
-	:	WORD { query.addModel($WORD.text); }
+	:	WORD { params.addModel($WORD.text); }
 	;
 
 
 queryAlias
-	: 	WORD { query.setQueryAlias($WORD.text); }
+	: 	WORD { params.setQueryAlias($WORD.text); }
 	;
 
 comparator returns [String text]
@@ -188,6 +202,7 @@ BY: 'BY';
 JOIN: 'JOIN';
 ON: 'ON';
 IN: 'IN';
+NOT: 'NOT';
 AND: 'AND';
 AS: 'AS';
 ORDER: 'ORDER';
@@ -220,7 +235,6 @@ WORD: (LETTER | '_' | DIGIT)+ (DOT (LETTER | '_' | DIGIT)+)*;
 
 TEXTVALUE: '\''(LETTER|DIGIT|'_'|'/'|'-'|' '|'.')+ '\'';
 NUMBER: '\''? ('-')? (DIGIT)+ ('.' (DIGIT)+)? '\''?;
-
 fragment DIGIT: '0'..'9';
 fragment LETTER: 'a'..'z' | 'A'..'Z';
 WS: (' ' | '\t' | '\r'| '\n'|'\r\n'|'\f') {$channel=HIDDEN;};

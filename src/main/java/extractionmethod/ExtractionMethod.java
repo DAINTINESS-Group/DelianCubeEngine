@@ -58,11 +58,15 @@ public abstract class ExtractionMethod {
     abstract public String toString();
     abstract public boolean compareExtractionMethod(ExtractionMethod toCompare);
 
-    abstract public void addReturnedFields(String aggregationFuction, String attribute);
+    public void addReturnedFields(String aggregationFuction, String attribute) {
+    	addReturnedFields(aggregationFuction, attribute, null);
+    }
     abstract public void addFilter(String[] index);
     abstract public void addGroupers(String[] index);
     abstract public void addSourceCube(String[] index);
     abstract public void addSelection(String[] index);
+
+	abstract public void addReturnedFields(String function, String attribute, String alias);
     
 
 }

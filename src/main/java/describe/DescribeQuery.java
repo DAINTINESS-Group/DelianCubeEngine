@@ -1,109 +1,111 @@
 package describe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
+import cubemanager.cubebase.CubeQuery;
+import result.Result;
+
+/**
+ * A wrapper class acting as a container for the entire context of a Describe operation.
+ * Intermediate Representation: It holds the parsed components of of the query before they are translated into a CubeQuery
+ * Execution State: It stores the resulting CubeQuery object and the final Result (data cells) returned from the DB
+ * @author Nik-Pt
+ */
 public class DescribeQuery {
-	private String aggrFunc = "";
-	private String cubeName = "";
-	private String queryAlias = "";
-	
-	private ArrayList<String> sigmaExpressions = new ArrayList<>();
-	private HashMap<String , String> sigmaExpressionsValues = new HashMap<>();
-	private ArrayList<String> gammaExpressions = new ArrayList<>();
+    private String cubeName;
+    private ArrayList<QueryMeasure> measures;
+    private ArrayList<String> groupByExpressions; //"region", "year"
+    private ArrayList<FilterExpression> filterExpressions; //Holds complex filters
+	private Result describeQueryResult;
+	private CubeQuery cubeQuery;
 
-	private ArrayList<String> measureList = new ArrayList<>();
-	private String joinCondition = "";
-	private String joinType = "";
-	private boolean isJoined = false;
+    public DescribeQuery() {
+        this.measures = new ArrayList<>();
+        this.groupByExpressions = new ArrayList<>();
+        this.filterExpressions = new ArrayList<>();
+    }
+
+    /**
+     * A helper DTO (Data Transfer Object) representing a single filter condition.
+     */
+    public static class FilterExpression {
+        private String dimension; 
+        private String type;      
+        private String operator;  
+        private String value;     
+
+        public FilterExpression(String dimension, String type, String operator, String value) {
+            this.dimension = dimension;
+            this.type = type;
+            this.operator = operator;
+            this.value = value;
+        }
+        
+        public String getDimension() {
+        	return dimension;
+        }
+        
+        public String getType() {
+        	return type; 
+        }
+        
+        public String getOperator() { 
+        	return operator; 
+        }
+        
+        public String getValue() { 
+        	return value;
+        }
+    }
+
+
+    public String getCubeName() {
+    	return cubeName;
+    }
+    
+    public void setCubeName(String cubeName) {
+    	this.cubeName = cubeName; 
+    }
+
+    public ArrayList<QueryMeasure> getMeasures() {
+    	return measures;
+    }
+    
+    public void addMeasure(QueryMeasure qm) {
+    	this.measures.add(qm);
+    }
+
+    public ArrayList<String> getGroupByExpressions() {
+    	return groupByExpressions;
+    }
+
+    public void addGroupBy(String gb) {
+    	this.groupByExpressions.add(gb);
+    }
+
+    public ArrayList<FilterExpression> getFilterExpressions() {
+    	return filterExpressions;
+    }
+    
+    public void addFilter(FilterExpression filter) {
+    	this.filterExpressions.add(filter);
+    }
+    
+    public void setDescribeQueryResult(Result result) {
+		this.describeQueryResult = result;
+	}
+    
+    public Result getDescribeQueryResult() {
+        return describeQueryResult;
+    }
+    
+    public CubeQuery getCubeQuery() {
+        return cubeQuery;
+    }
+
+    public void setCubeQuery(CubeQuery cubeQuery) {
+        this.cubeQuery = cubeQuery;
+    }
 	
-	private ArrayList<String> orderExpressions = new ArrayList<>();
-	private ArrayList<String> modelList = new ArrayList<>();
-	
-	public String getAggrFunc() {
-		return aggrFunc;
-	}
-	public void setAggrFunc(String aggrFunc) {
-		this.aggrFunc = aggrFunc;
-	}
-	
-	public String getCubeName() {
-		return cubeName;
-	}
-	public void setCubeName(String cubeName) {
-		this.cubeName = cubeName;
-	}
-	public void appendToCubeName(String suffix) {
-		this.cubeName += suffix; 
-	}
-	
-	public String getQueryAlias() {
-		return queryAlias;
-	}
-	public void setQueryAlias(String queryAlias) {
-		this.queryAlias = queryAlias;
-	}
-	
-	public ArrayList<String> getSigmaExpressions() {
-		return sigmaExpressions;
-	}
-	public void addSigmaExpression(String expr) {
-		this.sigmaExpressions.add(expr); 
-	}
-	
-	public HashMap<String, String> getSigmaExpressionsValues() {
-		return sigmaExpressionsValues;
-	}
-	public void addSigmaValue(String key, String value) { 
-		this.sigmaExpressionsValues.put(key, value); 
-	}
-	
-	public ArrayList<String> getGammaExpressions() {
-		return gammaExpressions;
-	}
-	public void addGammaExpression(String gamma) { 
-		this.gammaExpressions.add(gamma);
-	}
-	
-	public ArrayList<String> getMeasureList() {
-		return measureList;
-	}
-	public void addMeasure(String measure) { 
-		this.measureList.add(measure);
-	}
-	
-	public String getJoinCondition() {
-		return joinCondition;
-	}
-	public void setJoinCondition(String joinCondition) {
-		this.joinCondition = joinCondition;
-	}
-	
-	public String getJoinType() {
-		return joinType;
-	}
-	public void setJoinType(String joinType) {
-		this.joinType = joinType;
-	}
-	
-	public boolean isJoined() {
-		return isJoined;
-	}
-	public void setJoined(boolean isJoined) {
-		this.isJoined = isJoined;
-	}
-	
-	public ArrayList<String> getOrderExpressions() {
-		return orderExpressions;
-	}
-	public void addOrderExpression(String order) {
-		this.orderExpressions.add(order); 
-	}
-	
-	public ArrayList<String> getModelList() {
-		return modelList;
-	}
-	public void addModel(String model) { 
-		this.modelList.add(model);
-	}
 }

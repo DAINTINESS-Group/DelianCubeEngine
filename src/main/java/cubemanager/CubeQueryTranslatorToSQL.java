@@ -15,6 +15,7 @@ import cubemanager.cubebase.Hierarchy;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.LinearHierarchy;
 import cubemanager.cubebase.Measure;
+import describe.QueryMeasure;
 import extractionmethod.ExtractionMethod;
 
 /**
@@ -36,15 +37,20 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		//TODO: God method, super long.
 		//CONSIDER: refactoring to smaller parts, but do it without errors
 		//ATTN: ordering of the steps is sensitive, do NOT change unless you know what you are doing.
-		List<Measure> measure;
-		String aggregateFunction;
+		/*
+		 * List<Measure> measure; 
+		 * String aggregateFunction;
+		 */
 		ArrayList<String[]> gammaExpressions;
 		ArrayList<String[]> sigmaExpressions;
 		BasicStoredCube referCube;
 		ExtractionMethod extractionMethod;  
 		
-		measure = cubeQuery.getMeasuresList();
-		aggregateFunction = cubeQuery.getAggregateFunction();
+		/*
+		 * measure = cubeQuery.getMeasuresList(); aggregateFunction =
+		 * cubeQuery.getAggregateFunction();
+		 */
+		ArrayList<QueryMeasure> measures = cubeQuery.getQueryMeasures();
 		gammaExpressions = cubeQuery.getGammaExpressions();
 		sigmaExpressions = cubeQuery.getSigmaExpressions();
 		referCube = cubeQuery.getReferCube();
@@ -52,10 +58,28 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		
 		System.out.println("cube : " + referCube);
 		
-		if(measure.get(0).getAttribute() !=null ) 
-			extractionMethod.addReturnedFields(aggregateFunction,measure.get(0).getAttribute().getName());
-		else
-			extractionMethod.addReturnedFields(aggregateFunction,"");
+		
+		
+		/*
+		 * if(measure.get(0).getAttribute() !=null )
+		 * extractionMethod.addReturnedFields(aggregateFunction,measure.get(0).
+		 * getAttribute().getName()); else
+		 * extractionMethod.addReturnedFields(aggregateFunction,"");
+		 */
+		if (measures != null && !measures.isEmpty()) {
+            for (QueryMeasure qm : measures) {
+            	extractionMethod.addReturnedFields(qm.getFunction(), qm.getAttribute(), qm.getAlias());
+            }
+        } 
+        else {
+            String func = cubeQuery.getAggregateFunction();
+            String attr = "";
+            if (cubeQuery.getMeasuresList() != null && !cubeQuery.getMeasuresList().isEmpty()) {
+                 attr = cubeQuery.getMeasuresList().get(0).getAttribute().getName();
+            }
+            extractionMethod.addReturnedFields(func, attr);
+        }
+		
 		
 		HashSet<String> FromTables=new HashSet<String>();
 
@@ -150,8 +174,19 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 									
 									String[] toAddfrom=new String[1];
 									toAddfrom[0]=dimension.getTableName();
-									if(FromTables.contains(dimension.getTableName())==false) 
+									
+									/*
+									 * Not unique table/alias error. Probably fails to update FromTables after
+									 * adding the table which resulted in duplicate tables in the FROM part of the
+									 * SQL Query when trying to use multiple Groupers from the same table 
+									 * Replaced the below if statement
+									 */
+									//if(FromTables.contains(dimension.getTableName())==false) 
+									//extractionMethod.addSourceCube(toAddfrom);
+									if(FromTables.contains(dimension.getTableName())==false) {
 										extractionMethod.addSourceCube(toAddfrom);
+										FromTables.add(dimension.getTableName());
+									}
 
 									toadd[0]+=current_lvls.get(l).getAttributeName(0);
 								}
