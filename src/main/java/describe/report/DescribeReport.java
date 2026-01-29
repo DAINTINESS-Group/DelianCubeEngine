@@ -3,8 +3,14 @@ package describe.report;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Measure;
 import describe.DescribeQuery; // Using the wrapper class
+import describe.QueryMeasure;
+import result.Cell;
 import result.Result;
 
 /**
@@ -96,7 +102,7 @@ public class DescribeReport {
                     writer.write("### RESULTS\n");
                     String[][] resultArray = res.getResultArray();
                     if (resultArray != null && resultArray.length > 0) {
-                        writer.write(buildMarkdownTable(resultArray) + "\n\n");
+                        writer.write(buildMarkdownTable(resultArray, res) + "\n\n");
                     } else {
                         writer.write("No results found.\n\n");
                     }
@@ -111,29 +117,134 @@ public class DescribeReport {
     /*
      * Converts the 2D String Array into a Markdown table format
      */
-    private String buildMarkdownTable(String[][] resultArray) {
+    private String buildMarkdownTable(String[][] resultArr, Result result) { 
         StringBuilder sb = new StringBuilder();
-        int startRow = connectionType.equals("RDBMS") ? 2 : 0;
-        int loopLimit = connectionType.equals("Spark") ? resultArray.length - 2 : resultArray.length;
+        ArrayList<Cell> cells = result.getCells();
 
-        if (resultArray.length > startRow) {
-            sb.append("|");
-            int cols = resultArray[startRow].length;
-            for (int k = 0; k < cols - 1; k++) {
-                sb.append((k == cols - 2 ? "Metric" : "Dim " + (k + 1)) + "|");
+        if (cells == null || cells.isEmpty()) return "No Results Found.";
+        
+        ArrayList<String[][]> modelOutputs = describeQuery.getModelOutputs();
+
+        sb.append("|");
+        
+        if (describeQuery.getCubeQuery().getGammaExpressions() != null) {
+            for (String[] dim : describeQuery.getCubeQuery().getGammaExpressions()) {
+                sb.append(String.join(".", dim)).append("|");
             }
-            sb.append("\n|");
-            for (int k = 0; k < cols - 1; k++) sb.append("---|");
-            sb.append("\n");
+        } else {
+            sb.append("Dimension|");
+        }
+
+        int numSQLMeasures = cells.get(0).getMeasures().size();
+        ArrayList<QueryMeasure> definedMeasures = describeQuery.getCubeQuery().getQueryMeasures();
+        
+        for (int i = 0; i < numSQLMeasures; i++) {
+            String header = "Measure_" + (i + 1); 
             
-            for (int i = startRow; i < loopLimit; i++) {
-                sb.append("|");
-                for (int j = 0; j < resultArray[i].length - 1; j++) {
-                    sb.append(resultArray[i][j]).append("|");
+            if (definedMeasures != null && i < definedMeasures.size()) {
+                describe.QueryMeasure qm = definedMeasures.get(i);
+
+                if (qm.getAlias() != null && !qm.getAlias().isEmpty()) {
+                    header = qm.getAlias();
+                } else {
+                    header = qm.getAttribute(); 
                 }
-                sb.append("\n");
+            }
+            sb.append(header).append("|");
+        }
+        
+        if (modelOutputs != null) {
+            for (String[][] modelData : modelOutputs) {
+                if (modelData.length > 0) {
+                    for (String colHeader : modelData[0]) {
+                        sb.append(colHeader).append("|");
+                    }
+                }
             }
         }
+        sb.append("\n|");
+
+        int totalCols = (describeQuery.getCubeQuery().getGammaExpressions() != null ? describeQuery.getCubeQuery().getGammaExpressions().size() : 1) + numSQLMeasures;
+        if (modelOutputs != null) {
+            for (String[][] modelData : modelOutputs) {
+                 if (modelData.length > 0) totalCols += modelData[0].length;
+            }
+        }
+        for (int i = 0; i < totalCols; i++) sb.append("---|");
+        sb.append("\n");
+
+        int rowIndex = 0;
+        for (Cell c : cells) {
+            sb.append("|");
+            
+            //Dimensions
+            for (String dim : c.getDimensionMembers()) sb.append(dim).append("|");
+            
+            //SQL Measures
+            for (String val : c.getMeasures()) sb.append(val).append("|");
+            
+            if (modelOutputs != null) {
+                for (String[][] modelData : modelOutputs) {
+                    if (rowIndex + 1 < modelData.length) {
+                        for (String val : modelData[rowIndex + 1]) {
+                            sb.append(val).append("|");
+                        }
+                    } else {
+                        for (int k=0; k<modelData[0].length; k++) sb.append("N/A|");
+                    }
+                }
+            }
+            
+            sb.append("\n");
+            rowIndex++;
+        }
+
         return sb.toString();
     }
+    
+//    private String buildMarkdownTable(String[][] resultArr, Result result) {
+//        StringBuilder sb = new StringBuilder();
+//
+//        ArrayList<Cell> cells = result.getCells();
+//
+//        if (cells == null || cells.isEmpty()) {
+//            return "No Results Found.";
+//        }
+//
+//        sb.append("|");
+//        if (describeQuery.getCubeQuery().getGammaExpressions() != null) {
+//            for (String[] dim : describeQuery.getCubeQuery().getGammaExpressions()) {
+//                sb.append(String.join(".", dim)).append("|");
+//            }
+//        } else {
+//            sb.append("Dimension|");
+//        }
+//
+//        result.Cell firstCell = cells.get(0);
+//        int numTotalMeasures = firstCell.getMeasures().size();
+//        int numOriginalMeasures = describeQuery.getCubeQuery().getMeasuresList().size();
+//        
+//        for (int i = 0; i < numTotalMeasures; i++) {
+//            if (i < numOriginalMeasures) {
+//                sb.append(describeQuery.getCubeQuery().getMeasuresList().get(i)).append("|"); 
+//            } else {
+//                sb.append("Model_Result_").append(i - numOriginalMeasures + 1).append("|");
+//            }
+//        }
+//        sb.append("\n|");
+//
+//        int totalCols = (describeQuery.getCubeQuery().getGammaExpressions() != null ? 
+//                         describeQuery.getCubeQuery().getGammaExpressions().size() : 1) + numTotalMeasures;
+//        for (int i = 0; i < totalCols; i++) sb.append("---|");
+//        sb.append("\n");
+//
+//        for (result.Cell c : cells) {
+//            sb.append("|");
+//            for (String dim : c.getDimensionMembers()) sb.append(dim).append("|");
+//            for (String val : c.getMeasures())   sb.append(val).append("|");
+//            sb.append("\n");
+//        }
+//
+//        return sb.toString();
+//    }
 }

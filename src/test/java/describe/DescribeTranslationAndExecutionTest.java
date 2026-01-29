@@ -215,7 +215,7 @@ public class DescribeTranslationAndExecutionTest {
     
     
     @Test
-    public final void testDescribeQueryExecution1() throws IOException, RecognitionException {
+    public final void testDescribeQueryExecution() throws IOException, RecognitionException {
         String incomingExpression = "WITH loan DESCRIBE (SUM(amount) - SUM(payments)) AS Test FOR region IN {'Prague', 'Brno'} AND year >= '1997' GROUP BY district_name, month AS first_query";
         String testResultString = "";
 
@@ -268,8 +268,8 @@ public class DescribeTranslationAndExecutionTest {
     
     
     @Test
-    public final void testDescribeQueryExecution() throws IOException, RecognitionException {
-        String incomingExpression = "WITH loan DESCRIBE SUM(amount) AS AMOUNT , SUM(amount - payments) AS Something FOR region='south Bohemia' AND year='1998' GROUP BY district_name";
+    public final void testDescribeQueryExecutionUsingModel() throws IOException, RecognitionException {
+        String incomingExpression = "WITH loan DESCRIBE SUM(amount) AS Total , SUM(amount - payments) AS SomethingIGuess FOR region='south Bohemia' AND year <= '1998' GROUP BY district_name, region USING Rank";
         String testResultString = "";
 
         DescribeOperator testDescribeOperator = new DescribeOperator(testCubeManager);
@@ -321,7 +321,7 @@ public class DescribeTranslationAndExecutionTest {
     @Test
     public final void testMultipleGroupersPerDimension() throws IOException, RecognitionException {
         //Group by Region (Geo) AND Year + Month (Date)
-        // his tests "Multiple groupers per dimension" (Year and Month are both Date dimension)
+        //This tests "Multiple groupers per dimension" (Year and Month are both Date dimension)
         String incomingExpression = "WITH loan DESCRIBE SUM(amount) FOR year > '1950' GROUP BY region, year, month";
         
         System.out.println("\n--- TEST: Multiple Groupers Per Dimension ---");

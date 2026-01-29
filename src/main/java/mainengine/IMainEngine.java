@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.antlr.runtime.RecognitionException;
 import org.apache.spark.sql.AnalysisException;
 
 import chartManagement.utils.ChartResponse;
@@ -255,9 +256,19 @@ public interface IMainEngine extends IServer {
 	 * @param incomingExpression The String that defines an intentional query for the assess operator
 	 * @returnA ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
 	 * @throws RemoteException
+	 * @throws Exception 
 	 */
-	ResultFileMetadata assess(String incomingExpression) throws RemoteException;
+	ResultFileMetadata assess(String incomingExpression) throws RemoteException, Exception;
 	
+	/**
+	 * 
+	 * @param incomingExpression The String that defines an intentional query for the describe operator
+	 * @return A ResultFileMetadata object containing the respective String values on the location of the produced files or a message if any errors are found
+	 * @throws RemoteException
+	 * @throws RecognitionException 
+	 * @throws Exception 
+	 */
+	ResultFileMetadata describe(String incomingExpression) throws RemoteException, RecognitionException, Exception;
 	
 	
 	/**

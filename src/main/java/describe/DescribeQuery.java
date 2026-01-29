@@ -19,6 +19,9 @@ public class DescribeQuery {
     private ArrayList<FilterExpression> filterExpressions; //Holds complex filters
 	private Result describeQueryResult;
 	private CubeQuery cubeQuery;
+	
+	//This is the most simple way to get the results from the models in order to add them to the report
+	private ArrayList<String[][]> modelOutputs = new ArrayList<>();
 
     public DescribeQuery() {
         this.measures = new ArrayList<>();
@@ -106,6 +109,14 @@ public class DescribeQuery {
 
     public void setCubeQuery(CubeQuery cubeQuery) {
         this.cubeQuery = cubeQuery;
+    }
+    
+    public void addModelOutput(String[][] output) {
+        this.modelOutputs.add(output);
+    }
+    
+    public ArrayList<String[][]> getModelOutputs() {
+        return this.modelOutputs;
     }
 	
 }

@@ -11,6 +11,7 @@ import describe.report.DescribeReport;
 import describe.syntax.DescribeParserManager;
 import extractionmethod.ExtractionMethod;
 import mainengine.ModelManager;
+import mainengine.ModelSelector;
 import model.abstracts.AbstractModel;
 import model.outlier.OutlierModel;
 import model.rank.RankModel;
@@ -41,8 +42,6 @@ public class DescribeOperator {
      * Auxiliary method that checks the syntax, constructs the CubeQuery and executes it
      * @return True if successful, False otherwise
      * @throws RecognitionException 
-     * 
-     * TODO: Addition of model (kpi, clustering, outlier, ...) usage probably, after getting the results
      */
     public ResultFileMetadata execute(String queryString) throws RecognitionException {
     	
@@ -67,6 +66,7 @@ public class DescribeOperator {
             resultFile.setLocalFolder(describeReport.getLocalFolder());
             return resultFile;
         }
+        
 
         //Translation of said query into a Describe query
         try {
@@ -100,6 +100,12 @@ public class DescribeOperator {
                 CubeQuery cq = describeQuery.getCubeQuery();
                 Result result = cubeManager.executeQuery(cq);
                 
+                //Apply models after getting the results
+                DescribeParams params = parserManager.getParams();
+                if(params.getModelList() != null && !params.getModelList().isEmpty()) {
+                    resultFile = applyModels(resultFile, result, params.getModelList());
+                }
+
                 //Process the Result object that came from the execution
                 String[][] resultArray = (result != null) ? result.getResultArray() : null;
                 if (resultArray != null) {
@@ -136,6 +142,28 @@ public class DescribeOperator {
         
         System.out.println("Number of resulted tuples: " + resultTuplesCounter);
         return resultFile;
+    }
+    
+    private ResultFileMetadata applyModels(ResultFileMetadata resMetadata, Result data, ArrayList<String> models) {
+        String[] modelArray = models.toArray(new String[0]);
+        
+        ModelManager modelManager = new ModelManager(data);
+        
+        ArrayList<AbstractModel> launchedModels = modelManager.selectModelsToLaunch(modelArray);
+        
+        int modelGenFlag = modelManager.executeModelConstruction("Describe Query");
+  
+        if (modelGenFlag == 0) {
+            modelManager.addComponentsToResultMetadata(resMetadata);
+
+            if (launchedModels != null) {
+                for (AbstractModel model : launchedModels) {
+                    String[][] output = model.printAs2DStringArray();
+                    this.describeQuery.addModelOutput(output);
+                }
+            }
+        }
+        return resMetadata;
     }
     
     public DescribeQuery getDescribeQuery() {
