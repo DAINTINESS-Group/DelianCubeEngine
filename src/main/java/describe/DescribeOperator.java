@@ -4,17 +4,12 @@ import java.util.ArrayList;
 
 import org.antlr.runtime.RecognitionException;
 
-import analyze.report.AnalyzeReport;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import describe.report.DescribeReport;
 import describe.syntax.DescribeParserManager;
-import extractionmethod.ExtractionMethod;
 import mainengine.ModelManager;
-import mainengine.ModelSelector;
 import model.abstracts.AbstractModel;
-import model.outlier.OutlierModel;
-import model.rank.RankModel;
 import result.Result;
 import result.ResultFileMetadata;
 
@@ -28,7 +23,6 @@ public class DescribeOperator {
     private DescribeTranslationManager translationManager;
     private DescribeParserManager parserManager;
 	private DescribeReport describeReport;
-    private CubeQuery cubeQuery;
     private Result result;
     private DescribeQuery describeQuery;
     

@@ -9,6 +9,17 @@ import cubemanager.cubebase.QueryHistoryManager;
 import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
+/**
+ * A context object that holds the state and essential components of a session
+ * This class serves as a State Container and it is initialized by the ConnectionManager upon successful connection
+ * and then retained by the SessionQueryProcessorEngine
+ * 
+ * Its primary purpose is to aggregate all the specific Managers (e.g., CubeManager, ChartManager) 
+ * and session metadata (e.g., Schema Name, Session ID) into a single object so that the SessionQueryProcessorEngine is debloated
+ * 
+ * @author Nik-Pt
+ *
+ */
 public class SessionContext {
     private CubeManager cubeManager;
     private Session session;
@@ -20,14 +31,14 @@ public class SessionContext {
     private ChartManager chartManager;
     private List<Dimension> registeredDimensions;
     private List<BasicStoredCube> registeredCubesList;
-//	private String currentQueryName;
-//	private ITranslatorFactory translatorFactory;
-//	private ArrayList<String> cubeNames;
-//	private ArrayList<String> aggrFunctions;
-//	private ArrayList<String> measuresFields;
-//	private ArrayList <String> dimensions;
-//	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
-//	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
+	//	private String currentQueryName;
+	//	private ITranslatorFactory translatorFactory;
+	//	private ArrayList<String> cubeNames;
+	//	private ArrayList<String> aggrFunctions;
+	//	private ArrayList<String> measuresFields;
+	//	private ArrayList <String> dimensions;
+	//	private HashMap<String, ArrayList<String>> dimensionsToLevelsHashmap;
+	//	private HashMap<String, ArrayList<String>> levelsToDimensionsHashmap;
     
     //Getters and Setters
 	public CubeManager getCubeManager() {

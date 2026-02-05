@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
 import cubemanager.cubebase.CubeQuery;
-import cubemanager.cubebase.Measure;
 import describe.DescribeQuery; // Using the wrapper class
 import describe.QueryMeasure;
 import result.Cell;
@@ -22,8 +19,6 @@ public class DescribeReport {
     
 	//Describe input query
     private String incomingExpression;
-    //Spark or RDBMS dataset connection
-    private String connectionType;
     //Wrapper holding both query definition and result
     private DescribeQuery describeQuery; 
     
@@ -34,7 +29,6 @@ public class DescribeReport {
     
     public DescribeReport(String incomingExpression, String connectionType) {
         this.incomingExpression = incomingExpression;
-        this.connectionType = connectionType;
         this.localFolder = "OutputFiles" + File.separator;
     }
     
@@ -164,7 +158,14 @@ public class DescribeReport {
         }
         sb.append("\n|");
 
-        int totalCols = (describeQuery.getCubeQuery().getGammaExpressions() != null ? describeQuery.getCubeQuery().getGammaExpressions().size() : 1) + numSQLMeasures;
+        int totalCols;
+
+        if (describeQuery.getCubeQuery().getGammaExpressions() != null) {
+            totalCols = describeQuery.getCubeQuery().getGammaExpressions().size() + numSQLMeasures;
+        } else {
+            totalCols = 1 + numSQLMeasures;
+        }
+        
         if (modelOutputs != null) {
             for (String[][] modelData : modelOutputs) {
                  if (modelData.length > 0) totalCols += modelData[0].length;
