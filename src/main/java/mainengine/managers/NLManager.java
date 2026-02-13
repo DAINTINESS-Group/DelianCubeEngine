@@ -65,7 +65,7 @@ public class NLManager implements IBuilder {
     private String answerCubeQueryFromNLString(String nlQuery, QueryHistoryManager historyManager, CubeManager cubeManager) throws Exception {
         String cubeQueryString = translateNLQuery(nlQuery);
         System.out.println("Translated Query: " + cubeQueryString);
-
+        
         return (String) executeGeneratedQuery("answer_from_string", cubeQueryString, historyManager, cubeManager);
     }
 
@@ -103,6 +103,7 @@ public class NLManager implements IBuilder {
     }
 
     private Object executeGeneratedQuery(String command, String queryString, QueryHistoryManager historyManager, CubeManager cubeMgr) throws Exception {
+    	long t0 = System.nanoTime();
         Map<String, Object> execParams = new HashMap<>();
         execParams.put("query", queryString);
         execParams.put("historyManager", historyManager);
@@ -110,6 +111,9 @@ public class NLManager implements IBuilder {
         
         RequestCTO execRequest = new RequestCTO(ManagerType.EXECUTION, command, execParams, cubeMgr);
         ResponseDTO response = execManager.execute(execRequest);
+        
+        long tF = System.nanoTime();
+		System.out.println("Query Execution Time " + (tF - t0) + " nanoseconds");
 
         if (response.isSuccess()) {
             Map<String, Object> payload = (Map<String, Object>) response.getPayload();

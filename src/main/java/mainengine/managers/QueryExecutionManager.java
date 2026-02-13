@@ -41,66 +41,44 @@ public class QueryExecutionManager implements IBuilder {
         Map<String, Object> inputParams = (Map<String, Object>) cto.getInput();
         CubeManager cubeManager = cto.getCubeManager();
         QueryHistoryManager historyManager = (QueryHistoryManager) inputParams.get("historyManager");
-        
         InterestingnessManager interestManager = (InterestingnessManager) inputParams.get("interestManager");
         
-        Object resultPayload = null;
-
-        switch (cto.getCommandAlias()) {
+        Object resultPayload = routeCommand(cto.getCommandAlias(), inputParams, cubeManager, historyManager, interestManager);
+        
+        return createResponse(resultPayload);
+    }
+    
+    private Object routeCommand(String command, Map<String, Object> params, CubeManager cubeManager, QueryHistoryManager historyManager, InterestingnessManager interestManager) throws Exception {
+        switch (command) {
             case "answer_from_string":
-                String queryStr = (String) inputParams.get("query");
-                resultPayload = answerCubeQueryFromString(queryStr, cubeManager, historyManager);
-                break;
-
+            	return answerCubeQueryFromString((String) params.get("query"), cubeManager, historyManager);
             case "answer_with_metadata":
-                String metaQuery = (String) inputParams.get("query");
-                resultPayload = answerCubeQueryFromStringWithMetadata(metaQuery, cubeManager, historyManager);
-                break;
-
+            	return answerCubeQueryFromStringWithMetadata((String) params.get("query"), cubeManager, historyManager);
             case "answer_from_file":
-                File file = (File) inputParams.get("file");
-                resultPayload = answerCubeQueriesFromFile(file, cubeManager, historyManager);
-                break;
-
+            	return answerCubeQueriesFromFile((File) params.get("file"), cubeManager, historyManager);
             case "answer_with_models":
-                String modelQuery = (String) inputParams.get("query");
-                String[] models = (String[]) inputParams.get("models");
-                resultPayload = answerCubeQueryFromStringWithModels(modelQuery, models, cubeManager, historyManager);
-                break;
-                
+            	return answerCubeQueryFromStringWithModels((String) params.get("query"), (String[]) params.get("models"), cubeManager, historyManager);
             case "answer_with_interest_measures":
-                String queryInt = (String) inputParams.get("query");
-                List<String> measures = (List<String>) inputParams.get("measures");
-                
-                if (interestManager == null) throw new Exception("InterestManager is null in parameters");
-                
-                resultPayload = computeMeasuresSingle(queryInt, measures, cubeManager, historyManager, interestManager);
-                break;
-
+            	if (interestManager == null) throw new Exception("InterestManager is null in parameters");
+                return computeMeasuresSingle((String) params.get("query"), (List<String>) params.get("measures"), cubeManager, historyManager, interestManager);
             case "answer_queries_with_interest_measures":
-                String query1 = (String) inputParams.get("query1");
-                String query2 = (String) inputParams.get("query2");
-                
-                List<String> measuresComp = (List<String>) inputParams.get("measures");
-                
-                if (interestManager == null) throw new Exception("InterestManager is null in parameters");
-                resultPayload = computeMeasuresComparison(query1, query2, measuresComp, cubeManager, historyManager, interestManager);
-                break;
-                
+            	if (interestManager == null) throw new Exception("InterestManager is null in parameters");
+                return computeMeasuresComparison((String) params.get("query1"), (String) params.get("query2"), (List<String>) params.get("measures"), cubeManager, historyManager, interestManager);
             default:
-                throw new IllegalArgumentException("Unknown Command: " + cto.getCommandAlias());
+                throw new IllegalArgumentException("Unknown Command: " + command);
         }
-
-        ResponseDTO dto = new ResponseDTO(true);
+    }
+    
+    private ResponseDTO createResponse(Object payload) {
+    	ResponseDTO dto = new ResponseDTO(true);
         Map<String, Object> fullResponse = new HashMap<>();
-        fullResponse.put("returnValue", resultPayload);
+        fullResponse.put("returnValue", payload);
         fullResponse.put("currentCubeQuery", this.currentCubeQuery);
         fullResponse.put("currentResult", this.currentResult);
         
         dto.setPayload(fullResponse);
         return dto;
     }
-
 
     public ArrayList<String> answerCubeQueriesFromFile(File file, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
         ArrayList<String> fileLocations = new ArrayList<String>();
@@ -142,8 +120,7 @@ public class QueryExecutionManager implements IBuilder {
         this.currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
         
     	//2. execute the query AND populate Result with a 2D string
-        String outputLocation = executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
-        return outputLocation;
+        return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
     }
     
 
@@ -155,7 +132,6 @@ public class QueryExecutionManager implements IBuilder {
         Instant tExecuted = Instant.now();
         long durationExecution = Duration.between(t0, tExecuted).toMillis();
 
-        
         //Print result to file and screen
       	//String queryName = queryParams.get("QueryName");
         this.currentQueryName = cubeQuery.getName();
@@ -174,16 +150,20 @@ public class QueryExecutionManager implements IBuilder {
         if (historyManager != null) {
             historyManager.addQuery(cubeQuery);
         }
-        
-        Instant tOutputed = Instant.now();
-        long durationExecToOutput = Duration.between(tExecuted, tOutputed).toMillis();
-        long durationExecTotal = Duration.between(t0, tOutputed).toMillis();
-
-        System.out.println("\n\n@TIMER\tQuery\t" + queryName + "\tQuery Execution:\t" + durationExecution
-                + "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
-        System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
+        logExecutionTime(cubeQuery.getName(), t0, tExecuted);
         
         return outputLocation;
+    }
+    
+    private void logExecutionTime(String queryName, Instant start, Instant executed) {
+    	Instant outputed = Instant.now();
+    	long durationExecution = Duration.between(start, executed).toMillis();
+    	long durationExecToOutput = Duration.between(executed, outputed).toMillis();
+    	long durationExecTotal = Duration.between(start, outputed).toMillis();
+    	
+    	System.out.println("\n\n@TIMER\tQuery\t" + queryName + "\tQuery Execution:\t" + durationExecution
+                + "\tQuery Output:\t" + durationExecToOutput + "\tQuery Total:\t" + durationExecTotal);
+        System.out.println("------- Done with " + queryName + " --------------------------"+"\n");
     }
     
 
@@ -291,7 +271,6 @@ public class QueryExecutionManager implements IBuilder {
         }
 
         saveQueryHistory(queryString, this.currentResult);
-
         return results;
     }
 
@@ -308,36 +287,7 @@ public class QueryExecutionManager implements IBuilder {
         for(int i = 0; i < measures.size(); i++) {
         	//compute each measure
             if(measures.get(i).equals("FamilyBasedRelevance")) {
-            	//Get the helping query String
-                String helpingQuery = interestManager.getHelpingQuery(query1, query2);
-                String helpingValue = "";
-                
-                if(!helpingQuery.equals("")) {
-                	//Answer the helping query
-                    String file = answerCubeQueryFromString(helpingQuery, cubeManager, historyManager);
-                    
-                    try {
-                        File myObj = new File(file);
-                        Scanner myReader = new Scanner(myObj);
-                        while (myReader.hasNextLine()) {
-                            String data = myReader.nextLine();
-                            if(!myReader.hasNextLine()) {
-                            	//Get the result we need from the answer file and save it in helpingQuery
-                                helpingValue = data.split("\t")[0];
-                            }
-                        }
-                        myReader.close();
-                    } catch (FileNotFoundException e) {
-                        System.out.println("An error occurred while reading the helping query file (Family based relevance).");
-                        e.printStackTrace();
-                    }
-                }
-
-                String finalParam = (!helpingValue.equals("")) ? helpingValue : helpingQuery;
-
-                double res = interestManager.computeMeasure(measures.get(0), this.currentCubeQuery, this.currentResult, finalParam);
-                results[0] = Double.toString(res);
-
+            	results[i] = computeFamilyBasedRelevance(query1, query2, interestManager, cubeManager, historyManager);
             } else {
                 double res = interestManager.computeMeasure(measures.get(i), this.currentCubeQuery, this.currentResult);
                 results[i] = Double.toString(res);
@@ -350,7 +300,36 @@ public class QueryExecutionManager implements IBuilder {
         return results;
     }
     
+    private String computeFamilyBasedRelevance(String query1, String query2, InterestingnessManager interestManager, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
+    	//Get the helping query String
+    	String helpingQuery = interestManager.getHelpingQuery(query1, query2);
+    	String helpingValue = "";
+    	
+    	if(!helpingQuery.equals("")) {
+    		//Answer the helping query
+    		String fileLocation = answerCubeQueryFromString(helpingQuery, cubeManager, historyManager);
+    		helpingValue = extractValueFromAnswerFile(fileLocation);
+    	}
+    	String finalParam = (!helpingValue.equals("")) ? helpingValue : helpingQuery;
+    	double res = interestManager.computeMeasure("FamilyBasedRelevance", this.currentCubeQuery, this.currentResult, finalParam);
+    	return Double.toString(res);
+    }
     
+    private String extractValueFromAnswerFile(String file) {
+    	try (Scanner scanner = new Scanner(new File(file))){
+    		while (scanner.hasNextLine()) {
+    			String data = scanner.nextLine();
+	    		if (!scanner.hasNextLine()) {
+	    			//Get the result we need from the answer file and save it in helpingQuery
+	    			return data.split("\t")[0];
+	    		}
+    		}	
+    	}catch (FileNotFoundException e) {
+    		System.out.println("An error occurred while reading the helping query file (Family based relevance).");
+            e.printStackTrace();
+    	}
+    	return "";
+    }
 
 	/**
 	 * Populates a tab-separated file where the result of a query is stored and returns its location.
@@ -412,88 +391,64 @@ public class QueryExecutionManager implements IBuilder {
 	 * @param queryResult  The {@link Result} of the query
 	 */
 	private void saveQueryHistory(String queryString, Result queryResult) {
-		try {
-			List<String> filesInFolder = Files.walk(Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries"))
-					.filter(Files::isRegularFile)
-					.map(Path::toString)
-					.collect(Collectors.toList());
-			if(filesInFolder.size() > 0) {
-				int max = 0;
-				for(int i=0; i< filesInFolder.size(); i++) {
-
-					if(String.valueOf(filesInFolder.get(i).charAt(66)).equals(".")) {
-						if(Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65))) > max){
-							max = Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)));
-						}
-					}else{
-						if(Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)) + String.valueOf(filesInFolder.get(i).charAt(66)))>max){
-							max = Integer.parseInt(String.valueOf(filesInFolder.get(i).charAt(65)) + String.valueOf(filesInFolder.get(i).charAt(66)));
-						}
-					}
-				}
-
-				historyCounter = max;
-			}else {
-				historyCounter = 0;
-			}
-
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		this.historyCounter += 1;
+		this.historyCounter = getLatestHistoryCounter() + 1;
+		
 		FileOutputStream fileOutputStream=null;
 		PrintStream printStream=null;
 
 		String queryFileName = "InputFiles/ServerRegisteredInfo/Interestingness/History/Queries/q" + historyCounter + ".txt";
-
-		File queryFile=new File(queryFileName);
-
-		try {
-			fileOutputStream=new FileOutputStream(queryFile);
-			printStream=new PrintStream(fileOutputStream);
-
-			printStream.print(queryString+"\n\n");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				if(fileOutputStream!=null){
-					fileOutputStream.close();
-				}
-				if(printStream!=null){
-					printStream.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}//end finally try
-		}//end finally
-
-		fileOutputStream = null;
-		printStream = null;
 		String resultFileName = "InputFiles/ServerRegisteredInfo/Interestingness/History/Results/q" + historyCounter + ".tab";
-		File resultFile=new File(resultFileName);
 
+		writeStringToFile(queryFileName, queryString + "\n\n");
+		writeResultToFile(resultFileName, queryResult);
+	}//end saveQueryHistory
+	
+	
+	private int getLatestHistoryCounter() {
+		Path queriesDirectory = Paths.get("InputFiles/ServerRegisteredInfo/Interestingness/History/Queries");
+		
+		if (!Files.exists(queriesDirectory)) {
+			return 0;
+		}
+		
 		try {
-			fileOutputStream=new FileOutputStream(resultFile);
-			printStream=new PrintStream(fileOutputStream);
-
+			return Files.walk(queriesDirectory)
+	                .filter(Files::isRegularFile)
+	                //It keeps only the name e.g. q12.txt"
+	                .map(path -> path.getFileName().toString())
+	                .filter(name -> name.startsWith("q") && name.endsWith(".txt"))
+	                .mapToInt(name -> {
+	                    try {
+	                        //It removes the "q" from the start and the ".txt" from the end of the name inorder to obtain the number
+	                        String numStr = name.substring(1, name.lastIndexOf('.'));
+	                        return Integer.parseInt(numStr);
+	                    } catch (NumberFormatException e) {
+	                        return 0;
+	                    }
+	                })
+	                //Automatically finds the maximum number and if it doesnt find anything then it returns 0
+	                .max()
+	                .orElse(0); 
+		}catch (IOException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	private void writeStringToFile(String fileName, String content) {
+		try (PrintStream printStream = new PrintStream(new FileOutputStream(new File(fileName)))){
+			printStream.print(content);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void writeResultToFile(String fileName, Result queryResult) {
+		try (PrintStream printStream = new PrintStream(new FileOutputStream(new File(fileName)))) {
 			queryResult.printCellsToStream(printStream);
-
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				if(fileOutputStream!=null){
-					fileOutputStream.close();
-				}
-				if(printStream!=null){
-					printStream.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}//end finally try
-		}//end finally
-	}//end saveQueryHistory
+		}
+	}
+			
 }
