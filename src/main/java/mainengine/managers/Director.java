@@ -1,9 +1,14 @@
 package mainengine.managers;
 
-import mainengine.managers.IBuilder;
-import mainengine.managers.RequestCTO;
-import mainengine.managers.ResponseDTO;
-
+/**
+ * The Director class acts as the Dispatcher and Factory in the architecture
+ * It implements the Command/Dispatcher pattern where it's main responsibility is to receive
+ * a RequestCTO, determine which IBuilder (Manager) is responsible for handling it based on the ManagerType that came with the CTO,
+ * create an instance of said manager and delegate the execution
+ * 
+ * @author Nik-Pt
+ *
+ */
 public class Director {
 	
 	public ResponseDTO serve(RequestCTO cto) throws Exception {

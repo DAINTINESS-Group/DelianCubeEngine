@@ -1,8 +1,6 @@
 package describe;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
 
