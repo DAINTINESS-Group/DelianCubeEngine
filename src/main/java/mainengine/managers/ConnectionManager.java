@@ -14,8 +14,6 @@ public class ConnectionManager implements IBuilder {
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
         Map<String, Object> inputParams = (Map<String, Object>) cto.getInput();
-        String command = cto.getCommandAlias();
-
         HashMap<String, String> userInputList = (HashMap<String, String>) inputParams.get("userInputList");
         String typeOfConnection = (String) inputParams.get("typeOfConnection");
 

@@ -21,35 +21,24 @@
 package mainengine;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Collectors;
-
 import org.apache.spark.sql.AnalysisException;
 
-import chartManagement.ChartManager;
 import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
-import cubemanager.cubebase.QueryHistoryManager;
 import model.decisiontree.labeling.RuleSet;
-import cubemanager.CubeManager;
-import interestingnessengine.InterestingnessManager;
 import mainengine.managers.Director;
 import mainengine.managers.ManagerType;
 import mainengine.managers.RequestCTO;
 import mainengine.managers.ResponseDTO;
 import mainengine.managers.SessionContext;
-import mainengine.nlq.ITranslatorFactory;
 import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
@@ -133,6 +122,20 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		delegateInit("initialize_chart", typeOfConnection, userInputList, null);
 	}
 	
+	/**
+	 * A unified helper method to delegate initialization request to the Director
+	 * This method encapsulates the raw initialization parameters into a RequestCTO object. 
+	 * 
+	 * It performs the following steps:
+	 * 1. Aggregates base connection arguments and optional extra settings into a single input map.
+	 * 2. Dispatches the request to the Director.
+	 * 3. Unwraps the resulting ResponseDTO to retrieve and update the local SessionContext
+	 * 
+	 * @param command, the specific command alias
+	 * @param typeOfConnection, the type of the underlying DB connection
+	 * @param userInputList, a map that contains essential user configuration
+	 * @param extras, a map that contains additional parameters
+	 */
 	private void delegateInit(String command, String typeOfConnection, HashMap<String, String> userInputList, Map<String, Object> extras) {
 		try {
             HashMap<String, Object> input = new HashMap<>();
@@ -199,11 +202,27 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//end method answerCubeQueryFromStringWithModels
 	
 	
-	//Helper method to call the Director and update local state
+	/**
+	 * Helper method to delegate execution requests to the Director
+	 * 
+	 * This method performs the following steps:
+	 * 1. Injects common dependencies (like QueryHistoryManager) into the parameters
+	 * 2. Calls the Director's method named serve(RequestCTO) to dispatch the request
+	 * 3. Unpacks the ResponseDTO and updates the Facade's (SQP) local state
+	 * 
+	 * 
+	 * @param command, the specific execution command alias
+	 * @param params, the map of input parameters for the command
+	 * @return the specific object required by the calling method
+	 * @throws RemoteException
+	 */
     private Object delegateExecution(String command, Map<String, Object> params) throws RemoteException {
         try {
+        	
+        	//Inject the dependency required
             params.put("historyManager", context.getQueryHistoryMng());
             
+            //Create the Command object and dispatch to Director
             RequestCTO cto = new RequestCTO(ManagerType.EXECUTION, command, params, context.getCubeManager());
             ResponseDTO dto = director.serve(cto);
             
@@ -249,7 +268,24 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
     }
 
     
-    //Helper method to bundle arguments and send them to the Director -> OLAPManager
+    /**
+     * Helper method to bundle arguments and dispatch OLAP requests to the Director
+     * This method acts as a bridge between the Facade and the OLAPManager
+     * 
+     * It performs the following actions:
+     * 1. Bundles the raw String arguments into a parameter map
+     * 2. Injects the necessary dependences 
+     * 3. Creates a RequestCTO setting the manager type as OLAP and dispatches the request via the Director's method named serve(RequestCTO)
+     * 
+     * 
+     * @param commandAlias, the specific OLAP command
+     * @param oldQ
+     * @param newQ
+     * @param dim
+     * @param level
+     * @return the metadata of the operation result
+     */
+    
     private ResultFileMetadata delegateOlap(String commandAlias, String oldQ, String newQ, String dim, String level) {
         try {
             //Pack Arguments into a Map
@@ -261,7 +297,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
             
             //Inject dependencies required by OLAPManager
             inputParams.put("historyManager", context.getQueryHistoryMng());
-            inputParams.put("director", this.director);
 
             //Create the Request
             RequestCTO cto = new RequestCTO(
@@ -316,7 +351,17 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		return dispatch(ManagerType.INTENTIONAL, "describe", incomingExpression);
 	}
 	
-	//Helper methods
+	/**
+	 * Generic helper method to dispatch Intentional requests to the Director
+	 * Creates a RequestCTO setting the manager type as INTENTIONAL and dispatches the request via the Director's method named serve(RequestCTO)
+	 * AND assumes the result payload is always type of ResultFileMetdata 
+	 * 
+	 * @param type, the target ManagerType, in this case INTENTIONAL
+	 * @param commandAlias, the specific command
+	 * @param input, the input payload
+	 * @return the metadata result extracted from the ResponseDTO
+	 * @throws Exception
+	 */
 	private ResultFileMetadata dispatch(ManagerType type, String commandAlias, Object input) throws Exception {
         RequestCTO cto = new RequestCTO(type, commandAlias, input, context.getCubeManager());
         
@@ -324,6 +369,18 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
         return dto.getMetadata();
     }
 
+	/**
+	 * Specialized helper method for dispatching Analyze requests
+	 * Unlike simple dispatching the analyze operations require additional context about the session to 
+	 * function properly. This method injects the schema name and the connection type from the SessionContext into the
+	 * parameters map before dispatching
+	 * 
+	 * @param alias, the specific analyze strategy
+	 * @param query, the query expression to analyze
+	 * @return a ResultFileMetadata object with the results
+	 * 
+	 * NOTE: Could just be one dispatch method instead of having 2 separate ones
+	 */
 	private ResultFileMetadata dispatchAnalyze(String alias, String query) {
 		try {
 		    HashMap<String, Object> input = new HashMap<>();
@@ -397,13 +454,22 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}
 	
 	
-	//Helper to delegate NL operations.
+	/**
+	 * Helper to delegate Natural Language (NL) processing requests.
+	 * This method acts as a bridge between the Facade and the NLManager. It injects a reference of the Director 
+	 * into the parameters because the NLManager needs to perform a two-step process:
+	 * 1. Translate the NL String into a Cube Query
+	 * 2. Call the Director (using the injected reference) to execute the translated Cube Query  
+	 *
+	 * @param command, the specific NL command alias
+	 * @param query, the raw Natural Language query string
+	 * @return the generic payload from the ResponseDTO
+	 */
     private Object delegateNL(String command, String query) {
         try {
             HashMap<String, Object> input = new HashMap<>();
             input.put("query", query);
             input.put("historyManager", context.getQueryHistoryMng());
-            input.put("director", this.director);
 
             RequestCTO cto = new RequestCTO(ManagerType.NL, command, input, context.getCubeManager());
             ResponseDTO dto = director.serve(cto);
@@ -452,7 +518,17 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
         return (ChartResponse) delegateChart("answer_chart_response", chartRequest);
     }
 
-    //Helper method to remove duplicate logic for Chart/Visualization calls.
+    /**
+     * Helper method to delegate Visualization/Chart requests
+     * This methods encapsulates the chart related parameters and context into a RequestCTO
+     * targeting the Visualization subsystem
+     * It injects the required (chartManager, schema name, etc..) because the VisualizationManager requires context to build queries and format results correctly
+     * 
+     * @param command, the specific visualization command alias
+     * @param chartRequest, the payload provided 
+     * @return the payload from the ResponseDTO which is either ResultFileMetadata or ChartResponse depending on the command
+     * @throws Exception
+     */
     private Object delegateChart(String command, ChartRequest chartRequest) throws Exception {
         try {
             HashMap<String, Object> params = new HashMap<>();

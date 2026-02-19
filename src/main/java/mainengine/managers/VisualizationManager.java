@@ -4,8 +4,6 @@ import java.util.Map;
 import chartManagement.ChartManager;
 import chartRequestManagement.ChartRequest;
 import cubemanager.CubeManager;
-import result.ResultFileMetadata;
-import chartManagement.utils.ChartResponse;
 
 public class VisualizationManager implements IBuilder {
 

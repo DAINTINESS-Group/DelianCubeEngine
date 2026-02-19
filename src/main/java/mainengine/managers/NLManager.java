@@ -33,9 +33,6 @@ public class NLManager implements IBuilder {
     public ResponseDTO execute(RequestCTO cto) throws Exception {
         Map<String, Object> inputParams = (Map<String, Object>) cto.getInput();
         String nlQuery = (String) inputParams.get("query");
-        
-
-        Director director = (Director) inputParams.get("director");
         QueryHistoryManager historyManager = (QueryHistoryManager) inputParams.get("historyManager");
 
         Object resultPayload = null;
@@ -44,11 +41,11 @@ public class NLManager implements IBuilder {
 
         switch (cto.getCommandAlias()) {
             case "answer_nl_string":
-                resultPayload = answerCubeQueryFromNLString(nlQuery, director, historyManager, cto.getCubeManager());
+                resultPayload = answerCubeQueryFromNLString(nlQuery, historyManager, cto.getCubeManager());
                 break;
 
             case "answer_nl_metadata":
-                resultPayload = answerCubeQueryFromNLStringWithMetadata(nlQuery, director, historyManager, cto.getCubeManager());
+                resultPayload = answerCubeQueryFromNLStringWithMetadata(nlQuery, historyManager, cto.getCubeManager());
                 break;
 
             case "prepare_nl_query":
@@ -65,16 +62,16 @@ public class NLManager implements IBuilder {
     }
 
 
-    private String answerCubeQueryFromNLString(String nlQuery, Director director, QueryHistoryManager historyManager, CubeManager cubeManager) throws Exception {
+    private String answerCubeQueryFromNLString(String nlQuery, QueryHistoryManager historyManager, CubeManager cubeManager) throws Exception {
         String cubeQueryString = translateNLQuery(nlQuery);
         System.out.println("Translated Query: " + cubeQueryString);
-
-        return (String) executeGeneratedQuery(director, "answer_from_string", cubeQueryString, historyManager, cubeManager);
+        
+        return (String) executeGeneratedQuery("answer_from_string", cubeQueryString, historyManager, cubeManager);
     }
 
-    private ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String nlQuery, Director director, QueryHistoryManager historyManager, CubeManager cubeManager) throws Exception {
+    private ResultFileMetadata answerCubeQueryFromNLStringWithMetadata(String nlQuery, QueryHistoryManager historyManager, CubeManager cubeManager) throws Exception {
         String cubeQueryString = translateNLQuery(nlQuery);
-        return (ResultFileMetadata) executeGeneratedQuery(director, "answer_with_metadata", cubeQueryString, historyManager, cubeManager);
+        return (ResultFileMetadata) executeGeneratedQuery("answer_with_metadata", cubeQueryString, historyManager, cubeManager);
     }
 
     private ResultFileMetadata prepareCubeQuery(String nlQuery) {
@@ -105,13 +102,18 @@ public class NLManager implements IBuilder {
         return analysedString;
     }
 
-    private Object executeGeneratedQuery(Director director, String command, String queryString, QueryHistoryManager historyManager, CubeManager cubeMgr) throws Exception {
+    private Object executeGeneratedQuery(String command, String queryString, QueryHistoryManager historyManager, CubeManager cubeMgr) throws Exception {
+    	long t0 = System.nanoTime();
         Map<String, Object> execParams = new HashMap<>();
         execParams.put("query", queryString);
         execParams.put("historyManager", historyManager);
-
+        QueryExecutionManager execManager = new QueryExecutionManager();
+        
         RequestCTO execRequest = new RequestCTO(ManagerType.EXECUTION, command, execParams, cubeMgr);
-        ResponseDTO response = director.serve(execRequest);
+        ResponseDTO response = execManager.execute(execRequest);
+        
+        long tF = System.nanoTime();
+		System.out.println("Query Execution Time " + (tF - t0) + " nanoseconds");
 
         if (response.isSuccess()) {
             Map<String, Object> payload = (Map<String, Object>) response.getPayload();
@@ -130,12 +132,15 @@ public class NLManager implements IBuilder {
 
         List<BasicStoredCube> cubes = cubeManager.getCubes();
         for (BasicStoredCube cube : cubes) {
+        	//1.Bring data for CubeName
             cubeNames.add(cube.getName());
+            //2.Bring data for Measure Fields
             for (int j = 0; j < cube.getMeasuresList().size(); j++) {
                 measuresFields.add(cube.getFactTable().getTableName() + "." + cube.getMeasuresList().get(j).getAttribute().getName());
             }
         }
 
+        //3.Bring data for levels
         List<Dimension> dims = cubeManager.getDimensions();
         for (Dimension dim : dims) {
             dimensions.add(dim.getName());
@@ -152,6 +157,7 @@ public class NLManager implements IBuilder {
             }
         }
 
+        //4.Create data for AggrFunc
         aggrFunctions = new ArrayList<>();
         aggrFunctions.add("max"); aggrFunctions.add("maximum");
         aggrFunctions.add("min"); aggrFunctions.add("minimum");
