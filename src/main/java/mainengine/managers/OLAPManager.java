@@ -16,7 +16,6 @@ public class OLAPManager implements IBuilder{
 		Map<String, Object> inputParams = (Map<String, Object>) cto.getInput();
         
         QueryHistoryManager queryHistoryMng = (QueryHistoryManager) inputParams.get("historyManager");
-        Director director = (Director) inputParams.get("director");
         
         String oldQueryName = (String) inputParams.get("oldQueryName");
         String newQueryName = (String) inputParams.get("newQueryName");
@@ -27,11 +26,11 @@ public class OLAPManager implements IBuilder{
 
         switch (cto.getCommandAlias().toLowerCase()) {
             case "rollup":
-                resMetadata = performRollUp(queryHistoryMng, director, oldQueryName, newQueryName, dimensionName, targetLevelName, cto);
+                resMetadata = performRollUp(queryHistoryMng, oldQueryName, newQueryName, dimensionName, targetLevelName, cto);
                 break;
                 
             case "drilldown":
-                resMetadata = performDrillDown(queryHistoryMng, director, oldQueryName, newQueryName, dimensionName, targetLevelName, cto);
+                resMetadata = performDrillDown(queryHistoryMng, oldQueryName, newQueryName, dimensionName, targetLevelName, cto);
                 break;
                 
             default:
@@ -41,7 +40,7 @@ public class OLAPManager implements IBuilder{
         return new ResponseDTO(resMetadata);
     }
 	
-	private ResultFileMetadata performRollUp(QueryHistoryManager queryHistoryMng, Director director, String oldQueryName, String newQueryName, String dimensionName, String targetLevelName, RequestCTO contextCto) throws Exception{
+	private ResultFileMetadata performRollUp(QueryHistoryManager queryHistoryMng, String oldQueryName, String newQueryName, String dimensionName, String targetLevelName, RequestCTO contextCto) throws Exception{
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
 		
 		RollUpOperator operator = new RollUpOperator(oldCubeQuery);
@@ -53,12 +52,12 @@ public class OLAPManager implements IBuilder{
 			System.out.println("Roll-Up Cube Query:\n"+newQuery.toString());
 			
 			//2. Execute the Roll-Up Query
-			resMetadata = executeGeneratedQuery(director, newQuery.toString(), queryHistoryMng, contextCto);
+			resMetadata = executeGeneratedQuery(newQuery.toString(), queryHistoryMng, contextCto);
 		}
 		return resMetadata;
 	}
 	
-	private ResultFileMetadata performDrillDown(QueryHistoryManager queryHistoryMng, Director director, String oldQueryName, String newQueryName, String dimensionName, String targetLevelName, RequestCTO contextCto) throws Exception{
+	private ResultFileMetadata performDrillDown(QueryHistoryManager queryHistoryMng, String oldQueryName, String newQueryName, String dimensionName, String targetLevelName, RequestCTO contextCto) throws Exception{
 		CubeQuery oldCubeQuery = queryHistoryMng.getQueryByName(oldQueryName);
 		DrillDownOperator operator = new DrillDownOperator(oldCubeQuery);
 
@@ -69,18 +68,19 @@ public class OLAPManager implements IBuilder{
 			System.out.println("Drill-Down Cube Query:\n"+newQuery.toString());
 			
 			//2. Execute the Drill-Down Query
-			resMetadata = executeGeneratedQuery(director, newQuery.toString(), queryHistoryMng, contextCto);
+			resMetadata = executeGeneratedQuery(newQuery.toString(), queryHistoryMng, contextCto);
 		}
 		return resMetadata;
 		
 	}
 	
 	//Helper method to call the answerCubeQueryFromStringWithMetadata from the QueryExecutionManager
-	private ResultFileMetadata executeGeneratedQuery(Director director, String queryString, QueryHistoryManager historyManager, RequestCTO contextCto) throws Exception {
+	private ResultFileMetadata executeGeneratedQuery(String queryString, QueryHistoryManager historyManager, RequestCTO contextCto) throws Exception {
         Map<String, Object> execParams = new HashMap<>();
         execParams.put("query", queryString);
         execParams.put("historyManager", historyManager); 
-
+        
+        QueryExecutionManager execManager = new QueryExecutionManager();
         RequestCTO execRequest = new RequestCTO(
             ManagerType.EXECUTION, 
             "answer_with_metadata", 
@@ -88,7 +88,7 @@ public class OLAPManager implements IBuilder{
             contextCto.getCubeManager()
         );
         
-        ResponseDTO response = director.serve(execRequest);
+        ResponseDTO response = execManager.execute(execRequest);
 
         if (response.isSuccess()) {
             Map<String, Object> payload = (Map<String, Object>) response.getPayload();

@@ -2,6 +2,16 @@ package mainengine.managers;
 
 import result.ResultFileMetadata;
 
+/**
+ * A Data Transfer Object (DTO) representing the standard response from any manager
+ * This class ensures a uniform response structure across the system since it encapsulates the result of an operation
+ * (payload), it's success status and any error messages in case the operation failed
+ * 
+ * Using this DTO the Director class and the SeesionQueryProcessorEngine handle results without the need to know a specific return type from every manager  
+ * 
+ * @author Nikos
+ *
+ */
 public class ResponseDTO {
     private ResultFileMetadata metadata;
     private String stringResult;
@@ -29,6 +39,7 @@ public class ResponseDTO {
         return dto;
     }
 
+    //Getters and Setters
     public ResultFileMetadata getMetadata() {
         return metadata;
     }

@@ -9,14 +9,7 @@ import analyze.AnalyzeOperatorMidMultiQueryOptimizer;
 import analyze.AnalyzeOperatorMinMultiQueryOptimizer;
 import analyze.AnalyzeTranslationManager;
 import assess.AssessOperator;
-import cubemanager.cubebase.CubeQuery;
 import describe.DescribeOperator;
-import mainengine.ModelManager;
-import mainengine.ModelSelector;
-import mainengine.managers.IBuilder;
-import mainengine.managers.RequestCTO;
-import mainengine.managers.ResponseDTO;
-import result.Result;
 import result.ResultFileMetadata;
 
 public class IntentionalManager implements IBuilder {
