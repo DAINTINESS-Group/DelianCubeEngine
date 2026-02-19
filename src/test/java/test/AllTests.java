@@ -33,7 +33,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	assess.labelers.CustomLabelingSchemeTest.class,
 	assess.AssessQueryParserTest.class,
 	chartManagement.ChartQueryEditorControllerTest.class,
-	chartManagement.VisualizationManagerTest.class})
+	chartManagement.VisualizationManagerTest.class,
+	describe.DescribeInputValidationTest.class,
+	describe.DescribeTranslationAndExecutionTest.class})
 public class AllTests {
 
 }
