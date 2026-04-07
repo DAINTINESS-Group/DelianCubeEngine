@@ -1,23 +1,5 @@
 package mainengine.managers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.rmi.RemoteException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Collectors;
-
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
@@ -29,12 +11,24 @@ import result.ResultFileMetadata;
 import setup.ModeOfWork;
 import setup.ModeOfWork.WorkMode;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.rmi.RemoteException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
 public class QueryExecutionManager implements IBuilder {
 
     private CubeQuery currentCubeQuery;
     private Result currentResult;
     private String currentQueryName;
     private int historyCounter;
+
+    //singleton instance
+    private static UsabilityManager usabilityManager = UsabilityManager.getInstance();
 
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
@@ -118,9 +112,14 @@ public class QueryExecutionManager implements IBuilder {
         
     	//1. parse query and produce a CubeQuery
         this.currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
-        
-    	//2. execute the query AND populate Result with a 2D string
-        return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
+
+        //TODO
+        if(usabilityManager.checkUsability()){
+            return usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
+        } else {
+            //2. execute the query AND populate Result with a 2D string
+            return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
+        }
     }
     
 
