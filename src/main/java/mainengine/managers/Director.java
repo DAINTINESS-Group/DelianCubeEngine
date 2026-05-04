@@ -39,6 +39,10 @@ public class Director {
 				manager = new VisualizationManager();
 				break;
 
+			case OPTIMIZER:
+				manager = new SelectivityEstimationManager();
+				break;
+
 			default:
 				throw new IllegalArgumentException("Unknown or Unimplemented Manager Type: " + cto.getManagerType());
 		}

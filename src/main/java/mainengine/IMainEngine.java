@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cubemanager.queryoptimizer.selectivityestimation.SelectivityResult;
 import org.antlr.runtime.RecognitionException;
 import org.apache.spark.sql.AnalysisException;
 
@@ -334,6 +335,16 @@ public interface IMainEngine extends IServer {
 	 */
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
 
+	/**
+	 * Estimates the selectivity of a query as prescribed in a String
+	 *
+	 * @param queryString A string with a query
+	 * @param method The method of the estimation, either "FULL_TABLE_SCAN" or "SAMPLING"
+	 * @param sampleSize The size of the sample (if one decides to use sampling, else it is ignored)
+	 * @return A list with one SelectivityResult per sigma predicate in the query
+	 * @throws RemoteException
+	 */
+	List<SelectivityResult> estimateSelectivity(String queryString, String method, int sampleSize) throws RemoteException;
 
     /**
      * 
