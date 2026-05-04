@@ -6,6 +6,7 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.QueryHistoryManager;
+import cubemanager.queryoptimizer.QueryOptimizer;
 import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
@@ -31,6 +32,10 @@ public class SessionContext {
     private ChartManager chartManager;
     private List<Dimension> registeredDimensions;
     private List<BasicStoredCube> registeredCubesList;
+
+	private QueryOptimizer queryOptimizer;
+	private String queryOptimizerMethod;
+	private int queryOptimizerSampleSize;
 	//	private String currentQueryName;
 	//	private ITranslatorFactory translatorFactory;
 	//	private ArrayList<String> cubeNames;
@@ -119,5 +124,23 @@ public class SessionContext {
 	
 	public void setRegisteredCubesList(List<BasicStoredCube> registeredCubesList) {
 		this.registeredCubesList = registeredCubesList;
+	}
+
+	public QueryOptimizer getQueryOptimizer() { return queryOptimizer;}
+
+	public void setQueryOptimizer(QueryOptimizer queryOptimizer) {
+		this.queryOptimizer = queryOptimizer;
+	}
+
+	public String getQueryOptimizerMethod() { return queryOptimizerMethod;}
+
+	public void setQueryOptimizerMethod(String queryOptimizerMethod) {
+		this.queryOptimizerMethod = queryOptimizerMethod;
+	}
+
+	public int getQueryOptimizerSampleSize() { return queryOptimizerSampleSize;}
+
+	public void setQueryOptimizerSampleSize(int queryOptimizerSampleSize) {
+		this.queryOptimizerSampleSize = queryOptimizerSampleSize;
 	}
 }
