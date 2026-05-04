@@ -31,9 +31,6 @@ import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
-import mainengine.selectivityestimation.FullTableScanEstimator;
-import mainengine.selectivityestimation.ISelectivityEstimator;
-import mainengine.selectivityestimation.SelectivityResult;
 import result.Result;
 
 public class CubeManager {
@@ -246,25 +243,7 @@ public class CubeManager {
 	public Result executeQuery(CubeQuery currentCubeQuery) {
 		// return this.CBase.executeQuery(currentCubeQuery);
 
-		// 1. Selectivity estimation first (for now only FullTableScan)
-		ISelectivityEstimator estimator = new FullTableScanEstimator();
-		List<SelectivityResult> selectivityResults = estimator.estimate(currentCubeQuery, this);
-		System.out.println("\n=== Selectivity Estimation for query: " + currentCubeQuery.getName() + " ===");
-		if (selectivityResults.isEmpty()) {
-			System.out.println(" No sigma predicates found.");
-		} else {
-			double totalSelectivity = 1.0;
-			for (SelectivityResult sr : selectivityResults) {
-				System.out.println(" " + sr);
-				totalSelectivity *= sr.getSelectivity();
-			}
-			if (selectivityResults.size() > 1) {
-				System.out.printf(" Total Selectivity (independence assumption): %.6f%n", totalSelectivity);
-			}
-		}
-		System.out.println("=============================================================\n");
-
-		// 2. Create an ExtractionMethod (for the moment: SQLQuery)
+		// 1. Create an ExtractionMethod (for the moment: SQLQuery)
 		ExtractionMethod extractionMethod = ExtractionMethodFactory.createMethod();
 		currentCubeQuery.setExtractionMethod(extractionMethod);
 
@@ -273,7 +252,7 @@ public class CubeManager {
 		// currentCubeQuery.produceExtractionMethod();
 		// String queryString = extractionMethod.toString();
 
-		// 3. Convert the cubequery to sth that the DBMS can execute, i.e., a query
+		// 2. Convert the cubequery to sth that the DBMS can execute, i.e., a query
 		// string
 		String queryString = produceExtractionMethod(currentCubeQuery);
 		// if you DEBUG
