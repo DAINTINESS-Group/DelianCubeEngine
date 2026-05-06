@@ -20,25 +20,15 @@
 
 package cubemanager;
 
-import cubemanager.cubebase.BasicStoredCube;
-import cubemanager.cubebase.CubeBase;
-import cubemanager.cubebase.CubeQuery;
-import cubemanager.cubebase.Dimension;
-import cubemanager.cubebase.Hierarchy;
-import cubemanager.cubebase.Level;
-import cubemanager.cubebase.LinearHierarchy;
-import cubemanager.cubebase.Measure;
+import cubemanager.cubebase.*;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
 import result.Result;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class CubeManager {
 
@@ -134,6 +124,11 @@ public class CubeManager {
 		String Cbname = null, nameCQ = null, aggregateFunction = null, measureName = null;
 		String[][] sigma = null;
 		String[][] gamma = null;
+
+		//aggrFunctions & measures in case we have more than one pair of them in a query
+		String[] aggrFunctions = null;
+		String[] measures = null;
+
 		for (int i = 0; i < rows.length; i++) {
 			String[] temp = rows[i].split(":");
 			if (temp[0].equals("CubeName")) {
@@ -142,8 +137,12 @@ public class CubeManager {
 			if (temp[0].equals("Name")) {
 				nameCQ = temp[1].trim();
 			} else if (temp[0].equals("AggrFunc")) {
+				//aggrFunctions in case we have more than one
+				aggrFunctions = temp[1].trim().split(",");
 				aggregateFunction = temp[1].trim();
 			} else if (temp[0].equals("Measure")) {
+				//measures in case we have more than one
+				measures = temp[1].trim().split(",");
 				measureName = temp[1].trim();
 			} else if (temp[0].equals("Gamma")) {
 				String[] tmp_gamma = temp[1].split(",");
@@ -224,6 +223,12 @@ public class CubeManager {
 				cubequery.setBasicStoredCube(bsc);
 			}
 		}
+
+		// in case we have more than one measure, we need to add them all in the cubequery
+		for(int i=0; i < measures.length; i++){
+			cubequery.addMeasure(measures[i], aggrFunctions[i]);
+		}
+
 		return cubequery;
 	}
 

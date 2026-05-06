@@ -20,13 +20,13 @@
 
 package cubemanager.cubebase;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-//import java.util.List;
-
 import describe.QueryMeasure;
 import extractionmethod.ExtractionMethod;
+import interestingnessengine.InputManager;
 import result.Result;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class CubeQuery extends Cube {
 
@@ -268,6 +268,10 @@ public class CubeQuery extends Cube {
         QueryMeasure qm = new QueryMeasure(tempLegacyFunction, name, null);
         this.queryMeasures.add(qm);
     }
+	public void addMeasure(String attribute, String aggrFunction){
+		QueryMeasure qm = new QueryMeasure(aggrFunction, attribute, null);
+		this.queryMeasures.add(qm);
+	}
 
 	public boolean checkIfSigmaExprIsInGamma(int toChange) {
 		boolean ret_value=false;
