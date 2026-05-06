@@ -1,0 +1,14 @@
+CubeName:loan
+Name: LoanQuery21_S2_CG-Cmmn
+AggrFunc:Min
+Measure:amount
+Gamma:account_dim.district_name,date_dim.month
+Sigma:account_dim.region='Prague', date_dim.year='1998'
+@
+CubeName:loan
+Name: LoanQuery21_S2_CG-Cmmn2
+AggrFunc:Min
+Measure:amount
+Gamma:account_dim.district_name,date_dim.year
+Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1998',
+
