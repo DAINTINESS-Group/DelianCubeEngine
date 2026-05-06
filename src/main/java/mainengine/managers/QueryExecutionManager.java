@@ -113,13 +113,39 @@ public class QueryExecutionManager implements IBuilder {
     	//1. parse query and produce a CubeQuery
         this.currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
 
+        // Provide the usability manager with q^n and the full query history,
+        // so it can search back through all previous queries for a usable base
+        usabilityManager.setQueries(this.currentCubeQuery, historyManager, cubeManager.getCubeBase());
+
         //TODO
-        if(usabilityManager.checkUsability()){
-            return usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
-        } else {
-            //2. execute the query AND populate Result with a 2D string
-            return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
+//        if(usabilityManager.checkUsability()){
+//            return usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
+//        } else {
+//            //2. execute the query AND populate Result with a 2D string
+//            return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
+//        }
+        if (usabilityManager.checkUsability()) {
+            String usabilityResult = usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
+            if (usabilityResult != null) {
+                // Usability execution succeeded: wire up currentResult, write output
+                // file, and add to history — exactly as the normal DB path does.
+                this.currentResult = usabilityManager.getComputedResult();
+                this.currentQueryName = this.currentCubeQuery.getName();
+                String outputFolder = "OutputFiles" + File.separator;
+
+                //copied from executeCubeQuery since we want the same output format and location for usability
+                String outputLocation = this.printToTabTextFile(this.currentCubeQuery, outputFolder);
+                if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
+                    this.currentResult.printCellsToStream(System.out);
+                }
+
+                if (historyManager != null) {
+                    historyManager.addQuery(this.currentCubeQuery);
+                }
+                return outputLocation;
+            }
         }
+        return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
     }
     
 
