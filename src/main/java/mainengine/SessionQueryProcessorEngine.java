@@ -28,7 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cubemanager.queryoptimizer.QueryOptimizer;
+import cubemanager.queryoptimizer.IQueryOptimization;
+import cubemanager.queryoptimizer.QueryOptimizerFactory;
 import cubemanager.queryoptimizer.selectivityestimation.SelectivityResult;
 import org.apache.spark.sql.AnalysisException;
 
@@ -247,51 +248,39 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 
 	@Override
-	public List<SelectivityResult> estimateSelectivity(String queryString, String method, int sampleSize) throws RemoteException {
+	public List<SelectivityResult> estimateSelectivity(String queryString, String method, double sampleSize) throws RemoteException {
+		IQueryOptimization operation = context.getQueryOptimizer();
+		if (operation == null || !method.equals(context.getQueryOptimizerMethod()) || sampleSize != context.getQueryOptimizerSampleSize()) {
+			operation = QueryOptimizerFactory.create("SELECTIVITY_ESTIMATION", context.getCubeManager().getCubeBase(), method, sampleSize);
+			context.setQueryOptimizer(operation);
+			context.setQueryOptimizerMethod(method);
+			context.setQueryOptimizerSampleSize(sampleSize);
+		}
+
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("queryString", queryString);
-		params.put("method", method);
-		params.put("sampleSize", sampleSize);
-		return delegateOptimizer(params);
+		params.put("optimizer", operation);
+		return (List<SelectivityResult>) delegateOptimizer("estimate", params);
 	} // end method estimateSelectivity
 
 	/**
-	 * Helper method to delegate selectivity estimation requests to the Director
-	 * This method performs the following steps:
-	 * 1. Checks on the QueryOptimizer held in SessionContext and rebuilds it if method or sample size changed
-	 * 2. Injects the resolved QueryOptimizer into the parameters
-	 * 3. Calls the Director's method named serve(RequestCTO) to dispach the request
-	 * 4. Unpacks the ResponseDTO and returns the list of SelectivityResults
+	 * Helper method to delegate query optimization requests to the Director.
+	 * Creates a RequestCTO with ManagerType.OPTIMIZER and dispatches it via the Director.
 	 *
-	 * @param params, the map of input parameters containing queryString, method and sampleSize
-	 * @return a List of SelectivityResults, one per sigma predicate in the query
+	 * @param command, the specific optimization command alias
+	 * @param params, the map of input parameters for the command
+	 * @return the payload from the ResponseDTO
 	 * @throws RemoteException
 	 */
-	private List<SelectivityResult> delegateOptimizer(Map<String, Object> params) throws RemoteException {
+	private Object delegateOptimizer(String command, Map<String, Object> params) throws RemoteException {
 		try {
-			String method = (String) params.get("method");
-			int sampleSize = (int) params.get("sampleSize");
-
-			// Rebuild the optimizer only if method or sampleSize changed
-			QueryOptimizer optimizer = context.getQueryOptimizer();
-			if (optimizer == null || !method.equals(context.getQueryOptimizerMethod()) || sampleSize != (context.getQueryOptimizerSampleSize())) {
-				optimizer = new QueryOptimizer(context.getCubeManager().getCubeBase(), method, sampleSize);
-				context.setQueryOptimizer(optimizer);
-				context.setQueryOptimizerMethod(method);
-				context.setQueryOptimizerSampleSize(sampleSize);
-			}
-
-			// Inject the dependency
-			params.put("optimizer", optimizer);
-
-			RequestCTO cto = new RequestCTO(ManagerType.OPTIMIZER, "estimate", params, context.getCubeManager());
+			RequestCTO cto = new RequestCTO(ManagerType.OPTIMIZER, command, params, context.getCubeManager());
 			ResponseDTO dto = director.serve(cto);
-
-			return (List<SelectivityResult>) dto.getPayload();
+			return dto.getPayload();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RemoteException("Selectivity Estimation failed", e);
 		}
+		return null;
 	}
 	
 	public void produceDecisionTree(String queryName, String path, RuleSet ruleSet) throws RemoteException, AnalysisException {

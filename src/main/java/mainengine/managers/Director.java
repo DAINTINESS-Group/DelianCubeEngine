@@ -40,7 +40,7 @@ public class Director {
 				break;
 
 			case OPTIMIZER:
-				manager = new SelectivityEstimationManager();
+				manager = new QueryOptimizationManager();
 				break;
 
 			default:
