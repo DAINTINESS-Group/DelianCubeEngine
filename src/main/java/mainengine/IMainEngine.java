@@ -339,12 +339,12 @@ public interface IMainEngine extends IServer {
 	 * Estimates the selectivity of a query as prescribed in a String
 	 *
 	 * @param queryString A string with a query
-	 * @param method The method of the estimation, either "FULL_TABLE_SCAN" or "SAMPLING"
-	 * @param sampleSize The size of the sample (if one decides to use sampling, else it is ignored)
+	 * @param method The method of the estimation
+	 * @param sampleSize Fraction of the fact table to sample, between 0.0 and 1.0. Ignored for FULL_TABLE_SCAN and HISTOGRAM.
 	 * @return A list with one SelectivityResult per sigma predicate in the query
 	 * @throws RemoteException
 	 */
-	List<SelectivityResult> estimateSelectivity(String queryString, String method, int sampleSize) throws RemoteException;
+	List<SelectivityResult> estimateSelectivity(String queryString, String method, double sampleSize) throws RemoteException;
 
     /**
      * 
