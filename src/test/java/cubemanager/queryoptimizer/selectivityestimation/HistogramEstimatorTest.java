@@ -12,26 +12,23 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * A test class for the full table scan estimator
+ * A test class for the histogram estimator
  */
-public class FullTableScanEstimatorTest {
+public class HistogramEstimatorTest {
 
 	private static CubeManager testCubeManager;
-	private static FullTableScanEstimator testEstimator;
+	private static HistogramEstimator testEstimator;
 
 	private static final int TOTAL_ROWS = 682;
 
-	// A query with a sigma that will not match anything in the db
 	private static final String Q_ATLANTIS =
 			"CubeName:loan\nName:Q_Atlantis\nAggrFunc:Sum\nMeasure:amount\n"
 					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='Atlantis'";
 
-	// A single sigma query
 	private static final String Q_NORTH_MORAVIA =
 			"CubeName:loan\nName:Q_NorthMoravia\nAggrFunc:Sum\nMeasure:amount\n"
 					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='north Moravia'";
 
-	// A two sigmas query
 	private static final String Q_PRAGUE_AND_1998 =
 			"CubeName:loan\nName:Q_PragueAnd1998\nAggrFunc:Sum\nMeasure:amount\n"
 					+ "Gamma:account_dim.lvl1,date_dim.lvl3\n"
@@ -51,10 +48,9 @@ public class FullTableScanEstimatorTest {
 		Session testSession = new Session(testCubeManager);
 		testSession.initialize(typeOfConnection, userInputList);
 
-		testEstimator = new FullTableScanEstimator((testCubeManager.getCubeBase()));
+		testEstimator = new HistogramEstimator(testCubeManager.getCubeBase());
 	}
 
-	// Test the results for a single sigma
 	@Test
 	public void testSingleSigma() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
@@ -65,7 +61,6 @@ public class FullTableScanEstimatorTest {
 		assertEquals(117.0 / TOTAL_ROWS, results.get(0).getSelectivity(), 0.0001);
 	}
 
-	// Test the results for two sigmas
 	@Test
 	public void testTwoSigmas() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_PRAGUE_AND_1998, new HashMap<>());
@@ -78,7 +73,6 @@ public class FullTableScanEstimatorTest {
 		assertEquals(158.0 / TOTAL_ROWS, results.get(1).getSelectivity(), 0.0001);
 	}
 
-	// Test the results if the sigma is not matched against anything in the db
 	@Test
 	public void testNoMatchingSigmaReturnsZeroSelectivity() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_ATLANTIS, new HashMap<>());

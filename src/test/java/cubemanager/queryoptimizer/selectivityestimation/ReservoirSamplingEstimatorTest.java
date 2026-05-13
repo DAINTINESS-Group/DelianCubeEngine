@@ -24,7 +24,11 @@ public class ReservoirSamplingEstimatorTest {
 	private static ReservoirSamplingEstimator testEstimator;
 
 	private static final int TOTAL_ROWS = 682;
-	private static final int SAMPLE_SIZE = 500;
+	private static final double SAMPLE_SIZE = 0.5;
+
+	private static final String Q_ATLANTIS =
+			"CubeName:loan\nName:Q_Atlantis\nAggrFunc:Sum\nMeasure:amount\n"
+					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='Atlantis'";
 
 	private static final String Q_NORTH_MORAVIA =
 			"CubeName:loan\nName:Q_NorthMoravia\nAggrFunc:Sum\nMeasure:amount\n"
@@ -56,12 +60,11 @@ public class ReservoirSamplingEstimatorTest {
 	@Test
 	public void testSingleSigma() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
-		List<SelectivityResult> results = testEstimator.estimate(query);
+		List<SelectivityResult> results = testEstimator.estimate(query, TOTAL_ROWS);
 
 		assertEquals(1, results.size());
-		assertEquals(TOTAL_ROWS, results.get(0).getTotalRows());
-		// Test that the rang is [0, TOTAL_ROWS]
-		assertTrue(results.get(0).getMatchingRows() >= 0 && results.get(0).getMatchingRows() <= TOTAL_ROWS);
+		assertTrue(results.get(0).getTotalRows() > 0 && results.get(0).getTotalRows() <= TOTAL_ROWS);
+		assertTrue(results.get(0).getMatchingRows() >= 0 && results.get(0).getMatchingRows() <= results.get(0).getTotalRows());
 	}
 
 	// Test that the sampling result is not too far from the truth (FullTableScan)
@@ -70,10 +73,10 @@ public class ReservoirSamplingEstimatorTest {
 		FullTableScanEstimator ftsEstimator = new FullTableScanEstimator(testCubeManager.getCubeBase());
 
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
-		double truth = ftsEstimator.estimate(query).get(0).getSelectivity();
+		double truth = ftsEstimator.estimate(query, TOTAL_ROWS).get(0).getSelectivity();
 
 		query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
-		double estimate = testEstimator.estimate(query).get(0).getSelectivity();
+		double estimate = testEstimator.estimate(query, TOTAL_ROWS).get(0).getSelectivity();
 
 		assertTrue(Math.abs(estimate - truth) < 0.10);
 	}
@@ -82,27 +85,37 @@ public class ReservoirSamplingEstimatorTest {
 	@Test
 	public void testDualSigma() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_PRAGUE_AND_1998, new HashMap<>());
-		List<SelectivityResult> results = testEstimator.estimate(query);
+		List<SelectivityResult> results = testEstimator.estimate(query, TOTAL_ROWS);
 
 		assertEquals(2, results.size());
 		for (SelectivityResult r : results) {
 			assertNotNull(r.getColumnName());
-			assertEquals(TOTAL_ROWS, r.getTotalRows());
+			assertTrue(r.getTotalRows() > 0 && r.getTotalRows() <= TOTAL_ROWS);
 		}
+	}
+
+	// Test the results if the sigma is not matched against anything in the db
+	@Test
+	public void testNoMatchingSigmaReturnsZeroResult() throws Exception {
+		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_ATLANTIS, new HashMap<>());
+		List<SelectivityResult> results = testEstimator.estimate(query, TOTAL_ROWS);
+
+		assertEquals(1, results.size());
+		assertEquals(0, results.get(0).getMatchingRows());
 	}
 
 	// Test the validity of the results for one sigma and for different sample sizes
 	@Test
 	public void testDifferentSampleSizesProduceValidResults() throws Exception {
-		for (int size : new int[]{100, 500, 1000}) {
+		for (double size : new double[]{0.1, 0.3, 0.5}) {
 			ReservoirSamplingEstimator estimator =
 					new ReservoirSamplingEstimator(testCubeManager.getCubeBase(), size);
 			CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
-			List<SelectivityResult> results = estimator.estimate(query);
+			List<SelectivityResult> results = estimator.estimate(query, TOTAL_ROWS);
 
 			assertEquals(1, results.size());
-			assertEquals(TOTAL_ROWS, results.get(0).getTotalRows());
-			assertTrue(results.get(0).getMatchingRows() >= 0 && results.get(0).getMatchingRows() <= TOTAL_ROWS);
+			assertTrue(results.get(0).getTotalRows() > 0 && results.get(0).getTotalRows() <= TOTAL_ROWS);
+			assertTrue(results.get(0).getMatchingRows() >= 0 && results.get(0).getMatchingRows() <= results.get(0).getTotalRows());
 		}
 	}
 }
