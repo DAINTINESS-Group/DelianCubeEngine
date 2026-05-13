@@ -10,24 +10,23 @@ import cubemanager.cubebase.Dimension;
 import result.Result;
 
 /**
- * The ground truth selectivity estimator. For each sigma predicate it fires two
- * COUNT queries against the database and computes the exact selectivity.
+ * The ground truth selectivity estimator. For each sigma predicate it fires one
+ * COUNT query against the database and computes the exact selectivity.
+ * The total row count of the fact table is computed in {@link cubemanager.queryoptimizer.SelectivityEstimationOptimizer}
+ * and is getting passed as {@code factTableSize}
  */
 public class FullTableScanEstimator implements ISelectivityEstimator {
 
 	private final CubeBase cubeBase;
 
-	public FullTableScanEstimator(CubeBase cubeBase) {
-		this.cubeBase = cubeBase;
-	}
+	public FullTableScanEstimator(CubeBase cubeBase) {this.cubeBase = cubeBase;}
 
 	@Override
-	public List<SelectivityResult> estimate(CubeQuery query) {
+	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
 		List<SelectivityResult> results = new ArrayList<>();
 
 		BasicStoredCube referCube = query.getReferCube();
 		String factTable = referCube.getFactTable().getTableName();
-		int totalRows = executeTotalCount(factTable);
 
 		List<Dimension> dimensions = referCube.getDimensionsList();
 		List<String> dimRefFields = referCube.getDimensionRefFieldList();
@@ -43,15 +42,10 @@ public class FullTableScanEstimator implements ISelectivityEstimator {
 					parsed.dimPK, parsed.filterCol, sigma[1], sigma[2]);
 			if (matchingRows < 0) continue;
 
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, totalRows, matchingRows));
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize, matchingRows));
 		}
 
 		return results;
-	}
-
-	private int executeTotalCount(String factTable) {
-		String sql = "SELECT COUNT(*) FROM " + factTable;
-		return runCountQuery(sql);
 	}
 
 	private int executeFilteredCount(String factTable, String factFK, String dimTable, String dimPK, String filterCol,
