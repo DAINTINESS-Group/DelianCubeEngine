@@ -16,6 +16,7 @@ public class SelectivityEstimationOptimizer implements IQueryOptimization {
 
     private final ISelectivityEstimator selectivityEstimator;
     private final CubeBase cubeBase;
+	private int factTableSize = -1;
 
     public SelectivityEstimationOptimizer(CubeBase cubebase, String method, double sampleSize) {
         this.cubeBase = cubebase;
@@ -25,7 +26,9 @@ public class SelectivityEstimationOptimizer implements IQueryOptimization {
     @Override
     public Object optimize(CubeQuery  query) {
         String factTable = query.getReferCube().getFactTable().getTableName();
-        int factTableSize = computeFactTableSize(factTable);
+		if (factTableSize < 0) {
+			factTableSize = computeFactTableSize(factTable);
+		}
         return selectivityEstimator.estimate(query, factTableSize);
     }
 
