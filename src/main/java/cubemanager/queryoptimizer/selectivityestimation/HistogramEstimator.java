@@ -23,16 +23,13 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 	/**
 	 * Hold the frequency distribution of a single dimension level column
 	 * frequencyMap maps each distinct value to its row count in the fact table
-	 * totalRows is the sum of all counts
 	 *
 	 */
 	private static class ColumnHistogram {
 		private final Map<String, Integer> frequencyMap;
-		private final int totalRows;
 
-		ColumnHistogram(Map<String, Integer> frequencyMap, int totalRows) {
+		ColumnHistogram(Map<String, Integer> frequencyMap) {
 			this.frequencyMap = frequencyMap;
-			this.totalRows = totalRows;
 		}
 	}
 
@@ -43,7 +40,7 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 	}
 
 	@Override
-	public List<SelectivityResult> estimate(CubeQuery query) {
+	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
 		List<SelectivityResult> results = new ArrayList<>();
 
 		BasicStoredCube referCube = query.getReferCube();
@@ -56,10 +53,10 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 			if (parsed == null) continue;
 
 			ColumnHistogram histogram = histograms.get(parsed.filterCol);
-			if (histogram == null || histogram.totalRows < 0) continue;
+			if (histogram == null || factTableSize < 0) continue;
 
 			int matchingRows = countFromHistogram(histogram, sigma[1], sigma[2]);
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, histogram.totalRows,
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize,
 					matchingRows));
 		}
 
@@ -97,11 +94,9 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 	}
 
 	/**
-	 * Runs a GROUP BY query and builds a (value ---> count) map from the result
+	 * Runs a GROUP BY query and builds a (value ---> count) frequency map from the result
 	 * @param sql the GROUP BY query
-	 * @return a {@link ColumnHistogram} with the frequency map and total row count or
-	 * an empty histogram with totalRows = -1 if the query returns no data
-	 *
+	 * @return a {@link ColumnHistogram} with the frequency map, or an empty histogram if the query returns no data
 	 */
 	private ColumnHistogram buildColumnHistogram(String sql) {
 		Result result = new Result();
@@ -109,11 +104,10 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 
 		String[][] resultArray = result.getResultArray();
 		if (resultArray == null || resultArray.length < 3) {
-			return new ColumnHistogram(new HashMap<>(), -1);
+			return new ColumnHistogram(new HashMap<>());
 		}
 
 		Map<String, Integer> frequencyMap = new HashMap<>();
-		int total = 0;
 
 		// Data starts from [2][*]
 		for (int row = 2; row < resultArray.length; row++) {
@@ -130,12 +124,11 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 			try {
 				int count = Integer.parseInt(countStr);
 				frequencyMap.put(value, count);
-				total += count;
 			} catch (NumberFormatException ignored) {
 				// Skip invalid rows
 			}
 		}
-		return new ColumnHistogram(frequencyMap, total);
+		return new ColumnHistogram(frequencyMap);
 	}
 
 	// Counts the estimated matching rows for a sigma predicate by iterating the histogram

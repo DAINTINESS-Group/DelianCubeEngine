@@ -2,29 +2,30 @@ package mainengine.managers;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import cubemanager.queryoptimizer.QueryOptimizer;
-import cubemanager.queryoptimizer.selectivityestimation.SelectivityResult;
+import cubemanager.queryoptimizer.IQueryOptimization;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class SelectivityEstimationManager implements IBuilder{
+/**
+ * Retrieves the strategy from the request parameters and delegates the optimization to it
+ */
+public class QueryOptimizationManager implements IBuilder{
 
 	@Override
 	public ResponseDTO execute(RequestCTO cto) throws Exception {
 		Map<String, Object> inputParams = (Map<String, Object>) cto.getInput();
 		String queryString = (String) inputParams.get("queryString");
-		QueryOptimizer queryOptimizer = (QueryOptimizer) inputParams.get("optimizer");
+		IQueryOptimization queryOptimizer = (IQueryOptimization) inputParams.get("optimizer");
 
 		CubeManager cubeManager = cto.getCubeManager();
 
 		CubeQuery query = cubeManager.createCubeQueryFromString(queryString, new HashMap<String, String>());
 
-		List<SelectivityResult> results = queryOptimizer.estimateSelectivity(query);
+		Object result = queryOptimizer.optimize(query);
 
 		ResponseDTO response = new ResponseDTO(true);
-		response.setPayload(results);
+		response.setPayload(result);
 		return response;
 	}
 }
