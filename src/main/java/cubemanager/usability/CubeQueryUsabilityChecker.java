@@ -1,4 +1,4 @@
-package mainengine.managers;
+package cubemanager.usability;
 
 import cubemanager.cubebase.*;
 import describe.QueryMeasure;
@@ -7,15 +7,15 @@ import result.Result;
 
 import java.util.*;
 
-public class UsabilityManager {
+public class CubeQueryUsabilityChecker {
 
-    private static UsabilityManager usabilityManager;
+    private static CubeQueryUsabilityChecker cubeQueryUsabilityChecker;
 
-    public static UsabilityManager getInstance() {
-        if (usabilityManager == null) {
-            usabilityManager = new UsabilityManager();
+    public static CubeQueryUsabilityChecker getInstance() {
+        if (cubeQueryUsabilityChecker == null) {
+            cubeQueryUsabilityChecker = new CubeQueryUsabilityChecker();
         }
-        return usabilityManager;
+        return cubeQueryUsabilityChecker;
     }
 
 
@@ -495,7 +495,7 @@ public class UsabilityManager {
             }
         }
         if (dimTable == null || dimTable.isEmpty()) {
-            System.err.println("[UsabilityManager] rollDownValuesToLevel: no table for dimension " + dimension);
+            System.err.println("[CubeQueryUsabilityChecker] rollDownValuesToLevel: no table for dimension " + dimension);
             return null;
         }
 
@@ -505,7 +505,7 @@ public class UsabilityManager {
         String toCol = resolveLevelColumn(dimension, toFinerLevelName, newQuery, baseQuery);
 
         if (fromCol == null || toCol == null) {
-            System.err.println("[UsabilityManager] rollDownValuesToLevel: could not resolve columns for "
+            System.err.println("[CubeQueryUsabilityChecker] rollDownValuesToLevel: could not resolve columns for "
                     + fromCoarserLevelName + " -> " + toFinerLevelName + " in dimension " + dimension);
             return null;
         }
@@ -536,7 +536,7 @@ public class UsabilityManager {
             }
             return fineValues;
         } catch (Exception e) {
-            System.err.println("[UsabilityManager] rollDownValuesToLevel SQL failed: " + e.getMessage());
+            System.err.println("[CubeQueryUsabilityChecker] rollDownValuesToLevel SQL failed: " + e.getMessage());
             return null;
         }
     }

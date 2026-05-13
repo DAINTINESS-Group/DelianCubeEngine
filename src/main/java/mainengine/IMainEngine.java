@@ -20,23 +20,20 @@
 
 package mainengine;
 
+import chartManagement.utils.ChartResponse;
+import chartRequestManagement.ChartRequest;
+import model.decisiontree.labeling.RuleSet;
+import org.antlr.runtime.RecognitionException;
+import org.apache.spark.sql.AnalysisException;
+import result.ResultFileMetadata;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-//import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.antlr.runtime.RecognitionException;
-import org.apache.spark.sql.AnalysisException;
-
-import chartManagement.utils.ChartResponse;
-import chartRequestManagement.ChartRequest;
-
-import model.decisiontree.labeling.RuleSet;
-import result.ResultFileMetadata;
 
 
 
@@ -147,8 +144,45 @@ public interface IMainEngine extends IServer {
 	 * @see answerCubeQueryFromString
 	 */
 	ArrayList<String> answerCubeQueriesFromFile(File file) throws RemoteException;
-	
-	
+
+	/**
+	 * Answers a query as prescribed in a String with usability
+	 *
+	 * An exemplary query definition is as follows:
+	 * <p>
+	 * <code>CubeName:loan</code>
+	 * <code>Name:CubeQueryLoan2</code>
+	 * <code>AggrFunc:Avg</code>
+	 * <code>Measure:amount</code>
+	 * <code>Gamma:account_dim.lvl2,date_dim.lvl2</code>
+	 * <code>Sigma:account_dim.lvl1='Liberec',status_dim.lvl0='Running Contract/OK'</code>
+	 * <p>
+	 * Observe:
+	 * The query has a name, in the example,CubeQueryLoan2
+	 * The query comes with two groupers
+	 * The selection condition Sigma, comes as a COMMA-SEPARATED list of atomic expressions of the form Level=value
+	 *
+	 *
+	 * @param queryRawString	A String with the query definition
+	 * @return the path of the result file
+	 * @throws RemoteException
+	 *
+	 */
+	String answerCubeQueryFromStringWithUsability(String queryRawString) throws RemoteException;
+
+	/**
+	 * This is the method to call for answering several queries from a single file with usability.
+	 *
+	 * Inside the file, queries are separated by a '@'
+	 *
+	 * @param file	The PATH of the filename containing the queries
+	 * @return	An ArrayList of Strings with the names of the files containing the results of the queries.
+	 * @throws RemoteException
+	 * @see answerCubeQueryFromString
+	 */
+	ArrayList<String> answerCubeQueriesFromFileWithUsability(File file) throws RemoteException;
+
+
 	/**
 	 * Answers a query as prescribed in a String and returns (a) a file with the results of the query and (b) an info file with metadata
 	 * 

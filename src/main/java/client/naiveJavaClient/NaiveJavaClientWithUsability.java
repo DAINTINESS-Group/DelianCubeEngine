@@ -86,7 +86,7 @@ public class NaiveJavaClientWithUsability {
 //		File f2 = new File("InputFiles/pkdd99_star/Queries/loanQueries.txt");
 		File f2 = new File("InputFiles/pkdd99_star/Queries/loanQueries_Usability.txt");
 		//File f2 = new File("InputFiles/try.txt");
-		ArrayList<String> fileLocations = service.answerCubeQueriesFromFile(f2);
+		ArrayList<String> fileLocations = service.answerCubeQueriesFromFileWithUsability(f2);
 		
 		// Cube ORDERS and queries
 		/*service.initializeConnection("pkdd99", "CinecubesUser",

@@ -20,6 +20,23 @@
 
 package mainengine;
 
+import chartManagement.utils.ChartResponse;
+import chartRequestManagement.ChartRequest;
+import cubemanager.CubeManager;
+import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.QueryHistoryManager;
+import mainengine.managers.*;
+import mainengine.nlq.NLTranslator;
+import mainengine.rmiTransfer.RMIInputStream;
+import mainengine.rmiTransfer.RMIInputStreamImpl;
+import mainengine.rmiTransfer.RMIOutputStream;
+import mainengine.rmiTransfer.RMIOutputStreamImpl;
+import model.decisiontree.labeling.RuleSet;
+import model.decisiontree.services.DatasetManager;
+import org.apache.spark.sql.AnalysisException;
+import result.Result;
+import result.ResultFileMetadata;
+
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -27,25 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.spark.sql.AnalysisException;
-
-import chartManagement.utils.ChartResponse;
-import chartRequestManagement.ChartRequest;
-
-import cubemanager.cubebase.CubeQuery;
-import model.decisiontree.labeling.RuleSet;
-import mainengine.managers.Director;
-import mainengine.managers.ManagerType;
-import mainengine.managers.RequestCTO;
-import mainengine.managers.ResponseDTO;
-import mainengine.managers.SessionContext;
-import mainengine.rmiTransfer.RMIInputStream;
-import mainengine.rmiTransfer.RMIInputStreamImpl;
-import mainengine.rmiTransfer.RMIOutputStream;
-import mainengine.rmiTransfer.RMIOutputStreamImpl;
-import model.decisiontree.services.DatasetManager;
-import result.Result;
-import result.ResultFileMetadata;
 
 
 
@@ -164,6 +162,20 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		HashMap<String, Object> params = new HashMap<>();
         params.put("file", file);
         return (ArrayList<String>) delegateExecution("answer_from_file", params);
+	}
+
+	@Override
+	public String answerCubeQueryFromStringWithUsability(String queryRawString) throws RemoteException {
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("query", queryRawString);
+		return (String) delegateExecution("answer_from_string_with_usability", params);
+	}
+
+	@Override
+	public ArrayList<String> answerCubeQueriesFromFileWithUsability(File file) throws RemoteException {
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("file", file);
+		return (ArrayList<String>) delegateExecution("answer_from_file_with_usability", params);
 	}
 
 

@@ -3,6 +3,7 @@ package mainengine.managers;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
+import cubemanager.usability.CubeQueryUsabilityChecker;
 import interestingnessengine.InterestingnessManager;
 import mainengine.ModelManager;
 import mainengine.ModelSelector;
@@ -28,7 +29,7 @@ public class QueryExecutionManager implements IBuilder {
     private int historyCounter;
 
     //singleton instance
-    private static UsabilityManager usabilityManager = UsabilityManager.getInstance();
+    private static CubeQueryUsabilityChecker cubeQueryUsabilityChecker = CubeQueryUsabilityChecker.getInstance();
 
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
@@ -58,6 +59,10 @@ public class QueryExecutionManager implements IBuilder {
             case "answer_queries_with_interest_measures":
             	if (interestManager == null) throw new Exception("InterestManager is null in parameters");
                 return computeMeasuresComparison((String) params.get("query1"), (String) params.get("query2"), (List<String>) params.get("measures"), cubeManager, historyManager, interestManager);
+            case "answer_from_file_with_usability":
+                return answerCubeQueriesFromFileWithUsability((File) params.get("file"), cubeManager, historyManager);
+            case "answer_from_string_with_usability":
+                return answerCubeQueryFromStringWithUsability((String) params.get("query"), cubeManager, historyManager);
             default:
                 throw new IllegalArgumentException("Unknown Command: " + command);
         }
@@ -87,26 +92,22 @@ public class QueryExecutionManager implements IBuilder {
         }
         return fileLocations;
     }
-    
-    
-	/**
-	 * Gets the query from a string, executes it and produces the output of a query
-	 * <p>
-	 * The main idea is:
-	 * (1) construct the query via <code>createCubeQueryFromString</code> of <code>CubeManager</code>, see {@link CubeManager}
-	 * (2) execute the query again via {@link CubeManager} and obtain a {@link Result}
-	 * (3a) produce a file in the directory <code>OutputFiles</code> with the name of the query
-	 * (3x) btw., the results are also output to the console
-	 *
-	 * @param queryRawString a String with the query
-	 * @return a String containing the location of output file at the server
-	 *
-	 * @author pvassil
-	 * @since v.0.1
-	 * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
-	 * @see cubemanager.CubeManager#executeQuery(CubeQuery)
-	 */
-    public String answerCubeQueryFromString(String queryRawString, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
+
+    public ArrayList<String> answerCubeQueriesFromFileWithUsability(File file, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
+        ArrayList<String> fileLocations = new ArrayList<String>();
+        try (Scanner scanner = new Scanner(file).useDelimiter("@")) {
+            while (scanner.hasNext()) {
+                String queryString = scanner.next();
+                String filename = answerCubeQueryFromStringWithUsability(queryString, cubeManager, historyManager);
+                fileLocations.add(filename);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return fileLocations;
+    }
+
+    public String answerCubeQueryFromStringWithUsability(String queryRawString, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
     	//Use a hashmap to get any useful data (like queryname) from the raw query string
     	HashMap<String, String> queryParams = new HashMap<String, String>();
         
@@ -115,21 +116,14 @@ public class QueryExecutionManager implements IBuilder {
 
         // Provide the usability manager with q^n and the full query history,
         // so it can search back through all previous queries for a usable base
-        usabilityManager.setQueries(this.currentCubeQuery, historyManager, cubeManager.getCubeBase());
+        cubeQueryUsabilityChecker.setQueries(this.currentCubeQuery, historyManager, cubeManager.getCubeBase());
 
-        //TODO
-//        if(usabilityManager.checkUsability()){
-//            return usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
-//        } else {
-//            //2. execute the query AND populate Result with a 2D string
-//            return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
-//        }
-        if (usabilityManager.checkUsability()) {
-            String usabilityResult = usabilityManager.executeCubeQueryWithUsability(this.currentCubeQuery);
+        if (cubeQueryUsabilityChecker.checkUsability()) {
+            String usabilityResult = cubeQueryUsabilityChecker.executeCubeQueryWithUsability(this.currentCubeQuery);
             if (usabilityResult != null) {
                 // Usability execution succeeded: wire up currentResult, write output
                 // file, and add to history — exactly as the normal DB path does.
-                this.currentResult = usabilityManager.getComputedResult();
+                this.currentResult = cubeQueryUsabilityChecker.getComputedResult();
                 this.currentQueryName = this.currentCubeQuery.getName();
                 String outputFolder = "OutputFiles" + File.separator;
 
@@ -147,7 +141,35 @@ public class QueryExecutionManager implements IBuilder {
         }
         return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
     }
-    
+
+
+    /**
+     * Gets the query from a string, executes it and produces the output of a query
+     * <p>
+     * The main idea is:
+     * (1) construct the query via <code>createCubeQueryFromString</code> of <code>CubeManager</code>, see {@link CubeManager}
+     * (2) execute the query again via {@link CubeManager} and obtain a {@link Result}
+     * (3a) produce a file in the directory <code>OutputFiles</code> with the name of the query
+     * (3x) btw., the results are also output to the console
+     *
+     * @param queryRawString a String with the query
+     * @return a String containing the location of output file at the server
+     *
+     * @author pvassil
+     * @since v.0.1
+     * @see mainengine.IMainEngine#answerCubeQueryFromString(java.lang.String)
+     * @see cubemanager.CubeManager#executeQuery(CubeQuery)
+     */
+    public String answerCubeQueryFromString(String queryRawString, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
+        //Use a hashmap to get any useful data (like queryname) from the raw query string
+        HashMap<String, String> queryParams = new HashMap<String, String>();
+
+        //1. parse query and produce a CubeQuery
+        this.currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
+
+        //2. execute the query AND populate Result with a 2D string
+        return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
+    }
 
     public String executeCubeQuery(CubeQuery cubeQuery, CubeManager cubeManager, QueryHistoryManager historyManager) {
     	//Result res = cubeManager.getCubeBase().executeQuery(currentCubQuery);
