@@ -4,7 +4,7 @@ import cubemanager.cubebase.CubeBase;
 
 public class SelectivityEstimatorFactory {
 
-	public static ISelectivityEstimator create(String method, CubeBase cubeBase, int sampleSize) {
+	public static ISelectivityEstimator create(String method, CubeBase cubeBase, double sampleSize) {
 		switch (method.toUpperCase()) {
 			case "FULL_TABLE_SCAN":
 				return new FullTableScanEstimator(cubeBase);
