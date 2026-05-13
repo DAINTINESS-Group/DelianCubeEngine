@@ -67,8 +67,14 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 			Set<String> matchingPKs = getMatchingPKs(parsed.dimTable, parsed.dimPK, parsed.filterCol, sigma[1], sigma[2]);
 
 			int matchingInSample = countFKMatches(sample.values, matchingPKs);
+			int estimatedMatching;
+			if (sample.values.length == 0) {
+				estimatedMatching = 0;
+			} else {
+				estimatedMatching = (int) Math.round((double) matchingInSample / sample.values.length * factTableSize);
+			}
 
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sample.values.length, matchingInSample));
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize, estimatedMatching));
 		}
 
 		return results;
