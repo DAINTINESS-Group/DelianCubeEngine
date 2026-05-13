@@ -4,49 +4,43 @@ import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
-import cubemanager.cubebase.Level;
-import cubemanager.cubebase.LinearHierarchy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 import result.Result;
 
 
 /**
- * Reservoir sampling-based selectivity estimator
- * <p> At construction, applies R algorithm to build a random sample per dimension level column
- * <p> At query time, no DB calls are made, selectivity is estimated by counting the matches in the sample
- * and projecting to the total rows
+ * Reservoir sampling-based selectivity estimator.
+ * <p> At construction, applies R algorithm to build a random sample of FK values from the fact table,
+ * one reservoir per FK column.
+ * </p>
+ * <p> At query time, it fetches all matching dimension PKs from the DB and scans the sample to count FK matches.
+ * Selectivity is estimated as (matchingInSample / sampleSize)
+ * </p>
  *
 */
 public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
 	private final CubeBase cubeBase;
-	private final int sampleSize;
+	private final double sampleSize;
 	private final Random random;
-	private final Map<String, ColumnSample> columnSamples; // Samples for every column (the keys are column names e.g. "account.region")
+	private final Map<String, ColumnSample> columnSamples; // Samples for every FK column of the fact table (keys are FK column names e.g. "loan.account_id").
 
 	/**
-	 * Hold the reservoir sample for a single dimension level column
-	 * values contains the sampled rows
-	 * totalRows is the actual total row count of the full population
+	 * Hold the reservoir sample for a single FK column of the fact table.
+	 * {@code values} contains the sampled FK values
 	 *
 	 */
 	private static class ColumnSample {
 		private final String[] values;
-		private final int totalRows;
 
-		ColumnSample(String[] values, int totalRows) {
+		ColumnSample(String[] values) {
 			this.values = values;
-			this.totalRows = totalRows;
 		}
 	}
 
-	public ReservoirSamplingEstimator(CubeBase cubeBase, int sampleSize) {
+	public ReservoirSamplingEstimator(CubeBase cubeBase, double sampleSize) {
 		this.cubeBase = cubeBase;
 		this.sampleSize = sampleSize;
 		this.random = new Random();
@@ -55,81 +49,103 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 	}
 
 	@Override
-	public List<SelectivityResult> estimate(CubeQuery query) {
+	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
 		List<SelectivityResult> results = new ArrayList<>();
 
 		BasicStoredCube referCube = query.getReferCube();
 		String factTable = referCube.getFactTable().getTableName();
 		List<Dimension> dimensions = referCube.getDimensionsList();
-
 		List<String> dimRefFields = referCube.getDimensionRefFieldList();
 
 		for (String[] sigma : query.getSigmaExpressions()) {
 			SigmaParser.ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
 			if (parsed == null) continue;
 
-			ColumnSample sample = columnSamples.get(parsed.filterCol);
-			if (sample == null || sample.totalRows < 0) continue;
+			ColumnSample sample = columnSamples.get(parsed.factFK);
+			if (sample == null || factTableSize < 0) continue;
 
-			int matchingInSample = countMatches(sample.values, sigma[1], sigma[2]);
-			int estimatedMatching;
+			Set<String> matchingPKs = getMatchingPKs(parsed.dimTable, parsed.dimPK, parsed.filterCol, sigma[1], sigma[2]);
 
-			if (sample.values.length == 0) {
-				estimatedMatching = 0;
-			} else {
-				double ratio = (double) matchingInSample / sample.values.length;
-				double scaled = ratio * sample.totalRows;
-				estimatedMatching = (int) Math.round(scaled);
-			}
+			int matchingInSample = countFKMatches(sample.values, matchingPKs);
 
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sample.totalRows, estimatedMatching));
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sample.values.length, matchingInSample));
 		}
 
 		return results;
 	}
 
+	private Set<String> getMatchingPKs(String dimTable, String dimPK, String filterCol, String operator, String value) {
+		String sql = "SELECT " + dimPK + " FROM " + dimTable + " WHERE " + filterCol + " " + operator + " " + value;
+		Result result = new Result();
+		cubeBase.executeQueryToProduceResult(sql, result);
+
+		Set<String> matchingPKs = new HashSet<>();
+		String[][] resultArray = result.getResultArray();
+		if (resultArray == null || resultArray.length < 3) return matchingPKs;
+
+		for (int row = 2; row < resultArray.length; row++) {
+			if (resultArray[row] != null && resultArray[row][0] != null) {
+				matchingPKs.add(resultArray[row][0].trim());
+			}
+		}
+		return matchingPKs;
+	}
+
+	private int countFKMatches(String[] sample, Set<String> matchingPKs) {
+		int count = 0;
+		for (String fk : sample) {
+			if (fk != null && matchingPKs.contains(fk.trim())) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	/**
-	 * Iterates all registered cubes and their dimension level columns,
-	 * firing one SELECT query per column to build a reservor sample
-	 * It is called once at construction
+	 * Iterates all registered cubes and their FK columns from the fact table,
+	 * firing one SELECT query per FK column to build a reservoir sample.
+	 * Called once at construction.
 	 *
 	*/
 	private void buildAllSamples() {
 		for (BasicStoredCube cube : cubeBase.getRegisteredCubeList()) {
 			String factTable = cube.getFactTable().getTableName();
-			List<Dimension> dimensions = cube.getDimensionsList();
 			List<String> dimRefFields = cube.getDimensionRefFieldList();
 
-			for (int i = 0; i < dimensions.size(); i++) {
-				Dimension dimension = dimensions.get(i);
-				String dimTable = dimension.getTableName();
+			int factTableSize = computeFactTableSize(factTable);
+			int reservoirSize = (int)(sampleSize * factTableSize);
 
-				String factFK = dimRefFields.get(i);
-				String dimPK = dimTable + "."
-						+ ((LinearHierarchy) dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
-
-				for (Level level : ((LinearHierarchy) dimension.getHierarchy().get(0)).getLevels()) {
-					String filterCol = dimTable + "." + level.getAttributeName(0);
-					String sql = "SELECT " + filterCol + " FROM " + factTable
-							+ " JOIN " + dimTable + " ON " + factFK + " = " + dimPK;
-					columnSamples.put(filterCol, buildSample(sql));
-				}
+			for (String factFK : dimRefFields) {
+				String sql = "SELECT " + factFK + " FROM " + factTable;
+				columnSamples.put(factFK, buildSample(sql, reservoirSize));
 			}
 		}
 	}
 
+	private int computeFactTableSize(String factTable) {
+		String sql = "SELECT COUNT(*) FROM " + factTable;
+		Result result = new Result();
+		cubeBase.executeQueryToProduceResult(sql, result);
+		String[][] resultArray = result.getResultArray();
+		if (resultArray == null || resultArray.length < 3 || resultArray[2][0] == null) return -1;
+		try {
+			return Integer.parseInt(resultArray[2][0]);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
 	/**
-	 * Runs Algorithm R on the SQL result to build a reservoir of at most sampleSize rows.
+	 * Runs Algorithm R on the SQL result to build a reservoir of at most reservoirSize rows.
 	 * @param sql the SELECT query
-	 * @return a {@link ColumnSample} with the reservoir and total row count or
-	 * an empty sample with totalRows = -1 if the query returns no data
-	 *
+	 * @param reservoirSize the maximum number of rows to keep in the reservoir
+	 * @return a {@link ColumnSample} with the reservoir or an empty sample if the query fails
 	 */
-	private ColumnSample buildSample(String sql) {
+	private ColumnSample buildSample(String sql, int reservoirSize) {
 		cubemanager.relationalstarschema.Database db =
 				(cubemanager.relationalstarschema.Database) cubeBase.getDataSourceDescription();
 
-		String[] reservoir = new String[sampleSize];
+		String[] reservoir = new String[reservoirSize];
 		int count = 0;
 
 		try (java.sql.Statement stmt = db.getConnection().createStatement(
@@ -142,66 +158,20 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 					String value = rs.getString(1);
 					if (value == null) continue;
 					count++;
-					if (count <= sampleSize) {
+					if (count <= reservoirSize) {
 						reservoir[count - 1] = value;
 					} else {
 						int j = random.nextInt(count);
-						if (j < sampleSize) reservoir[j] = value;
+						if (j < reservoirSize) reservoir[j] = value;
 					}
 				}
 			}
 		} catch (java.sql.SQLException e) {
 			e.printStackTrace();
-			return new ColumnSample(new String[0], -1);
+			return new ColumnSample(new String[0]);
 		}
 
-		String[] finalSample = count < sampleSize ? Arrays.copyOf(reservoir, count) : reservoir;
-		return new ColumnSample(finalSample, count);
-	}
-
-	// Counts the estimated matching rows for a sigma predicate by iterating the sample
-	private int countMatches(String[] sample, String operator, String value) {
-		String cleanValue = value.trim().replace("'", "");
-		int matching = 0;
-		for (String v : sample) {
-			if (v != null && evaluateCondition(v, operator, cleanValue)) {
-				matching++;
-			}
-		}
-		return matching;
-	}
-
-	private boolean evaluateCondition(String colValue, String operator, String cleanValue) {
-		switch (operator.trim().toUpperCase()) {
-			case "=": return colValue.trim().equals(cleanValue);
-			case ">": return compareValues(colValue, cleanValue) > 0;
-			case "<": return compareValues(colValue, cleanValue) < 0;
-			case ">=": return compareValues(colValue, cleanValue) >= 0;
-			case "<=": return compareValues(colValue, cleanValue) <= 0;
-			case "IN": {
-				for (String v : cleanValue.replaceAll("[(){}]", "").split(","))
-					if (colValue.trim().equals(v.trim())) return true;
-				return false;
-			}
-			case "NOT IN": {
-				for (String v : cleanValue.replaceAll("[(){}]", "").split(","))
-					if (colValue.trim().equals(v.trim())) return false;
-				return true;
-			}
-			case "BETWEEN": {
-				String[] bounds = cleanValue.split("AND");
-				if (bounds.length != 2) return false;
-				return compareValues(colValue, bounds[0]) >= 0 && compareValues(colValue, bounds[1]) <= 0;
-			}
-			default: return false;
-		}
-	}
-
-	private int compareValues(String a, String b) {
-		try {
-			return Double.compare(Double.parseDouble(a.trim()), Double.parseDouble(b.trim()));
-		} catch (NumberFormatException e) {
-			return a.trim().compareTo(b.trim());
-		}
+		String[] finalSample = count < reservoirSize ? Arrays.copyOf(reservoir, count) : reservoir;
+		return new ColumnSample(finalSample);
 	}
 }
