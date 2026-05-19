@@ -3,7 +3,7 @@ package mainengine.managers;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
-import cubemanager.usability.CubeQueryUsabilityChecker;
+import cubemanager.usability.UsabilityOptimizer;
 import interestingnessengine.InterestingnessManager;
 import mainengine.ModelManager;
 import mainengine.ModelSelector;
@@ -29,7 +29,7 @@ public class QueryExecutionManager implements IBuilder {
     private int historyCounter;
 
     //singleton instance
-    private static CubeQueryUsabilityChecker cubeQueryUsabilityChecker = CubeQueryUsabilityChecker.getInstance();
+    private static UsabilityOptimizer usabilityOptimizer = UsabilityOptimizer.getInstance();
 
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
@@ -114,30 +114,20 @@ public class QueryExecutionManager implements IBuilder {
     	//1. parse query and produce a CubeQuery
         this.currentCubeQuery = cubeManager.createCubeQueryFromString(queryRawString, queryParams);
 
-        // Provide the usability manager with q^n and the full query history,
-        // so it can search back through all previous queries for a usable base
-        cubeQueryUsabilityChecker.setQueries(this.currentCubeQuery, historyManager, cubeManager.getCubeBase());
+        if (usabilityOptimizer.tryExecuteWithUsability(this.currentCubeQuery, historyManager, cubeManager.getCubeBase())) {
+            this.currentResult = usabilityOptimizer.getComputedResult();
+            this.currentQueryName = this.currentCubeQuery.getName();
+            String outputFolder = "OutputFiles" + File.separator;
 
-        if (cubeQueryUsabilityChecker.checkUsability()) {
-            String usabilityResult = cubeQueryUsabilityChecker.executeCubeQueryWithUsability(this.currentCubeQuery);
-            if (usabilityResult != null) {
-                // Usability execution succeeded: wire up currentResult, write output
-                // file, and add to history — exactly as the normal DB path does.
-                this.currentResult = cubeQueryUsabilityChecker.getComputedResult();
-                this.currentQueryName = this.currentCubeQuery.getName();
-                String outputFolder = "OutputFiles" + File.separator;
-
-                //copied from executeCubeQuery since we want the same output format and location for usability
-                String outputLocation = this.printToTabTextFile(this.currentCubeQuery, outputFolder);
-                if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
-                    this.currentResult.printCellsToStream(System.out);
-                }
-
-                if (historyManager != null) {
-                    historyManager.addQuery(this.currentCubeQuery);
-                }
-                return outputLocation;
+            String outputLocation = this.printToTabTextFile(this.currentCubeQuery, this.currentResult, outputFolder);
+            if ((ModeOfWork.mode == WorkMode.DEBUG_GLOBAL)||(ModeOfWork.mode == WorkMode.DEBUG_QUERY)) {
+                this.currentResult.printCellsToStream(System.out);
             }
+
+            if (historyManager != null) {
+                historyManager.addQuery(this.currentCubeQuery);
+            }
+            return outputLocation;
         }
         return executeCubeQuery(this.currentCubeQuery, cubeManager, historyManager);
     }
@@ -394,17 +384,20 @@ public class QueryExecutionManager implements IBuilder {
 	 * Removed from SQP during the refactoring and placed here
 	 */
     private String printToTabTextFile(CubeQuery cubequery, String outputFolder) {
-        Result res = cubequery.getResult();
+        return printToTabTextFile(cubequery, cubequery.getResult(), outputFolder);
+    }
+
+    private String printToTabTextFile(CubeQuery cubequery, Result res, String outputFolder) {
         String fileName = outputFolder + cubequery.getName() + ".tab";
         File file=new File(fileName);
-        
+
         try (FileOutputStream fileOutputStream=new FileOutputStream(file);
-            PrintStream printStream=new PrintStream(fileOutputStream)) {
-            res.printCellsToStream(printStream);   
+             PrintStream printStream=new PrintStream(fileOutputStream)) {
+            res.printCellsToStream(printStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return fileName;
     }
 
