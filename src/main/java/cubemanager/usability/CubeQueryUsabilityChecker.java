@@ -18,6 +18,10 @@ public class CubeQueryUsabilityChecker {
         return cubeQueryUsabilityChecker;
     }
 
+    //to be used for tests!
+    static void resetInstance() {
+        cubeQueryUsabilityChecker = null;
+    }
 
     //two queries for comparison
     /** q^n – the current (New) query to be answered*/
