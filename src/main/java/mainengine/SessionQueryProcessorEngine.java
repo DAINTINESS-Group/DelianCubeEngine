@@ -248,13 +248,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 
 	@Override
-	public List<SelectivityResult> estimateSelectivity(String queryString, String method, double sampleSize) throws RemoteException {
+	public List<SelectivityResult> estimateSelectivity(String queryString, String method) throws RemoteException {
 		IQueryOptimization operation = context.getQueryOptimizer();
-		if (operation == null || !method.equals(context.getQueryOptimizerMethod()) || sampleSize != context.getQueryOptimizerSampleSize()) {
-			operation = QueryOptimizerFactory.create("SELECTIVITY_ESTIMATION", context.getCubeManager().getCubeBase(), method, sampleSize);
+		if (operation == null || !method.equals(context.getQueryOptimizerMethod())) {
+			operation = QueryOptimizerFactory.create("SELECTIVITY_ESTIMATION", context.getCubeManager().getCubeBase(), method, context.getInputFolder(), context.getCubeName());
 			context.setQueryOptimizer(operation);
 			context.setQueryOptimizerMethod(method);
-			context.setQueryOptimizerSampleSize(sampleSize);
 		}
 
 		HashMap<String, Object> params = new HashMap<>();
@@ -281,6 +280,60 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean buildHistograms(String inputFolder, String cubeName, boolean forceRebuild) throws RemoteException {
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("inputFolder", inputFolder);
+		params.put("cubeName", cubeName);
+		params.put("sampleSize", 0.0);
+		params.put("forceRebuild", forceRebuild);
+		boolean result = (boolean) delegateStatistics("build_histograms", params);
+
+		// Invalidate the old estimator because histograms have changed
+		if (forceRebuild && ("HISTOGRAM".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+			context.setQueryOptimizer(null);
+			context.setQueryOptimizerMethod(null);
+		}
+		return result;
+	} // end method buildHistograms
+
+	@Override
+	public boolean buildSamples(String inputFolder, String cubeName, double sampleSize, boolean forceRebuild) throws RemoteException {
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("inputFolder", inputFolder);
+		params.put("cubeName", cubeName);
+		params.put("sampleSize", sampleSize);
+		params.put("forceRebuild", forceRebuild);
+		boolean result =  (boolean) delegateStatistics("build_samples", params);
+
+		// Invalidate the old estimator because samples have changed
+		if (forceRebuild && ("SAMPLING".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+			context.setQueryOptimizer(null);
+			context.setQueryOptimizerMethod(null);
+		}
+		return result;
+	} // end method buildSamples
+
+	/**
+	 * Helper method to delegate statistics building requests to the Director.
+	 * Creates a RequestCTO with ManagerType.STATISTICS and dispatches it via the Director.
+	 *
+	 * @param command the specific statistics command alias
+	 * @param params the map of input parameters for the command
+	 * @return true if the operation succeeded, false otherwise
+	 * @throws RemoteException
+	 */
+	private Object delegateStatistics(String command, Map<String, Object> params) throws RemoteException {
+		try {
+			RequestCTO cto = new RequestCTO(ManagerType.STATISTICS, command, params, context.getCubeManager());
+			ResponseDTO dto = director.serve(cto);
+			return dto.isSuccess();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public void produceDecisionTree(String queryName, String path, RuleSet ruleSet) throws RemoteException, AnalysisException {
