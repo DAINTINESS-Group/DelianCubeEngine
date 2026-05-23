@@ -1,8 +1,10 @@
 package cubemanager.queryoptimizer.selectivityestimation;
 
 import cubemanager.cubebase.*;
-import result.Result;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,15 +12,14 @@ import java.util.Map;
 
 /**
  * Histogram-based selectivity estimator
- * <p> At construction, fires one GROUP BY query per dimension level column to build
- * a frequency map (value ---> row count)
- * <p> At query time, no DB calls are made, selectivity is estimated by looking up the counts from the map
+ * At construction, loads pre-built histograms from inputFolder.
+ * At query time, no DB calls are made, selectivity is estimated by looking up the counts from the loaded map
  *
  */
 public class HistogramEstimator implements  ISelectivityEstimator{
 
-	private final CubeBase cubeBase;
 	private final Map<String, ColumnHistogram> histograms;
+	private int storedFactTableSize = -1;
 
 	/**
 	 * Hold the frequency distribution of a single dimension level column
@@ -33,10 +34,15 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 		}
 	}
 
-	public HistogramEstimator(CubeBase cubeBase) {
-		this.cubeBase = cubeBase;
+	public HistogramEstimator(String inputFolder, String cubeName) {
 		this.histograms = new HashMap<>();
-		buildAllHistograms();
+		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_histograms.csv");
+		loadFromFile(file);
+	}
+
+	@Override
+	public int getFactTableSize() {
+		return storedFactTableSize;
 	}
 
 	@Override
@@ -64,71 +70,48 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 	}
 
 	/**
-	 * Iterates all registered cubes and their dimension level columns,
-	 * firing one GROUP BY query per column to populate histogram map
-	 * It is called once at construction
-	 *
+	 * Loads histogram data from a pre-built CSV file into the histograms map.
+	 * Expected format :
+	 * <pre>
+	 * columnName|value|count
+	 * factTableSize = N
+	 * </pre>
+	 * @param file
 	 */
-	private void buildAllHistograms() {
-		for (BasicStoredCube cube : cubeBase.getRegisteredCubeList()) {
-			String factTable = cube.getFactTable().getTableName();
-			List<Dimension> dimensions = cube.getDimensionsList();
-			List<String> dimRefFields = cube.getDimensionRefFieldList();
+	private void loadFromFile(File file) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			reader.readLine();
+			String line;
 
-			for (int i = 0; i < dimensions.size(); i++) {
-				Dimension dimension = dimensions.get(i);
-				String dimTable = dimension.getTableName();
-				String factFK = dimRefFields.get(i);
-				String dimPK = dimTable + "."
-						+ ((LinearHierarchy) dimension.getHierarchy().get(0)).getLevels().get(0).getAttributeName(0);
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split("\\|");
 
-				for (Level level : ((LinearHierarchy) dimension.getHierarchy().get(0)).getLevels()) {
-					String filterCol = dimTable + "." + level.getAttributeName(0);
-					String sql = "SELECT " + filterCol + ", COUNT(*) FROM " + factTable
-							+ " JOIN " + dimTable + " ON " + factFK + " = " + dimPK
-							+ " GROUP BY " + filterCol;
-					histograms.put(filterCol, buildColumnHistogram(sql));
+				if (line.startsWith("factTableSize = ")){
+					try {
+						storedFactTableSize = Integer.parseInt(line.substring("factTableSize = ".length()).trim());
+					} catch (NumberFormatException ignore) {}
+					continue;
+				}
+
+				if (parts.length != 3) continue;
+
+				String columnName = parts[0];
+				String value = parts[1];
+				int count;
+
+				try {
+					count = Integer.parseInt(parts[2].trim());
+					if (!histograms.containsKey(columnName)) {
+						histograms.put(columnName, new ColumnHistogram(new HashMap<>()));
+					}
+					histograms.get(columnName).frequencyMap.put(value, count);
+				} catch (NumberFormatException e) {
+					continue;
 				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Runs a GROUP BY query and builds a (value ---> count) frequency map from the result
-	 * @param sql the GROUP BY query
-	 * @return a {@link ColumnHistogram} with the frequency map, or an empty histogram if the query returns no data
-	 */
-	private ColumnHistogram buildColumnHistogram(String sql) {
-		Result result = new Result();
-		cubeBase.executeQueryToProduceResult(sql, result);
-
-		String[][] resultArray = result.getResultArray();
-		if (resultArray == null || resultArray.length < 3) {
-			return new ColumnHistogram(new HashMap<>());
-		}
-
-		Map<String, Integer> frequencyMap = new HashMap<>();
-
-		// Data starts from [2][*]
-		for (int row = 2; row < resultArray.length; row++) {
-			String[] currentRow = resultArray[row];
-			if (currentRow == null) {
-				continue;
-			}
-			String value = currentRow[0];
-			String countStr = currentRow[1];
-
-			if (value == null || countStr == null) {
-				continue;
-			}
-			try {
-				int count = Integer.parseInt(countStr);
-				frequencyMap.put(value, count);
-			} catch (NumberFormatException ignored) {
-				// Skip invalid rows
-			}
-		}
-		return new ColumnHistogram(frequencyMap);
 	}
 
 	// Counts the estimated matching rows for a sigma predicate by iterating the histogram
