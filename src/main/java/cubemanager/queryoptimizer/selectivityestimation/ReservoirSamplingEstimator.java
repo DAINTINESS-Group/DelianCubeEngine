@@ -4,50 +4,56 @@ import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
-
-import java.util.*;
-
+import cubemanager.relationalstarschema.Database;
 import result.Result;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 
 /**
  * Reservoir sampling-based selectivity estimator.
- * <p> At construction, applies R algorithm to build a random sample of FK values from the fact table,
- * one reservoir per FK column.
- * </p>
- * <p> At query time, it fetches all matching dimension PKs from the DB and scans the sample to count FK matches.
- * Selectivity is estimated as (matchingInSample / sampleSize)
- * </p>
- *
-*/
+ <p>
+ At construction, loads a pre-built CSV file of sampled dimension level column values
+ and inserts them into a MySQL MEMORY table named {@smpl_{cubeName}}, with columns {@code (col_name, values)}.
+ </p>
+ <p>
+ At query time, fires a {@code COUNT} SQL query against the MEMORY table to count how many sampled values statisfy the
+ sigma predicate, then scales the result back to the full table size
+ </p>
+ */
 public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
+	private final String memoryTableName;
+	private int storedFactTableSize = -1;
+	private int sampleSize;
 	private final CubeBase cubeBase;
-	private final double sampleSize;
-	private final Random random;
-	private final Map<String, ColumnSample> columnSamples; // Samples for every FK column of the fact table (keys are FK column names e.g. "loan.account_id").
+
+	public ReservoirSamplingEstimator(String inputFolder, String cubeName, CubeBase cubeBase) {
+		this.memoryTableName = "smpl_" + cubeName;
+		this.sampleSize = 0;
+		this.cubeBase = cubeBase;
+		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.csv");
+		loadFromFile(file);
+	}
+
+	@Override
+	public int getFactTableSize() {
+		return storedFactTableSize;
+	}
 
 	/**
-	 * Hold the reservoir sample for a single FK column of the fact table.
-	 * {@code values} contains the sampled FK values
-	 *
+	 * Estimates selectivity for each sigma predicate
+	 * Returns an empty list for sigmas that cannot be parsed
+	 * @param query
+	 * @param factTableSize
+	 * @return
 	 */
-	private static class ColumnSample {
-		private final String[] values;
-
-		ColumnSample(String[] values) {
-			this.values = values;
-		}
-	}
-
-	public ReservoirSamplingEstimator(CubeBase cubeBase, double sampleSize) {
-		this.cubeBase = cubeBase;
-		this.sampleSize = sampleSize;
-		this.random = new Random();
-		this.columnSamples = new HashMap<>();
-		buildAllSamples();
-	}
-
 	@Override
 	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
 		List<SelectivityResult> results = new ArrayList<>();
@@ -59,125 +65,95 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
 		for (String[] sigma : query.getSigmaExpressions()) {
 			SigmaParser.ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
-			if (parsed == null) continue;
-
-			ColumnSample sample = columnSamples.get(parsed.factFK);
-			if (sample == null || factTableSize < 0) continue;
-
-			Set<String> matchingPKs = getMatchingPKs(parsed.dimTable, parsed.dimPK, parsed.filterCol, sigma[1], sigma[2]);
-
-			int matchingInSample = countFKMatches(sample.values, matchingPKs);
-			int estimatedMatching;
-			if (sample.values.length == 0) {
-				estimatedMatching = 0;
-			} else {
-				estimatedMatching = (int) Math.round((double) matchingInSample / sample.values.length * factTableSize);
+			if (parsed == null || factTableSize < 0) {
+				continue;
 			}
 
+			int matchingInSample = countFromMemoryTable(parsed.filterCol, sigma[1], sigma[2]);
+			if (matchingInSample < 0) {
+				continue;
+			}
+
+			int estimatedMatching;
+			if (sampleSize == 0) {
+				estimatedMatching = 0;
+			} else {
+				estimatedMatching = (int) Math.round((double) matchingInSample / sampleSize * factTableSize);
+			}
 			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize, estimatedMatching));
 		}
 
 		return results;
 	}
 
-	private Set<String> getMatchingPKs(String dimTable, String dimPK, String filterCol, String operator, String value) {
-		String sql = "SELECT " + dimPK + " FROM " + dimTable + " WHERE " + filterCol + " " + operator + " " + value;
-		Result result = new Result();
-		cubeBase.executeQueryToProduceResult(sql, result);
-
-		Set<String> matchingPKs = new HashSet<>();
-		String[][] resultArray = result.getResultArray();
-		if (resultArray == null || resultArray.length < 3) return matchingPKs;
-
-		for (int row = 2; row < resultArray.length; row++) {
-			if (resultArray[row] != null && resultArray[row][0] != null) {
-				matchingPKs.add(resultArray[row][0].trim());
-			}
-		}
-		return matchingPKs;
-	}
-
-	private int countFKMatches(String[] sample, Set<String> matchingPKs) {
-		int count = 0;
-		for (String fk : sample) {
-			if (fk != null && matchingPKs.contains(fk.trim())) {
-				count++;
-			}
-		}
-		return count;
-	}
-
 	/**
-	 * Iterates all registered cubes and their FK columns from the fact table,
-	 * firing one SELECT query per FK column to build a reservoir sample.
-	 * Called once at construction.
-	 *
-	*/
-	private void buildAllSamples() {
-		for (BasicStoredCube cube : cubeBase.getRegisteredCubeList()) {
-			String factTable = cube.getFactTable().getTableName();
-			List<String> dimRefFields = cube.getDimensionRefFieldList();
+	 * Loads sample data from a pre-built CSV file into a single MySQL MEMORY table.
+	 * Expected format:
+	 * <pre>
+	 * columnName|value1,value2,value3,...
+	 * factTableSize = N
+	 * </pre>
+	 */
+	private void loadFromFile(File file) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			reader.readLine();
+			String line;
 
-			int factTableSize = computeFactTableSize(factTable);
-			int reservoirSize = (int)(sampleSize * factTableSize);
+			Connection conn = ((Database) cubeBase.getDataSourceDescription()).getConnection();
 
-			for (String factFK : dimRefFields) {
-				String sql = "SELECT " + factFK + " FROM " + factTable;
-				columnSamples.put(factFK, buildSample(sql, reservoirSize));
+			conn.createStatement().executeUpdate("DROP TABLE IF EXISTS " + memoryTableName);
+			conn.createStatement().executeUpdate(
+				"CREATE TABLE " + memoryTableName + " (col_name VARCHAR(255), val VARCHAR(255)) ENGINE=MEMORY"
+			);
+
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("factTableSize = ")) {
+					try {
+						storedFactTableSize = Integer.parseInt(line.substring("factTableSize = ".length()).trim());
+					} catch (NumberFormatException ignore) {}
+					continue;
+				}
+
+				String[] parts = line.split("\\|");
+				if (parts.length != 2) continue;
+
+				String columnName = parts[0];
+				String[] values = parts[1].split(",");
+
+				StringBuilder sb = new StringBuilder("INSERT INTO " + memoryTableName + " VALUES ");
+				for (int i = 0; i < values.length; i++) {
+					sb.append("('").append(columnName.replace("'", "\\'")).append("','")
+					  .append(values[i].replace("'", "\\'")).append("')");
+					if (i < values.length - 1) {
+						sb.append(",");
+					}
+				}
+				conn.createStatement().executeUpdate(sb.toString());
+
+				if (sampleSize == 0) {
+					sampleSize = values.length;
+				}
 			}
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private int computeFactTableSize(String factTable) {
-		String sql = "SELECT COUNT(*) FROM " + factTable;
+	private int countFromMemoryTable(String columnName, String operator, String value) {
+		String sql = "SELECT COUNT(*) FROM " + memoryTableName
+				+ " WHERE col_name = '" + columnName + "' AND val " + operator + " " + value;
+		return runCountQuery(sql);
+	}
+
+	private int runCountQuery(String sql) {
 		Result result = new Result();
 		cubeBase.executeQueryToProduceResult(sql, result);
 		String[][] resultArray = result.getResultArray();
 		if (resultArray == null || resultArray.length < 3 || resultArray[2][0] == null) return -1;
 		try {
 			return Integer.parseInt(resultArray[2][0]);
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			return -1;
 		}
-	}
-
-	/**
-	 * Runs Algorithm R on the SQL result to build a reservoir of at most reservoirSize rows.
-	 * @param sql the SELECT query
-	 * @param reservoirSize the maximum number of rows to keep in the reservoir
-	 * @return a {@link ColumnSample} with the reservoir or an empty sample if the query fails
-	 */
-	private ColumnSample buildSample(String sql, int reservoirSize) {
-		cubemanager.relationalstarschema.Database db =
-				(cubemanager.relationalstarschema.Database) cubeBase.getDataSourceDescription();
-
-		String[] reservoir = new String[reservoirSize];
-		int count = 0;
-
-		try (java.sql.Statement stmt = db.getConnection().createStatement(
-				java.sql.ResultSet.TYPE_FORWARD_ONLY,
-				java.sql.ResultSet.CONCUR_READ_ONLY)) {
-
-			stmt.setFetchSize(Integer.MIN_VALUE);
-			try (java.sql.ResultSet rs = stmt.executeQuery(sql)) {
-				while (rs.next()) {
-					String value = rs.getString(1);
-					if (value == null) continue;
-					count++;
-					if (count <= reservoirSize) {
-						reservoir[count - 1] = value;
-					} else {
-						int j = random.nextInt(count);
-						if (j < reservoirSize) reservoir[j] = value;
-					}
-				}
-			}
-		} catch (java.sql.SQLException e) {
-			e.printStackTrace();
-			return new ColumnSample(new String[0]);
-		}
-
-		String[] finalSample = count < reservoirSize ? Arrays.copyOf(reservoir, count) : reservoir;
-		return new ColumnSample(finalSample);
 	}
 }
