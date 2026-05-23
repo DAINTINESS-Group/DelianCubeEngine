@@ -8,6 +8,7 @@ import java.util.List;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import mainengine.Session;
+import mainengine.SessionQueryProcessorEngine;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,7 +49,16 @@ public class HistogramEstimatorTest {
 		Session testSession = new Session(testCubeManager);
 		testSession.initialize(typeOfConnection, userInputList);
 
-		testEstimator = new HistogramEstimator(testCubeManager.getCubeBase());
+		SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
+		engine.initializeConnection(typeOfConnection, userInputList);
+		engine.buildHistograms("pkdd99", "loan", false);
+
+		testEstimator = new HistogramEstimator("pkdd99", "loan");
+	}
+
+	@Test
+	public void testGetFactTableSize() {
+		assertEquals(TOTAL_ROWS, testEstimator.getFactTableSize());
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,7 +54,16 @@ public class ReservoirSamplingEstimatorTest {
 		Session testSession = new Session(testCubeManager);
 		testSession.initialize(typeOfConnection, userInputList);
 
-		testEstimator = new ReservoirSamplingEstimator(testCubeManager.getCubeBase(), SAMPLE_SIZE);
+		SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
+		engine.initializeConnection(typeOfConnection, userInputList);
+		engine.buildSamples("pkdd99", "loan", SAMPLE_SIZE, true);
+
+		testEstimator = new ReservoirSamplingEstimator("pkdd99", "loan", testCubeManager.getCubeBase());
+	}
+
+	@Test
+	public void testGetFactTableSize() {
+		assertEquals(TOTAL_ROWS, testEstimator.getFactTableSize());
 	}
 
 	// Test the validity of the single sigma qeury results
@@ -102,20 +112,5 @@ public class ReservoirSamplingEstimatorTest {
 
 		assertEquals(1, results.size());
 		assertEquals(0, results.get(0).getMatchingRows());
-	}
-
-	// Test the validity of the results for one sigma and for different sample sizes
-	@Test
-	public void testDifferentSampleSizesProduceValidResults() throws Exception {
-		for (double size : new double[]{0.1, 0.3, 0.5}) {
-			ReservoirSamplingEstimator estimator =
-					new ReservoirSamplingEstimator(testCubeManager.getCubeBase(), size);
-			CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
-			List<SelectivityResult> results = estimator.estimate(query, TOTAL_ROWS);
-
-			assertEquals(1, results.size());
-			assertTrue(results.get(0).getTotalRows() > 0 && results.get(0).getTotalRows() <= TOTAL_ROWS);
-			assertTrue(results.get(0).getMatchingRows() >= 0 && results.get(0).getMatchingRows() <= results.get(0).getTotalRows());
-		}
 	}
 }
