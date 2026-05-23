@@ -35,7 +35,8 @@ public class SessionContext {
 
 	private IQueryOptimization queryOptimizer;
 	private String queryOptimizerMethod;
-	private double queryOptimizerSampleSize;
+	private String inputFolder;
+	private String cubeName;
 	//	private String currentQueryName;
 	//	private ITranslatorFactory translatorFactory;
 	//	private ArrayList<String> cubeNames;
@@ -138,9 +139,15 @@ public class SessionContext {
 		this.queryOptimizerMethod = queryOptimizerMethod;
 	}
 
-	public double getQueryOptimizerSampleSize() { return queryOptimizerSampleSize;}
+	public String getInputFolder() {return inputFolder;}
 
-	public void setQueryOptimizerSampleSize(double queryOptimizerSampleSize) {
-		this.queryOptimizerSampleSize = queryOptimizerSampleSize;
+	public String getCubeName() {return  cubeName;}
+
+	public void setInputFolder(String inputFolder) {
+		this.inputFolder = inputFolder;
+	}
+
+	public void setCubeName(String cubeName) {
+		this.cubeName = cubeName;
 	}
 }
