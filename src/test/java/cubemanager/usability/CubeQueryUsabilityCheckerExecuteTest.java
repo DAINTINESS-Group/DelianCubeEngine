@@ -3,6 +3,7 @@ package cubemanager.usability;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import mainengine.Session;
+import mainengine.SessionQueryProcessorEngine;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,6 +77,14 @@ public class CubeQueryUsabilityCheckerExecuteTest {
             "Gamma:account_dim.district_name,date_dim.year\n" +
             "Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1998'";
 
+    //q^b query for testUsabilityReturnsFalseWhenNoUsableBase
+    private static final String QB_STRING_NO_USABLE = "CubeName:loan\n" +
+            "Name: LoanQuery21_S2_CG-Cmmn_no_usable\n" +
+            "AggrFunc:Min\n" +
+            "Measure:amount\n" +
+            "Gamma:account_dim.district_name,date_dim.month\n" +
+            "Sigma:date_dim.year='1998'";
+
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -142,6 +151,73 @@ public class CubeQueryUsabilityCheckerExecuteTest {
 
         //Step 4: compare the two results cell by cell
         assertResultsMatch(dbResult, usabilityResult);
+    }
+
+    /**
+     * <ol>
+     * <li>Execute q^b via SQP's normal path</li>
+     * <li>Execute q^n directly via CubeManager</li>
+     * <li>Execute q^n via SQP's usability path</li>
+     * <li>Assert the usability result matches the direct DB result, cell by
+     * cell</li>
+     * </ol>
+     */
+    @Test
+    public void testSQPUsabilityResultMatchesDirectDBResult() throws Exception {
+        HashMap<String, String> queryParams = new HashMap<>();
+
+        //run q^b through SQP
+        SessionQueryProcessorEngine sqp = new SessionQueryProcessorEngine();
+        HashMap<String, String> userInputList = new HashMap<>();
+        userInputList.put("schemaName", SCHEMA);
+        userInputList.put("username", DB_USER);
+        userInputList.put("password", DB_PASSWORD);
+        userInputList.put("cubeName", CUBE_NAME);
+        userInputList.put("inputFolder", INPUT_FOLDER);
+        sqp.initializeConnection("RDBMS", userInputList);
+
+        String qbOutputFile = sqp.answerCubeQueryFromString(QB_STRING);
+        assertNotNull("SQP must return a file path for q^b", qbOutputFile);
+
+        //execute q^n directly via CubeManager
+        CubeQuery qnDirect = cubeManager.createCubeQueryFromString(QN_STRING, queryParams);
+        Result directResult = cubeManager.executeQuery(qnDirect);
+        assertNotNull("Direct DB result for q^n must not be null", directResult);
+        assertFalse("Direct DB result must have at least one cell", directResult.getCells().isEmpty());
+
+        //run q^n through SQP with usability
+        String qnOutputFile = sqp.answerCubeQueryFromStringWithUsability(QN_STRING);
+        assertNotNull("SQP answerCubeQueryFromStringWithUsability must return a non-null path", qnOutputFile);
+
+        //Retrieve the result produced by the usability optimizer
+        cubemanager.usability.UsabilityOptimizer optimizer = cubemanager.usability.UsabilityOptimizer.getInstance();
+        Result sqpUsabilityResult = optimizer.getComputedResult();
+        assertNotNull(
+                "UsabilityOptimizer.getComputedResult() must be populated after SQP usability execution",
+                sqpUsabilityResult);
+
+        //compare the two results
+        assertResultsMatch(directResult, sqpUsabilityResult);
+    }
+
+    @Test
+    public void testUsabilityReturnsFalseWhenNoUsableBase() throws Exception {
+        HashMap<String, String> queryParams = new HashMap<>();
+
+        // execute q^b with no usable base in DB
+        CubeQuery qbNoUsable = cubeManager.createCubeQueryFromString(QB_STRING_NO_USABLE, queryParams);
+        Result qbNoUsableResult = cubeManager.executeQuery(qbNoUsable);
+        assertNotNull("q^b with no usable base DB result must not be null", qbNoUsableResult);
+        assertFalse("q^b with no usable base DB result must have at least one cell", qbNoUsableResult.getCells().isEmpty());
+
+        // try to execute q^n with usability using the non-usable q^b
+        CubeQuery qn = cubeManager.createCubeQueryFromString(QN_STRING, queryParams);
+
+        CubeQueryUsabilityChecker.resetInstance();
+        CubeQueryUsabilityChecker checker = CubeQueryUsabilityChecker.getInstance();
+        checker.setQueries(qn, qbNoUsable, cubeManager.getCubeBase());
+
+        assertFalse("executeCubeQueryWithUsability should return false when there is no usable base", checker.checkUsability());
     }
 
 
