@@ -158,7 +158,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
             RequestCTO cto = new RequestCTO(ManagerType.CONNECTION, command, input, null);
             ResponseDTO dto = director.serve(cto);
 
-            this.context = (SessionContext) dto.getPayload();
+			SessionContext newContext = (SessionContext) dto.getPayload();
+			if( newContext == null) {
+				System.err.println("Error: Failed to initialize connection. Received null SessionContext from Director.");
+			} else {
+				this.context = newContext;
+			}
             System.out.println("Initialization Successful via ConnectionManager.");
         } catch (Exception e) {
             e.printStackTrace();
