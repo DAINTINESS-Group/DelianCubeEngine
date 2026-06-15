@@ -1,9 +1,11 @@
 package cubemanager.usability;
 
-import mainengine.SessionQueryProcessorEngine;
+import mainengine.IMainEngine;
 import result.Result;
 
 import java.io.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
@@ -16,6 +18,20 @@ public class UsabilityExperiments {
     private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/%s?autoReconnect=true&useSSL=false&serverTimezone=UTC";
     private static final String DB_USER = "CinecubesUser";
     private static final String DB_PASSWORD = "Cinecubes";
+
+    private static final String SERVER_IP = "localhost";
+    private static final int SERVER_PORT = 2020;
+    private static Registry registry;
+
+    private static IMainEngine getService() throws Exception {
+        registry = LocateRegistry.getRegistry(SERVER_IP, SERVER_PORT);
+        IMainEngine service = (IMainEngine) registry.lookup(IMainEngine.class.getSimpleName());
+        if (service == null ) {
+            System.err.println("Server not found. Exiting...");
+            System.exit(-100);
+        }
+        return service;
+    }
 
     /** EXP-2 Scalability query file for the baseline pkdd99_star dataset (20 queries). */
     static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries.txt");
@@ -204,7 +220,7 @@ public class UsabilityExperiments {
         ExperimentReport report = new ExperimentReport(label, queryFile.getPath());
 
         // Fresh engine per run so that query history clears between runs
-        SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
+        IMainEngine engine = getService();
         engine.initializeConnection("RDBMS", config.toMap());
 
         UsabilityOptimizer optimizer = UsabilityOptimizer.getInstance();
@@ -293,7 +309,7 @@ public class UsabilityExperiments {
 
         ExperimentReport report = new ExperimentReport(label, queryFile.getPath());
 
-        SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
+        IMainEngine engine = getService();
         engine.initializeConnection("RDBMS", config.toMap());
 
         UsabilityOptimizer optimizer = UsabilityOptimizer.getInstance();
