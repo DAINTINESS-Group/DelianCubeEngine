@@ -16,6 +16,8 @@ public class UsabilityExperiments {
     private static final String DB_USER = "CinecubesUser";
     private static final String DB_PASSWORD = "Cinecubes";
 
+    private static final String DB_HOST = "127.0.0.1";
+
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 2020;
     private static Registry registry;
@@ -122,6 +124,7 @@ public class UsabilityExperiments {
             m.put("password", password);
             m.put("cubeName", cubeName);
             m.put("inputFolder", inputFolder);
+            m.put("dbHost", DB_HOST);
             return m;
         }
     }
@@ -362,7 +365,7 @@ public class UsabilityExperiments {
 
         for (DatasetScale scale : scales) {
             System.out.println("\n  [EXP-1][" + scale.tag + "][loan] Checking DB availability...");
-            if (!isDatabaseAvailable(scale.schemaName)) {
+            if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
                 System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
                 continue;
             }
@@ -411,7 +414,7 @@ public class UsabilityExperiments {
 
             System.out.println("\n  [EXP-2][" + scale.tag + "][loan]");
 
-            if (!isDatabaseAvailable(scale.schemaName)) {
+            if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
                 System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
                 continue;
             }
@@ -444,7 +447,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName)) {
+        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -507,7 +510,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName)) {
+        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -584,7 +587,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName)) {
+        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -662,7 +665,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName)) {
+        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -917,7 +920,7 @@ public class UsabilityExperiments {
         return "Query_" + position;
     }
 
-    public static boolean isDatabaseAvailable(String schemaName) {
+    public static boolean isDatabaseAvailable(String schemaName, String inputFolder) {
         try {
             IMainEngine engine = getService();
             HashMap<String, String> config = new HashMap<>();
@@ -925,7 +928,8 @@ public class UsabilityExperiments {
             config.put("username", DB_USER);
             config.put("password", DB_PASSWORD);
             config.put("cubeName", "loan");
-            config.put("inputFolder", schemaName);
+            config.put("inputFolder", inputFolder);
+            config.put("dbHost", DB_HOST);
             engine.initializeConnection("RDBMS", config);
             return true;
         } catch (Exception e) {
