@@ -20,17 +20,16 @@
 
 package cubemanager.cubebase;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import cubemanager.logicaltophysicalmapping.DataSourceFactory;
 import cubemanager.physicalschema.DataSourceDescription;
 import cubemanager.physicalschema.DimensionTable;
 import cubemanager.physicalschema.FactTable;
 import cubemanager.physicalschema.Table;
 import result.Result;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CubeBase {
 
@@ -56,6 +55,12 @@ public class CubeBase {
 
 	public void registerCubeBase(HashMap<String, String> userInputList) {
 		dataSourceDescription.registerCubeBase(userInputList);
+	}
+
+	public void closeConnection() {
+		if(dataSourceDescription != null) {
+			dataSourceDescription.closeConnection();
+		}
 	}
 
 	public void addDimension(String dimensionName) {

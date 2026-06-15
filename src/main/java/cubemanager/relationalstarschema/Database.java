@@ -20,21 +20,16 @@
 
 package cubemanager.relationalstarschema;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import cubemanager.physicalschema.Attribute;
 import cubemanager.physicalschema.DataSourceDescription;
 import cubemanager.physicalschema.Table;
 import result.Cell;
 import result.Result;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 public class Database extends DataSourceDescription{
@@ -294,6 +289,21 @@ public class Database extends DataSourceDescription{
 			System.out.println("\n\n"+ "Result produced"+"\n");
 
 		return result;
+	}
+
+	@Override
+	public void closeConnection() {
+		if(connect!=null) {
+			try {
+				if(!connect.isClosed()) {
+					connect.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				connect = null;
+			}
+		}
 	}
 
 

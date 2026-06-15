@@ -137,6 +137,16 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	 */
 	private void delegateInit(String command, String typeOfConnection, HashMap<String, String> userInputList, Map<String, Object> extras) {
 		try {
+
+			if(this.context != null && this.context.getCubeManager() != null) {
+				try {
+					this.context.getCubeManager().getCubeBase().closeConnection();
+				} catch (Exception e) {
+					System.err.println("Error closing previous connection: " + e.getMessage());
+				}
+			}
+
+
             HashMap<String, Object> input = new HashMap<>();
             input.put("typeOfConnection", typeOfConnection);
             input.put("userInputList", userInputList);

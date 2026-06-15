@@ -1,14 +1,13 @@
 package cubemanager.sparkschema;
 
+import cubemanager.physicalschema.DataSourceDescription;
+import cubemanager.physicalschema.Table;
+import org.apache.commons.io.FilenameUtils;
+import result.Result;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.apache.commons.io.FilenameUtils;
-
-import cubemanager.physicalschema.DataSourceDescription;
-import cubemanager.physicalschema.Table;
-import result.Result;
 
 /**
  * 
@@ -80,7 +79,12 @@ public class SparkDataset extends DataSourceDescription {
 		setQueryTime();
 		return finalResults;
 	}
-	
+
+	@Override
+	public void closeConnection() {
+
+	}
+
 	public void registerSpark() {
 		sparkManager = new SparkManager(schemaName, inputFolder, cubeName);
 	}

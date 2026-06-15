@@ -1,10 +1,9 @@
 package cubemanager.physicalschema;
 
-import java.sql.ResultSet;
+import result.Result;
+
 import java.util.HashMap;
 import java.util.List;
-
-import result.Result;
 
 /**
  * An abstract class for the Connection of the client.
@@ -29,6 +28,8 @@ public abstract class DataSourceDescription {
 		public abstract void registerCubeBase(HashMap<String, String> userInputList);
 		
 		public abstract Result executeQueryToProduceResult(String queryString, Result result);
+
+		public abstract void closeConnection();
 		
 		
 		// Common methods
