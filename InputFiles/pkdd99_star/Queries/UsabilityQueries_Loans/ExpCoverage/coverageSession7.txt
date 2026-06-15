@@ -1,0 +1,132 @@
+CubeName:loan
+Name: LoanQuery22
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt',date_dim.year = '1996',account_dim.district_name = 'Pisek'
+@
+
+CubeName:loan
+Name: LoanQuery49
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery55
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+CubeName:loan
+Name: LoanQuery119
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery200
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+CubeName:loan
+Name: LoanQuery211
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+CubeName:loan
+Name: LoanQuery241
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery270
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:account_dim.district_name = 'Teplice',date_dim.month = '1992-11',status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery288
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery315
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+CubeName:loan
+Name: LoanQuery455
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1994'
+@
+
+CubeName:loan
+Name: LoanQuery527
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery583
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery522
+AggrFunc:MAX
+Measure:amount
+Gamma:account_dim.district_name,date_dim.month
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+
+CubeName:loan
+Name: LoanQuery553
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status,account_dim.district_name
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed',account_dim.region = 'south Moravia'
+@
+
+
+CubeName:loan
+Name: LoanQuery600
+AggrFunc:MAX
+Measure:amount
+Gamma:account_dim.region,status_dim.status
+Sigma:date_dim.year = '1996',status_dim.status = 'Running Contract/Client in Debt'
+
+
+
+

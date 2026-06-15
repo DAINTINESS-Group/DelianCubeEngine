@@ -1,0 +1,181 @@
+CubeName:loan
+Name: LoanQuery2
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
+@
+
+
+CubeName:loan
+Name: LoanQuery31
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.month = '1999-03'
+@
+
+
+CubeName:loan
+Name: LoanQuery32
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.year,account_dim.district_name,status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed',date_dim.month = '1991-05',account_dim.region = 'north Moravia'
+@
+
+
+CubeName:loan
+Name: LoanQuery33
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1995-10'
+@
+
+
+CubeName:loan
+Name: LoanQuery34
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.year
+Sigma:account_dim.region = 'north Moravia'
+@
+
+
+CubeName:loan
+Name: LoanQuery35
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.year,status_dim.status,account_dim.district_name
+Sigma:date_dim.month = '1995-11',status_dim.status = 'Other status',account_dim.district_name = 'Kolin'
+@
+
+
+CubeName:loan
+Name: LoanQuery36
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status,account_dim.district_name
+Sigma:date_dim.year = '1993',status_dim.status = 'Running Contract/OK'
+@
+
+
+CubeName:loan
+Name: LoanQuery37
+AggrFunc:COUNT
+Measure:amount
+Gamma:account_dim.region,status_dim.status
+Sigma:account_dim.region = 'north Bohemia',status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+
+CubeName:loan
+Name: LoanQuery38
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.year
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.month = '1995-12',account_dim.district_name = 'Hradec Kralove'
+@
+
+
+CubeName:loan
+Name: LoanQuery39
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status,account_dim.district_name,date_dim.month
+Sigma:status_dim.status = 'Running Contract/OK',account_dim.district_name = 'Trutnov',date_dim.month = '1994-04'
+@
+
+
+CubeName:loan
+Name: LoanQuery40
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.year,account_dim.region
+Sigma:date_dim.month = '1994-05'
+@
+
+
+CubeName:loan
+Name: LoanQuery41
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.month,status_dim.status
+Sigma:date_dim.month = '1995-12',status_dim.status = 'Contract Finished/No Problems'
+@
+
+
+CubeName:loan
+Name: LoanQuery42
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day,account_dim.region
+Sigma:status_dim.status = 'Contract Finished/No Problems',account_dim.district_name = 'Chomutov'
+@
+
+
+CubeName:loan
+Name: LoanQuery43
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status,date_dim.year
+Sigma:status_dim.status = 'Other status',date_dim.year = '1998'
+@
+
+
+CubeName:loan
+Name: LoanQuery44
+AggrFunc:MIN
+Measure:amount
+Gamma:account_dim.district_name,date_dim.year,status_dim.status
+Sigma:account_dim.region = 'north Bohemia',status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+
+CubeName:loan
+Name: LoanQuery45
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status,account_dim.district_name
+Sigma:status_dim.status = 'Contract Finished/No Problems',account_dim.region = 'south Bohemia'
+@
+
+
+CubeName:loan
+Name: LoanQuery46
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.month,account_dim.district_name
+Sigma:status_dim.status = 'Running Contract/Client in Debt',date_dim.year = '1998'
+@
+
+
+CubeName:loan
+Name: LoanQuery56
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt',date_dim.year = '1997'
+@
+
+
+CubeName:loan
+Name: LoanQuery89
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
+
+
+CubeName:loan
+Name: LoanQuery27
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK'
+
+
+
