@@ -1,14 +1,14 @@
 CubeName:loan
-Name: LoanQuery21_S2_CG-Cmmn
-AggrFunc:MIN
+Name: LoanQuery204
+AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.district_name,date_dim.month
-Sigma:account_dim.region='Prague', date_dim.year='1998'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1999'
 @
 CubeName:loan
-Name: LoanQuery21_S2_CG-Cmmn2
-AggrFunc:MIN
+Name: LoanQuery225
+AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.district_name,date_dim.year
-Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1998'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
 

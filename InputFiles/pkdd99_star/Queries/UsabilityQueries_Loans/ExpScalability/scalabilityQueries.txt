@@ -1,9 +1,9 @@
 CubeName:loan
 Name: LoanQuery1
-AggrFunc:Min
+AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.district_name,date_dim.month
-Sigma:account_dim.region='Prague', date_dim.year='1998'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1999'
 @
 
 
@@ -99,10 +99,10 @@ Sigma:status_dim.status = 'Running Contract/Client in Debt',account_dim.district
 
 CubeName:loan
 Name: LoanQuery12
-AggrFunc:MIN
+AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.district_name,date_dim.year
-Sigma:account_dim.district_name='Hl.m. Praha', date_dim.year='1998'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
 @
 
 
