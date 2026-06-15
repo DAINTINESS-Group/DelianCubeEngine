@@ -6,8 +6,6 @@ import result.Result;
 import java.io.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -928,10 +926,18 @@ public class UsabilityExperiments {
     }
 
     public static boolean isDatabaseAvailable(String schemaName) {
-        String url = String.format(JDBC_URL, schemaName);
-        try (Connection c = DriverManager.getConnection(url, DB_USER, DB_PASSWORD)) {
-            return c != null && !c.isClosed();
+        try {
+            IMainEngine engine = getService();
+            HashMap<String, String> config = new HashMap<>();
+            config.put("schemaName,", schemaName);
+            config.put("username", DB_USER);
+            config.put("password", DB_PASSWORD);
+            config.put("cubeName", "loan");
+            config.put("inputFolder", schemaName);
+            engine.initializeConnection("RDBMS", config);
+            return true;
         } catch (Exception e) {
+            System.out.println("  [WARN] Database '" + schemaName + "' not reachable: " + e.getMessage());
             return false;
         }
     }
