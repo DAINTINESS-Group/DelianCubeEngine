@@ -5,6 +5,8 @@ import mainengine.IMainEngine;
 import java.io.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -365,7 +367,7 @@ public class UsabilityExperiments {
 
         for (DatasetScale scale : scales) {
             System.out.println("\n  [EXP-1][" + scale.tag + "][loan] Checking DB availability...");
-            if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+            if (!isDatabaseAvailable(scale.schemaName)) {
                 System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
                 continue;
             }
@@ -414,7 +416,7 @@ public class UsabilityExperiments {
 
             System.out.println("\n  [EXP-2][" + scale.tag + "][loan]");
 
-            if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+            if (!isDatabaseAvailable(scale.schemaName)) {
                 System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
                 continue;
             }
@@ -447,7 +449,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+        if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -510,7 +512,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+        if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -587,7 +589,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+        if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -665,7 +667,7 @@ public class UsabilityExperiments {
         System.out.println(repeatChar('=', 80));
 
         DatasetScale scale = DatasetScale.SCALE_1M;
-        if (!isDatabaseAvailable(scale.schemaName, scale.inputFolder)) {
+        if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
         }
@@ -988,6 +990,18 @@ public class UsabilityExperiments {
         char[] arr = new char[n];
         Arrays.fill(arr, ch);
         return new String(arr);
+    }
+
+    public static boolean isDatabaseAvailable(String schemaName) {
+        String url = "jdbc:mysql://" + DB_HOST + ":3306/" + schemaName
+                + "?connectTimeout=3000&socketTimeout=5000"
+                + "&autoReconnect=true&useSSL=false&serverTimezone=UTC";
+        try (Connection c = DriverManager.getConnection(url, DB_USER, DB_PASSWORD)) {
+            return c != null && !c.isClosed();
+        } catch (Exception e) {
+            System.err.println("  [WARN] Schema '" + schemaName + "' not reachable: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
