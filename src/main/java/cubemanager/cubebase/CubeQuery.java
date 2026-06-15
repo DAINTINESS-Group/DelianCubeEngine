@@ -44,6 +44,7 @@ public class CubeQuery extends Cube {
 	
 	private ExtractionMethod extractionMethod;
 	private BasicStoredCube referCube;
+	private Result usabilityResult;
 	
 	public CubeQuery(String Name) {
 		super(Name);
@@ -149,7 +150,14 @@ public class CubeQuery extends Cube {
 	}
 
 	public Result getResult() {
+		if(usabilityResult!=null){
+			return usabilityResult;
+		}
 		return extractionMethod.getResult();
+	}
+
+	public void setResult(Result result){
+		this.usabilityResult = result;
 	}
 
 	public void addGammaExpression(String table, String field) {

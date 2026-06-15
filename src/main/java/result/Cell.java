@@ -19,7 +19,6 @@
 package result;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The class storing the cells of a cube
@@ -56,7 +55,16 @@ public class Cell {
         int totalFields = values.length;
         
         int countIndex = totalFields - 1;
-        this.countOfDetailedCells = Integer.parseInt(values[countIndex]);
+
+        try {
+            this.countOfDetailedCells = Integer.parseInt(values[countIndex]);
+        } catch (NumberFormatException e) {
+            this.countOfDetailedCells = 1;
+            for (String v : values) {
+                dimensionMembers.add(v);
+            }
+            return;
+        }
 
         int measuresStartIndex = countIndex - numMeasures;
         

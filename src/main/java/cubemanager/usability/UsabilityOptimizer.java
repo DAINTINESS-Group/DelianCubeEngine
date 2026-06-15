@@ -26,6 +26,11 @@ public class UsabilityOptimizer {
     private static UsabilityOptimizer instance;
     private final CubeQueryUsabilityChecker checker = CubeQueryUsabilityChecker.getInstance();
 
+    private double lastCheckTimeMs = -1.0;
+    private double lastAnswerTimeMs = -1.0;
+
+    private String lastUsableBaseName = null;
+
     private UsabilityOptimizer() {
     }
 
@@ -34,6 +39,18 @@ public class UsabilityOptimizer {
             instance = new UsabilityOptimizer();
         }
         return instance;
+    }
+
+    double getLastCheckTimeMs() {
+        return lastCheckTimeMs;
+    }
+
+     double getLastAnswerTimeMs() {
+        return lastAnswerTimeMs;
+    }
+
+    public String getLastUsableBaseName() {
+        return lastUsableBaseName;
     }
 
     /**
@@ -50,12 +67,21 @@ public class UsabilityOptimizer {
                                            QueryHistoryManager historyManager,
                                            CubeBase cubeBase) {
 
+        long checkStartTime = System.nanoTime();
         CubeQuery usableBase = findUsableBase(newQuery, historyManager, cubeBase);
+        lastCheckTimeMs = (System.nanoTime() - checkStartTime) / 1_000_000.0;
         if (usableBase == null) {
+            lastAnswerTimeMs = -1.0;
+            lastUsableBaseName = null;
             return false;
         }
         //if it returned a candidate, then we execute the query with usability
-        return checker.executeCubeQueryWithUsability(newQuery);
+        long answerStartTime = System.nanoTime();
+        boolean executed = checker.executeCubeQueryWithUsability(newQuery);
+        lastAnswerTimeMs = (System.nanoTime() - answerStartTime) / 1_000_000.0;
+        lastUsableBaseName = (executed) ? usableBase.getName() : null;
+
+        return executed;
     }
 
     /**
@@ -91,14 +117,14 @@ public class UsabilityOptimizer {
             }
             checker.setQueries(newQuery, candidate, cubeBase);
             if (checker.checkUsability()) {
-                System.out.println("[UsabilityOptimizer] Found usable base query: "
-                        + candidate.getName());
+             //   System.out.println("[UsabilityOptimizer] Found usable base query: "
+             //           + candidate.getName());
                 return candidate;
             }
         }
 
-        System.out.println("[UsabilityOptimizer] No usable base query found for: "
-                + newQuery.getName());
+       // System.out.println("[UsabilityOptimizer] No usable base query found for: "
+       //         + newQuery.getName());
         return null;
     }
 

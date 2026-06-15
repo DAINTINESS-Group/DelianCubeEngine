@@ -103,8 +103,8 @@ public class CubeQueryUsabilityChecker {
         String dsB = baseQuery.getReferCube().getName();
         boolean result = dsN != null && dsN.equals(dsB);
         if (!result) {
-            System.out.println("[Usability] Condition 1 FAILED - different DS ("
-                    + dsN + " vs " + dsB + ")");
+            // System.out.println("[Usability] Condition 1 FAILED - different DS ("
+            //        + dsN + " vs " + dsB + ")");
         }
         return result;
     }
@@ -122,7 +122,7 @@ public class CubeQueryUsabilityChecker {
         ArrayList<String[]> gammaN = newQuery.getGammaExpressions();
         ArrayList<String[]> gammaB = baseQuery.getGammaExpressions();
         if (gammaN.size() != gammaB.size()) {
-            System.out.println("[Usability] Condition 2 FAILED - different number of dimensions");
+           // System.out.println("[Usability] Condition 2 FAILED - different number of dimensions");
             return false;
         }
 
@@ -134,7 +134,7 @@ public class CubeQueryUsabilityChecker {
         for (String[] g : gammaB)
             dimsB.add(g[0]);
         if (!dimsN.equals(dimsB)) {
-            System.out.println("[Usability] Condition 2 FAILED - different dimension sets");
+           // System.out.println("[Usability] Condition 2 FAILED - different dimension sets");
             return false;
         }
 
@@ -144,7 +144,7 @@ public class CubeQueryUsabilityChecker {
 
         //check size
         if (measuresN.size() != measuresB.size()) {
-            System.out.println("[Usability] Condition 2 FAILED - different number of measures");
+          //  System.out.println("[Usability] Condition 2 FAILED - different number of measures");
             return false;
         }
 
@@ -159,21 +159,21 @@ public class CubeQueryUsabilityChecker {
         for (QueryMeasure mn : measuresN) {
             QueryMeasure mb = baseMeasureMap.get(mn.getAttribute()); //search by key to get the object
             if (mb == null) {
-                System.out.println("[Usability] Condition 2 FAILED: measure '"
-                        + mn.getAttribute() + "' not found in base query q^b");
+            //    System.out.println("[Usability] Condition 2 FAILED: measure '"
+             //           + mn.getAttribute() + "' not found in base query q^b");
                 return false;
             }
             // Same aggregate function
             if (!mn.getFunction().equalsIgnoreCase(mb.getFunction())) {
-                System.out.println("[Usability] Condition 2 FAILED: different aggregate functions for '"
-                        + mn.getAttribute() + "' (" + mn.getFunction()
-                        + " vs " + mb.getFunction() + ")");
+            //    System.out.println("[Usability] Condition 2 FAILED: different aggregate functions for '"
+             //           + mn.getAttribute() + "' (" + mn.getFunction()
+             //           + " vs " + mb.getFunction() + ")");
                 return false;
             }
             // Must be distributive
             if (!isDistributive(mn.getFunction())) {
-                System.out.println("[Usability] Condition 2 FAILED: non-distributive function: "
-                        + mn.getFunction());
+            //    System.out.println("[Usability] Condition 2 FAILED: non-distributive function: "
+            //            + mn.getFunction());
                 return false;
             }
         }
@@ -208,8 +208,8 @@ public class CubeQueryUsabilityChecker {
             String dimension = gammaAtom[0];
             int count = sigmaCountPerDimension.getOrDefault(dimension, 0);
             if (count != 1) {
-                System.out.println("[Usability] Condition 3 FAILED: dimension '" + dimension
-                        + "' has " + count + " sigma atom(s) in query " + query.getName());
+            //    System.out.println("[Usability] Condition 3 FAILED: dimension '" + dimension
+             //           + "' has " + count + " sigma atom(s) in query " + query.getName());
                 return false;
             }
         }
@@ -250,10 +250,10 @@ public class CubeQueryUsabilityChecker {
             // Grouper level must be at or below sigma level in the hierarchy
             // i.e. gammaPos <= sigmaPos (smaller position = more detailed)
             if (gammaPos > sigmaPos) {
-                System.out.println("[Usability] Condition 4 FAILED: dimension " + dim
-                        + " – grouper level '" + gammaLvlName + "' (pos " + gammaPos
-                        + ") is coarser than sigma level '" + sigmaLvlName + "' (pos "
-                        + sigmaPos + ") in query " + query.getName());
+            //    System.out.println("[Usability] Condition 4 FAILED: dimension " + dim
+            //            + " – grouper level '" + gammaLvlName + "' (pos " + gammaPos
+             //           + ") is coarser than sigma level '" + sigmaLvlName + "' (pos "
+             //           + sigmaPos + ") in query " + query.getName());
                 return false;
             }
         }
@@ -289,9 +289,9 @@ public class CubeQueryUsabilityChecker {
                 continue;
 
             if (posN < posB) {
-                System.out.println("[Usability] Condition 5 FAILED: dimension " + dim
-                        + " – q^n level '" + lvlN + "' (pos " + posN
-                        + ") is more detailed than q^b level '" + lvlB + "' (pos " + posB + ")");
+            //    System.out.println("[Usability] Condition 5 FAILED: dimension " + dim
+            //            + " – q^n level '" + lvlN + "' (pos " + posN
+             //           + ") is more detailed than q^b level '" + lvlB + "' (pos " + posB + ")");
                 return false;
             }
         }
@@ -313,7 +313,7 @@ public class CubeQueryUsabilityChecker {
         //build map: dim -> q^b's grouper level name (eg "date_dim" -> "month")
         Map<String, String> baseGrouperLevelNames = new HashMap<>();
         for (String[] g : baseGamma) {
-            baseGrouperLevelNames.put(g[0], g[1]);
+            baseGrouperLevelNames.put(g[0].trim(), g[1].trim());
         }
 
         // build map: dim -> q^b's sigma level name
@@ -321,7 +321,7 @@ public class CubeQueryUsabilityChecker {
         for (String[] sigma : baseQuery.getSigmaExpressions()) {
             if (sigma[0].contains(".")) {
                 String[] parts = sigma[0].split("\\.");
-                baseSigmaLevelNames.put(parts[0], parts[1]);
+                baseSigmaLevelNames.put(parts[0].trim(), parts[1].trim());
             }
         }
 
@@ -330,7 +330,7 @@ public class CubeQueryUsabilityChecker {
         for (String[] sigma : newQuery.getSigmaExpressions()) {
             if (sigma[0].contains(".")) {
                 String[] parts = sigma[0].split("\\.");
-                newSigmaLevelNames.put(parts[0], parts[1]);
+                newSigmaLevelNames.put(parts[0].trim(), parts[1].trim());
             }
         }
 
@@ -340,13 +340,13 @@ public class CubeQueryUsabilityChecker {
         Map<String, Set<String>> sigmaFilterB = buildSigmaFilter(baseQuery);
 
         for (String[] g : baseGamma) {
-            String dim = g[0];
-            String grouperLvlB = g[1];
+            String dim = g[0].trim();
+            String grouperLvlB = g[1].trim();
             Set<String> baseSigmaValues = sigmaFilterB.get(dim);
 
             if (baseSigmaValues != null && !baseSigmaValues.contains("*")) {
                 String sigmaLvlB = baseSigmaLevelNames.get(dim);
-                if (sigmaLvlB != null && !sigmaLvlB.equals(grouperLvlB)) {
+                if (sigmaLvlB !=null && !sigmaLvlB.equals(grouperLvlB)) {
                     // sigma level is greater than grouper level – roll down via DB query
                     Set<String> rolled = rollDownValuesToLevel(dim, sigmaLvlB, baseSigmaValues, grouperLvlB);
                     if (rolled != null && !rolled.isEmpty()) {
@@ -358,10 +358,11 @@ public class CubeQueryUsabilityChecker {
                     grouperDomainB.put(dim, new HashSet<>(baseSigmaValues));
                     continue;
                 }
+
             }
 
-            System.out.println("[Usability] Condition 6 FAILED: could not build grouper domain"
-                    + " for dimension " + dim + " in q^b");
+          //  System.out.println("[Usability] Condition 6 FAILED: could not build grouper domain"
+          //          + " for dimension " + dim + " in q^b");
             return false;
         }
 
@@ -374,8 +375,8 @@ public class CubeQueryUsabilityChecker {
             Set<String> domainB = grouperDomainB.get(dim);
 
             if (domainB == null) {
-                System.out.println("[Usability] Condition 6 FAILED: no grouper domain for dimension "
-                        + dim + " in q^b");
+            //    System.out.println("[Usability] Condition 6 FAILED: no grouper domain for dimension "
+            //            + dim + " in q^b");
                 return false;
             }
 
@@ -393,9 +394,9 @@ public class CubeQueryUsabilityChecker {
                 // q^n's sigma level differs from q^b's grouper level – roll down via DB query
                 Set<String> rolledDown = rollDownValuesToLevel(dim, sigmaLvlN, allowedByN, grouperLvlB);
                 if (rolledDown == null || rolledDown.isEmpty()) {
-                    System.out.println("[Usability] Condition 6 FAILED: could not expand sigma"
-                            + " values " + allowedByN + " from level '" + sigmaLvlN
-                            + "' to level '" + grouperLvlB + "' for dimension " + dim);
+                //    System.out.println("[Usability] Condition 6 FAILED: could not expand sigma"
+                //            + " values " + allowedByN + " from level '" + sigmaLvlN
+                //            + "' to level '" + grouperLvlB + "' for dimension " + dim);
                     return false;
                 }
                 signature = rolledDown;
@@ -408,9 +409,9 @@ public class CubeQueryUsabilityChecker {
             if (!domainB.containsAll(signature)) {
                 Set<String> outside = new HashSet<>(signature);
                 outside.removeAll(domainB);
-                System.out.println("[Usability] Condition 6 FAILED: signature for dimension "
-                        + dim + " contains values " + outside
-                        + " not present in q^b's grouper domain " + domainB);
+            //    System.out.println("[Usability] Condition 6 FAILED: signature for dimension "
+            //            + dim + " contains values " + outside
+            //            + " not present in q^b's grouper domain " + domainB);
                 return false;
             }
         }
@@ -464,8 +465,8 @@ public class CubeQueryUsabilityChecker {
         String toCol = resolveLevelColumn(dimension, toFinerLevelName, newQuery, baseQuery);
 
         if (fromCol == null || toCol == null) {
-            System.err.println("[CubeQueryUsabilityChecker] rollDownValuesToLevel: could not resolve columns for "
-                    + fromCoarserLevelName + " -> " + toFinerLevelName + " in dimension " + dimension);
+         //   System.err.println("[CubeQueryUsabilityChecker] rollDownValuesToLevel: could not resolve columns for "
+         //           + fromCoarserLevelName + " -> " + toFinerLevelName + " in dimension " + dimension);
             return null;
         }
 

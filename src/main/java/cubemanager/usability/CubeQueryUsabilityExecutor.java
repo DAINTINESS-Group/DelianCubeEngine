@@ -61,14 +61,14 @@ public class CubeQueryUsabilityExecutor {
         for (String[] sigma : currentCubeQuery.getSigmaExpressions()) {
             if (sigma[0].contains(".")) {
                 String[] parts = sigma[0].split("\\.");
-                newSigmaLevelNames.put(parts[0], parts[1]);
+                newSigmaLevelNames.put(parts[0].trim(), parts[1].trim());
             }
         }
 
         // dim -> q^b grouper level name (e.g. "date_dim" -> "month")
         Map<String, String> baseGrouperLevelNames = new HashMap<>();
         for (String[] g : baseGamma) {
-            baseGrouperLevelNames.put(g[0], g[1]);
+            baseGrouperLevelNames.put(g[0].trim(), g[1].trim());
         }
 
         // step 2: build sigma filter of q^n expanded to q^b's grouper level
@@ -88,9 +88,9 @@ public class CubeQueryUsabilityExecutor {
                 if (expanded != null && !expanded.isEmpty()) {
                     sigmaFilterN.put(dim, expanded);
                 } else {
-                    System.out.println("[Usability] executeCubeQueryWithUsability: "
-                            + "could not expand sigma values for dim " + dim
-                            + " from level '" + sigmaLvlN + "' to '" + grouperLvlB + "'");
+                 //   System.out.println("[Usability] executeCubeQueryWithUsability: "
+                 //           + "could not expand sigma values for dim " + dim
+                //            + " from level '" + sigmaLvlN + "' to '" + grouperLvlB + "'");
                     return false; // cannot reuse
                 }
             }

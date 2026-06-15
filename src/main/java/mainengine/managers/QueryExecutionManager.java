@@ -116,6 +116,7 @@ public class QueryExecutionManager implements IBuilder {
 
         if (usabilityOptimizer.tryExecuteWithUsability(this.currentCubeQuery, historyManager, cubeManager.getCubeBase())) {
             this.currentResult = usabilityOptimizer.getComputedResult();
+            this.currentCubeQuery.setResult(this.currentResult);
             this.currentQueryName = this.currentCubeQuery.getName();
             String outputFolder = "OutputFiles" + File.separator;
 
