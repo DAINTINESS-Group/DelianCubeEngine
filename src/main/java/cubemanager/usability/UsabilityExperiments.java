@@ -354,8 +354,8 @@ public class UsabilityExperiments {
                 DatasetScale.BASELINE,
                 DatasetScale.SCALE_100K,
                 DatasetScale.SCALE_1M,
-             //   DatasetScale.SCALE_10M,
-             //   DatasetScale.SCALE_100M
+                DatasetScale.SCALE_10M,
+                DatasetScale.SCALE_100M
         };
 
         List<ExperimentReport> results = new ArrayList<>();
@@ -392,8 +392,8 @@ public class UsabilityExperiments {
                 DatasetScale.BASELINE,
                 DatasetScale.SCALE_100K,
                 DatasetScale.SCALE_1M,
-            //    DatasetScale.SCALE_10M,
-            //    DatasetScale.SCALE_100M
+                DatasetScale.SCALE_10M,
+                DatasetScale.SCALE_100M
         };
         File[] queryFiles = {
                 EXP2_QUERY_FILE,
