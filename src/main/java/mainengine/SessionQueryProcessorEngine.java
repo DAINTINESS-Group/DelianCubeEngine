@@ -25,6 +25,7 @@ import chartRequestManagement.ChartRequest;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
+import cubemanager.usability.UsabilityOptimizer;
 import mainengine.managers.*;
 import mainengine.nlq.NLTranslator;
 import mainengine.rmiTransfer.RMIInputStream;
@@ -176,6 +177,22 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("file", file);
 		return (ArrayList<String>) delegateExecution("answer_from_file_with_usability", params);
+	}
+
+
+	@Override
+	public boolean wasLastQueryUsabilityHit() throws RemoteException {
+		return UsabilityOptimizer.getInstance().getLastUsableBaseName() != null;
+	}
+
+	@Override
+	public double getLastUsabilityCheckTimeMs() throws RemoteException {
+		return UsabilityOptimizer.getInstance().getLastCheckTimeMs();
+	}
+
+	@Override
+	public double getLastUsabilityAnswerTimeMs() throws RemoteException {
+		return UsabilityOptimizer.getInstance().getLastAnswerTimeMs();
 	}
 
 

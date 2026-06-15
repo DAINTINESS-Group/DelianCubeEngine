@@ -1,7 +1,6 @@
 package cubemanager.usability;
 
 import mainengine.IMainEngine;
-import result.Result;
 
 import java.io.*;
 import java.rmi.registry.LocateRegistry;
@@ -221,7 +220,6 @@ public class UsabilityExperiments {
         IMainEngine engine = getService();
         engine.initializeConnection("RDBMS", config.toMap());
 
-        UsabilityOptimizer optimizer = UsabilityOptimizer.getInstance();
         List<String> queryStrings = parseQueryFile(queryFile);
         int position = 0;
 
@@ -231,12 +229,10 @@ public class UsabilityExperiments {
             QueryResult qr = new QueryResult(queryName);
 
             if (withUsability) {
-                Result resultBefore = optimizer.getComputedResult();
                 long t0 = System.nanoTime();
                 qr.outputFile = engine.answerCubeQueryFromStringWithUsability(rawQuery);
                 qr.usabilityTimeMs = (System.nanoTime() - t0) / 1_000_000.0;
-                Result resultAfter = optimizer.getComputedResult();
-                qr.answeredViaUsability = (resultAfter != null) && (resultAfter != resultBefore);
+                qr.answeredViaUsability = engine.wasLastQueryUsabilityHit();
             } else {
                 long t0 = System.nanoTime();
                 qr.outputFile = engine.answerCubeQueryFromString(rawQuery);
@@ -310,7 +306,6 @@ public class UsabilityExperiments {
         IMainEngine engine = getService();
         engine.initializeConnection("RDBMS", config.toMap());
 
-        UsabilityOptimizer optimizer = UsabilityOptimizer.getInstance();
         List<String> queryStrings = parseQueryFile(queryFile);
         int position = 0;
 
@@ -319,18 +314,15 @@ public class UsabilityExperiments {
             String queryName = extractQueryName(rawQuery, position);
             QueryResult qr = new QueryResult(queryName);
 
-            Result resultBefore = optimizer.getComputedResult();
             long t0 = System.nanoTime();
             qr.outputFile = engine.answerCubeQueryFromStringWithUsability(rawQuery);
             double totalMs = (System.nanoTime() - t0) / 1_000_000.0;
             qr.usabilityTimeMs = totalMs;
-            qr.usabilityCheckTimeMs = optimizer.getLastCheckTimeMs();
-
-            Result resultAfter = optimizer.getComputedResult();
-            qr.answeredViaUsability = (resultAfter != null) && (resultAfter != resultBefore);
+            qr.usabilityCheckTimeMs = engine.getLastUsabilityCheckTimeMs();
+            qr.answeredViaUsability = engine.wasLastQueryUsabilityHit();
 
             if (qr.answeredViaUsability) {
-                qr.usabilityAnswerTimeMs = optimizer.getLastAnswerTimeMs();
+                qr.usabilityAnswerTimeMs = engine.getLastUsabilityAnswerTimeMs();
                 qr.dbExecTimeMs = -1;
             } else {
                 double checkMs = qr.usabilityCheckTimeMs >= 0 ? qr.usabilityCheckTimeMs : 0.0;
@@ -362,8 +354,8 @@ public class UsabilityExperiments {
                 DatasetScale.BASELINE,
                 DatasetScale.SCALE_100K,
                 DatasetScale.SCALE_1M,
-                DatasetScale.SCALE_10M,
-                DatasetScale.SCALE_100M
+             //   DatasetScale.SCALE_10M,
+             //   DatasetScale.SCALE_100M
         };
 
         List<ExperimentReport> results = new ArrayList<>();
@@ -400,8 +392,8 @@ public class UsabilityExperiments {
                 DatasetScale.BASELINE,
                 DatasetScale.SCALE_100K,
                 DatasetScale.SCALE_1M,
-                DatasetScale.SCALE_10M,
-                DatasetScale.SCALE_100M
+            //    DatasetScale.SCALE_10M,
+            //    DatasetScale.SCALE_100M
         };
         File[] queryFiles = {
                 EXP2_QUERY_FILE,

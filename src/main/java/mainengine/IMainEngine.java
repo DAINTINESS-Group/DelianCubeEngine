@@ -100,8 +100,14 @@ public interface IMainEngine extends IServer {
 	 */
 	void initializeConnectionWithIntrMng(String typeOfConnection, HashMap<String, String> userInputList, String historyFolder, 
 			  String expValuesFolder, String expLabelsFolder, String beliefFolder, int k) throws RemoteException;
-	
-	
+
+
+	boolean wasLastQueryUsabilityHit() throws RemoteException;
+
+	double getLastUsabilityCheckTimeMs() throws RemoteException;
+
+	double getLastUsabilityAnswerTimeMs() throws RemoteException;
+
 	/**
 	 * Answers a query as prescribed in a String
 	 * 

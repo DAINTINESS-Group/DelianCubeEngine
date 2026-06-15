@@ -41,11 +41,11 @@ public class UsabilityOptimizer {
         return instance;
     }
 
-    double getLastCheckTimeMs() {
+    public double getLastCheckTimeMs() {
         return lastCheckTimeMs;
     }
 
-     double getLastAnswerTimeMs() {
+     public double getLastAnswerTimeMs() {
         return lastAnswerTimeMs;
     }
 
