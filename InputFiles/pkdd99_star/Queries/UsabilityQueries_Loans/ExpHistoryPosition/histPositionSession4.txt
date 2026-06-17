@@ -1,9 +1,9 @@
 CubeName:loan
-Name: LoanQuery309
+Name: LoanQuery1
 AggrFunc:MAX
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/OK'
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1999'
 @
 
 CubeName:loan
@@ -258,11 +258,11 @@ Sigma:status_dim.status = 'Contract Finished/Loan not Payed',account_dim.distric
 @
 
 CubeName:loan
-Name: LoanQuery657
+Name: LoanQuery12
 AggrFunc:MAX
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/OK'
+Sigma:status_dim.status = 'Contract Finished/No Problems'
 @
 
 CubeName:loan

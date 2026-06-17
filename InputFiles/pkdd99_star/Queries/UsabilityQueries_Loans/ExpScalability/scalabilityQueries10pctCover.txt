@@ -17,11 +17,11 @@ Sigma:status_dim.status = 'Running Contract/OK'
 
 
 CubeName:loan
-Name: LoanQuery63
-AggrFunc:MAX
+Name: LoanQuery3
+AggrFunc:MIN
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
 @
 
 
@@ -29,19 +29,18 @@ CubeName:loan
 Name: LoanQuery4
 AggrFunc:MIN
 Measure:amount
-Gamma:status_dim.status,date_dim.year,account_dim.region
-Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1998',account_dim.region = 'north Bohemia'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
 @
 
 
 CubeName:loan
-Name: LoanQuery379
-AggrFunc:MAX
+Name: LoanQuery5
+AggrFunc:MIN
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Sigma:status_dim.status = 'Running Contract/OK'
 @
-
 
 CubeName:loan
 Name: LoanQuery6
@@ -99,10 +98,10 @@ Sigma:status_dim.status = 'Running Contract/Client in Debt',account_dim.district
 
 CubeName:loan
 Name: LoanQuery12
-AggrFunc:COUNT
+AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.region,date_dim.month
-Sigma:account_dim.region = 'north Moravia',date_dim.year = '1998'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
 @
 
 
@@ -137,7 +136,7 @@ CubeName:loan
 Name: LoanQuery16
 AggrFunc:COUNT
 Measure:amount
-Gamma:account_dim.region,date_dim.year
+Gamma:status_dim.status,date_dim.month
 Sigma:account_dim.region = 'north Moravia',date_dim.year = '1998'
 @
 

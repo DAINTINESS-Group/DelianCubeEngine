@@ -39,21 +39,20 @@ Sigma:account_dim.region = 'south Bohemia',status_dim.status = 'Contract Finishe
 
 
 CubeName:loan
-Name: LoanQuery93
-AggrFunc:MAX
+Name: LoanQuery253
+AggrFunc:SUM
 Measure:amount
 Gamma:date_dim.day
-Sigma:date_dim.month = '1994-06'
+Sigma:date_dim.year = '1999'
 @
 
 
-
 CubeName:loan
-Name: LoanQuery119
+Name: LoanQuery465
 AggrFunc:SUM
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+Gamma:date_dim.month
+Sigma:date_dim.month = '1999-06'
 @
 
 
@@ -166,20 +165,21 @@ Sigma:date_dim.month = '1993-02'
 
 
 CubeName:loan
-Name: LoanQuery118
+Name: LoanQuery254
 AggrFunc:COUNT
 Measure:amount
-Gamma:account_dim.region
-Sigma:account_dim.region = 'central Bohemia'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Other status',account_dim.region = 'south Bohemia'
 @
 
 
 CubeName:loan
-Name: LoanQuery129
+Name: LoanQuery463
 AggrFunc:COUNT
 Measure:amount
-Gamma:account_dim.region
-Sigma:account_dim.region = 'central Bohemia'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Other status'
+
 
 
 

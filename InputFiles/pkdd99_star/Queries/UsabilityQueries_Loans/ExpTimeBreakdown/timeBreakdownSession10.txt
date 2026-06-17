@@ -18,22 +18,22 @@ Sigma:status_dim.status = 'Running Contract/Client in Debt'
 
 
 
+
 CubeName:loan
-Name: LoanQuery795
-AggrFunc:COUNT
+Name: LoanQuery383
+AggrFunc:MAX
 Measure:amount
-Gamma:date_dim.month
-Sigma:date_dim.year = '1994'
+Gamma:date_dim.day
+Sigma:date_dim.year = '1991'
 @
 
 
-
 CubeName:loan
-Name: LoanQuery890
-AggrFunc:COUNT
+Name: LoanQuery538
+AggrFunc:MAX
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/Client in Debt'
+Gamma:date_dim.year
+Sigma:date_dim.year = '1991'
 @
 
 
@@ -119,20 +119,20 @@ Sigma:account_dim.region = 'south Moravia'
 
 
 CubeName:loan
-Name: LoanQuery900
-AggrFunc:MAX
+Name: LoanQuery78
+AggrFunc:SUM
 Measure:amount
-Gamma:date_dim.month,account_dim.district_name
-Sigma:account_dim.region = 'south Moravia'
+Gamma:date_dim.day
+Sigma:date_dim.year = '1995'
 @
 
 
 CubeName:loan
-Name: LoanQuery901
+Name: LoanQuery579
 AggrFunc:SUM
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/Client in Debt'
+Gamma:date_dim.month
+Sigma:date_dim.month = '1995-06'
 @
 
 

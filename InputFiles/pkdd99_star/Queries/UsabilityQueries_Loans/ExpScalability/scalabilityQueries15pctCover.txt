@@ -17,29 +17,29 @@ Sigma:status_dim.status = 'Running Contract/OK'
 
 
 CubeName:loan
-Name: LoanQuery63
-AggrFunc:MAX
+Name: LoanQuery3
+AggrFunc:MIN
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
 @
 
 
 CubeName:loan
-Name: LoanQuery240
-AggrFunc:MAX
+Name: LoanQuery4
+AggrFunc:MIN
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/Client in Debt',date_dim.year = '1998',account_dim.region = 'south Moravia'
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
 @
 
 
 CubeName:loan
-Name: LoanQuery379
-AggrFunc:MAX
+Name: LoanQuery5
+AggrFunc:MIN
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Sigma:status_dim.status = 'Running Contract/OK'
 @
 
 
@@ -116,11 +116,11 @@ Sigma:account_dim.region = 'north Moravia',status_dim.status = 'Contract Finishe
 
 
 CubeName:loan
-Name: LoanQuery365
-AggrFunc:MAX
+Name: LoanQuery14
+AggrFunc:SUM
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Running Contract/Client in Debt'
+Gamma:status_dim.status,date_dim.month
+Sigma:status_dim.status = 'Running Contract/OK',account_dim.district_name = 'Sumperk'
 @
 
 
@@ -161,17 +161,17 @@ Sigma:status_dim.status = 'Contract Finished/No Problems'
 
 
 CubeName:loan
-Name: LoanQuery19
+Name: LoanQuery56
 AggrFunc:MIN
 Measure:amount
-Gamma:date_dim.month,status_dim.status,account_dim.district_name
-Sigma:date_dim.month = '1999-08',status_dim.status = 'Running Contract/OK',account_dim.region = 'west Bohemia'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt',date_dim.year = '1997'
 @
 
 
 CubeName:loan
-Name: LoanQuery20
-AggrFunc:SUM
+Name: LoanQuery89
+AggrFunc:MIN
 Measure:amount
-Gamma:date_dim.day
-Sigma:status_dim.status = 'Other status'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'

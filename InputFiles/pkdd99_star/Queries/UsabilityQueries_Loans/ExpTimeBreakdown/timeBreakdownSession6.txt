@@ -44,41 +44,42 @@ Sigma:status_dim.status = 'Running Contract/Client in Debt'
 @
 
 
-CubeName:loan
-Name: LoanQuery366
-AggrFunc:MIN
-Measure:amount
-Gamma:date_dim.day,status_dim.status
-Sigma:status_dim.status = 'Running Contract/OK',account_dim.district_name = 'Teplice',date_dim.month = '1994-01'
-@
-
-
 
 CubeName:loan
-Name: LoanQuery377
-AggrFunc:SUM
+Name: LoanQuery331
+AggrFunc:COUNT
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'south Bohemia'
 @
 
 
 CubeName:loan
-Name: LoanQuery378
-AggrFunc:SUM
+Name: LoanQuery467
+AggrFunc:COUNT
 Measure:amount
-Gamma:status_dim.status
-Sigma:account_dim.region = 'east Bohemia',date_dim.year = '1993'
+Gamma:account_dim.district_name
+Sigma:account_dim.district_name = 'Tabor'
 @
 
 
 CubeName:loan
-Name: LoanQuery379
+Name: LoanQuery436
 AggrFunc:MAX
 Measure:amount
 Gamma:status_dim.status
-Sigma:status_dim.status = 'Other status'
+Sigma:account_dim.region = 'Prague',status_dim.status = 'Running Contract/Client in Debt'
 @
+
+
+CubeName:loan
+Name: LoanQuery493
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/Client in Debt'
+@
+
 
 
 CubeName:loan

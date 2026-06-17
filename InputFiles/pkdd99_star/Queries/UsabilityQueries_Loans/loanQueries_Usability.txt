@@ -1,14 +1,14 @@
 CubeName:loan
-Name: LoanQuery204
-AggrFunc:MAX
+Name: LoanQuery138
+AggrFunc:SUM
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1999'
+Gamma:date_dim.day
+Sigma:account_dim.region = 'north Moravia',date_dim.year = '1993'
 @
 CubeName:loan
-Name: LoanQuery225
-AggrFunc:MAX
+Name: LoanQuery398
+AggrFunc:SUM
 Measure:amount
-Gamma:status_dim.status
-Sigma:status_dim.status = 'Contract Finished/No Problems'
+Gamma:date_dim.month
+Sigma:date_dim.year = '1993'
 
