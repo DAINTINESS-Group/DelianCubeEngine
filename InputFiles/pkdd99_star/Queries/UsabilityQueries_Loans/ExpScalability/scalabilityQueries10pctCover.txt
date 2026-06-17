@@ -101,7 +101,7 @@ CubeName:loan
 Name: LoanQuery12
 AggrFunc:COUNT
 Measure:amount
-Gamma:status_dim.status,date_dim.month
+Gamma:account_dim.region,date_dim.month
 Sigma:account_dim.region = 'north Moravia',date_dim.year = '1998'
 @
 
@@ -137,7 +137,7 @@ CubeName:loan
 Name: LoanQuery16
 AggrFunc:COUNT
 Measure:amount
-Gamma:status_dim.status,date_dim.year
+Gamma:account_dim.region,date_dim.year
 Sigma:account_dim.region = 'north Moravia',date_dim.year = '1998'
 @
 
