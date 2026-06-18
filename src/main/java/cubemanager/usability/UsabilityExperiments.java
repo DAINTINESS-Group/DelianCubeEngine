@@ -36,7 +36,7 @@ public class UsabilityExperiments {
 
     /** EXP-2 Scalability query file for the baseline pkdd99_star dataset (20 queries). */
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries.txt");
-    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries30pctCover.txt");
+    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries20pctCover.txt");
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries15pctCover.txt");
 
 
