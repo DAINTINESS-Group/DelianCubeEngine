@@ -1018,22 +1018,22 @@ public class UsabilityExperiments {
         List<List<String>> extraBlocks = new ArrayList<>();
 
         //EXP-1: loanQueries_Usability.txt – all five scales
-        runExp1_LoanUsabilityFile(allReports);
+        //runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
         runExp2_Scalability(allReports);
 
         //EXP-3: Time Breakdown – 10 sessions × 20 queries (pkdd99_star_1M)
-        runExp3_TimeBreakdown(allReports, extraBlocks);
+        //runExp3_TimeBreakdown(allReports, extraBlocks);
 
         //EXP-4: Usability Coverage – 10 sessions × 20 queries (pkdd99_star_1M)
-        runExp4_UsabilityCoverage(allReports);
+        //runExp4_UsabilityCoverage(allReports);
 
         //EXP-5: Query History Size – 5 sessions × 50 queries (pkdd99_star_1M)
-        runExp5_QueryHistorySize(allReports);
+        //runExp5_QueryHistorySize(allReports);
 
         //EXP-6: Position of Usability Query – 6 sessions × 50 queries (pkdd99_star_1M)
-        runExp6_QueryPosition(allReports);
+        //runExp6_QueryPosition(allReports);
 
         //Persist all results
         String savedPath = printAndSaveResults(allReports, extraBlocks);
