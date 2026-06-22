@@ -7,20 +7,20 @@ Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_d
 @
 
 CubeName:loan
-Name: LoanQuery6
-AggrFunc:SUM
+Name: LoanQuery264
+AggrFunc:MIN
 Measure:amount
-Gamma:account_dim.region,status_dim.status
-Sigma:account_dim.region = 'south Bohemia',status_dim.status = 'Contract Finished/No Problems'
+Gamma:date_dim.month
+Sigma:date_dim.year = '1997',account_dim.district_name = 'Hradec Kralove'
+@
+CubeName:loan
+Name: LoanQuery775
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1997-08'
 @
 
-CubeName:loan
-Name: LoanQuery7
-AggrFunc:MAX
-Measure:amount
-Gamma:status_dim.status,account_dim.district_name,date_dim.month
-Sigma:status_dim.status = 'Contract Finished/Loan not Payed',account_dim.district_name = 'Pisek',date_dim.month = '1994-11'
-@
 
 CubeName:loan
 Name: LoanQuery204
