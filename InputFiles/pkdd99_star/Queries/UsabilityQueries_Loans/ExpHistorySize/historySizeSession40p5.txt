@@ -272,20 +272,20 @@ Sigma:account_dim.district_name = 'Tabor'
 @
 
 CubeName:loan
-Name: LoanQuery980
-AggrFunc:COUNT
-Measure:amount
-Gamma:status_dim.status,date_dim.month,account_dim.region
-Sigma:date_dim.year = '1996',account_dim.region = 'north Moravia',status_dim.status = 'Contract Finished/No Problems'
-@
-
-CubeName:loan
-Name: LoanQuery982
+Name: LoanQuery812
 AggrFunc:MAX
 Measure:amount
-Gamma:account_dim.region,status_dim.status,date_dim.day
-Sigma:account_dim.region = 'east Bohemia',date_dim.year = '1994'
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems',account_dim.district_name = 'Znojmo',date_dim.year = '1999'
 @
+CubeName:loan
+Name: LoanQuery995
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
+@
+
 
 
 CubeName:loan

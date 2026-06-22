@@ -1126,9 +1126,9 @@ public class UsabilityExperiments {
         runExp5_QueryHistorySize(allReports);
 
         //EXP-6: Position of Usability Query – 6 sessions × 50 queries (pkdd99_star_1M)
-        runExp6_QueryPosition(allReports);
+        //runExp6_QueryPosition(allReports);
 
-        runExp7_BatchedHistory(allReports);
+        //runExp7_BatchedHistory(allReports);
 
         //Persist all results
         String savedPath = printAndSaveResults(allReports, extraBlocks);

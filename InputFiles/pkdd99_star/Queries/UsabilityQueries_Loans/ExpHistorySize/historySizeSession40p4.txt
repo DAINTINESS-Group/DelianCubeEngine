@@ -257,34 +257,37 @@ Sigma:date_dim.month = '1999-06'
 
 
 CubeName:loan
-Name: LoanQuery331
-AggrFunc:COUNT
+Name: LoanQuery322
+AggrFunc:MIN
 Measure:amount
-Gamma:account_dim.district_name
-Sigma:account_dim.region = 'south Bohemia'
+Gamma:date_dim.month
+Sigma:date_dim.year = '1998'
 @
 CubeName:loan
-Name: LoanQuery467
-AggrFunc:COUNT
+Name: LoanQuery825
+AggrFunc:MIN
 Measure:amount
-Gamma:account_dim.district_name
-Sigma:account_dim.district_name = 'Tabor'
+Gamma:date_dim.year
+Sigma:date_dim.year = '1998'
 @
 
+
 CubeName:loan
-Name: LoanQuery543
-AggrFunc:MAX
+Name: LoanQuery822
+AggrFunc:MIN
 Measure:amount
-Gamma:account_dim.district_name
-Sigma:account_dim.region = 'south Bohemia'
+Gamma:status_dim.status,account_dim.district_name
+Sigma:account_dim.region = 'central Bohemia',status_dim.status = 'Running Contract/OK'
 @
 CubeName:loan
-Name: LoanQuery595
-AggrFunc:MAX
+Name: LoanQuery827
+AggrFunc:MIN
 Measure:amount
-Gamma:account_dim.region
-Sigma:account_dim.region = 'south Bohemia'
+Gamma:status_dim.status,account_dim.region
+Sigma:status_dim.status = 'Running Contract/OK',account_dim.region = 'central Bohemia'
 @
+
+
 
 
 CubeName:loan
