@@ -607,7 +607,7 @@ public class UsabilityExperiments {
         System.out.println("EXP-5: Query History Size – 5 sessions × 50 queries (pkdd99_star_1M)");
         System.out.println(repeatChar('=', 80));
 
-        DatasetScale scale = DatasetScale.SCALE_10M;
+        DatasetScale scale = DatasetScale.SCALE_1M;
         if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
@@ -685,7 +685,7 @@ public class UsabilityExperiments {
         System.out.println("EXP-6: Position of Usability Query – 6 sessions × 50 queries (pkdd99_star_1M)");
         System.out.println(repeatChar('=', 80));
 
-        DatasetScale scale = DatasetScale.SCALE_1M;
+        DatasetScale scale = DatasetScale.SCALE_10M;
         if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
