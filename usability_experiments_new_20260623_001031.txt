@@ -1,0 +1,461 @@
+================================================================================
+NEW USABILITY EXPERIMENTS  –  20260623_001031
+Datasets : pkdd99_star | pkdd99_star_100K | pkdd99_star_1M | pkdd99_star_10M | pkdd99_star_100M
+Cube     : loan
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=10  Coverage=10% – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p1.txt
+History Size              : 10
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 10
+Usability hits         : 0  (0,0%)
+Total direct time      : 10939,46 ms  (avg 1093,95 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     492,74            N/A         no        10%      N/A
+LoanQuery488                                    68,88            N/A         no        10%      N/A
+LoanQuery489                                    73,25            N/A         no        10%      N/A
+LoanQuery27                                   1106,55            N/A         no        10%      N/A
+LoanQuery56                                   1435,15            N/A         no        10%      N/A
+LoanQuery89                                   1051,49            N/A         no        10%      N/A
+LoanQuery86                                   1171,80            N/A         no        10%      N/A
+LoanQuery105                                  1009,23            N/A         no        10%      N/A
+LoanQuery78                                   2220,75            N/A         no        10%      N/A
+LoanQuery581                                  2309,63            N/A         no        10%      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=10  Coverage=10% – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p1.txt
+History Size              : 10
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 10
+Usability hits         : 4  (40,0%)
+Total direct time      : 10939,46 ms  (avg 1093,95 ms/query)
+Total usability time   : 6017,18 ms  (avg 601,72 ms/query)
+Overall speed-up       : 1,82x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     492,74         417,54         no        10%    1,18x
+LoanQuery488                                    68,88          87,69         no        10%    0,79x
+LoanQuery489                                    73,25          50,12         no        10%    1,46x
+LoanQuery27                                   1106,55           1,56        YES        10%  710,69x
+LoanQuery56                                   1435,15        1534,58         no        10%    0,94x
+LoanQuery89                                   1051,49           1,25        YES        10%  838,11x
+LoanQuery86                                   1171,80        1518,97         no        10%    0,77x
+LoanQuery105                                  1009,23           1,91        YES        10%  529,22x
+LoanQuery78                                   2220,75        2346,45         no        10%    0,95x
+LoanQuery581                                  2309,63          57,12        YES        10%   40,44x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=20  Coverage=10% – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p2.txt
+History Size              : 20
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 20
+Usability hits         : 0  (0,0%)
+Total direct time      : 18289,49 ms  (avg 914,47 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     484,41            N/A         no        10%      N/A
+LoanQuery78                                   2294,89            N/A         no        10%      N/A
+LoanQuery581                                  2194,35            N/A         no        10%      N/A
+LoanQuery204                                  1355,48            N/A         no        10%      N/A
+LoanQuery225                                  1079,06            N/A         no        10%      N/A
+LoanQuery196                                    15,30            N/A         no        10%      N/A
+LoanQuery255                                     2,14            N/A         no        10%      N/A
+LoanQuery489                                    55,58            N/A         no        10%      N/A
+LoanQuery490                                  1018,91            N/A         no        10%      N/A
+LoanQuery27                                    971,56            N/A         no        10%      N/A
+LoanQuery56                                   1475,98            N/A         no        10%      N/A
+LoanQuery16                                   1645,28            N/A         no        10%      N/A
+LoanQuery270                                    64,90            N/A         no        10%      N/A
+LoanQuery288                                  1041,61            N/A         no        10%      N/A
+LoanQuery160                                    40,42            N/A         no        10%      N/A
+LoanQuery309                                  1028,91            N/A         no        10%      N/A
+LoanQuery86                                   1431,97            N/A         no        10%      N/A
+LoanQuery105                                   957,81            N/A         no        10%      N/A
+LoanQuery22                                     64,38            N/A         no        10%      N/A
+LoanQuery200                                  1066,56            N/A         no        10%      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=20  Coverage=10% – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p2.txt
+History Size              : 20
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 20
+Usability hits         : 8  (40,0%)
+Total direct time      : 18289,49 ms  (avg 914,47 ms/query)
+Total usability time   : 10336,19 ms  (avg 516,81 ms/query)
+Overall speed-up       : 1,77x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     484,41         452,80         no        10%    1,07x
+LoanQuery78                                   2294,89        2201,22         no        10%    1,04x
+LoanQuery581                                  2194,35          69,01        YES        10%   31,80x
+LoanQuery204                                  1355,48        1421,46         no        10%    0,95x
+LoanQuery225                                  1079,06           0,88        YES        10% 1219,69x
+LoanQuery196                                    15,30           1,52         no        10%   10,07x
+LoanQuery255                                     2,14          53,55        YES        10%    0,04x
+LoanQuery489                                    55,58          67,29         no        10%    0,83x
+LoanQuery490                                  1018,91        1070,15         no        10%    0,95x
+LoanQuery27                                    971,56           1,10        YES        10%  885,24x
+LoanQuery56                                   1475,98        1494,37         no        10%    0,99x
+LoanQuery16                                   1645,28        1765,47         no        10%    0,93x
+LoanQuery270                                    64,90          57,19         no        10%    1,13x
+LoanQuery288                                  1041,61           0,93        YES        10% 1117,85x
+LoanQuery160                                    40,42          46,93         no        10%    0,86x
+LoanQuery309                                  1028,91           1,05        YES        10%  976,57x
+LoanQuery86                                   1431,97        1561,50         no        10%    0,92x
+LoanQuery105                                   957,81           0,93        YES        10% 1028,36x
+LoanQuery22                                     64,38          67,78         no        10%    0,95x
+LoanQuery200                                  1066,56           1,05        YES        10% 1018,29x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=30  Coverage=10% – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p3.txt
+History Size              : 30
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 30
+Usability hits         : 0  (0,0%)
+Total direct time      : 23967,87 ms  (avg 798,93 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     513,90            N/A         no        10%      N/A
+LoanQuery6                                     398,67            N/A         no        10%      N/A
+LoanQuery7                                      71,70            N/A         no        10%      N/A
+LoanQuery204                                  1421,83            N/A         no        10%      N/A
+LoanQuery225                                  1094,06            N/A         no        10%      N/A
+LoanQuery196                                     1,65            N/A         no        10%      N/A
+LoanQuery255                                     1,44            N/A         no        10%      N/A
+LoanQuery489                                    70,27            N/A         no        10%      N/A
+LoanQuery490                                  1066,66            N/A         no        10%      N/A
+LoanQuery27                                   1089,73            N/A         no        10%      N/A
+LoanQuery56                                   1487,99            N/A         no        10%      N/A
+LoanQuery16                                   1713,26            N/A         no        10%      N/A
+LoanQuery270                                    67,73            N/A         no        10%      N/A
+LoanQuery288                                   997,61            N/A         no        10%      N/A
+LoanQuery160                                    57,05            N/A         no        10%      N/A
+LoanQuery309                                  1010,89            N/A         no        10%      N/A
+LoanQuery86                                   1388,79            N/A         no        10%      N/A
+LoanQuery105                                   995,95            N/A         no        10%      N/A
+LoanQuery22                                     61,16            N/A         no        10%      N/A
+LoanQuery200                                  1016,45            N/A         no        10%      N/A
+LoanQuery212                                   470,08            N/A         no        10%      N/A
+LoanQuery333                                  1111,50            N/A         no        10%      N/A
+LoanQuery240                                  1032,94            N/A         no        10%      N/A
+LoanQuery365                                  1048,98            N/A         no        10%      N/A
+LoanQuery580                                   730,72            N/A         no        10%      N/A
+LoanQuery587                                   990,36            N/A         no        10%      N/A
+LoanQuery138                                  1305,80            N/A         no        10%      N/A
+LoanQuery398                                  2307,25            N/A         no        10%      N/A
+LoanQuery254                                   441,64            N/A         no        10%      N/A
+LoanQuery463                                     1,81            N/A         no        10%      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=30  Coverage=10% – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p3.txt
+History Size              : 30
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 30
+Usability hits         : 12  (40,0%)
+Total direct time      : 23967,87 ms  (avg 798,93 ms/query)
+Total usability time   : 12568,86 ms  (avg 418,96 ms/query)
+Overall speed-up       : 1,91x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     513,90         442,94         no        10%    1,16x
+LoanQuery6                                     398,67         446,04         no        10%    0,89x
+LoanQuery7                                      71,70          65,77         no        10%    1,09x
+LoanQuery204                                  1421,83        1638,23         no        10%    0,87x
+LoanQuery225                                  1094,06           0,98        YES        10% 1115,82x
+LoanQuery196                                     1,65           1,49         no        10%    1,10x
+LoanQuery255                                     1,44          41,54        YES        10%    0,03x
+LoanQuery489                                    70,27          65,30         no        10%    1,08x
+LoanQuery490                                  1066,66         945,62         no        10%    1,13x
+LoanQuery27                                   1089,73           0,81        YES        10% 1347,50x
+LoanQuery56                                   1487,99        1425,37         no        10%    1,04x
+LoanQuery16                                   1713,26        1681,34         no        10%    1,02x
+LoanQuery270                                    67,73          54,24         no        10%    1,25x
+LoanQuery288                                   997,61           0,77        YES        10% 1300,83x
+LoanQuery160                                    57,05          55,87         no        10%    1,02x
+LoanQuery309                                  1010,89           0,83        YES        10% 1218,67x
+LoanQuery86                                   1388,79        1569,99         no        10%    0,88x
+LoanQuery105                                   995,95           1,12        YES        10%  891,71x
+LoanQuery22                                     61,16          63,90         no        10%    0,96x
+LoanQuery200                                  1016,45           0,92        YES        10% 1100,30x
+LoanQuery212                                   470,08         479,99         no        10%    0,98x
+LoanQuery333                                  1111,50           0,87        YES        10% 1274,07x
+LoanQuery240                                  1032,94        1001,19         no        10%    1,03x
+LoanQuery365                                  1048,98           1,14        YES        10%  918,78x
+LoanQuery580                                   730,72         700,87         no        10%    1,04x
+LoanQuery587                                   990,36           0,80        YES        10% 1239,19x
+LoanQuery138                                  1305,80        1349,89         no        10%    0,97x
+LoanQuery398                                  2307,25          89,47        YES        10%   25,79x
+LoanQuery254                                   441,64         440,76         no        10%    1,00x
+LoanQuery463                                     1,81           0,80        YES        10%    2,25x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=40  Coverage=10% – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p4.txt
+History Size              : 40
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 40
+Usability hits         : 0  (0,0%)
+Total direct time      : 35586,51 ms  (avg 889,66 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     477,38            N/A         no        10%      N/A
+LoanQuery6                                     443,69            N/A         no        10%      N/A
+LoanQuery7                                      71,70            N/A         no        10%      N/A
+LoanQuery204                                  1529,95            N/A         no        10%      N/A
+LoanQuery225                                  1041,66            N/A         no        10%      N/A
+LoanQuery196                                     1,55            N/A         no        10%      N/A
+LoanQuery255                                     1,71            N/A         no        10%      N/A
+LoanQuery489                                    73,70            N/A         no        10%      N/A
+LoanQuery490                                  1024,35            N/A         no        10%      N/A
+LoanQuery27                                   1072,52            N/A         no        10%      N/A
+LoanQuery56                                   1522,54            N/A         no        10%      N/A
+LoanQuery16                                   1750,02            N/A         no        10%      N/A
+LoanQuery270                                    80,85            N/A         no        10%      N/A
+LoanQuery288                                  1001,11            N/A         no        10%      N/A
+LoanQuery160                                    47,19            N/A         no        10%      N/A
+LoanQuery309                                  1120,70            N/A         no        10%      N/A
+LoanQuery86                                   1507,12            N/A         no        10%      N/A
+LoanQuery105                                   938,95            N/A         no        10%      N/A
+LoanQuery22                                     66,99            N/A         no        10%      N/A
+LoanQuery200                                   943,36            N/A         no        10%      N/A
+LoanQuery212                                   469,86            N/A         no        10%      N/A
+LoanQuery333                                  1097,82            N/A         no        10%      N/A
+LoanQuery240                                  1047,90            N/A         no        10%      N/A
+LoanQuery365                                  1059,79            N/A         no        10%      N/A
+LoanQuery966                                  1035,58            N/A         no        10%      N/A
+LoanQuery967                                  1501,80            N/A         no        10%      N/A
+LoanQuery138                                  1292,62            N/A         no        10%      N/A
+LoanQuery398                                  2552,37            N/A         no        10%      N/A
+LoanQuery254                                   437,24            N/A         no        10%      N/A
+LoanQuery463                                     1,61            N/A         no        10%      N/A
+LoanQuery253                                  2339,38            N/A         no        10%      N/A
+LoanQuery465                                  2015,43            N/A         no        10%      N/A
+LoanQuery331                                   445,13            N/A         no        10%      N/A
+LoanQuery467                                    51,20            N/A         no        10%      N/A
+LoanQuery543                                   501,07            N/A         no        10%      N/A
+LoanQuery595                                   440,88            N/A         no        10%      N/A
+LoanQuery436                                   630,20            N/A         no        10%      N/A
+LoanQuery493                                  1045,03            N/A         no        10%      N/A
+LoanQuery206                                   958,25            N/A         no        10%      N/A
+LoanQuery495                                  1946,30            N/A         no        10%      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=40  Coverage=10% – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p4.txt
+History Size              : 40
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 40
+Usability hits         : 16  (40,0%)
+Total direct time      : 35586,51 ms  (avg 889,66 ms/query)
+Total usability time   : 18290,75 ms  (avg 457,27 ms/query)
+Overall speed-up       : 1,95x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     477,38         414,64         no        10%    1,15x
+LoanQuery6                                     443,69         341,69         no        10%    1,30x
+LoanQuery7                                      71,70          53,20         no        10%    1,35x
+LoanQuery204                                  1529,95        1176,87         no        10%    1,30x
+LoanQuery225                                  1041,66           0,80        YES        10% 1296,08x
+LoanQuery196                                     1,55           1,80         no        10%    0,86x
+LoanQuery255                                     1,71          38,36        YES        10%    0,04x
+LoanQuery489                                    73,70          62,72         no        10%    1,18x
+LoanQuery490                                  1024,35         932,78         no        10%    1,10x
+LoanQuery27                                   1072,52           1,01        YES        10% 1066,76x
+LoanQuery56                                   1522,54        1499,04         no        10%    1,02x
+LoanQuery16                                   1750,02        1598,30         no        10%    1,09x
+LoanQuery270                                    80,85          54,16         no        10%    1,49x
+LoanQuery288                                  1001,11           1,03        YES        10%  969,41x
+LoanQuery160                                    47,19          49,74         no        10%    0,95x
+LoanQuery309                                  1120,70           1,02        YES        10% 1100,78x
+LoanQuery86                                   1507,12        1391,32         no        10%    1,08x
+LoanQuery105                                   938,95           0,76        YES        10% 1240,69x
+LoanQuery22                                     66,99          69,35         no        10%    0,97x
+LoanQuery200                                   943,36           0,80        YES        10% 1182,16x
+LoanQuery212                                   469,86         503,14         no        10%    0,93x
+LoanQuery333                                  1097,82           0,87        YES        10% 1264,33x
+LoanQuery240                                  1047,90        1022,41         no        10%    1,02x
+LoanQuery365                                  1059,79           1,43        YES        10%  739,35x
+LoanQuery966                                  1035,58        1069,44         no        10%    0,97x
+LoanQuery967                                  1501,80        1436,92         no        10%    1,05x
+LoanQuery138                                  1292,62        1395,94         no        10%    0,93x
+LoanQuery398                                  2552,37          99,37        YES        10%   25,69x
+LoanQuery254                                   437,24         426,44         no        10%    1,03x
+LoanQuery463                                     1,61           0,82        YES        10%    1,97x
+LoanQuery253                                  2339,38        2137,66         no        10%    1,09x
+LoanQuery465                                  2015,43          32,59        YES        10%   61,83x
+LoanQuery331                                   445,13         482,16         no        10%    0,92x
+LoanQuery467                                    51,20           5,50        YES        10%    9,31x
+LoanQuery543                                   501,07         501,33         no        10%    1,00x
+LoanQuery595                                   440,88          13,75        YES        10%   32,07x
+LoanQuery436                                   630,20         537,92         no        10%    1,17x
+LoanQuery493                                  1045,03           0,77        YES        10% 1363,37x
+LoanQuery206                                   958,25         880,48         no        10%    1,09x
+LoanQuery495                                  1946,30          52,43        YES        10%   37,12x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=50  Coverage=10% – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p5.txt
+History Size              : 50
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 50
+Usability hits         : 0  (0,0%)
+Total direct time      : 52763,86 ms  (avg 1055,28 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     478,68            N/A         no        10%      N/A
+LoanQuery6                                     408,81            N/A         no        10%      N/A
+LoanQuery7                                      56,36            N/A         no        10%      N/A
+LoanQuery204                                  1409,08            N/A         no        10%      N/A
+LoanQuery225                                   851,68            N/A         no        10%      N/A
+LoanQuery196                                     2,07            N/A         no        10%      N/A
+LoanQuery255                                     1,83            N/A         no        10%      N/A
+LoanQuery489                                    41,13            N/A         no        10%      N/A
+LoanQuery490                                  1015,29            N/A         no        10%      N/A
+LoanQuery27                                    892,29            N/A         no        10%      N/A
+LoanQuery56                                   1617,57            N/A         no        10%      N/A
+LoanQuery16                                   1694,07            N/A         no        10%      N/A
+LoanQuery270                                    61,61            N/A         no        10%      N/A
+LoanQuery288                                   980,79            N/A         no        10%      N/A
+LoanQuery160                                    49,81            N/A         no        10%      N/A
+LoanQuery309                                  1047,80            N/A         no        10%      N/A
+LoanQuery86                                   1474,55            N/A         no        10%      N/A
+LoanQuery105                                  1049,66            N/A         no        10%      N/A
+LoanQuery22                                     57,07            N/A         no        10%      N/A
+LoanQuery200                                  1088,90            N/A         no        10%      N/A
+LoanQuery212                                   456,63            N/A         no        10%      N/A
+LoanQuery333                                   783,93            N/A         no        10%      N/A
+LoanQuery240                                  1042,57            N/A         no        10%      N/A
+LoanQuery365                                   963,41            N/A         no        10%      N/A
+LoanQuery966                                   989,13            N/A         no        10%      N/A
+LoanQuery967                                  1513,48            N/A         no        10%      N/A
+LoanQuery138                                  1306,15            N/A         no        10%      N/A
+LoanQuery398                                  2259,24            N/A         no        10%      N/A
+LoanQuery254                                   425,50            N/A         no        10%      N/A
+LoanQuery463                                     1,39            N/A         no        10%      N/A
+LoanQuery253                                  1929,57            N/A         no        10%      N/A
+LoanQuery465                                  2018,93            N/A         no        10%      N/A
+LoanQuery331                                   427,21            N/A         no        10%      N/A
+LoanQuery467                                    52,88            N/A         no        10%      N/A
+LoanQuery980                                  1125,58            N/A         no        10%      N/A
+LoanQuery982                                  1147,75            N/A         no        10%      N/A
+LoanQuery436                                   636,58            N/A         no        10%      N/A
+LoanQuery493                                  1123,44            N/A         no        10%      N/A
+LoanQuery206                                   960,69            N/A         no        10%      N/A
+LoanQuery495                                  1943,04            N/A         no        10%      N/A
+LoanQuery368                                  1062,54            N/A         no        10%      N/A
+LoanQuery515                                  1521,22            N/A         no        10%      N/A
+LoanQuery383                                  1966,50            N/A         no        10%      N/A
+LoanQuery538                                  1796,16            N/A         no        10%      N/A
+LoanQuery994                                   510,67            N/A         no        10%      N/A
+LoanQuery996                                  1565,07            N/A         no        10%      N/A
+LoanQuery78                                   2354,81            N/A         no        10%      N/A
+LoanQuery579                                  2061,33            N/A         no        10%      N/A
+LoanQuery78                                   2287,52            N/A         no        10%      N/A
+LoanQuery581                                  2251,91            N/A         no        10%      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-5 [pkdd99_star_1M][loan]  HistSize=50  Coverage=10% – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpHistorySize\historySizeSession40p5.txt
+History Size              : 50
+Usability Coverage        : 10%
+--------------------------------------------------------------------------------
+Total queries          : 50
+Usability hits         : 20  (40,0%)
+Total direct time      : 52763,86 ms  (avg 1055,28 ms/query)
+Total usability time   : 28367,70 ms  (avg 567,35 ms/query)
+Overall speed-up       : 1,86x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  Coverage% Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery2                                     478,68         534,53         no        10%    0,90x
+LoanQuery6                                     408,81         442,84         no        10%    0,92x
+LoanQuery7                                      56,36          67,46         no        10%    0,84x
+LoanQuery204                                  1409,08        1497,96         no        10%    0,94x
+LoanQuery225                                   851,68           0,98        YES        10%  872,90x
+LoanQuery196                                     2,07           1,86         no        10%    1,11x
+LoanQuery255                                     1,83          35,37        YES        10%    0,05x
+LoanQuery489                                    41,13          49,21         no        10%    0,84x
+LoanQuery490                                  1015,29         985,17         no        10%    1,03x
+LoanQuery27                                    892,29           1,44        YES        10%  619,26x
+LoanQuery56                                   1617,57        1459,06         no        10%    1,11x
+LoanQuery16                                   1694,07        1582,62         no        10%    1,07x
+LoanQuery270                                    61,61          52,67         no        10%    1,17x
+LoanQuery288                                   980,79           1,35        YES        10%  728,51x
+LoanQuery160                                    49,81          45,92         no        10%    1,08x
+LoanQuery309                                  1047,80           0,91        YES        10% 1155,50x
+LoanQuery86                                   1474,55        1468,81         no        10%    1,00x
+LoanQuery105                                  1049,66           1,07        YES        10%  978,34x
+LoanQuery22                                     57,07          52,46         no        10%    1,09x
+LoanQuery200                                  1088,90           0,90        YES        10% 1212,58x
+LoanQuery212                                   456,63         500,42         no        10%    0,91x
+LoanQuery333                                   783,93           0,76        YES        10% 1031,08x
+LoanQuery240                                  1042,57        1048,32         no        10%    0,99x
+LoanQuery365                                   963,41           0,79        YES        10% 1224,15x
+LoanQuery966                                   989,13        1073,29         no        10%    0,92x
+LoanQuery967                                  1513,48        1623,08         no        10%    0,93x
+LoanQuery138                                  1306,15        1340,19         no        10%    0,97x
+LoanQuery398                                  2259,24          37,28        YES        10%   60,60x
+LoanQuery254                                   425,50         421,47         no        10%    1,01x
+LoanQuery463                                     1,39           1,46        YES        10%    0,96x
+LoanQuery253                                  1929,57        2045,85         no        10%    0,94x
+LoanQuery465                                  2018,93          38,23        YES        10%   52,81x
+LoanQuery331                                   427,21         486,81         no        10%    0,88x
+LoanQuery467                                    52,88           3,99        YES        10%   13,27x
+LoanQuery980                                  1125,58        1019,80         no        10%    1,10x
+LoanQuery982                                  1147,75        1143,66         no        10%    1,00x
+LoanQuery436                                   636,58         702,83         no        10%    0,91x
+LoanQuery493                                  1123,44           0,82        YES        10% 1377,10x
+LoanQuery206                                   960,69         894,62         no        10%    1,07x
+LoanQuery495                                  1943,04          68,36        YES        10%   28,42x
+LoanQuery368                                  1062,54        1045,64         no        10%    1,02x
+LoanQuery515                                  1521,22          57,51        YES        10%   26,45x
+LoanQuery383                                  1966,50        2118,10         no        10%    0,93x
+LoanQuery538                                  1796,16          38,32        YES        10%   46,87x
+LoanQuery994                                   510,67         544,52         no        10%    0,94x
+LoanQuery996                                  1565,07        1521,00         no        10%    1,03x
+LoanQuery78                                   2354,81        2185,79         no        10%    1,08x
+LoanQuery579                                  2061,33          43,32        YES        10%   47,59x
+LoanQuery78                                   2287,52          37,16        YES        10%   61,55x
+LoanQuery581                                  2251,91          41,74        YES        10%   53,95x
+================================================================================
+

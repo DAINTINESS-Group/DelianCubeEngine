@@ -1,0 +1,751 @@
+================================================================================
+NEW USABILITY EXPERIMENTS  –  20260623_010418
+Datasets : pkdd99_star | pkdd99_star_100K | pkdd99_star_1M | pkdd99_star_10M | pkdd99_star_100M
+Cube     : loan
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=20 queries – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 20
+--------------------------------------------------------------------------------
+Total queries          : 20
+Usability hits         : 0  (0,0%)
+Total direct time      : 25514,41 ms  (avg 1275,72 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  3175,29            N/A         no         20      N/A
+LoanQuery997                                   990,34            N/A         no         20      N/A
+LoanQuery998                                  8618,13            N/A         no         20      N/A
+LoanQuery999                                   110,79            N/A         no         20      N/A
+LoanQuery2                                     635,50            N/A         no         20      N/A
+LoanQuery56                                   1540,87            N/A         no         20      N/A
+LoanQuery86                                   1498,04            N/A         no         20      N/A
+LoanQuery22                                     60,22            N/A         no         20      N/A
+LoanQuery204                                  1416,56            N/A         no         20      N/A
+LoanQuery994                                   529,02            N/A         no         20      N/A
+LoanQuery27                                   1013,96            N/A         no         20      N/A
+LoanQuery89                                   1082,68            N/A         no         20      N/A
+LoanQuery987                                   687,54            N/A         no         20      N/A
+LoanQuery988                                    68,77            N/A         no         20      N/A
+LoanQuery989                                    96,09            N/A         no         20      N/A
+LoanQuery990                                    99,55            N/A         no         20      N/A
+LoanQuery991                                  1705,48            N/A         no         20      N/A
+LoanQuery992                                     3,89            N/A         no         20      N/A
+LoanQuery105                                  1179,86            N/A         no         20      N/A
+LoanQuery984                                  1001,83            N/A         no         20      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=20 queries – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 20
+--------------------------------------------------------------------------------
+Total queries          : 20
+Usability hits         : 3  (15,0%)
+Total direct time      : 25514,41 ms  (avg 1275,72 ms/query)
+Total usability time   : 20114,95 ms  (avg 1005,75 ms/query)
+Overall speed-up       : 1,27x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  3175,29        1442,78         no         20    2,20x
+LoanQuery997                                   990,34         953,55         no         20    1,04x
+LoanQuery998                                  8618,13        8405,45         no         20    1,03x
+LoanQuery999                                   110,79         102,45         no         20    1,08x
+LoanQuery2                                     635,50         623,75         no         20    1,02x
+LoanQuery56                                   1540,87        1579,45         no         20    0,98x
+LoanQuery86                                   1498,04        1546,94         no         20    0,97x
+LoanQuery22                                     60,22          63,60         no         20    0,95x
+LoanQuery204                                  1416,56        1511,80         no         20    0,94x
+LoanQuery994                                   529,02         556,86         no         20    0,95x
+LoanQuery27                                   1013,96           2,27        YES         20  446,86x
+LoanQuery89                                   1082,68           1,07        YES         20 1010,43x
+LoanQuery987                                   687,54         659,56         no         20    1,04x
+LoanQuery988                                    68,77          82,19         no         20    0,84x
+LoanQuery989                                    96,09          85,90         no         20    1,12x
+LoanQuery990                                    99,55          74,41         no         20    1,34x
+LoanQuery991                                  1705,48        1543,42         no         20    1,10x
+LoanQuery992                                     3,89           2,39         no         20    1,63x
+LoanQuery105                                  1179,86           0,98        YES         20 1198,07x
+LoanQuery984                                  1001,83         876,13         no         20    1,14x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=40 queries – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 40
+--------------------------------------------------------------------------------
+Total queries          : 40
+Usability hits         : 0  (0,0%)
+Total direct time      : 42974,10 ms  (avg 1074,35 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1184,26            N/A         no         40      N/A
+LoanQuery997                                   913,96            N/A         no         40      N/A
+LoanQuery998                                  8224,93            N/A         no         40      N/A
+LoanQuery999                                   113,24            N/A         no         40      N/A
+LoanQuery2                                     619,41            N/A         no         40      N/A
+LoanQuery56                                   1483,39            N/A         no         40      N/A
+LoanQuery86                                   1626,14            N/A         no         40      N/A
+LoanQuery22                                     60,05            N/A         no         40      N/A
+LoanQuery204                                  1371,52            N/A         no         40      N/A
+LoanQuery994                                   528,08            N/A         no         40      N/A
+LoanQuery27                                   1070,49            N/A         no         40      N/A
+LoanQuery89                                   1080,29            N/A         no         40      N/A
+LoanQuery987                                   620,05            N/A         no         40      N/A
+LoanQuery988                                    76,28            N/A         no         40      N/A
+LoanQuery989                                    87,10            N/A         no         40      N/A
+LoanQuery990                                    80,98            N/A         no         40      N/A
+LoanQuery991                                  1577,00            N/A         no         40      N/A
+LoanQuery992                                     1,95            N/A         no         40      N/A
+LoanQuery105                                  1085,72            N/A         no         40      N/A
+LoanQuery984                                   819,78            N/A         no         40      N/A
+LoanQuery200                                  1150,18            N/A         no         40      N/A
+LoanQuery225                                  1110,68            N/A         no         40      N/A
+LoanQuery196                                     2,73            N/A         no         40      N/A
+LoanQuery255                                     2,63            N/A         no         40      N/A
+LoanQuery270                                    64,39            N/A         no         40      N/A
+LoanQuery288                                  1052,47            N/A         no         40      N/A
+LoanQuery160                                    53,40            N/A         no         40      N/A
+LoanQuery212                                   485,44            N/A         no         40      N/A
+LoanQuery240                                  1007,41            N/A         no         40      N/A
+LoanQuery138                                  1292,39            N/A         no         40      N/A
+LoanQuery977                                   966,26            N/A         no         40      N/A
+LoanQuery978                                  1904,59            N/A         no         40      N/A
+LoanQuery979                                  1341,70            N/A         no         40      N/A
+LoanQuery980                                  1146,41            N/A         no         40      N/A
+LoanQuery972                                  4364,03            N/A         no         40      N/A
+LoanQuery973                                    48,69            N/A         no         40      N/A
+LoanQuery974                                  1244,64            N/A         no         40      N/A
+LoanQuery975                                  1519,25            N/A         no         40      N/A
+LoanQuery969                                   554,25            N/A         no         40      N/A
+LoanQuery970                                  1037,97            N/A         no         40      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=40 queries – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 40
+--------------------------------------------------------------------------------
+Total queries          : 40
+Usability hits         : 7  (17,5%)
+Total direct time      : 42974,10 ms  (avg 1074,35 ms/query)
+Total usability time   : 36845,27 ms  (avg 921,13 ms/query)
+Overall speed-up       : 1,17x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1184,26        1594,84         no         40    0,74x
+LoanQuery997                                   913,96         927,35         no         40    0,99x
+LoanQuery998                                  8224,93        8498,98         no         40    0,97x
+LoanQuery999                                   113,24          91,10         no         40    1,24x
+LoanQuery2                                     619,41         632,54         no         40    0,98x
+LoanQuery56                                   1483,39        1484,99         no         40    1,00x
+LoanQuery86                                   1626,14        1414,97         no         40    1,15x
+LoanQuery22                                     60,05          67,08         no         40    0,90x
+LoanQuery204                                  1371,52        1498,61         no         40    0,92x
+LoanQuery994                                   528,08         534,52         no         40    0,99x
+LoanQuery27                                   1070,49           1,15        YES         40  934,27x
+LoanQuery89                                   1080,29           0,89        YES         40 1211,63x
+LoanQuery987                                   620,05         617,42         no         40    1,00x
+LoanQuery988                                    76,28          82,83         no         40    0,92x
+LoanQuery989                                    87,10          67,18         no         40    1,30x
+LoanQuery990                                    80,98          92,82         no         40    0,87x
+LoanQuery991                                  1577,00        1472,93         no         40    1,07x
+LoanQuery992                                     1,95           1,34         no         40    1,46x
+LoanQuery105                                  1085,72           0,89        YES         40 1221,55x
+LoanQuery984                                   819,78         903,40         no         40    0,91x
+LoanQuery200                                  1150,18           1,38        YES         40  835,70x
+LoanQuery225                                  1110,68           1,40        YES         40  791,03x
+LoanQuery196                                     2,73           1,96         no         40    1,39x
+LoanQuery255                                     2,63          54,96        YES         40    0,05x
+LoanQuery270                                    64,39          54,46         no         40    1,18x
+LoanQuery288                                  1052,47           0,68        YES         40 1546,38x
+LoanQuery160                                    53,40          50,36         no         40    1,06x
+LoanQuery212                                   485,44         458,40         no         40    1,06x
+LoanQuery240                                  1007,41        1073,14         no         40    0,94x
+LoanQuery138                                  1292,39        1307,21         no         40    0,99x
+LoanQuery977                                   966,26         964,66         no         40    1,00x
+LoanQuery978                                  1904,59        1810,62         no         40    1,05x
+LoanQuery979                                  1341,70        1369,02         no         40    0,98x
+LoanQuery980                                  1146,41        1043,22         no         40    1,10x
+LoanQuery972                                  4364,03        4257,07         no         40    1,03x
+LoanQuery973                                    48,69          40,27         no         40    1,21x
+LoanQuery974                                  1244,64        1454,03         no         40    0,86x
+LoanQuery975                                  1519,25        1454,38         no         40    1,04x
+LoanQuery969                                   554,25         519,97         no         40    1,07x
+LoanQuery970                                  1037,97         942,28         no         40    1,10x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=60 queries – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 60
+--------------------------------------------------------------------------------
+Total queries          : 60
+Usability hits         : 0  (0,0%)
+Total direct time      : 66815,75 ms  (avg 1113,60 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1149,50            N/A         no         60      N/A
+LoanQuery997                                   895,29            N/A         no         60      N/A
+LoanQuery998                                  8466,97            N/A         no         60      N/A
+LoanQuery999                                    88,06            N/A         no         60      N/A
+LoanQuery2                                     585,09            N/A         no         60      N/A
+LoanQuery56                                   1484,31            N/A         no         60      N/A
+LoanQuery86                                   1419,29            N/A         no         60      N/A
+LoanQuery22                                     61,60            N/A         no         60      N/A
+LoanQuery204                                  1371,20            N/A         no         60      N/A
+LoanQuery994                                   357,06            N/A         no         60      N/A
+LoanQuery27                                    937,56            N/A         no         60      N/A
+LoanQuery89                                   1110,15            N/A         no         60      N/A
+LoanQuery987                                   844,88            N/A         no         60      N/A
+LoanQuery988                                    96,04            N/A         no         60      N/A
+LoanQuery989                                   113,88            N/A         no         60      N/A
+LoanQuery990                                   106,63            N/A         no         60      N/A
+LoanQuery991                                  1476,08            N/A         no         60      N/A
+LoanQuery992                                     1,64            N/A         no         60      N/A
+LoanQuery105                                   986,38            N/A         no         60      N/A
+LoanQuery984                                  1032,61            N/A         no         60      N/A
+LoanQuery200                                  1180,20            N/A         no         60      N/A
+LoanQuery225                                  1053,82            N/A         no         60      N/A
+LoanQuery196                                     1,96            N/A         no         60      N/A
+LoanQuery255                                     2,07            N/A         no         60      N/A
+LoanQuery270                                    52,88            N/A         no         60      N/A
+LoanQuery288                                  1082,03            N/A         no         60      N/A
+LoanQuery160                                    49,41            N/A         no         60      N/A
+LoanQuery212                                   540,76            N/A         no         60      N/A
+LoanQuery240                                  1055,98            N/A         no         60      N/A
+LoanQuery138                                  1268,39            N/A         no         60      N/A
+LoanQuery977                                   969,42            N/A         no         60      N/A
+LoanQuery978                                  1813,12            N/A         no         60      N/A
+LoanQuery979                                  1247,84            N/A         no         60      N/A
+LoanQuery980                                  1120,79            N/A         no         60      N/A
+LoanQuery972                                  4511,83            N/A         no         60      N/A
+LoanQuery973                                    37,33            N/A         no         60      N/A
+LoanQuery974                                  1500,93            N/A         no         60      N/A
+LoanQuery975                                  1458,18            N/A         no         60      N/A
+LoanQuery969                                   531,58            N/A         no         60      N/A
+LoanQuery970                                   927,29            N/A         no         60      N/A
+LoanQuery309                                  1074,09            N/A         no         60      N/A
+LoanQuery333                                  1073,14            N/A         no         60      N/A
+LoanQuery365                                  1028,79            N/A         no         60      N/A
+LoanQuery398                                  2398,56            N/A         no         60      N/A
+LoanQuery254                                   422,34            N/A         no         60      N/A
+LoanQuery463                                     2,09            N/A         no         60      N/A
+LoanQuery253                                  2052,62            N/A         no         60      N/A
+LoanQuery465                                  1997,24            N/A         no         60      N/A
+LoanQuery331                                   466,46            N/A         no         60      N/A
+LoanQuery436                                   652,49            N/A         no         60      N/A
+LoanQuery206                                   914,33            N/A         no         60      N/A
+LoanQuery368                                  1049,89            N/A         no         60      N/A
+LoanQuery961                                   478,61            N/A         no         60      N/A
+LoanQuery962                                    70,78            N/A         no         60      N/A
+LoanQuery963                                    73,75            N/A         no         60      N/A
+LoanQuery964                                  5851,07            N/A         no         60      N/A
+LoanQuery965                                  1565,39            N/A         no         60      N/A
+LoanQuery966                                  1108,92            N/A         no         60      N/A
+LoanQuery967                                  1474,54            N/A         no         60      N/A
+LoanQuery968                                    70,65            N/A         no         60      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=60 queries – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 60
+--------------------------------------------------------------------------------
+Total queries          : 60
+Usability hits         : 13  (21,7%)
+Total direct time      : 66815,75 ms  (avg 1113,60 ms/query)
+Total usability time   : 52457,82 ms  (avg 874,30 ms/query)
+Overall speed-up       : 1,27x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1149,50        1251,68         no         60    0,92x
+LoanQuery997                                   895,29         929,60         no         60    0,96x
+LoanQuery998                                  8466,97        8375,27         no         60    1,01x
+LoanQuery999                                    88,06          99,88         no         60    0,88x
+LoanQuery2                                     585,09         637,40         no         60    0,92x
+LoanQuery56                                   1484,31        1627,97         no         60    0,91x
+LoanQuery86                                   1419,29        1617,79         no         60    0,88x
+LoanQuery22                                     61,60          69,64         no         60    0,88x
+LoanQuery204                                  1371,20        1457,57         no         60    0,94x
+LoanQuery994                                   357,06         506,37         no         60    0,71x
+LoanQuery27                                    937,56           0,93        YES         60 1012,15x
+LoanQuery89                                   1110,15           0,69        YES         60 1602,41x
+LoanQuery987                                   844,88         659,90         no         60    1,28x
+LoanQuery988                                    96,04          55,29         no         60    1,74x
+LoanQuery989                                   113,88          86,49         no         60    1,32x
+LoanQuery990                                   106,63          73,38         no         60    1,45x
+LoanQuery991                                  1476,08        1506,79         no         60    0,98x
+LoanQuery992                                     1,64           1,88         no         60    0,87x
+LoanQuery105                                   986,38           0,94        YES         60 1050,68x
+LoanQuery984                                  1032,61         902,98         no         60    1,14x
+LoanQuery200                                  1180,20           1,03        YES         60 1147,83x
+LoanQuery225                                  1053,82           0,78        YES         60 1345,02x
+LoanQuery196                                     1,96           1,52         no         60    1,29x
+LoanQuery255                                     2,07          44,42        YES         60    0,05x
+LoanQuery270                                    52,88          49,70         no         60    1,06x
+LoanQuery288                                  1082,03           0,64        YES         60 1683,58x
+LoanQuery160                                    49,41          51,45         no         60    0,96x
+LoanQuery212                                   540,76         518,11         no         60    1,04x
+LoanQuery240                                  1055,98        1065,77         no         60    0,99x
+LoanQuery138                                  1268,39        1319,66         no         60    0,96x
+LoanQuery977                                   969,42         885,67         no         60    1,09x
+LoanQuery978                                  1813,12        1917,94         no         60    0,95x
+LoanQuery979                                  1247,84        1332,92         no         60    0,94x
+LoanQuery980                                  1120,79        1056,70         no         60    1,06x
+LoanQuery972                                  4511,83        4365,31         no         60    1,03x
+LoanQuery973                                    37,33          36,27         no         60    1,03x
+LoanQuery974                                  1500,93        1365,16         no         60    1,10x
+LoanQuery975                                  1458,18        1580,05         no         60    0,92x
+LoanQuery969                                   531,58         528,40         no         60    1,01x
+LoanQuery970                                   927,29         966,79         no         60    0,96x
+LoanQuery309                                  1074,09           0,99        YES         60 1089,34x
+LoanQuery333                                  1073,14           0,88        YES         60 1216,02x
+LoanQuery365                                  1028,79           0,92        YES         60 1122,88x
+LoanQuery398                                  2398,56          55,82        YES         60   42,97x
+LoanQuery254                                   422,34         408,13         no         60    1,03x
+LoanQuery463                                     2,09           1,22        YES         60    1,72x
+LoanQuery253                                  2052,62        2021,32         no         60    1,02x
+LoanQuery465                                  1997,24          36,69        YES         60   54,44x
+LoanQuery331                                   466,46         465,20         no         60    1,00x
+LoanQuery436                                   652,49         666,27         no         60    0,98x
+LoanQuery206                                   914,33         861,73         no         60    1,06x
+LoanQuery368                                  1049,89         965,17         no         60    1,09x
+LoanQuery961                                   478,61         504,37         no         60    0,95x
+LoanQuery962                                    70,78          49,94         no         60    1,42x
+LoanQuery963                                    73,75          40,96         no         60    1,80x
+LoanQuery964                                  5851,07        5225,24         no         60    1,12x
+LoanQuery965                                  1565,39        1500,49         no         60    1,04x
+LoanQuery966                                  1108,92         960,43         no         60    1,15x
+LoanQuery967                                  1474,54        1679,84         no         60    0,88x
+LoanQuery968                                    70,65          61,45         no         60    1,15x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=80 queries – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 80
+--------------------------------------------------------------------------------
+Total queries          : 80
+Usability hits         : 0  (0,0%)
+Total direct time      : 88919,86 ms  (avg 1111,50 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1112,59            N/A         no         80      N/A
+LoanQuery997                                   879,04            N/A         no         80      N/A
+LoanQuery998                                  8968,10            N/A         no         80      N/A
+LoanQuery999                                   117,47            N/A         no         80      N/A
+LoanQuery2                                     646,01            N/A         no         80      N/A
+LoanQuery56                                   1731,24            N/A         no         80      N/A
+LoanQuery86                                   1472,17            N/A         no         80      N/A
+LoanQuery22                                     57,68            N/A         no         80      N/A
+LoanQuery204                                  1338,81            N/A         no         80      N/A
+LoanQuery994                                   442,25            N/A         no         80      N/A
+LoanQuery27                                   1043,14            N/A         no         80      N/A
+LoanQuery89                                   1026,63            N/A         no         80      N/A
+LoanQuery987                                   661,96            N/A         no         80      N/A
+LoanQuery988                                    70,56            N/A         no         80      N/A
+LoanQuery989                                    75,54            N/A         no         80      N/A
+LoanQuery990                                    97,56            N/A         no         80      N/A
+LoanQuery991                                  1540,71            N/A         no         80      N/A
+LoanQuery992                                     1,78            N/A         no         80      N/A
+LoanQuery105                                  1082,47            N/A         no         80      N/A
+LoanQuery984                                   866,64            N/A         no         80      N/A
+LoanQuery200                                   970,53            N/A         no         80      N/A
+LoanQuery225                                  1050,26            N/A         no         80      N/A
+LoanQuery196                                     1,65            N/A         no         80      N/A
+LoanQuery255                                     1,34            N/A         no         80      N/A
+LoanQuery270                                    67,85            N/A         no         80      N/A
+LoanQuery288                                  1054,72            N/A         no         80      N/A
+LoanQuery160                                    40,45            N/A         no         80      N/A
+LoanQuery212                                   542,12            N/A         no         80      N/A
+LoanQuery240                                  1089,26            N/A         no         80      N/A
+LoanQuery138                                  1285,98            N/A         no         80      N/A
+LoanQuery977                                   990,07            N/A         no         80      N/A
+LoanQuery978                                  1905,16            N/A         no         80      N/A
+LoanQuery979                                  1290,75            N/A         no         80      N/A
+LoanQuery980                                  1073,08            N/A         no         80      N/A
+LoanQuery972                                  4295,41            N/A         no         80      N/A
+LoanQuery973                                    38,47            N/A         no         80      N/A
+LoanQuery974                                  1500,75            N/A         no         80      N/A
+LoanQuery975                                  1561,12            N/A         no         80      N/A
+LoanQuery969                                   554,69            N/A         no         80      N/A
+LoanQuery970                                   960,06            N/A         no         80      N/A
+LoanQuery309                                  1002,16            N/A         no         80      N/A
+LoanQuery333                                  1054,24            N/A         no         80      N/A
+LoanQuery365                                  1087,76            N/A         no         80      N/A
+LoanQuery398                                  2277,73            N/A         no         80      N/A
+LoanQuery254                                   445,68            N/A         no         80      N/A
+LoanQuery463                                     1,77            N/A         no         80      N/A
+LoanQuery253                                  1929,09            N/A         no         80      N/A
+LoanQuery465                                  1946,37            N/A         no         80      N/A
+LoanQuery331                                   486,52            N/A         no         80      N/A
+LoanQuery436                                   615,01            N/A         no         80      N/A
+LoanQuery206                                   886,16            N/A         no         80      N/A
+LoanQuery368                                  1045,26            N/A         no         80      N/A
+LoanQuery961                                   444,19            N/A         no         80      N/A
+LoanQuery962                                    45,24            N/A         no         80      N/A
+LoanQuery963                                    62,00            N/A         no         80      N/A
+LoanQuery964                                  5618,51            N/A         no         80      N/A
+LoanQuery965                                  1556,37            N/A         no         80      N/A
+LoanQuery966                                  1067,26            N/A         no         80      N/A
+LoanQuery967                                  1480,82            N/A         no         80      N/A
+LoanQuery968                                    72,10            N/A         no         80      N/A
+LoanQuery467                                    61,92            N/A         no         80      N/A
+LoanQuery493                                  1096,95            N/A         no         80      N/A
+LoanQuery495                                   944,26            N/A         no         80      N/A
+LoanQuery515                                  1062,00            N/A         no         80      N/A
+LoanQuery383                                  1971,64            N/A         no         80      N/A
+LoanQuery538                                  1959,35            N/A         no         80      N/A
+LoanQuery78                                   2002,04            N/A         no         80      N/A
+LoanQuery579                                  1946,94            N/A         no         80      N/A
+LoanQuery78                                   2146,48            N/A         no         80      N/A
+LoanQuery581                                  2303,41            N/A         no         80      N/A
+LoanQuery580                                   792,53            N/A         no         80      N/A
+LoanQuery587                                  1028,03            N/A         no         80      N/A
+LoanQuery543                                   455,94            N/A         no         80      N/A
+LoanQuery595                                   398,97            N/A         no         80      N/A
+LoanQuery542                                   494,84            N/A         no         80      N/A
+LoanQuery394                                    73,44            N/A         no         80      N/A
+LoanQuery97                                   2172,10            N/A         no         80      N/A
+LoanQuery389                                   578,70            N/A         no         80      N/A
+LoanQuery196                                     3,29            N/A         no         80      N/A
+LoanQuery404                                   796,73            N/A         no         80      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=80 queries – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 80
+--------------------------------------------------------------------------------
+Total queries          : 80
+Usability hits         : 24  (30,0%)
+Total direct time      : 88919,86 ms  (avg 1111,50 ms/query)
+Total usability time   : 62034,08 ms  (avg 775,43 ms/query)
+Overall speed-up       : 1,43x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1112,59        1135,63         no         80    0,98x
+LoanQuery997                                   879,04         956,47         no         80    0,92x
+LoanQuery998                                  8968,10        8466,33         no         80    1,06x
+LoanQuery999                                   117,47          86,14         no         80    1,36x
+LoanQuery2                                     646,01         622,02         no         80    1,04x
+LoanQuery56                                   1731,24        1469,27         no         80    1,18x
+LoanQuery86                                   1472,17        1577,84         no         80    0,93x
+LoanQuery22                                     57,68          66,59         no         80    0,87x
+LoanQuery204                                  1338,81        1508,04         no         80    0,89x
+LoanQuery994                                   442,25         504,27         no         80    0,88x
+LoanQuery27                                   1043,14           0,87        YES         80 1199,70x
+LoanQuery89                                   1026,63           0,78        YES         80 1317,71x
+LoanQuery987                                   661,96         651,79         no         80    1,02x
+LoanQuery988                                    70,56          80,33         no         80    0,88x
+LoanQuery989                                    75,54          72,68         no         80    1,04x
+LoanQuery990                                    97,56          89,94         no         80    1,08x
+LoanQuery991                                  1540,71        1506,76         no         80    1,02x
+LoanQuery992                                     1,78           3,22         no         80    0,55x
+LoanQuery105                                  1082,47           1,01        YES         80 1067,21x
+LoanQuery984                                   866,64         855,48         no         80    1,01x
+LoanQuery200                                   970,53           0,66        YES         80 1480,37x
+LoanQuery225                                  1050,26           0,58        YES         80 1819,58x
+LoanQuery196                                     1,65           1,44         no         80    1,15x
+LoanQuery255                                     1,34          53,23        YES         80    0,03x
+LoanQuery270                                    67,85          54,95         no         80    1,23x
+LoanQuery288                                  1054,72           0,68        YES         80 1546,06x
+LoanQuery160                                    40,45          42,36         no         80    0,96x
+LoanQuery212                                   542,12         462,54         no         80    1,17x
+LoanQuery240                                  1089,26        1021,52         no         80    1,07x
+LoanQuery138                                  1285,98        1325,79         no         80    0,97x
+LoanQuery977                                   990,07         960,83         no         80    1,03x
+LoanQuery978                                  1905,16        1880,46         no         80    1,01x
+LoanQuery979                                  1290,75        1315,18         no         80    0,98x
+LoanQuery980                                  1073,08        1053,15         no         80    1,02x
+LoanQuery972                                  4295,41        4156,17         no         80    1,03x
+LoanQuery973                                    38,47          39,60         no         80    0,97x
+LoanQuery974                                  1500,75        1416,62         no         80    1,06x
+LoanQuery975                                  1561,12        1547,33         no         80    1,01x
+LoanQuery969                                   554,69         589,52         no         80    0,94x
+LoanQuery970                                   960,06         936,19         no         80    1,03x
+LoanQuery309                                  1002,16           0,62        YES         80 1605,25x
+LoanQuery333                                  1054,24           0,60        YES         80 1753,56x
+LoanQuery365                                  1087,76           0,73        YES         80 1480,35x
+LoanQuery398                                  2277,73          61,33        YES         80   37,14x
+LoanQuery254                                   445,68         454,61         no         80    0,98x
+LoanQuery463                                     1,77           0,60        YES         80    2,94x
+LoanQuery253                                  1929,09        1969,45         no         80    0,98x
+LoanQuery465                                  1946,37          33,84        YES         80   57,51x
+LoanQuery331                                   486,52         519,52         no         80    0,94x
+LoanQuery436                                   615,01         609,72         no         80    1,01x
+LoanQuery206                                   886,16         874,32         no         80    1,01x
+LoanQuery368                                  1045,26        1038,91         no         80    1,01x
+LoanQuery961                                   444,19         519,46         no         80    0,86x
+LoanQuery962                                    45,24          57,69         no         80    0,78x
+LoanQuery963                                    62,00          68,90         no         80    0,90x
+LoanQuery964                                  5618,51        5545,92         no         80    1,01x
+LoanQuery965                                  1556,37        1369,12         no         80    1,14x
+LoanQuery966                                  1067,26        1131,94         no         80    0,94x
+LoanQuery967                                  1480,82        1479,36         no         80    1,00x
+LoanQuery968                                    72,10          74,14         no         80    0,97x
+LoanQuery467                                    61,92           4,30        YES         80   14,41x
+LoanQuery493                                  1096,95           0,62        YES         80 1759,07x
+LoanQuery495                                   944,26          55,89        YES         80   16,89x
+LoanQuery515                                  1062,00          87,60        YES         80   12,12x
+LoanQuery383                                  1971,64        2021,97         no         80    0,98x
+LoanQuery538                                  1959,35          42,14        YES         80   46,50x
+LoanQuery78                                   2002,04        2257,90         no         80    0,89x
+LoanQuery579                                  1946,94          61,63        YES         80   31,59x
+LoanQuery78                                   2146,48          34,90        YES         80   61,50x
+LoanQuery581                                  2303,41          51,33        YES         80   44,87x
+LoanQuery580                                   792,53         722,91         no         80    1,10x
+LoanQuery587                                  1028,03           0,66        YES         80 1558,33x
+LoanQuery543                                   455,94         536,37         no         80    0,85x
+LoanQuery595                                   398,97          10,35        YES         80   38,56x
+LoanQuery542                                   494,84         418,36         no         80    1,18x
+LoanQuery394                                    73,44          83,25         no         80    0,88x
+LoanQuery97                                   2172,10        2210,01         no         80    0,98x
+LoanQuery389                                   578,70         548,04         no         80    1,06x
+LoanQuery196                                     3,29          39,27        YES         80    0,08x
+LoanQuery404                                   796,73         521,53         no         80    1,53x
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=100 queries – DIRECT (no usability)
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 100
+--------------------------------------------------------------------------------
+Total queries          : 100
+Usability hits         : 0  (0,0%)
+Total direct time      : 109238,69 ms  (avg 1092,39 ms/query)
+Total usability time   : 0,00 ms  (avg 0,00 ms/query)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1182,62            N/A         no        100      N/A
+LoanQuery997                                   910,71            N/A         no        100      N/A
+LoanQuery998                                  8608,13            N/A         no        100      N/A
+LoanQuery999                                    99,88            N/A         no        100      N/A
+LoanQuery2                                     628,35            N/A         no        100      N/A
+LoanQuery56                                   1642,36            N/A         no        100      N/A
+LoanQuery86                                   1699,13            N/A         no        100      N/A
+LoanQuery22                                     71,50            N/A         no        100      N/A
+LoanQuery204                                  1508,16            N/A         no        100      N/A
+LoanQuery994                                   512,97            N/A         no        100      N/A
+LoanQuery27                                   1024,38            N/A         no        100      N/A
+LoanQuery89                                   1125,52            N/A         no        100      N/A
+LoanQuery987                                   632,66            N/A         no        100      N/A
+LoanQuery988                                    78,28            N/A         no        100      N/A
+LoanQuery989                                    75,44            N/A         no        100      N/A
+LoanQuery990                                    96,40            N/A         no        100      N/A
+LoanQuery991                                  1567,29            N/A         no        100      N/A
+LoanQuery992                                     1,81            N/A         no        100      N/A
+LoanQuery105                                  1115,81            N/A         no        100      N/A
+LoanQuery984                                   911,82            N/A         no        100      N/A
+LoanQuery200                                  1071,27            N/A         no        100      N/A
+LoanQuery225                                  1148,91            N/A         no        100      N/A
+LoanQuery196                                     2,42            N/A         no        100      N/A
+LoanQuery255                                     1,70            N/A         no        100      N/A
+LoanQuery270                                    65,44            N/A         no        100      N/A
+LoanQuery288                                  1061,85            N/A         no        100      N/A
+LoanQuery160                                    54,84            N/A         no        100      N/A
+LoanQuery212                                   512,50            N/A         no        100      N/A
+LoanQuery240                                  1026,72            N/A         no        100      N/A
+LoanQuery138                                  1364,02            N/A         no        100      N/A
+LoanQuery977                                   986,02            N/A         no        100      N/A
+LoanQuery978                                  1818,98            N/A         no        100      N/A
+LoanQuery979                                  1373,59            N/A         no        100      N/A
+LoanQuery980                                  1085,44            N/A         no        100      N/A
+LoanQuery972                                  4350,43            N/A         no        100      N/A
+LoanQuery973                                    51,22            N/A         no        100      N/A
+LoanQuery974                                  1492,95            N/A         no        100      N/A
+LoanQuery975                                  1886,76            N/A         no        100      N/A
+LoanQuery969                                   582,06            N/A         no        100      N/A
+LoanQuery970                                   955,90            N/A         no        100      N/A
+LoanQuery309                                  1099,50            N/A         no        100      N/A
+LoanQuery333                                  1107,02            N/A         no        100      N/A
+LoanQuery365                                  1082,25            N/A         no        100      N/A
+LoanQuery398                                  2272,77            N/A         no        100      N/A
+LoanQuery254                                   460,30            N/A         no        100      N/A
+LoanQuery463                                     1,53            N/A         no        100      N/A
+LoanQuery253                                  1897,82            N/A         no        100      N/A
+LoanQuery465                                  1884,23            N/A         no        100      N/A
+LoanQuery331                                   501,50            N/A         no        100      N/A
+LoanQuery436                                   687,14            N/A         no        100      N/A
+LoanQuery206                                   925,01            N/A         no        100      N/A
+LoanQuery368                                  1116,76            N/A         no        100      N/A
+LoanQuery961                                   543,70            N/A         no        100      N/A
+LoanQuery962                                    77,37            N/A         no        100      N/A
+LoanQuery963                                    51,82            N/A         no        100      N/A
+LoanQuery964                                  6106,83            N/A         no        100      N/A
+LoanQuery965                                  1685,41            N/A         no        100      N/A
+LoanQuery966                                  1170,22            N/A         no        100      N/A
+LoanQuery967                                  1461,31            N/A         no        100      N/A
+LoanQuery968                                    77,78            N/A         no        100      N/A
+LoanQuery467                                    66,35            N/A         no        100      N/A
+LoanQuery493                                  1122,17            N/A         no        100      N/A
+LoanQuery495                                   925,31            N/A         no        100      N/A
+LoanQuery515                                  1145,60            N/A         no        100      N/A
+LoanQuery383                                  1960,05            N/A         no        100      N/A
+LoanQuery538                                  1794,12            N/A         no        100      N/A
+LoanQuery78                                   2238,50            N/A         no        100      N/A
+LoanQuery579                                  1885,82            N/A         no        100      N/A
+LoanQuery78                                   2104,05            N/A         no        100      N/A
+LoanQuery581                                  2268,27            N/A         no        100      N/A
+LoanQuery580                                   726,46            N/A         no        100      N/A
+LoanQuery587                                  1096,14            N/A         no        100      N/A
+LoanQuery543                                   618,53            N/A         no        100      N/A
+LoanQuery595                                   410,72            N/A         no        100      N/A
+LoanQuery542                                   449,12            N/A         no        100      N/A
+LoanQuery394                                    67,78            N/A         no        100      N/A
+LoanQuery97                                   2260,76            N/A         no        100      N/A
+LoanQuery389                                   540,99            N/A         no        100      N/A
+LoanQuery196                                     1,70            N/A         no        100      N/A
+LoanQuery404                                   804,15            N/A         no        100      N/A
+LoanQuery599                                  1911,89            N/A         no        100      N/A
+LoanQuery609                                  1044,99            N/A         no        100      N/A
+LoanQuery629                                  2050,84            N/A         no        100      N/A
+LoanQuery636                                    56,84            N/A         no        100      N/A
+LoanQuery641                                     1,88            N/A         no        100      N/A
+LoanQuery655                                    71,01            N/A         no        100      N/A
+LoanQuery470                                    74,33            N/A         no        100      N/A
+LoanQuery671                                  1554,97            N/A         no        100      N/A
+LoanQuery566                                     1,90            N/A         no        100      N/A
+LoanQuery677                                     1,99            N/A         no        100      N/A
+LoanQuery335                                  1592,09            N/A         no        100      N/A
+LoanQuery687                                  1532,59            N/A         no        100      N/A
+LoanQuery349                                   878,88            N/A         no        100      N/A
+LoanQuery691                                   873,00            N/A         no        100      N/A
+LoanQuery321                                  1114,19            N/A         no        100      N/A
+LoanQuery705                                    93,69            N/A         no        100      N/A
+LoanQuery404                                   802,30            N/A         no        100      N/A
+LoanQuery719                                   672,49            N/A         no        100      N/A
+LoanQuery689                                  2008,84            N/A         no        100      N/A
+LoanQuery753                                  1816,85            N/A         no        100      N/A
+================================================================================
+
+================================================================================
+EXPERIMENT: EXP-7 [pkdd99_star_1M][loan]  Batch=100 queries – WITH USABILITY
+File      : InputFiles\pkdd99_star\Queries\UsabilityQueries_Loans\ExpBatchedHistory\batchedHistoryQueries.txt
+Batch Size                : 100
+--------------------------------------------------------------------------------
+Total queries          : 100
+Usability hits         : 37  (37,0%)
+Total direct time      : 109238,69 ms  (avg 1092,39 ms/query)
+Total usability time   : 66635,28 ms  (avg 666,35 ms/query)
+Overall speed-up       : 1,64x  (direct / usability)
+--------------------------------------------------------------------------------
+Query Name                                Direct (ms) Usability (ms)  Via Usab?  BatchSize Speed-Up
+--------------------------------------------------------------------------------------------------
+LoanQuery996                                  1182,62        1136,37         no        100    1,04x
+LoanQuery997                                   910,71         920,60         no        100    0,99x
+LoanQuery998                                  8608,13        8584,31         no        100    1,00x
+LoanQuery999                                    99,88         111,44         no        100    0,90x
+LoanQuery2                                     628,35         582,19         no        100    1,08x
+LoanQuery56                                   1642,36        1485,03         no        100    1,11x
+LoanQuery86                                   1699,13        1569,01         no        100    1,08x
+LoanQuery22                                     71,50          67,14         no        100    1,06x
+LoanQuery204                                  1508,16        1518,94         no        100    0,99x
+LoanQuery994                                   512,97         415,97         no        100    1,23x
+LoanQuery27                                   1024,38           1,07        YES        100  958,53x
+LoanQuery89                                   1125,52           0,79        YES        100 1421,47x
+LoanQuery987                                   632,66         577,15         no        100    1,10x
+LoanQuery988                                    78,28          64,18         no        100    1,22x
+LoanQuery989                                    75,44          83,29         no        100    0,91x
+LoanQuery990                                    96,40          79,67         no        100    1,21x
+LoanQuery991                                  1567,29        1597,86         no        100    0,98x
+LoanQuery992                                     1,81           1,34         no        100    1,35x
+LoanQuery105                                  1115,81           0,63        YES        100 1764,13x
+LoanQuery984                                   911,82         831,69         no        100    1,10x
+LoanQuery200                                  1071,27           1,09        YES        100  979,85x
+LoanQuery225                                  1148,91           0,88        YES        100 1306,91x
+LoanQuery196                                     2,42           1,76         no        100    1,37x
+LoanQuery255                                     1,70          35,56        YES        100    0,05x
+LoanQuery270                                    65,44          46,36         no        100    1,41x
+LoanQuery288                                  1061,85           0,74        YES        100 1443,71x
+LoanQuery160                                    54,84          59,07         no        100    0,93x
+LoanQuery212                                   512,50         514,56         no        100    1,00x
+LoanQuery240                                  1026,72        1074,67         no        100    0,96x
+LoanQuery138                                  1364,02        1292,65         no        100    1,06x
+LoanQuery977                                   986,02         939,98         no        100    1,05x
+LoanQuery978                                  1818,98        1779,51         no        100    1,02x
+LoanQuery979                                  1373,59        1293,59         no        100    1,06x
+LoanQuery980                                  1085,44        1128,29         no        100    0,96x
+LoanQuery972                                  4350,43        4058,70         no        100    1,07x
+LoanQuery973                                    51,22          41,26         no        100    1,24x
+LoanQuery974                                  1492,95        1377,61         no        100    1,08x
+LoanQuery975                                  1886,76        1521,68         no        100    1,24x
+LoanQuery969                                   582,06         535,73         no        100    1,09x
+LoanQuery970                                   955,90         991,82         no        100    0,96x
+LoanQuery309                                  1099,50           0,67        YES        100 1636,64x
+LoanQuery333                                  1107,02           0,60        YES        100 1838,29x
+LoanQuery365                                  1082,25           0,66        YES        100 1636,80x
+LoanQuery398                                  2272,77          50,76        YES        100   44,78x
+LoanQuery254                                   460,30         449,77         no        100    1,02x
+LoanQuery463                                     1,53           1,02        YES        100    1,50x
+LoanQuery253                                  1897,82        2104,58         no        100    0,90x
+LoanQuery465                                  1884,23          42,69        YES        100   44,14x
+LoanQuery331                                   501,50         524,05         no        100    0,96x
+LoanQuery436                                   687,14         676,11         no        100    1,02x
+LoanQuery206                                   925,01         871,75         no        100    1,06x
+LoanQuery368                                  1116,76        1005,09         no        100    1,11x
+LoanQuery961                                   543,70         529,19         no        100    1,03x
+LoanQuery962                                    77,37          60,14         no        100    1,29x
+LoanQuery963                                    51,82          65,96         no        100    0,79x
+LoanQuery964                                  6106,83        5643,96         no        100    1,08x
+LoanQuery965                                  1685,41        1698,47         no        100    0,99x
+LoanQuery966                                  1170,22        1089,41         no        100    1,07x
+LoanQuery967                                  1461,31        1263,86         no        100    1,16x
+LoanQuery968                                    77,78          68,27         no        100    1,14x
+LoanQuery467                                    66,35           4,28        YES        100   15,51x
+LoanQuery493                                  1122,17           0,82        YES        100 1372,01x
+LoanQuery495                                   925,31          48,15        YES        100   19,22x
+LoanQuery515                                  1145,60          69,43        YES        100   16,50x
+LoanQuery383                                  1960,05        1414,53         no        100    1,39x
+LoanQuery538                                  1794,12          33,82        YES        100   53,06x
+LoanQuery78                                   2238,50        1603,72         no        100    1,40x
+LoanQuery579                                  1885,82          38,70        YES        100   48,73x
+LoanQuery78                                   2104,05          48,49        YES        100   43,39x
+LoanQuery581                                  2268,27          52,92        YES        100   42,86x
+LoanQuery580                                   726,46         710,94         no        100    1,02x
+LoanQuery587                                  1096,14           0,78        YES        100 1408,56x
+LoanQuery543                                   618,53         526,49         no        100    1,17x
+LoanQuery595                                   410,72          13,88        YES        100   29,59x
+LoanQuery542                                   449,12         472,76         no        100    0,95x
+LoanQuery394                                    67,78          60,87         no        100    1,11x
+LoanQuery97                                   2260,76        2221,28         no        100    1,02x
+LoanQuery389                                   540,99         626,25         no        100    0,86x
+LoanQuery196                                     1,70          49,63        YES        100    0,03x
+LoanQuery404                                   804,15         629,01         no        100    1,28x
+LoanQuery599                                  1911,89           0,73        YES        100 2610,80x
+LoanQuery609                                  1044,99           0,77        YES        100 1354,14x
+LoanQuery629                                  2050,84          39,60        YES        100   51,79x
+LoanQuery636                                    56,84           6,15        YES        100    9,24x
+LoanQuery641                                     1,88          38,73        YES        100    0,05x
+LoanQuery655                                    71,01           3,17        YES        100   22,40x
+LoanQuery470                                    74,33          64,02         no        100    1,16x
+LoanQuery671                                  1554,97          35,68        YES        100   43,58x
+LoanQuery566                                     1,90           1,31         no        100    1,45x
+LoanQuery677                                     1,99           0,67        YES        100    2,97x
+LoanQuery335                                  1592,09        1139,65         no        100    1,40x
+LoanQuery687                                  1532,59          75,76        YES        100   20,23x
+LoanQuery349                                   878,88         882,24         no        100    1,00x
+LoanQuery691                                   873,00          11,18        YES        100   78,06x
+LoanQuery321                                  1114,19        1064,07         no        100    1,05x
+LoanQuery705                                    93,69           3,61        YES        100   25,93x
+LoanQuery404                                   802,30         626,82         no        100    1,28x
+LoanQuery719                                   672,49          18,64        YES        100   36,08x
+LoanQuery689                                  2008,84        1481,33         no        100    1,36x
+LoanQuery753                                  1816,85          43,21        YES        100   42,04x
+================================================================================
+

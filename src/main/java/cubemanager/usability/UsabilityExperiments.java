@@ -69,11 +69,11 @@ public class UsabilityExperiments {
     /**
      * EXP-5 Session files for query history size.
      */
-    static File EXP5_SESSION_HIST10_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession1.txt");
-    static File EXP5_SESSION_HIST20_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession2.txt");
-    static File EXP5_SESSION_HIST30_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession3.txt");
-    static File EXP5_SESSION_HIST40_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession4.txt");
-    static File EXP5_SESSION_HIST50_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession5.txt");
+    static File EXP5_SESSION_HIST10_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession40p1.txt");
+    static File EXP5_SESSION_HIST20_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession40p2.txt");
+    static File EXP5_SESSION_HIST30_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession40p3.txt");
+    static File EXP5_SESSION_HIST40_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession40p4.txt");
+    static File EXP5_SESSION_HIST50_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistorySize/historySizeSession40p5.txt");
 
     /** EXP-6 Session file where the usable query is at certain history position */
     static File EXP6_SESSION_POS2_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistoryPosition/histPositionSession1.txt");
@@ -83,6 +83,8 @@ public class UsabilityExperiments {
     static File EXP6_SESSION_POS40_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistoryPosition/histPositionSession5.txt");
     static File EXP6_SESSION_POS50_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpHistoryPosition/histPositionSession6.txt");
 
+    /** EXP-7 Batched-history query file (100 queries, 40 of them usable, pkdd99_star_1M). */
+    static File EXP7_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpBatchedHistory/batchedHistoryQueries.txt");
 
     public enum DatasetScale {
         BASELINE("pkdd99_star", "pkdd99_star", "pkdd99_star"),
@@ -222,13 +224,26 @@ public class UsabilityExperiments {
             return null;
         }
 
-        ExperimentReport report = new ExperimentReport(label, queryFile.getPath());
+        List<String> queryStrings = parseQueryFile(queryFile);
+        return runExperimentFromQueries(label, config, queryFile.getPath(), queryStrings, withUsability);
+    }
+
+    /**
+     * Core experiment runner that operates on an already-parsed list of
+     * queries rather than a file, so that callers (e.g. EXP-7) can run a
+     * sub-list (prefix/batch) of a larger query file.
+     */
+    public static ExperimentReport runExperimentFromQueries(String label,
+                                                            ConnectionConfig config,
+                                                            String queryFilePath,
+                                                            List<String> queryStrings,
+                                                            boolean withUsability) throws Exception {
+        ExperimentReport report = new ExperimentReport(label, queryFilePath);
 
         // Fresh engine per run so that query history clears between runs
         IMainEngine engine = getService();
         engine.initializeConnection("RDBMS", config.toMap());
 
-        List<String> queryStrings = parseQueryFile(queryFile);
         int position = 0;
 
         for (String rawQuery : queryStrings) {
@@ -253,6 +268,7 @@ public class UsabilityExperiments {
         report.computeAggregates();
         return report;
     }
+
 
     /**
      * Runs two passes over queryFile: one direct (no usability) and one
@@ -591,7 +607,7 @@ public class UsabilityExperiments {
         System.out.println("EXP-5: Query History Size – 5 sessions × 50 queries (pkdd99_star_1M)");
         System.out.println(repeatChar('=', 80));
 
-        DatasetScale scale = DatasetScale.SCALE_1M;
+        DatasetScale scale = DatasetScale.SCALE_10M;
         if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
@@ -731,6 +747,79 @@ public class UsabilityExperiments {
         return results;
     }
 
+
+    /**
+     * EXP-7: Batched query-history experiment. Takes a single 100-query file
+     * (40 of the 100 queries designed to be usability hits) and runs it as
+     * five cumulative batches of 20 — i.e. the first 20, first 40, first 60,
+     * first 80, and all 100 queries — against pkdd99_star_1M. Each batch is
+     * executed in its own fresh history so it measures the totals for that
+     * many queries having been added to history. For every batch we report
+     * total direct time, total usability time, and usability coverage %.
+     */
+    public static List<ExperimentReport> runExp7_BatchedHistory(
+            List<ExperimentReport> allReports) throws Exception {
+
+        System.out.println("\n" + repeatChar('=', 80));
+        System.out.println("EXP-7: Batched Query History – 5 cumulative batches of 20 (100-query file, pkdd99_star_1M)");
+        System.out.println(repeatChar('=', 80));
+
+        DatasetScale scale = DatasetScale.SCALE_1M;
+        if (!isDatabaseAvailable(scale.schemaName)) {
+            System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
+            return Collections.emptyList();
+        }
+        ConnectionConfig config = scale.toLoanConfig();
+
+        if (EXP7_QUERY_FILE == null) {
+            System.out.println("  [SKIP] EXP-7 – query file placeholder is null.");
+            return Collections.emptyList();
+        }
+
+        List<String> allQueries = parseQueryFile(EXP7_QUERY_FILE);
+        int[] batchSizes = { 20, 40, 60, 80, 100 };
+
+        List<ExperimentReport> results = new ArrayList<>();
+
+        for (int batchSize : batchSizes) {
+            int n = Math.min(batchSize, allQueries.size());
+            List<String> batchQueries = allQueries.subList(0, n);
+
+            System.out.println("\n  [EXP-7][" + scale.tag + "][loan] Batch=" + n + " queries");
+
+            String baseLabel = "EXP-7 [" + scale.tag + "][loan]  Batch=" + n + " queries";
+            String batchMeta = String.valueOf(n);
+
+            System.out.println("  [DIRECT]    " + baseLabel);
+            ExperimentReport direct = runExperimentFromQueries(
+                    baseLabel + " – DIRECT (no usability)", config,
+                    EXP7_QUERY_FILE.getPath(), batchQueries, false);
+            if (direct != null) {
+                direct.metadata.put("Batch Size", batchMeta);
+                results.add(direct);
+            }
+
+            System.out.println("  [USABILITY] " + baseLabel);
+            ExperimentReport usability = runExperimentFromQueries(
+                    baseLabel + " – WITH USABILITY", config,
+                    EXP7_QUERY_FILE.getPath(), batchQueries, true);
+            if (usability != null) {
+                if (direct != null) {
+                    int m = Math.min(direct.queryResults.size(), usability.queryResults.size());
+                    for (int j = 0; j < m; j++) {
+                        usability.queryResults.get(j).directTimeMs = direct.queryResults.get(j).directTimeMs;
+                    }
+                    usability.computeAggregates();
+                }
+                usability.metadata.put("Batch Size", batchMeta);
+                results.add(usability);
+            }
+        }
+
+        allReports.addAll(results);
+        return results;
+    }
+
     public static List<String> formatReport(ExperimentReport report) {
         List<String> lines = new ArrayList<>();
         String sep = repeatChar('=', 80);
@@ -763,7 +852,8 @@ public class UsabilityExperiments {
         boolean hasCoverage = report.metadata.containsKey("Usability Coverage");
         boolean hasHistory = report.metadata.containsKey("History Size");
         boolean hasPosition = report.metadata.containsKey("Usable Query Position");
-        boolean hasExtra = hasCoverage || hasHistory || hasPosition;
+        boolean hasBatchSize = report.metadata.containsKey("Batch Size");
+        boolean hasExtra = hasCoverage || hasHistory || hasPosition || hasBatchSize;
 
         if (hasExtra) {
             String extraHeader;
@@ -774,9 +864,12 @@ public class UsabilityExperiments {
             } else if (hasHistory) {
                 extraHeader = "HistSize";
                 extraValue = report.metadata.get("History Size");
-            } else {
+            } else if (hasPosition) {
                 extraHeader = "Position";
                 extraValue = report.metadata.get("Usable Query Position");
+            } else {
+                extraHeader = "BatchSize";
+                extraValue = report.metadata.get("Batch Size");
             }
 
             lines.add(String.format("%-40s %12s %14s %10s %10s %8s",
@@ -1021,7 +1114,7 @@ public class UsabilityExperiments {
         //runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
-        runExp2_Scalability(allReports);
+        //runExp2_Scalability(allReports);
 
         //EXP-3: Time Breakdown – 10 sessions × 20 queries (pkdd99_star_1M)
         //runExp3_TimeBreakdown(allReports, extraBlocks);
@@ -1030,10 +1123,12 @@ public class UsabilityExperiments {
         //runExp4_UsabilityCoverage(allReports);
 
         //EXP-5: Query History Size – 5 sessions × 50 queries (pkdd99_star_1M)
-        //runExp5_QueryHistorySize(allReports);
+        runExp5_QueryHistorySize(allReports);
 
         //EXP-6: Position of Usability Query – 6 sessions × 50 queries (pkdd99_star_1M)
-        //runExp6_QueryPosition(allReports);
+        runExp6_QueryPosition(allReports);
+
+        runExp7_BatchedHistory(allReports);
 
         //Persist all results
         String savedPath = printAndSaveResults(allReports, extraBlocks);
