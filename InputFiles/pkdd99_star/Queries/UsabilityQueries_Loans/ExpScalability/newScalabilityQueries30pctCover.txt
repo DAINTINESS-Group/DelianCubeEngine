@@ -1,0 +1,159 @@
+CubeName:loan
+Name: LoanQuery86
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:date_dim.year = '1993',status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery105
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery160
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK',account_dim.district_name = 'Most'
+@
+
+CubeName:loan
+Name: LoanQuery309
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK'
+@
+
+CubeName:loan
+Name: LoanQuery212
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:date_dim.month = '1991-07',status_dim.status = 'Contract Finished/Loan not Payed',account_dim.region = 'south Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery333
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery394
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.month = '1995-02',account_dim.district_name = 'Opava'
+@
+
+CubeName:loan
+Name: LoanQuery609
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK'
+@
+
+CubeName:loan
+Name: LoanQuery578
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:account_dim.district_name = 'Ostrava - mesto',date_dim.month = '1992-02',status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery840
+AggrFunc:SUM
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Contract Finished/No Problems'
+@
+
+CubeName:loan
+Name: LoanQuery770
+AggrFunc:MIN
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'south Moravia',status_dim.status = 'Contract Finished/Loan not Payed'
+@
+
+CubeName:loan
+Name: LoanQuery859
+AggrFunc:MIN
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'south Moravia'
+@
+
+CubeName:loan
+Name: LoanQuery730
+AggrFunc:MIN
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'south Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery275
+AggrFunc:SUM
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'south Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery751
+AggrFunc:SUM
+Measure:amount
+Gamma:account_dim.region
+Sigma:account_dim.region = 'west Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery295
+AggrFunc:SUM
+Measure:amount
+Gamma:account_dim.region
+Sigma:account_dim.region = 'north Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery329
+AggrFunc:MIN
+Measure:amount
+Gamma:account_dim.region
+Sigma:account_dim.district_name = 'Hl.m. Praha'
+@
+
+CubeName:loan
+Name: LoanQuery987
+AggrFunc:SUM
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'north Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery413
+AggrFunc:MAX
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'east Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery849
+AggrFunc:SUM
+Measure:amount
+Gamma:account_dim.district_name
+Sigma:account_dim.region = 'east Bohemia'
+@

@@ -1,0 +1,107 @@
+# 1) 1 sigma / 1 gamma -- REAL, from your validated 52-pair set
+CubeName:loan
+Name: LoanQuery2
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1996',account_dim.region = 'north Bohemia'
+@
+
+CubeName:loan
+Name: LoanQuery27
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status
+Sigma:status_dim.status = 'Running Contract/OK'
+@
+
+
+# 2) 2 sigma / 2 gamma, roll up 1 dim -- REAL, from your validated 52-pair set
+CubeName:loan
+Name: LoanQuery196
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status,date_dim.day
+Sigma:date_dim.year = '1994',status_dim.status = 'Other status'
+@
+
+CubeName:loan
+Name: LoanQuery255
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.year,status_dim.status
+Sigma:date_dim.year = '1994',status_dim.status = 'Other status'
+@
+
+
+# 3) 2 sigma / 2 gamma, roll up BOTH dims -- CONSTRUCTED (no real example exists; please verify against engine)
+CubeName:loan
+Name: LoanQueryP3base
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day,account_dim.district_name
+Sigma:date_dim.year = '1997',account_dim.region = 'west Bohemia'
+@
+
+CubeName:loan
+Name: LoanQueryP3new
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.month,account_dim.region
+Sigma:date_dim.year = '1997',account_dim.region = 'west Bohemia'
+@
+
+
+# 4) 3 sigma / 3 gamma, roll up 1 dim -- CONSTRUCTED (no real example exists; please verify against engine)
+CubeName:loan
+Name: LoanQueryP4base
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status,date_dim.day,account_dim.district_name
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1997',account_dim.district_name = 'Cheb'
+@
+
+CubeName:loan
+Name: LoanQueryP4new
+AggrFunc:MAX
+Measure:amount
+Gamma:status_dim.status,date_dim.year,account_dim.district_name
+Sigma:status_dim.status = 'Running Contract/OK',date_dim.year = '1997',account_dim.district_name = 'Cheb'
+@
+
+
+# 5) 3 sigma / 3 gamma, roll up 2 dims -- CONSTRUCTED (no real example exists; please verify against engine)
+CubeName:loan
+Name: LoanQueryP5base
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status,date_dim.day,account_dim.district_name
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1998',account_dim.region = 'south Moravia'
+@
+
+CubeName:loan
+Name: LoanQueryP5new
+AggrFunc:MIN
+Measure:amount
+Gamma:status_dim.status,date_dim.year,account_dim.region
+Sigma:status_dim.status = 'Contract Finished/No Problems',date_dim.year = '1998',account_dim.region = 'south Moravia'
+@
+
+
+# 6) 3 sigma / 3 gamma, roll up ALL 3 dims (status rolls to All_status, dropped from NEW's gamma -- NEW gamma has 2 explicit dims + implicit All_status) -- CONSTRUCTED (no real example exists; please verify against engine)
+CubeName:loan
+Name: LoanQueryP6base
+AggrFunc:COUNT
+Measure:amount
+Gamma:status_dim.status,date_dim.day,account_dim.district_name
+Sigma:status_dim.status = 'Other status',date_dim.year = '1996',account_dim.region = 'south Bohemia'
+@
+
+CubeName:loan
+Name: LoanQueryP6new
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.year,account_dim.region
+Sigma:status_dim.status = 'Other status',date_dim.year = '1996',account_dim.region = 'south Bohemia'
+@
+

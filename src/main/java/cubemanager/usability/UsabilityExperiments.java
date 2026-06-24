@@ -36,7 +36,7 @@ public class UsabilityExperiments {
 
     /** EXP-2 Scalability query file for the baseline pkdd99_star dataset (20 queries). */
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries.txt");
-    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries20pctCover.txt");
+    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/newScalabilityQueries30pctCover.txt");
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries15pctCover.txt");
 
 
@@ -55,16 +55,16 @@ public class UsabilityExperiments {
     /**
      * EXP-4 Session files for usability coverage (20 queries, pkdd99_star_1M).
      */
-    static File EXP4_SESSION_10PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession1.txt");
-    static File EXP4_SESSION_20PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession2.txt");
-    static File EXP4_SESSION_30PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession3.txt");
-    static File EXP4_SESSION_40PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession4.txt");
-    static File EXP4_SESSION_50PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession5.txt");
-    static File EXP4_SESSION_60PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession6.txt");
-    static File EXP4_SESSION_70PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession7.txt");
-    static File EXP4_SESSION_80PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession8.txt");
-    static File EXP4_SESSION_90PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession9.txt");
-    static File EXP4_SESSION_100PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/coverageSession10.txt");
+    static File EXP4_SESSION_10PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession1.txt");
+    static File EXP4_SESSION_20PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession2.txt");
+    static File EXP4_SESSION_30PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession3.txt");
+    static File EXP4_SESSION_40PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession4.txt");
+    static File EXP4_SESSION_50PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession5.txt");
+    static File EXP4_SESSION_60PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession6.txt");
+    static File EXP4_SESSION_70PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession7.txt");
+    static File EXP4_SESSION_80PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession8.txt");
+    static File EXP4_SESSION_90PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession9.txt");
+    static File EXP4_SESSION_100PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession10.txt");
 
     /**
      * EXP-5 Session files for query history size.
@@ -85,6 +85,13 @@ public class UsabilityExperiments {
 
     /** EXP-7 Batched-history query file (100 queries, 40 of them usable, pkdd99_star_1M). */
     static File EXP7_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpBatchedHistory/batchedHistoryQueries.txt");
+
+    /**
+     * EXP-8 Rollup-complexity query file (6 base/new query pairs, increasing
+     * sigma/gamma complexity and number of rolled-up dimensions, pkdd99_star).
+     */
+    static File EXP8_QUERY_FILE = new File(
+            "InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/six_complexity_pairs.txt");
 
     public enum DatasetScale {
         BASELINE("pkdd99_star", "pkdd99_star", "pkdd99_star"),
@@ -820,6 +827,38 @@ public class UsabilityExperiments {
         return results;
     }
 
+
+    /**
+     * EXP-8: Rollup-complexity pairs. Runs six_complexity_pairs.txt (6
+     * base/new query pairs, each pair rolling up an increasing number of
+     * sigma/gamma dimensions) against the baseline pkdd99_star dataset, both
+     * directly and via the usability path, so per-query times before/after
+     * usability can be compared.
+     */
+    public static List<ExperimentReport> runExp8_ComplexityPairs( List<ExperimentReport> allReports) throws Exception {
+
+        System.out.println("\n" + repeatChar('=', 80));
+        System.out.println("EXP-8: Rollup Complexity Pairs – 6 base/new query pairs (pkdd99_star)");
+        System.out.println(repeatChar('=', 80));
+
+        DatasetScale scale = DatasetScale.BASELINE;
+        if (!isDatabaseAvailable(scale.schemaName)) {
+            System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
+            return Collections.emptyList();
+        }
+        if (EXP8_QUERY_FILE == null || !EXP8_QUERY_FILE.exists()) {
+            System.out.println("  [SKIP] EXP-8 – query file not found: " + EXP8_QUERY_FILE);
+            return Collections.emptyList();
+        }
+
+        ConnectionConfig config = scale.toLoanConfig();
+        String baseLabel = "EXP-8 [" + scale.tag + "][loan]  " + EXP8_QUERY_FILE.getName();
+        List<ExperimentReport> results = runComparativeExperiment(baseLabel, config, EXP8_QUERY_FILE);
+
+        allReports.addAll(results);
+        return results;
+    }
+
     public static List<String> formatReport(ExperimentReport report) {
         List<String> lines = new ArrayList<>();
         String sep = repeatChar('=', 80);
@@ -1114,21 +1153,24 @@ public class UsabilityExperiments {
         //runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
-        //runExp2_Scalability(allReports);
+        runExp2_Scalability(allReports);
 
         //EXP-3: Time Breakdown – 10 sessions × 20 queries (pkdd99_star_1M)
         //runExp3_TimeBreakdown(allReports, extraBlocks);
 
         //EXP-4: Usability Coverage – 10 sessions × 20 queries (pkdd99_star_1M)
-        //runExp4_UsabilityCoverage(allReports);
+        runExp4_UsabilityCoverage(allReports);
 
         //EXP-5: Query History Size – 5 sessions × 50 queries (pkdd99_star_1M)
-        runExp5_QueryHistorySize(allReports);
+        //runExp5_QueryHistorySize(allReports);
 
         //EXP-6: Position of Usability Query – 6 sessions × 50 queries (pkdd99_star_1M)
         //runExp6_QueryPosition(allReports);
 
         //runExp7_BatchedHistory(allReports);
+
+        // EXP-8: Rollup Complexity Pairs – 6 base/new query pairs (pkdd99_star)
+        runExp8_ComplexityPairs(allReports);
 
         //Persist all results
         String savedPath = printAndSaveResults(allReports, extraBlocks);
