@@ -379,14 +379,14 @@ public class UsabilityExperiments {
         System.out.println("EXP-1: loanQueries_Usability.txt – all five dataset scales");
         System.out.println(repeatChar('=', 80));
 
-        File usabilityFile = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/loanQueries_Usability.txt");
+        File usabilityFile = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/loan_gen_queries_1000.txt");
 
         DatasetScale[] scales = {
-                DatasetScale.BASELINE,
-                DatasetScale.SCALE_100K,
-                DatasetScale.SCALE_1M,
+            //    DatasetScale.BASELINE,
+            //    DatasetScale.SCALE_100K,
+           //     DatasetScale.SCALE_1M,
                 DatasetScale.SCALE_10M,
-                DatasetScale.SCALE_100M
+           //     DatasetScale.SCALE_100M
         };
 
         List<ExperimentReport> results = new ArrayList<>();
@@ -1150,7 +1150,7 @@ public class UsabilityExperiments {
         List<List<String>> extraBlocks = new ArrayList<>();
 
         //EXP-1: loanQueries_Usability.txt – all five scales
-        //runExp1_LoanUsabilityFile(allReports);
+        runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
         runExp2_Scalability(allReports);
