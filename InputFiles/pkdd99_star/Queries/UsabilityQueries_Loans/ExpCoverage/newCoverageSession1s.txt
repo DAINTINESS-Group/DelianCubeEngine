@@ -1,0 +1,127 @@
+CubeName:loan
+Name: LoanQuery689
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1991 AND 1994
+@
+
+CubeName:loan
+Name: LoanQuery753
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1993'
+@
+
+CubeName:loan
+Name: LoanQuery78
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1994 AND 1997
+@
+
+CubeName:loan
+Name: LoanQuery5
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1999-08'
+@
+
+CubeName:loan
+Name: LoanQuery253
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery148
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.year
+Sigma:date_dim.year = '1992'
+@
+
+CubeName:loan
+Name: LoanQuery322
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery299
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.year
+Sigma:date_dim.year = '1991'
+@
+
+CubeName:loan
+Name: LoanQuery97
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery645
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1999-10'
+@
+
+CubeName:loan
+Name: LoanQuery709
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1993 AND 1996
+@
+
+CubeName:loan
+Name: LoanQuery573
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.year
+Sigma:date_dim.year = '1998'
+@
+
+CubeName:loan
+Name: LoanQuery383
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1991 AND 1994
+@
+
+CubeName:loan
+Name: LoanQuery789
+AggrFunc:COUNT
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1996-04'
+@
+
+CubeName:loan
+Name: LoanQuery264
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.year BETWEEN 1996 AND 1999,account_dim.district_name = 'Hradec Kralove'
+@
+
+CubeName:loan
+Name: LoanQuery524
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.month = '1998-03'
+@

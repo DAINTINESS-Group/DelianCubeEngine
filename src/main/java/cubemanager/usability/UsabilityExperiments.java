@@ -36,7 +36,7 @@ public class UsabilityExperiments {
 
     /** EXP-2 Scalability query file for the baseline pkdd99_star dataset (20 queries). */
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries.txt");
-    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/newScalabilityQueries30pctCover.txt");
+    static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalability_10M_30pctS.txt");
     //static File EXP2_QUERY_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpScalability/scalabilityQueries15pctCover.txt");
 
 
@@ -55,16 +55,16 @@ public class UsabilityExperiments {
     /**
      * EXP-4 Session files for usability coverage (20 queries, pkdd99_star_1M).
      */
-    static File EXP4_SESSION_10PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession1.txt");
-    static File EXP4_SESSION_20PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession2.txt");
-    static File EXP4_SESSION_30PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession3.txt");
-    static File EXP4_SESSION_40PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession4.txt");
-    static File EXP4_SESSION_50PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession5.txt");
-    static File EXP4_SESSION_60PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession6.txt");
-    static File EXP4_SESSION_70PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession7.txt");
-    static File EXP4_SESSION_80PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession8.txt");
-    static File EXP4_SESSION_90PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession9.txt");
-    static File EXP4_SESSION_100PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession10.txt");
+    static File EXP4_SESSION_10PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession1s.txt");
+    static File EXP4_SESSION_20PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession2s.txt");
+    static File EXP4_SESSION_30PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession3s.txt");
+    static File EXP4_SESSION_40PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession4s.txt");
+    static File EXP4_SESSION_50PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession5s.txt");
+    static File EXP4_SESSION_60PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession6s.txt");
+    static File EXP4_SESSION_70PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession7s.txt");
+    static File EXP4_SESSION_80PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession8s.txt");
+    static File EXP4_SESSION_90PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession9s.txt");
+    static File EXP4_SESSION_100PCT_FILE = new File("InputFiles/pkdd99_star/Queries/UsabilityQueries_Loans/ExpCoverage/newCoverageSession10s.txt");
 
     /**
      * EXP-5 Session files for query history size.

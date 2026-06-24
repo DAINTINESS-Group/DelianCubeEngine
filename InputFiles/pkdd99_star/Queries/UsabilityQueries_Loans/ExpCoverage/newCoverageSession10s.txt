@@ -1,0 +1,127 @@
+CubeName:loan
+Name: LoanQuery689
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1991 AND 1994
+@
+
+CubeName:loan
+Name: LoanQuery753
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1993'
+@
+
+CubeName:loan
+Name: LoanQuery78
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1994 AND 1997
+@
+
+CubeName:loan
+Name: LoanQuery579
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1996'
+@
+
+CubeName:loan
+Name: LoanQuery253
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery465
+AggrFunc:SUM
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1997'
+@
+
+CubeName:loan
+Name: LoanQuery322
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery825
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.month
+Sigma:date_dim.year = '1998'
+@
+
+CubeName:loan
+Name: LoanQuery97
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1996 AND 1999
+@
+
+CubeName:loan
+Name: LoanQuery629
+AggrFunc:MIN
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1999'
+@
+
+CubeName:loan
+Name: LoanQuery383
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year BETWEEN 1991 AND 1994
+@
+
+CubeName:loan
+Name: LoanQuery538
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1992'
+@
+
+CubeName:loan
+Name: LoanQuery799
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1994'
+@
+
+CubeName:loan
+Name: LoanQuery538
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1992'
+@
+
+CubeName:loan
+Name: LoanQuery538
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1992'
+@
+
+CubeName:loan
+Name: LoanQuery538
+AggrFunc:MAX
+Measure:amount
+Gamma:date_dim.day
+Sigma:date_dim.year = '1992'
+@
