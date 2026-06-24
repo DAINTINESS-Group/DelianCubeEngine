@@ -537,7 +537,7 @@ public class UsabilityExperiments {
         System.out.println("EXP-4: Usability Coverage – 10 sessions × 20 queries (pkdd99_star_1M)");
         System.out.println(repeatChar('=', 80));
 
-        DatasetScale scale = DatasetScale.SCALE_1M;
+        DatasetScale scale = DatasetScale.SCALE_10M;
         if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
@@ -841,7 +841,7 @@ public class UsabilityExperiments {
         System.out.println("EXP-8: Rollup Complexity Pairs – 6 base/new query pairs (pkdd99_star)");
         System.out.println(repeatChar('=', 80));
 
-        DatasetScale scale = DatasetScale.BASELINE;
+        DatasetScale scale = DatasetScale.SCALE_10M;
         if (!isDatabaseAvailable(scale.schemaName)) {
             System.out.println("  [SKIP] Database '" + scale.schemaName + "' not reachable.");
             return Collections.emptyList();
@@ -1153,7 +1153,7 @@ public class UsabilityExperiments {
         //runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
-        runExp2_Scalability(allReports);
+        //runExp2_Scalability(allReports);
 
         //EXP-3: Time Breakdown – 10 sessions × 20 queries (pkdd99_star_1M)
         //runExp3_TimeBreakdown(allReports, extraBlocks);
