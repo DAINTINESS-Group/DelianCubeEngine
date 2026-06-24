@@ -1150,7 +1150,7 @@ public class UsabilityExperiments {
         List<List<String>> extraBlocks = new ArrayList<>();
 
         //EXP-1: loanQueries_Usability.txt – all five scales
-        runExp1_LoanUsabilityFile(allReports);
+        //runExp1_LoanUsabilityFile(allReports);
 
         //EXP-2: Scalability – 5 sessions × 20 queries (one per scale)
         runExp2_Scalability(allReports);
