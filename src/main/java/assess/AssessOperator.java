@@ -1,5 +1,15 @@
 package assess;
 
+import result.highlights.CubeSchemaResolver;
+import result.highlights.HighlightExtractor;
+import result.highlights.HighlightSet;
+import result.highlights.IntentionalOperator;
+import result.highlights.OperatorResult;
+import result.highlights.metamodel.ArchetypeProperty;
+import result.highlights.archetypes.MegaContributorArchetype;
+import result.highlights.instance.ElementaryHighlight;
+import result.highlights.instance.Highlight;
+import result.highlights.instance.HolisticHighlight;
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
 import assess.utils.ComparedCell;
@@ -9,93 +19,98 @@ import cubemanager.CubeManager;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import result.Cell;
 import result.ResultFileMetadata;
+import model.abstracts.AbstractModel;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * The top layer class for any assessments done in the intentional model.
  * Given that the CubeManager handles only one cube at a time, instances
  * of this class are created everytime we wish to change cubes.
+ *
+ * <p>The operator is a Stage-1 producer: {@link #execute(String)} runs the query-defined
+ * {@link AssessModel} (benchmark + delta + labeling) over the cube data and returns an
+ * {@link OperatorResult}, registering the archetypes worth testing on it. It does not extract or
+ * build highlights — Stage-2 evaluation ({@link HighlightExtractor}) runs on top of the result,
+ * externally.
  */
-public class AssessOperator {
+public class AssessOperator implements IntentionalOperator {
     private final CubeManager cubeManager;
 
-    public static class AssessResults {
-        public long executionTime;
-        public long parseTime;
-        public long comparisonTime;
-        public long labelingTime;
-        String query;
-        AssessQuery parsedQuery;
-        List<ComparedCell> comparedCells = new ArrayList<>();
-        List<LabeledCell> labeledCells;
-    }
+    private OperatorResult operatorResult;
+    private List<ArchetypeProperty> registeredArchetypes = new ArrayList<>();
+    private String outputFileName;
 
     public AssessOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
     }
 
-    private String outputFileName;
+    /**
+     * Stage 1: parses the query, runs the {@link AssessModel} over the cube data, and returns the
+     * operator's product with ASSESS's candidate archetypes registered.
+     *
+     * @param assessQuery The user-provided query for assessment reasons
+     * @throws RecognitionException If the query does not follow the defined syntax
+     */
+    public OperatorResult execute(String assessQuery) throws RecognitionException {
+        AssessQuery parsedQuery = parseQuery(assessQuery);
+        outputFileName = parsedQuery.outputName;
 
+        AssessModel assessModel = new AssessModel(
+                parsedQuery.benchmark, parsedQuery.deltaFunction, parsedQuery.labelingScheme,
+                parsedQuery.targetCube);
+
+        if (assessModel.compute() != 0) {
+            throw new RuntimeException("No cells collected from the target cube query");
+        }
+
+        operatorResult = new OperatorResult(
+                parsedQuery.targetCubeQuery, parsedQuery.targetCube,
+                Collections.<AbstractModel>singletonList(assessModel));
+
+        registeredArchetypes = new ArrayList<>();
+        registeredArchetypes.add(BenchmarkTendencyArchetype.create(parsedQuery.labelingScheme.getOrderedLabels()));
+        registeredArchetypes.add(MegaContributorArchetype.create());
+        return operatorResult;
+    }
+
+    /**
+     * Produces the result, extracts highlights over it, and writes the ASSESS Markdown report.
+     * The file-producing entry point for the RMI path; the extraction itself is external.
+     */
     public ResultFileMetadata execute(String assessQuery, String metadataFilename) {
         ResultFileMetadata results = new ResultFileMetadata();
         results.setComponentResultFiles(null);
         results.setComponentResultInfoFiles(null);
         results.setResultInfoFile(metadataFilename);
+        CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
+
         try {
-            execute(assessQuery);
-            results.setResultFile(outputFileName);
+            OperatorResult result = execute(assessQuery);
+            HighlightSet highlights = new HighlightExtractor()
+                    .extract(result, registeredArchetypes, schemaResolver);
+            results.setResultFile(AssessReport.write(assessQuery, result, highlights, outputFileName));
         } catch (RecognitionException | RuntimeException e) {
             results.setErrorCheckingStatus(e.toString());
         }
         return results;
     }
 
-    /* Executes the provided query.
-     * @param assessQuery The user-provided query for assessment reasons
-     * @return
-     * @throws RecognitionException If the query does not follow the defined syntax
-     */
-    public AssessResults execute(String assessQuery) throws RecognitionException {
-        AssessResults assessResults = new AssessResults();
-        assessResults.query = assessQuery;
-        Instant executionStart = Instant.now();
+    @Override
+    public OperatorResult toOperatorResult() { return operatorResult; }
 
-        // Parse the Query
-        Instant parsingStart = Instant.now();
-        AssessQuery parsedQuery = parseQuery(assessQuery);
-        outputFileName = parsedQuery.outputName;
-        assessResults.parseTime = Duration.between(parsingStart, Instant.now()).toMillis();
-        assessResults.parsedQuery = parsedQuery;
-
-        // Execute Comparisons
-        Instant comparingStart = Instant.now();
-        HashMap<Cell, Double> comparisonResults = executeComparison(parsedQuery, assessResults.comparedCells);
-        assessResults.comparisonTime = Duration.between(comparingStart, Instant.now()).toNanos();
-
-        // Label Comparison Results
-        Instant labelingStart = Instant.now();
-        List<LabeledCell> results = labelResults(parsedQuery, comparisonResults);
-        assessResults.labelingTime = Duration.between(labelingStart, Instant.now()).toNanos();
-        assessResults.labeledCells = results;
-
-        assessResults.executionTime = Duration.between(executionStart, Instant.now()).toMillis();
-
-        exportToMD(assessResults);
-        return assessResults;
-    }
+    @Override
+    public List<ArchetypeProperty> registeredArchetypes() { return registeredArchetypes; }
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
         AssessQueryParser parser = createParser(assessQuery);
@@ -113,57 +128,58 @@ public class AssessOperator {
             throw new RuntimeException("There was an error while creating the Assess Query parser");
         }
     }
+}
 
-    private HashMap<Cell, Double> executeComparison(AssessQuery parsedQuery, List<ComparedCell> comparedCells) {
-        List<Cell> targetCells = parsedQuery.targetCube.getCells();
-        if (targetCells.isEmpty()) {
-            throw new RuntimeException("No cells collected from the target cube query");
-        }
-        return parsedQuery.deltaFunction.compareTargetToBenchmark(
-                targetCells, parsedQuery.benchmark, comparedCells);
-    }
 
-    private List<LabeledCell> labelResults(AssessQuery parsedQuery, HashMap<Cell, Double> comparisonResults) {
-        List<LabeledCell> labeledCells = new ArrayList<>();
-        for (Cell cell : comparisonResults.keySet()) {
-            String label = parsedQuery.labelingScheme.applyLabels(comparisonResults.get(cell));
-            labeledCells.add(new LabeledCell(cell, comparisonResults.get(cell), label));
-        }
 
-        return labeledCells;
-    }
+/**
+ * Renders an ASSESS {@link OperatorResult} and the highlights extracted from it to a Markdown report.
+ * ASSESS-specific presentation (the comparisons and the labeling), kept out of the operator and off the
+ * highlight pipeline: it consumes the operator's product and an already-extracted {@link HighlightSet}.
+ */
+final class AssessReport {
 
-    private void exportToMD(AssessResults assessResults) {
-        String outputName = assessResults.parsedQuery.outputName;
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("OutputFiles/assessments/" + outputName + ".md"))) {
-            // Print Query
-            writer.append("## Query\n");
-            writer.append(assessResults.query);
-            writer.append("\n\n");
+    private AssessReport() {}
 
-            // Comparisons Made
+    public static String write(String query, OperatorResult result, HighlightSet highlights, String outputName) {
+        AssessModel model = (AssessModel) result.model(AssessModel.NAME);
+        List<ComparedCell> comparedCells = model.getComparedCells();
+        List<LabeledCell> labeledCells = model.getLabeledCells();
+
+        File dir = new File("OutputFiles/assessments");
+        dir.mkdirs();
+        File out = new File(dir, outputName + ".md");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(out))) {
+            writer.append("## Query\n").append(query).append("\n\n");
+
             writer.append("## Comparisons Made (")
-                    .append(Integer.toString(assessResults.comparedCells.size())).append(" in total)\n");
-            for (ComparedCell comparedCell : assessResults.comparedCells) {
+                    .append(Integer.toString(comparedCells.size())).append(" in total)\n");
+            for (ComparedCell comparedCell : comparedCells) {
                 writer.append(comparedCell.toString()).append("\n\n");
             }
 
-            // Print resulting cells with their labels
             writer.append("## Labeling Results (")
-                    .append(Integer.toString(assessResults.labeledCells.size())).append(" in total)\n");
-            for (LabeledCell cell : assessResults.labeledCells) {
+                    .append(Integer.toString(labeledCells.size())).append(" in total)\n");
+            for (LabeledCell cell : labeledCells) {
                 writer.append(cell.toString()).append("\n\n");
             }
 
-            // Print Performance results
-            writer.append("## Performance Results\n");
-            writer.append("Parsing time: ").append(String.valueOf(assessResults.parseTime)).append(" ms\n");
-            writer.append("Comparison time: ").append(String.valueOf(assessResults.comparisonTime)).append(" ns\n");
-            writer.append("Labeling time: ").append(String.valueOf(assessResults.labelingTime)).append(" ns\n");
-            writer.append("Whole execution time: ").append(String.valueOf(assessResults.executionTime)).append(" ms\n");
+            if (!highlights.isEmpty()) {
+                writer.append("## Highlights\n");
+                for (Highlight h : highlights.highlights()) {
+                    writer.append("### ").append(h.toText()).append("\n");
+                    if (h instanceof HolisticHighlight) {
+                        for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary) {
+                            writer.append("- ").append(eh.toText()).append("\n");
+                        }
+                    }
+                    writer.append("\n");
+                }
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Failed to export to MarkDown");
         }
+        return out.getPath();
     }
 }

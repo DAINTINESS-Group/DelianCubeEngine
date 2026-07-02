@@ -62,7 +62,7 @@ public class RankModelComponent extends AbstractModelComponent {
 	public void setRankLabel(int [] aRankLabel) {
 		rankLabel = aRankLabel;
 	}
-	
+
 	private int[] rankLabel;
 	private ArrayList<String> cellLabels;
 }//end class

@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -66,8 +67,8 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
-        assertEquals("mid_effort", results.labeledCells.get(0).label);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        assertEquals("mid_effort", labeledCells.get(0).label);
     }
 
     @Test
@@ -78,8 +79,8 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
-        for (LabeledCell labeledCell : results.labeledCells) {
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        for (LabeledCell labeledCell : labeledCells) {
             System.out.println(labeledCell.cell.toString(", "));
         }
     }
@@ -93,9 +94,9 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
 
-        for (LabeledCell labeledCell : results.labeledCells) {
+        for (LabeledCell labeledCell : labeledCells) {
             if (labeledCell.cell.toDouble() > constantBenchmark) {
                 assertEquals("high", labeledCell.label);
             } else {
@@ -112,9 +113,9 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low, [0.3, 0.6): mid, [0.6, 1]: high, (1, +inf): perfect}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
 
-        for (LabeledCell labeledCell : results.labeledCells) {
+        for (LabeledCell labeledCell : labeledCells) {
             if (labeledCell.cell.toDouble() == 4980.0) {
                 assertEquals("low", labeledCell.label);
             }
@@ -129,8 +130,8 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
-        assertEquals("low", results.labeledCells.get(0).label);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        assertEquals("low", labeledCells.get(0).label);
     }
 
     @Test
@@ -141,8 +142,8 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
 
-        AssessOperator.AssessResults results = operator.execute(query);
-        assertEquals("ULTRA", results.labeledCells.get(0).label);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        assertEquals("ULTRA", labeledCells.get(0).label);
     }
 
     @Test
@@ -155,10 +156,10 @@ public class AssessOperatorTest {
         double magicNumber = 465504.0;
         boolean assertionCompleted = false;
 
-        AssessOperator.AssessResults results = operator.execute(query);
-        results.labeledCells.stream().map(labeledCell -> labeledCell.cell.toDouble()).forEach(System.out::println);
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        labeledCells.stream().map(labeledCell -> labeledCell.cell.toDouble()).forEach(System.out::println);
 
-        for (LabeledCell labeledCell : results.labeledCells) {
+        for (LabeledCell labeledCell : labeledCells) {
             if (labeledCell.cell.toDouble() == magicNumber) {
                 assertEquals("ULTRA", labeledCell.label);
                 assertionCompleted = true;

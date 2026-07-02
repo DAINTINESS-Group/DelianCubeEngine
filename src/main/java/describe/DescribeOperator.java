@@ -1,6 +1,8 @@
 package describe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.antlr.runtime.RecognitionException;
 
@@ -12,19 +14,25 @@ import mainengine.ModelManager;
 import model.abstracts.AbstractModel;
 import result.Result;
 import result.ResultFileMetadata;
+import result.highlights.CubeSchemaResolver;
+import result.highlights.IntentionalOperator;
+import result.highlights.OperatorResult;
+import result.highlights.archetypes.MegaContributorArchetype;
+import result.highlights.metamodel.ArchetypeProperty;
 
 /**
  * A class for the intentional operator Describe
  * @author Nik-Pt
  */
-public class DescribeOperator {
-    
+public class DescribeOperator implements IntentionalOperator {
+
     private CubeManager cubeManager;
     private DescribeTranslationManager translationManager;
     private DescribeParserManager parserManager;
 	private DescribeReport describeReport;
     private Result result;
     private DescribeQuery describeQuery;
+    private List<AbstractModel> launchedModels = new ArrayList<>();
     
     public DescribeOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
@@ -93,6 +101,7 @@ public class DescribeOperator {
                 
                 CubeQuery cq = describeQuery.getCubeQuery();
                 Result result = cubeManager.executeQuery(cq);
+                this.result = result;
                 
                 //Apply models after getting the results
                 DescribeParams params = parserManager.getParams();
@@ -144,13 +153,14 @@ public class DescribeOperator {
         ModelManager modelManager = new ModelManager(data);
         
         ArrayList<AbstractModel> launchedModels = modelManager.selectModelsToLaunch(modelArray);
-        
+
         int modelGenFlag = modelManager.executeModelConstruction("Describe Query");
-  
+
         if (modelGenFlag == 0) {
             modelManager.addComponentsToResultMetadata(resMetadata);
 
             if (launchedModels != null) {
+                this.launchedModels = launchedModels;
                 for (AbstractModel model : launchedModels) {
                     String[][] output = model.printAs2DStringArray();
                     this.describeQuery.addModelOutput(output);
@@ -159,12 +169,23 @@ public class DescribeOperator {
         }
         return resMetadata;
     }
-    
+
     public DescribeQuery getDescribeQuery() {
         return describeQuery;
     }
-    
+
     public Result getExecutionResult() {
         return this.result;
+    }
+
+    @Override
+    public OperatorResult toOperatorResult() {
+        CubeQuery cq = describeQuery == null ? null : describeQuery.getCubeQuery();
+        return new OperatorResult(cq, result, launchedModels);
+    }
+
+    @Override
+    public List<ArchetypeProperty> registeredArchetypes() {
+        return Collections.singletonList(MegaContributorArchetype.create());
     }
 }

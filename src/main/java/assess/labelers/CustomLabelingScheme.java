@@ -185,4 +185,10 @@ public class CustomLabelingScheme implements LabelingScheme {
                 .map(rule -> rule.label)
                 .orElse("no match"); // If no rule contains value, return "no match"
     }
+
+    @Override
+    public List<String> getOrderedLabels() {
+        // rules are validated into ascending order, so their labels are already ordered
+        return rules.stream().map(rule -> rule.label).collect(java.util.stream.Collectors.toList());
+    }
 }

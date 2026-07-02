@@ -5,39 +5,46 @@ import cubemanager.CubeManager;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 
+import result.highlights.CubeSchemaResolver;
+import result.highlights.HighlightExtractor;
+import result.highlights.HighlightSet;
+import result.highlights.OperatorResult;
+import result.highlights.instance.Highlight;
+import result.highlights.metamodel.ArchetypeProperty;
+
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.List;
 
 public class AssessOperatorClient {
 
     public static void main(String[] args) throws RecognitionException {
         CubeManager cubeManager = initCubeMangerB();
         AssessOperator operator = new AssessOperator(cubeManager);
-        long parsingTime = 0;
-        long comparisonTime = 0;
-        long labelingTime = 0;
-        long executionTime = 0;
         String query = "WITH loan\n" +
-                "FOR region = 'South Moravia', day = '08/10/1997'\n" +
-                "BY region, day, status\n" +
-                "ASSESS max(amount)\n" +
-                "AGAINST PAST 5\n" +
+                "FOR year = '1997'\n" +
+                "BY region, year, status\n" +
+                "ASSESS sum(amount)\n" +
+                "AGAINST PAST 2\n" +
                 "USING ratio(absolute(amount, benchmark.amount))\n" +
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkDemo";
 
-        for (int i = 0; i < 5; i++) {
-            AssessOperator.AssessResults results = operator.execute(query);
-            parsingTime += results.parseTime;
-            comparisonTime += results.comparisonTime;
-            labelingTime += results.labelingTime;
-            executionTime += results.executionTime;;
-        }
+        CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
 
-        System.out.println("Parsing Time Avg in ms: " + parsingTime/5);
-        System.out.println("Comparison Time Avg in ms: " + comparisonTime/5 * 0.000001);
-        System.out.println("Labeling Time Avg in ms: " + labelingTime/5 * 0.000001);
-        System.out.println("Execution Time Avg in ms: " + executionTime/5);
+        // Stage 1: the operator produces its result. Stage 2: highlight extraction runs on top of it.
+        long start = System.nanoTime();
+        OperatorResult result = operator.execute(query);
+        List<ArchetypeProperty> registeredArchetypes = operator.registeredArchetypes();
+        HighlightSet highlights = new HighlightExtractor()
+                .extract(result, registeredArchetypes, schemaResolver);
+        long ms = (System.nanoTime() - start) / 1_000_000;
+
+        System.out.println("Execution + extraction: " + ms + " ms");
+        System.out.println(highlights.size() + " highlights:");
+        for (Highlight h : highlights.highlights()) {
+            System.out.println("  " + h.toText());
+        }
     }
 
     private static CubeManager initCubeMangerA() {
