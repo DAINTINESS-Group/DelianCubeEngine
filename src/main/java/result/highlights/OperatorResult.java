@@ -5,6 +5,9 @@ import java.util.List;
 
 import cubemanager.cubebase.CubeQuery;
 import model.abstracts.AbstractModel;
+import model.labeling.DerivedMeasure;
+import model.labeling.Labeling;
+import model.labeling.LabelingModel;
 import result.Result;
 
 /**
@@ -30,5 +33,23 @@ public final class OperatorResult {
             if (m.getModelName().equals(modelName)) return m;
         }
         return null;
+    }
+
+    /** Every per-cell labeling produced by the models the operator ran. */
+    public List<Labeling> labelings() {
+        List<Labeling> out = new ArrayList<>();
+        for (AbstractModel m : models) {
+            if (m instanceof LabelingModel) out.addAll(((LabelingModel) m).labelings());
+        }
+        return out;
+    }
+
+    /** Every derived measure the models the operator ran computed over the data. */
+    public List<DerivedMeasure> derivedMeasures() {
+        List<DerivedMeasure> out = new ArrayList<>();
+        for (AbstractModel m : models) {
+            if (m instanceof LabelingModel) out.addAll(((LabelingModel) m).derivedMeasures());
+        }
+        return out;
     }
 }

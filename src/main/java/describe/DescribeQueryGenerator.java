@@ -1,5 +1,7 @@
 package describe;
 
+import cubemanager.cubebase.QueryMeasure;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -57,7 +59,7 @@ public class DescribeQueryGenerator {
         if (measureList != null) {
             for (String raw : measureList) {
                 QueryMeasure qm = new QueryMeasure(raw); 
-                query.addQueryMeasure(qm.getFunction(), qm.getAttribute(), qm.getAlias());
+                query.addQueryMeasure(qm.getFunction(), qm.getName(), qm.getAlias());
             }
         }
 

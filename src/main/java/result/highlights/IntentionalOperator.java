@@ -2,6 +2,7 @@ package result.highlights;
 
 import java.util.List;
 
+import result.highlights.archetypes.DefaultArchetypes;
 import result.highlights.metamodel.ArchetypeProperty;
 
 /**
@@ -20,6 +21,12 @@ public interface IntentionalOperator {
     /** The operator's produced result: data and the models it ran. */
     OperatorResult toOperatorResult();
 
-    /** The archetype properties the operator registers as worth testing on its result. */
-    List<ArchetypeProperty> registeredArchetypes();
+    /**
+     * The archetype properties the operator registers as worth testing on its result. Defaults to the
+     * generic {@link DefaultArchetypes#all() data-driven archetypes}; an operator overrides to add its own
+     * (e.g. ASSESS appends its benchmark-tendency archetype to the defaults).
+     */
+    default List<ArchetypeProperty> registeredArchetypes() {
+        return DefaultArchetypes.all();
+    }
 }

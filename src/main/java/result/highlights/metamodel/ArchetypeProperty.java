@@ -16,15 +16,24 @@ public final class ArchetypeProperty {
     public final List<Algorithm> candidateAlgorithms;
     public final List<ScoreType> hhScoreTypes;
     public final List<ElementaryHighlightRole> elementaryHighlightRoles;
+    public final EvaluationAxis axis;
 
     public ArchetypeProperty(String name, MainMeasureRole mainMeasureRole, List<ExplanatorRole> explanatorRoles,
                              List<Algorithm> candidateAlgorithms, List<ScoreType> hhScoreTypes,
                              List<ElementaryHighlightRole> elementaryHighlightRoles) {
+        this(name, mainMeasureRole, explanatorRoles, candidateAlgorithms, hhScoreTypes,
+                elementaryHighlightRoles, EvaluationAxis.MEASURE);
+    }
+
+    public ArchetypeProperty(String name, MainMeasureRole mainMeasureRole, List<ExplanatorRole> explanatorRoles,
+                             List<Algorithm> candidateAlgorithms, List<ScoreType> hhScoreTypes,
+                             List<ElementaryHighlightRole> elementaryHighlightRoles, EvaluationAxis axis) {
         this.name = name;
         this.mainMeasureRole = mainMeasureRole;
         this.explanatorRoles = explanatorRoles;
         this.candidateAlgorithms = candidateAlgorithms;
         this.hhScoreTypes = hhScoreTypes;
         this.elementaryHighlightRoles = elementaryHighlightRoles;
+        this.axis = axis;
     }
 }

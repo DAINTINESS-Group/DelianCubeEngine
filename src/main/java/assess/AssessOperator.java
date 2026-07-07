@@ -6,7 +6,6 @@ import result.highlights.HighlightSet;
 import result.highlights.IntentionalOperator;
 import result.highlights.OperatorResult;
 import result.highlights.metamodel.ArchetypeProperty;
-import result.highlights.archetypes.MegaContributorArchetype;
 import result.highlights.instance.ElementaryHighlight;
 import result.highlights.instance.Highlight;
 import result.highlights.instance.HolisticHighlight;
@@ -78,9 +77,6 @@ public class AssessOperator implements IntentionalOperator {
                 parsedQuery.targetCubeQuery, parsedQuery.targetCube,
                 Collections.<AbstractModel>singletonList(assessModel));
 
-        registeredArchetypes = new ArrayList<>();
-        registeredArchetypes.add(BenchmarkTendencyArchetype.create(parsedQuery.labelingScheme.getOrderedLabels()));
-        registeredArchetypes.add(MegaContributorArchetype.create());
         return operatorResult;
     }
 
@@ -108,9 +104,6 @@ public class AssessOperator implements IntentionalOperator {
 
     @Override
     public OperatorResult toOperatorResult() { return operatorResult; }
-
-    @Override
-    public List<ArchetypeProperty> registeredArchetypes() { return registeredArchetypes; }
 
     private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
         AssessQueryParser parser = createParser(assessQuery);

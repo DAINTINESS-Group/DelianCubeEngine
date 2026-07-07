@@ -1,4 +1,4 @@
-package result.highlights.archetypes;
+package result.highlights.archetypes.megacontributor;
 
 import result.highlights.metamodel.Algorithm;
 import result.highlights.metamodel.ArchetypeProperty;
@@ -12,6 +12,7 @@ import result.highlights.metamodel.MeasureConstraint;
 import result.highlights.metamodel.MeasureRole;
 import result.highlights.metamodel.ScoreType;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 
@@ -28,15 +29,15 @@ public final class MegaContributorArchetype {
                 "MegaContributor",
                 Collections.singletonList(new CharacterRole("Contributor")),
                 new MeasureRole("Contribution"),
-                Collections.<ScoreType>singletonList(InterestingnessFacet.PECULIARITY));
-        
+                Collections.<ScoreType>singletonList(MarginalContributionAlgorithm.CONTRIBUTION_SHARE));
+
         Algorithm algorithm = new MarginalContributionAlgorithm(contributorRole);
         return new ArchetypeProperty(
                 "MegaContributor",
                 new MainMeasureRole("Mass", MeasureConstraint.ADDITIVE),
                 Collections.singletonList(new ExplanatorRole("Breakdown", ExplanatorConstraint.ANY)),
                 Collections.singletonList(algorithm),
-                Collections.<ScoreType>singletonList(InterestingnessFacet.PECULIARITY),
+                Arrays.<ScoreType>asList(MarginalContributionAlgorithm.CONTRIBUTION_SHARE, InterestingnessFacet.PECULIARITY),
                 Collections.singletonList(contributorRole));
     }
 }

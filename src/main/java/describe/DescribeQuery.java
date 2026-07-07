@@ -1,5 +1,7 @@
 package describe;
 
+import cubemanager.cubebase.QueryMeasure;
+
 import java.util.ArrayList;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;

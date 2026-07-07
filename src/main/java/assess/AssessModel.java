@@ -1,6 +1,7 @@
 package assess;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +13,9 @@ import assess.labelers.LabelingScheme;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import model.abstracts.AbstractModel;
+import model.labeling.DerivedMeasure;
+import model.labeling.Labeling;
+import model.labeling.LabelingModel;
 import result.Cell;
 import result.Result;
 
@@ -20,7 +24,7 @@ import result.Result;
  * producing a {@code delta} and a {@code label} per cell. It is config-parametric (benchmark + delta +
  * labeling) and is constructed directly with the data rather than through {@link model.ModelFactory}.
  */
-public final class AssessModel extends AbstractModel {
+public final class AssessModel extends AbstractModel implements LabelingModel {
 
     /** Identifies this model's output within an OperatorResult. */
     public static final String NAME = "AssessDelta";
@@ -29,15 +33,17 @@ public final class AssessModel extends AbstractModel {
     private final DeltaScheme delta;
     private final LabelingScheme labeling;
     private final List<ComparedCell> comparedCells = new ArrayList<>();
+    private final List<String> assessmentDomain;
 
-    private final LinkedHashMap<Cell, Double> deltas = new LinkedHashMap<>();
-    private final LinkedHashMap<Cell, String> labels = new LinkedHashMap<>();
+    private final Map<Cell, Double> deltas = new LinkedHashMap<>();
+    private Labeling assessmentLabeling;
 
     public AssessModel(AssessBenchmark benchmark, DeltaScheme delta, LabelingScheme labeling, Result data) {
         super(data);
         this.benchmark = benchmark;
         this.delta = delta;
         this.labeling = labeling;
+        this.assessmentDomain = labeling.getOrderedLabels();
     }
 
     @Override
@@ -48,25 +54,23 @@ public final class AssessModel extends AbstractModel {
         }
         comparedCells.clear();
         deltas.clear();
-        labels.clear();
+        Map<Cell, String> labelByCell = new LinkedHashMap<>();
         HashMap<Cell, Double> computed =
                 delta.compareTargetToBenchmark(targetCells, benchmark, comparedCells);
         for (Map.Entry<Cell, Double> entry : computed.entrySet()) {
             deltas.put(entry.getKey(), entry.getValue());
-            labels.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
+            labelByCell.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
         }
+        this.assessmentLabeling = new Labeling(assessmentDomain, true, labelByCell);
         return 0;
     }
 
-    /** The assessed cells with their delta (insertion-ordered). */
-    public Map<Cell, Double> getDeltas() { return deltas; }
-
     /** The assessed cells with their label. */
-    public Map<Cell, String> getLabels() { return labels; }
+    public Map<Cell, String> getLabels() { return assessmentLabeling.assignment(); }
 
     public double deltaOf(Cell cell) { return deltas.getOrDefault(cell, Double.NaN); }
 
-    public String labelOf(Cell cell) { return labels.get(cell); }
+    public String labelOf(Cell cell) { return assessmentLabeling.of(cell); }
 
     /** Audit trail of target/benchmark comparisons from the last run (incl. no-match cells). */
     public List<ComparedCell> getComparedCells() { return comparedCells; }
@@ -76,9 +80,21 @@ public final class AssessModel extends AbstractModel {
         List<LabeledCell> labeledCells = new ArrayList<>();
         for (Map.Entry<Cell, Double> entry : deltas.entrySet()) {
             Cell cell = entry.getKey();
-            labeledCells.add(new LabeledCell(cell, entry.getValue(), labels.get(cell)));
+            labeledCells.add(new LabeledCell(cell, entry.getValue(), assessmentLabeling.of(cell)));
         }
         return labeledCells;
+    }
+
+    /** The assessment label per cell, over the labeling scheme's ordered domain. */
+    @Override
+    public List<Labeling> labelings() {
+        return Collections.singletonList(assessmentLabeling);
+    }
+
+    /** The delta per cell, as data an archetype can rank by. */
+    @Override
+    public List<DerivedMeasure> derivedMeasures() {
+        return Collections.singletonList(new DerivedMeasure(deltas));
     }
 
     @Override
@@ -96,7 +112,8 @@ public final class AssessModel extends AbstractModel {
             Cell cell = entry.getKey();
             out[i][0] = cell == null ? "" : cell.toString();
             out[i][1] = Double.toString(entry.getValue());
-            out[i][2] = labels.get(cell) == null ? "" : labels.get(cell);
+            String label = assessmentLabeling.of(cell);
+            out[i][2] = label == null ? "" : label;
             i++;
         }
         return out;

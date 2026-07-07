@@ -1,7 +1,6 @@
 package describe;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.RecognitionException;
@@ -14,11 +13,8 @@ import mainengine.ModelManager;
 import model.abstracts.AbstractModel;
 import result.Result;
 import result.ResultFileMetadata;
-import result.highlights.CubeSchemaResolver;
 import result.highlights.IntentionalOperator;
 import result.highlights.OperatorResult;
-import result.highlights.archetypes.MegaContributorArchetype;
-import result.highlights.metamodel.ArchetypeProperty;
 
 /**
  * A class for the intentional operator Describe
@@ -184,8 +180,5 @@ public class DescribeOperator implements IntentionalOperator {
         return new OperatorResult(cq, result, launchedModels);
     }
 
-    @Override
-    public List<ArchetypeProperty> registeredArchetypes() {
-        return Collections.singletonList(MegaContributorArchetype.create());
-    }
+    // registeredArchetypes() inherits the default set from IntentionalOperator.
 }

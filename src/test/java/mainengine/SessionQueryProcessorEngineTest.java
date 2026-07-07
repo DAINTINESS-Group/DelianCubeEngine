@@ -77,7 +77,6 @@ public class SessionQueryProcessorEngineTest {
 		
 		testedQPEngine.initializeConnection(typeOfConnection, userInputList);
 				
-		
 		//TODO: currently, the result goes to the DelianCubeEngine/OutputFiles, i.e., it is mixed with the output of the regular execution. can we isolate the output of the tests, within the test folder?
 		//TODO:  Basically needs to invoke the answerQueriesFromFile to get an OutputFolder parameter.
 	}
@@ -203,8 +202,9 @@ public class SessionQueryProcessorEngineTest {
 
 		File fileProduced2 = new File("OutputFiles/CubeQueryLoan2_Copy.tab");
 		File fileReference2 = new File("src/test/resources/OutputFiles/pkdd99/Reference_CubeQueryLoan2.tab");
-        boolean comparison2 = FileUtils.contentEquals(fileProduced2, fileReference2);
-		
+        // EOL-agnostic: getContents() reads line-by-line, so CRLF reference fixtures match LF output.
+        boolean comparison2 = getContents(fileProduced2.getPath()).equals(getContents(fileReference2.getPath()));
+
         assertEquals(comparison2 , true);/**/
         
 	}//end testanswerCubeQueryFromString

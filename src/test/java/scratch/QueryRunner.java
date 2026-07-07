@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 import analyze.AnalyzeOperatorByIakovidis;
@@ -40,7 +41,11 @@ public class QueryRunner {
         QueryRunner runner = new QueryRunner();
         // default dataset
         runner.use("pkdd99_star", "loan", "pkdd99_star");
-        runner.repl();
+        if (args.length > 0) {
+            runner.dispatch(String.join(" ", args).trim());   // one-shot: run the given query and exit
+        } else {
+            runner.repl();
+        }
     }
 
     /** (re)initialise the engine against a dataset. */
@@ -73,6 +78,8 @@ public class QueryRunner {
                     return;
                 } else if (q.equals(":help") || q.equals(":h")) {
                     printHelp();
+                } else if (q.equals(":examples") || q.equals(":ex")) {
+                    printExamples();
                 } else if (q.startsWith(":use")) {
                     handleUse(q);
                 } else if (q.startsWith(":strategy")) {
@@ -116,14 +123,36 @@ public class QueryRunner {
         ResultFileMetadata md = new AssessOperator(cubeManager).execute(q, "Metadata");
         if (md != null && md.getErrorCheckingStatus() != null) {
             System.out.println("[ASSESS error] " + md.getErrorCheckingStatus());
+            return;
         }
-        // ASSESS writes to OutputFiles/assessments/<outputName>.md and returns the bare name.
-        String name = (md != null) ? md.getResultFile() : null;
-        File f = (name != null) ? new File("OutputFiles/assessments/" + name + ".md") : null;
-        if (f != null && f.exists()) {
-            showReportFile("ASSESS", f);
-        } else {
-            showReport("ASSESS", md);
+        String path = (md != null) ? md.getResultFile() : null;
+        File f = (path != null) ? new File(path) : null;
+        if (f == null || !f.exists()) f = newestReport();
+        showAssessReport(f);
+    }
+
+    /**
+     * Prints an ASSESS report focused on the highlights: the per-cell "Comparisons Made" and
+     * "Labeling Results" bodies are collapsed to their count headers; every other section
+     * (Query, Highlights, Performance) is printed in full.
+     */
+    private void showAssessReport(File f) throws Exception {
+        if (f == null || !f.exists()) {
+            System.out.println("[ASSESS] executed, but no report file was found.");
+            return;
+        }
+        System.out.println("---- ASSESS report: " + f.getPath() + " ----");
+        boolean collapsed = false;
+        for (String line : Files.readAllLines(f.toPath())) {
+            if (line.startsWith("## Comparisons Made") || line.startsWith("## Labeling Results")) {
+                System.out.println(line);   // keep the "(N in total)" header, drop the body
+                collapsed = true;
+            } else if (line.startsWith("## ")) {
+                collapsed = false;
+                System.out.println(line);
+            } else if (!collapsed) {
+                System.out.println(line);
+            }
         }
     }
 
@@ -171,13 +200,18 @@ public class QueryRunner {
     }
 
     private void showReportFile(String tag, File f) throws Exception {
-        if (f != null && f.exists()) {
-            System.out.println("---- " + tag + " report: " + f.getPath() + " ----");
-            try (Stream<String> lines = Files.lines(f.toPath())) {
-                lines.limit(80).forEach(System.out::println);
-            }
-        } else {
+        if (f == null || !f.exists()) {
             System.out.println("[" + tag + "] executed, but no report file was found.");
+            return;
+        }
+        System.out.println("---- " + tag + " report: " + f.getPath() + " ----");
+        List<String> lines = Files.readAllLines(f.toPath());
+        int cap = 120;
+        for (int i = 0; i < Math.min(cap, lines.size()); i++) {
+            System.out.println(lines.get(i));
+        }
+        if (lines.size() > cap) {
+            System.out.println("... (" + (lines.size() - cap) + " more lines; full report: " + f.getPath() + ")");
         }
     }
 
@@ -224,15 +258,31 @@ public class QueryRunner {
         System.out.println("==================================================================");
         System.out.println(" DelianCube interactive query runner   (schema: " + schemaName + ")");
         System.out.println("------------------------------------------------------------------");
-        System.out.println(" Just type a query; the operator is auto-detected. Examples:");
-        System.out.println("   WITH loan DESCRIBE SUM(amount) FOR year > 1997 GROUP BY region");
-        System.out.println("   ANALYZE max(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name, month AS q1");
-        System.out.println("   with loan for region='South Moravia' by month, region assess avg(amount) against region='North Moravia' using ratio(absolute(amount, benchmark.amount)) labels {[0.0,0.3): low, [0.3,1]: high}");
+        System.out.println(" Type a query on ONE line; the operator (DESCRIBE/ANALYZE/ASSESS) is auto-detected.");
         System.out.println(" Commands:");
+        System.out.println("   :examples  ready-to-run example queries (copy a whole line)");
         System.out.println("   :use pkdd | :use foodmart | :use <schema> <cube> <folder>");
         System.out.println("   :strategy iakovidis|min|max|mid     (ANALYZE optimizer; default iakovidis)");
         System.out.println("   :cube      enter a multi-line raw cube query (CubeName:/Gamma:/Sigma:...)");
         System.out.println("   :help   :quit");
         System.out.println("==================================================================");
+    }
+
+    private void printExamples() {
+        System.out.println("------------------------------------------------------------------");
+        System.out.println(" Example queries (copy a whole line and paste at the prompt):");
+        System.out.println();
+        System.out.println(" # ASSESS  sum(amount) -> BenchmarkTendency + MegaContributor (sum is additive)");
+        System.out.println(" with loan for year='1997' by region, year, status assess sum(amount) against past 2 using ratio(absolute(amount, benchmark.amount)) labels {[0.001,0.05]: low, (0.05,0.1]: high, (0.1,+inf): ultra} save as demo_sum");
+        System.out.println();
+        System.out.println(" # ASSESS  max(amount) -> BenchmarkTendency only (max is not additive)");
+        System.out.println(" with loan for region='central Bohemia' by month, region assess max(amount) against 10000 using ratio(amount, benchmark.amount) labels {[0.0,0.5]: low, (0.5,+inf]: high} save as demo_max");
+        System.out.println();
+        System.out.println(" # DESCRIBE");
+        System.out.println(" WITH loan DESCRIBE SUM(amount) FOR year > 1997 GROUP BY region");
+        System.out.println();
+        System.out.println(" # ANALYZE  (choose optimizer with :strategy)");
+        System.out.println(" ANALYZE max(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district_name, month AS q1");
+        System.out.println("------------------------------------------------------------------");
     }
 }

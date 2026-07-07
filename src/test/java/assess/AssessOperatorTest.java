@@ -5,6 +5,13 @@ import cubemanager.CubeManager;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
+import result.highlights.CubeSchemaResolver;
+import result.highlights.HighlightExtractor;
+import result.highlights.HighlightSet;
+import result.highlights.OperatorResult;
+import result.highlights.instance.Highlight;
+import result.highlights.instance.HolisticHighlight;
+import result.highlights.instance.Score;
 
 import java.io.File;
 import java.rmi.RemoteException;
@@ -12,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -168,6 +177,53 @@ public class AssessOperatorTest {
         if (!assertionCompleted) {
             fail();
         }
+    }
+
+    @Test
+    public void executeProducesHighlights() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "WITH loan\n" +
+                "FOR year = '1997'\n" +
+                "BY region, year, status\n" +
+                "ASSESS sum(amount)\n" +
+                "AGAINST PAST 2\n" +
+                "USING ratio(absolute(amount, benchmark.amount))\n" +
+                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
+                "SAVE AS PastBenchmarkHighlightsTest";
+
+        OperatorResult result = operator.execute(query);
+        HighlightSet highlights = new HighlightExtractor()
+                .extract(result, operator.registeredArchetypes(), CubeSchemaResolver.from(cubeManager));
+
+        HolisticHighlight labelPredominance = holisticFor(highlights, "LabelPredominance");
+        HolisticHighlight megaContributor = holisticFor(highlights, "MegaContributor");
+
+        assertNotNull("expected a LabelPredominance highlight", labelPredominance);
+        assertNotNull("expected a MegaContributor highlight (sum is additive)", megaContributor);
+        assertTrue("LabelPredominance should hold", labelPredominance.result.verdict);
+        assertTrue("MegaContributor should hold", megaContributor.result.verdict);
+
+        // the dominant member is surfaced as an elementary highlight, above the 0.5 dominance threshold
+        assertFalse(megaContributor.elementary.isEmpty());
+        assertTrue("dominant share should exceed the threshold",
+                scoreOf(megaContributor, "ContributionShare") > 0.5);
+    }
+
+    private static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {
+        for (Highlight h : highlights.highlights()) {
+            if (h instanceof HolisticHighlight
+                    && ((HolisticHighlight) h).archetype.name.equals(archetypeName)) {
+                return (HolisticHighlight) h;
+            }
+        }
+        return null;
+    }
+
+    private static double scoreOf(HolisticHighlight highlight, String scoreType) {
+        for (Score score : highlight.getScores()) {
+            if (score.type.name().equals(scoreType)) return score.value;
+        }
+        return Double.NaN;
     }
 
     /*

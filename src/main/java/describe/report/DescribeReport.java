@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import cubemanager.cubebase.CubeQuery;
 import describe.DescribeQuery; // Using the wrapper class
-import describe.QueryMeasure;
+import cubemanager.cubebase.QueryMeasure;
 import result.Cell;
 import result.Result;
 
@@ -136,12 +136,12 @@ public class DescribeReport {
             String header = "Measure_" + (i + 1); 
             
             if (definedMeasures != null && i < definedMeasures.size()) {
-                describe.QueryMeasure qm = definedMeasures.get(i);
+                QueryMeasure qm = definedMeasures.get(i);
 
                 if (qm.getAlias() != null && !qm.getAlias().isEmpty()) {
                     header = qm.getAlias();
                 } else {
-                    header = qm.getAttribute(); 
+                    header = qm.getName();
                 }
             }
             sb.append(header).append("|");

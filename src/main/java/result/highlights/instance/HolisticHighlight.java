@@ -45,9 +45,10 @@ public class HolisticHighlight extends Highlight {
     public String toText() {
         String explanatorNames = explanators.stream().map(Level::getName).collect(Collectors.joining(", "));
         String scoreText = scores.stream().map(Score::toString).collect(Collectors.joining(", "));
+        String measureName = mainMeasure == null ? "(unresolved measure)" : mainMeasure.getName();
         return String.format(
                 "The %s for %s, tested via %s and supported by {%s}, results in %s with {%s}.",
-                archetype.name, mainMeasure.getName(), execution.name,
+                archetype.name, measureName, execution.name,
                 explanatorNames, result.verdict, scoreText);
     }
 }

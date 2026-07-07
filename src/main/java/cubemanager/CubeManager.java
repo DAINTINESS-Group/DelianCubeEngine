@@ -205,12 +205,10 @@ public class CubeManager {
 		//TODO: opportunity to wrap all this ping-pong with CubeQuery into a method/constructor
 		CubeQuery cubequery = new CubeQuery(nameCQ);
 		cubequery.setAggregateFunction(aggregateFunction);
-		/* Must Create Measure In Cube Parser->> I Have Done this */
-		/* Search for Measure */
-		Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
-		cubequery.getMeasuresList().add(msrToAdd);
-		//msrname = measureName;
-		/* Need work to done up here */
+		if (measureName != null) {
+			Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
+			cubequery.addQueryMeasure(aggregateFunction, msrToAdd, null);
+		}
 
 		for (int i = 0; i < gamma.length; i++) {
 			cubequery.addGammaExpression(gamma[i][0], gamma[i][1]);

@@ -19,10 +19,18 @@
 package model.outlier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import model.abstracts.AbstractModel;
+import model.labeling.DerivedMeasure;
+import model.labeling.Labeling;
+import model.labeling.LabelingModel;
 import result.Cell;
 import result.Result;
 
@@ -33,7 +41,11 @@ import result.Result;
  * @author pvassil
  *
  */
-public class OutlierModel extends AbstractModel {
+public class OutlierModel extends AbstractModel implements LabelingModel {
+
+	private static final String OUTLIER = "outlier";
+	private static final String NON_OUTLIER = "non-outlier";
+
 
 	/**
 	 * Simple constructor for the class: creates the components and adds them to the components attributes
@@ -41,9 +53,27 @@ public class OutlierModel extends AbstractModel {
 	 * @param aResult the Result to which the model refers to
 	 */
 	public OutlierModel(Result aResult) {
-		
+		this(aResult, 0);
+	}
+
+	public OutlierModel(Result aResult, int measureIndex) {
+		this(aResult, measureIndex, ABS_ZSCORE_OUTLIER_THRESHOLD);
+	}
+
+	/**
+	 * Constructor that computes outliers over a chosen measure of the result, classifying a value as an
+	 * outlier when its absolute z-score exceeds the given threshold.
+	 *
+	 * @param aResult         the Result to which the model refers to
+	 * @param measureIndex    the position of the measure (column) to analyze
+	 * @param zScoreThreshold the absolute z-score above which a value is an outlier
+	 */
+	public OutlierModel(Result aResult, int measureIndex, double zScoreThreshold) {
+
 		super(aResult);
-		
+		this.measureIndex = measureIndex;
+		this.zScoreThreshold = zScoreThreshold;
+
 		zScoreComponent = new OutlierModelComponent("zScore", this);
 		zScoreOutlierComponent = new OutlierModelComponent("zScoreOutliers", this);
 		zScoreNonOutlierComponent = new OutlierModelComponent("zScoreNonOutliers", this);
@@ -81,7 +111,7 @@ public class OutlierModel extends AbstractModel {
 		
 		int i = 0;
 		for (Cell cell: cells) {
-			cellValues[i] = cell.toDouble();
+			cellValues[i] = cell.toDouble(measureIndex);
 			i++;
 		}
 		processZScoreOutliers(cellValues, zScores, outliers, nonOutliers);
@@ -111,10 +141,8 @@ public class OutlierModel extends AbstractModel {
 		for( int i = 0; i < cellValues.length; i++) {
 			stats.addValue(cellValues[i]);
 		}
-System.out.println(stats.getValues().length);
 		double mean = stats.getMean();
 		double std = stats.getStandardDeviation();
-System.out.println("MEAN " + mean + " STDEV " + std);		
 		//		double median = stats.getPercentile(50);
 		//		double max = stats.getMax();
 		//		double min = stats.getMin();
@@ -124,7 +152,7 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 				zScores[i] = (cellValues[i] - mean)/std;
 			else
 				zScores[i] = 0;
-			if ( Math.abs(zScores[i]) > ABS_ZSCORE_OUTLIER_THRESHOLD) {
+			if ( Math.abs(zScores[i]) > zScoreThreshold) {
 				outliers[i] = 1; nonOutliers[i] = 0;  
 			}
 			else {
@@ -167,24 +195,65 @@ System.out.println("MEAN " + mean + " STDEV " + std);
 		return output;
 	}//end method
 
+	/** The z-score of the i-th cell (in {@code result.getCells()} order) over the analyzed measure. */
+	public double zScoreOf(int cellIndex) {
+		return zScoreComponent.getOutlierLabel()[cellIndex];
+	}
+
+	/** Whether the i-th cell (in {@code result.getCells()} order) is an outlier over the analyzed measure. */
+	public boolean isOutlier(int cellIndex) {
+		return zScoreOutlierComponent.getOutlierLabel()[cellIndex] == 1.0;
+	}
+
+	/** The per-cell outlier classification, an ordered domain from non-outlier to outlier. */
+	@Override
+	public List<Labeling> labelings() {
+		ArrayList<Cell> cells = result.getCells();
+		if (cells.isEmpty() || zScoreOutlierComponent.getOutlierLabel() == null) {
+			return Collections.emptyList();
+		}
+		Map<Cell, String> labels = new LinkedHashMap<>();
+		for (int i = 0; i < cells.size(); i++) {
+			labels.put(cells.get(i), isOutlier(i) ? OUTLIER : NON_OUTLIER);
+		}
+		return Collections.singletonList(new Labeling(Arrays.asList(NON_OUTLIER, OUTLIER), true, labels));
+	}
+
+	/** The per-cell z-score, as data an archetype can rank by. */
+	@Override
+	public List<DerivedMeasure> derivedMeasures() {
+		ArrayList<Cell> cells = result.getCells();
+		if (cells.isEmpty() || zScoreComponent.getOutlierLabel() == null) {
+			return Collections.emptyList();
+		}
+		Map<Cell, Double> zByCell = new LinkedHashMap<>();
+		for (int i = 0; i < cells.size(); i++) {
+			zByCell.put(cells.get(i), zScoreOf(i));
+		}
+		return Collections.singletonList(new DerivedMeasure(zByCell));
+	}
+
 	@Override
 	public String getModelName() {
-		return "Z-Score_Outliers";
+		return NAME;
 	}//end method
 
 	@Override
 	public String getInfoContent() {
 		String result = this.getModelName() + "\n-------------------------\n\n"
-				+ "We run a simple outlier detection. We compute the zScore of each measure value, and assign to (a) the outlier class, if the absolute zscore is above "+ ABS_ZSCORE_OUTLIER_THRESHOLD + " or (b) non-outlier, otherwise\n"  
+				+ "We run a simple outlier detection. We compute the zScore of each measure value, and assign to (a) the outlier class, if the absolute zscore is above "+ zScoreThreshold + " or (b) non-outlier, otherwise\n"
 				+ "Each column of the result pertains to another class of the result set, with each row referring to the respective cell of the query result";
 		
 		return result;
 	}//end method getInfoContent()
 	
 	
+	private final int measureIndex;
+	private final double zScoreThreshold;
 	private OutlierModelComponent zScoreComponent;
 	private OutlierModelComponent zScoreOutlierComponent;
 	private OutlierModelComponent zScoreNonOutlierComponent;
+	public static final String NAME = "Z-Score_Outliers";
 	public static final Double ABS_ZSCORE_OUTLIER_THRESHOLD = 2.2;
 	@Override
 	public void setFileName(String filename, String fileLocation) {

@@ -28,11 +28,12 @@ public final class ScoredFinding {
         this.scores = scores;
     }
 
-    public static ScoredFinding ofCell(Cell cell, ElementaryHighlightRole role, List<Score> scores) {
+    /** A whole-cell finding: binds every dimension of the cell and reports the given (studied-measure) value. */
+    public static ScoredFinding ofCell(Cell cell, double value, ElementaryHighlightRole role, List<Score> scores) {
         List<String> members = cell.getDimensionMembers();
         int[] indices = new int[members.size()];
         for (int i = 0; i < indices.length; i++) indices[i] = i;
-        return new ScoredFinding(indices, members.toArray(new String[0]), cell.toDouble(), role, scores);
+        return new ScoredFinding(indices, members.toArray(new String[0]), value, role, scores);
     }
 
     public static ScoredFinding marginal(int dimensionIndex, String member, double value,

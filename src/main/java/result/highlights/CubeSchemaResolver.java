@@ -61,7 +61,12 @@ public final class CubeSchemaResolver {
     /** Resolves the cube Measure for the studied measurement (falls back to the first measure). */
     public Measure resolveMainMeasure(CubeQuery query) {
         String attr = query.getQueryMeasures().isEmpty()
-                ? null : query.getQueryMeasures().get(0).getAttribute();
+                ? null : query.getQueryMeasures().get(0).getName();
+        return resolveMeasure(attr);
+    }
+
+    /** Resolves the named cube Measure by attribute, falling back to the first measure. */
+    public Measure resolveMeasure(String attr) {
         if (attr != null) {
             for (Measure m : measures) {
                 if (attr.equalsIgnoreCase(m.getName())) return m;

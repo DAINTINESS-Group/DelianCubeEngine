@@ -1,5 +1,7 @@
 package describe;
 
+import cubemanager.cubebase.QueryMeasure;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -103,9 +105,9 @@ public class DescribeTranslationAndExecutionTest {
         if (query.getQueryMeasures() == null || query.getQueryMeasures().isEmpty()) {
             System.out.println("  [None]");
         } else {
-            for (describe.QueryMeasure qm : query.getQueryMeasures()) {
+            for (QueryMeasure qm : query.getQueryMeasures()) {
                 String alias = (qm.getAlias() != null) ? " AS " + qm.getAlias() : "";
-                System.out.println("  -> " + qm.getFunction() + "(" + qm.getAttribute() + ")" + alias);
+                System.out.println("  -> " + qm.getFunction() + "(" + qm.getName() + ")" + alias);
             }
         }
 
@@ -163,7 +165,7 @@ public class DescribeTranslationAndExecutionTest {
         assertEquals(1, result.getQueryMeasures().size());
         
         QueryMeasure qm = result.getQueryMeasures().get(0);
-        assertTrue("Should contain formula", qm.getAttribute().contains("amount - payments"));
+        assertTrue("Should contain formula", qm.getName().contains("amount - payments"));
         assertEquals("Should have alias", "Profit", qm.getAlias());
         
     }

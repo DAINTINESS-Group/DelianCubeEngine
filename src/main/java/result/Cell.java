@@ -124,4 +124,9 @@ public class Cell {
 
 	public Double toDouble() {
 		return Double.valueOf(measures.get(0));}
+
+	/** The i-th measure of this cell as a double. */
+	public Double toDouble(int index) {
+		return Double.valueOf(measures.get(index));
+	}
 }
