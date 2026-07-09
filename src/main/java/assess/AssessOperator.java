@@ -28,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class AssessOperator implements IntentionalOperator {
     private final CubeManager cubeManager;
 
     private OperatorResult operatorResult;
-    private List<ArchetypeProperty> registeredArchetypes = new ArrayList<>();
+    private List<ArchetypeProperty> registeredArchetypes = registeredArchetypes();
     private String outputFileName;
 
     public AssessOperator(CubeManager cubeManager) {

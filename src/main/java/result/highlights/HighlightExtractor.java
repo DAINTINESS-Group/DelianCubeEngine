@@ -32,18 +32,18 @@ import model.labeling.Labeling;
  */
 public final class HighlightExtractor {
 
-    private final Significance significance;
+    private final Interestingness interestingness;
 
     public HighlightExtractor() { this(null); }
 
-    /** Uses the given significance source to score each holistic's declared interestingness facets. */
-    public HighlightExtractor(Significance significance) { this.significance = significance; }
+    /** Uses the given interestingness source to score each holistic's declared interestingness facets. */
+    public HighlightExtractor(Interestingness interestingness) { this.interestingness = interestingness; }
 
     public HighlightSet extract(OperatorResult result, List<ArchetypeProperty> candidates,
                                 CubeSchemaResolver schema) {
         List<Highlight> out = new ArrayList<>();
         List<Level> explanators = schema.resolveExplanators(result.query);
-        if (significance != null) significance.observe(result.query, result.data);
+        if (interestingness != null) interestingness.observe(result.query, result.data);
 
         List<QueryMeasure> measures = result.query == null
                 ? Collections.<QueryMeasure>emptyList() : result.query.getQueryMeasures();
@@ -95,8 +95,8 @@ public final class HighlightExtractor {
         HolisticHighlight holistic = new HolisticHighlight(
                 result.data, archetype, execution, mainMeasure, explanators, execution.result);
         tested.holisticScores.forEach(holistic::addScore);
-        if (significance != null) {
-            significance.scores(archetype.hhScoreTypes, result.query, result.data).forEach(holistic::addScore);
+        if (interestingness != null) {
+            interestingness.scores(archetype.hhScoreTypes, result.query, result.data).forEach(holistic::addScore);
         }
 
         for (ScoredFinding sf : tested.elementary) {

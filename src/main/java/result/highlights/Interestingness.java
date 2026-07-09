@@ -13,12 +13,12 @@ import result.highlights.metamodel.InterestingnessFacet;
 import result.highlights.metamodel.ScoreType;
 
 /**
- * Computes the significance of holistic highlights via the engine's {@code interestingnessengine}: each
+ * Computes the interestingness of holistic highlights via the engine's {@code interestingnessengine}: each
  * {@link InterestingnessFacet} maps to an interestingness measure evaluated over a query result. The
  * measures are session-relative, so {@link #observe(CubeQuery, Result)} registers the current result before
  * scoring; facets that cannot be computed for the available session state are omitted.
  */
-public final class Significance {
+public final class Interestingness {
 
     private static final Map<InterestingnessFacet, String> ENGINE_MEASURE =
             new EnumMap<>(InterestingnessFacet.class);
@@ -31,7 +31,7 @@ public final class Significance {
 
     private final InterestingnessManager manager;
 
-    public Significance(InterestingnessManager manager) { this.manager = manager; }
+    public Interestingness(InterestingnessManager manager) { this.manager = manager; }
 
     /** Registers the query result as the current session state for subsequent facet computations. */
     public void observe(CubeQuery query, Result data) { manager.updateState(query, data); }

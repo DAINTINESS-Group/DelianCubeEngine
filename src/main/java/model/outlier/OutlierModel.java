@@ -19,33 +19,21 @@
 package model.outlier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import model.abstracts.AbstractModel;
-import model.labeling.DerivedMeasure;
-import model.labeling.Labeling;
-import model.labeling.LabelingModel;
 import result.Cell;
 import result.Result;
 
 /**
  * The class to hold outlier detection model components
  * Also computes z-score
- * 
+ *
  * @author pvassil
  *
  */
-public class OutlierModel extends AbstractModel implements LabelingModel {
-
-	private static final String OUTLIER = "outlier";
-	private static final String NON_OUTLIER = "non-outlier";
-
+public class OutlierModel extends AbstractModel {
 
 	/**
 	 * Simple constructor for the class: creates the components and adds them to the components attributes
@@ -194,44 +182,6 @@ public class OutlierModel extends AbstractModel implements LabelingModel {
 		
 		return output;
 	}//end method
-
-	/** The z-score of the i-th cell (in {@code result.getCells()} order) over the analyzed measure. */
-	public double zScoreOf(int cellIndex) {
-		return zScoreComponent.getOutlierLabel()[cellIndex];
-	}
-
-	/** Whether the i-th cell (in {@code result.getCells()} order) is an outlier over the analyzed measure. */
-	public boolean isOutlier(int cellIndex) {
-		return zScoreOutlierComponent.getOutlierLabel()[cellIndex] == 1.0;
-	}
-
-	/** The per-cell outlier classification, an ordered domain from non-outlier to outlier. */
-	@Override
-	public List<Labeling> labelings() {
-		ArrayList<Cell> cells = result.getCells();
-		if (cells.isEmpty() || zScoreOutlierComponent.getOutlierLabel() == null) {
-			return Collections.emptyList();
-		}
-		Map<Cell, String> labels = new LinkedHashMap<>();
-		for (int i = 0; i < cells.size(); i++) {
-			labels.put(cells.get(i), isOutlier(i) ? OUTLIER : NON_OUTLIER);
-		}
-		return Collections.singletonList(new Labeling(Arrays.asList(NON_OUTLIER, OUTLIER), true, labels));
-	}
-
-	/** The per-cell z-score, as data an archetype can rank by. */
-	@Override
-	public List<DerivedMeasure> derivedMeasures() {
-		ArrayList<Cell> cells = result.getCells();
-		if (cells.isEmpty() || zScoreComponent.getOutlierLabel() == null) {
-			return Collections.emptyList();
-		}
-		Map<Cell, Double> zByCell = new LinkedHashMap<>();
-		for (int i = 0; i < cells.size(); i++) {
-			zByCell.put(cells.get(i), zScoreOf(i));
-		}
-		return Collections.singletonList(new DerivedMeasure(zByCell));
-	}
 
 	@Override
 	public String getModelName() {

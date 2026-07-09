@@ -15,15 +15,15 @@ import result.highlights.instance.ScoredFinding;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.outlier.OutlierModel;
 import result.Cell;
 
 /**
- * Tests the outlier hypothesis over a single measure: builds a config-free {@link OutlierModel} over the
- * result's cells for the given measure, and surfaces every cell whose z-score exceeds the model's
+ * Tests the outlier hypothesis over a single measure: builds a config-free {@link ZScoreOutlierModel} over
+ * the result's cells for the given measure, and surfaces every cell whose z-score exceeds the model's
  * threshold as an elementary highlight. Because the outlier verdict is per measure, the model is built for
  * the {@code measureIndex} the extractor hands it — one holistic per query measure falls out of the
- * extractor's own measure loop.
+ * extractor's own measure loop. The computation is the archetype's own, kept out of the {@code model.*}
+ * layer so no operator need run a model for outliers to be found.
  */
 public final class ZScoreOutlierAlgorithm implements Algorithm {
 
@@ -43,7 +43,7 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
 
     @Override
     public AlgorithmParams params() {
-        return new AlgorithmParams().set("absZThreshold", OutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
+        return new AlgorithmParams().set("absZThreshold", ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
     }
 
     @Override
@@ -53,9 +53,8 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
 
     @Override
     public ArchetypeResult run(OperatorResult context, int measureIndex) {
-        double threshold = params().get("absZThreshold", OutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
-        OutlierModel model = new OutlierModel(context.data, measureIndex, threshold);
-        model.compute();
+        double threshold = params().get("absZThreshold", ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
+        ZScoreOutlierModel model = new ZScoreOutlierModel(context.data, measureIndex, threshold);
 
         List<Cell> cells = context.data.getCells();
         double maxAbsZ = 0.0;
