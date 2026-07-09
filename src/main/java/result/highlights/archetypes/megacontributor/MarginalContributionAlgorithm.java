@@ -84,7 +84,7 @@ public final class MarginalContributionAlgorithm implements Algorithm {
 
         boolean holds = !salient.isEmpty();
         AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("topShare", topShare).metric("count", (double) cells.size());
+        verdict.metric("count", (double) cells.size());
 
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONTRIBUTION_SHARE, topShare));

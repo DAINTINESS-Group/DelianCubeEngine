@@ -84,7 +84,7 @@ public final class TopKContributionAlgorithm implements Algorithm {
 
         boolean holds = !salient.isEmpty();
         AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("k", (double) k).metric("topShare", topShare);
+        verdict.metric("k", (double) k);
 
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(MarginalContributionAlgorithm.CONTRIBUTION_SHARE, topShare));

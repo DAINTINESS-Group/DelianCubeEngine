@@ -78,7 +78,7 @@ public class AssessOperator implements IntentionalOperator {
 
         return operatorResult;
     }
-
+    
     /**
      * Produces the result, extracts highlights over it, and writes the ASSESS Markdown report.
      * The file-producing entry point for the RMI path; the extraction itself is external.

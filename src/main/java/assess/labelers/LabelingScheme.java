@@ -1,6 +1,6 @@
 package assess.labelers;
 
-import java.util.List;
+import model.labeling.LabelDomain;
 
 /**
  * We are using a strategy pattern so that the AssessQueryBuilder can dynamically
@@ -15,8 +15,8 @@ public interface LabelingScheme {
 	String applyLabels(double value);
 
 	/**
-	 * The labels this scheme can assign, in ascending order. Defines an ordinal
-	 * domain so labeled results can be compared (e.g. by an enumerated score).
+	 * The domain of labels this scheme can assign. Defines an ordinal domain so
+	 * labeled results can be compared (e.g. by an enumerated score).
 	 */
-	List<String> getOrderedLabels();
+	LabelDomain domain();
 }

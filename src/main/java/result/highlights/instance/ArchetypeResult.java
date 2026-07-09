@@ -1,14 +1,13 @@
 package result.highlights.instance;
-
-import result.highlights.metamodel.Algorithm;
-import result.highlights.metamodel.ArchetypeProperty;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import result.highlights.metamodel.ResultType;
 
 
 /**
- * The typed outcome of running an {@link Algorithm} for an {@link ArchetypeProperty}: a dataset-level
+ * The typed outcome of running an {@code Algorithm} for an {@code ArchetypeProperty}: a dataset-level
  * verdict plus the salient cells that detail it:
  * <ul>
  *   <li>{@link #execution} — the algorithm execution (its name, params, and {@code AlgorithmResult}
@@ -17,7 +16,7 @@ import java.util.List;
  *   <li>{@link #elementary} — the salient cells, each with the scores the archetype assigned it.</li>
  * </ul>
  */
-public final class ArchetypeResult {
+public final class ArchetypeResult implements ResultType {
 
     /** The algorithm execution: name + params + the verdict it produced — the holistic. */
     public final AlgorithmExecution execution;
@@ -37,4 +36,10 @@ public final class ArchetypeResult {
         this.holisticScores = holisticScores == null ? new ArrayList<>() : holisticScores;
         this.elementary = elementary == null ? new ArrayList<>() : elementary;
     }
+
+    @Override
+    public boolean verdict() { return execution.result.verdict; }
+
+    @Override
+    public Map<String, Double> auxiliaryMetrics() { return execution.result.auxiliaryMetrics; }
 }

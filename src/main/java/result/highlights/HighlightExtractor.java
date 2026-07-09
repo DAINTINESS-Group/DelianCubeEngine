@@ -89,11 +89,11 @@ public final class HighlightExtractor {
     private HolisticHighlight buildHolistic(OperatorResult result, ArchetypeProperty archetype,
                                             Algorithm algorithm, CubeSchemaResolver schema,
                                             int measureIndex, Measure mainMeasure, List<Level> explanators) {
-        ArchetypeResult tested = algorithm.run(result, measureIndex);
+        ArchetypeResult tested = (ArchetypeResult) algorithm.run(result, measureIndex);
         AlgorithmExecution execution = tested.execution;
 
         HolisticHighlight holistic = new HolisticHighlight(
-                result.data, archetype, execution, mainMeasure, explanators, execution.result);
+                result.data, archetype, execution, mainMeasure, explanators);
         tested.holisticScores.forEach(holistic::addScore);
         if (interestingness != null) {
             interestingness.scores(archetype.hhScoreTypes, result.query, result.data).forEach(holistic::addScore);

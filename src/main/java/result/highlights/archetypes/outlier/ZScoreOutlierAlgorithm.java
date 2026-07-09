@@ -71,7 +71,7 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
 
         boolean holds = !salient.isEmpty();
         AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("outlierCount", (double) salient.size()).metric("maxAbsZ", maxAbsZ);
+        verdict.metric("outlierCount", (double) salient.size());
 
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(ZSCORE, maxAbsZ));

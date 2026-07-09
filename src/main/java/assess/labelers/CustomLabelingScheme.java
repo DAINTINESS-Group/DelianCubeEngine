@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import model.labeling.LabelDomain;
 
 /**
  * This implementation of a labeling scheme is used when the user provides
@@ -187,8 +190,9 @@ public class CustomLabelingScheme implements LabelingScheme {
     }
 
     @Override
-    public List<String> getOrderedLabels() {
+    public LabelDomain domain() {
         // rules are validated into ascending order, so their labels are already ordered
-        return rules.stream().map(rule -> rule.label).collect(java.util.stream.Collectors.toList());
+        List<String> orderedLabels = rules.stream().map(rule -> rule.label).collect(Collectors.toList());
+        return new LabelDomain(orderedLabels, true);
     }
 }

@@ -24,11 +24,10 @@ public class HolisticHighlight extends Highlight {
     public final AlgorithmExecution execution;
     public final Measure mainMeasure;
     public final List<Level> explanators;
-    public final AlgorithmResult result;
     public final List<ElementaryHighlight> elementary = new ArrayList<>();
 
     public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
-                             Measure mainMeasure, List<Level> explanators, AlgorithmResult result) {
+                             Measure mainMeasure, List<Level> explanators) {
         super(dataset);
         this.archetype = Objects.requireNonNull(archetype,
                 "A holistic highlight must materialize an archetype property");
@@ -36,19 +35,30 @@ public class HolisticHighlight extends Highlight {
                 "A holistic highlight must record the algorithm execution that produced it");
         this.mainMeasure = mainMeasure;
         this.explanators = explanators;
-        this.result = result;
     }
 
     public HolisticHighlight addElementary(ElementaryHighlight e) { elementary.add(e); return this; }
+
+    /** The algorithm instantiation that tested this highlight: the algorithm name and its parameters. */
+    private String instantiation() {
+        String params = execution.params == null ? "" : execution.params.toString();
+        return params.isEmpty() ? execution.name : execution.name + "(" + params + ")";
+    }
 
     @Override
     public String toText() {
         String explanatorNames = explanators.stream().map(Level::getName).collect(Collectors.joining(", "));
         String scoreText = scores.stream().map(Score::toString).collect(Collectors.joining(", "));
         String measureName = mainMeasure == null ? "(unresolved measure)" : mainMeasure.getName();
+        String metrics = execution.result.auxiliaryMetrics.entrySet().stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(", "));
+        String verdict = metrics.isEmpty()
+                ? String.valueOf(execution.result.verdict)
+                : execution.result.verdict + " [" + metrics + "]";
         return String.format(
                 "The %s for %s, tested via %s and supported by {%s}, results in %s with {%s}.",
-                archetype.name, measureName, execution.name,
-                explanatorNames, result.verdict, scoreText);
+                archetype.name, measureName, instantiation(),
+                explanatorNames, verdict, scoreText);
     }
 }

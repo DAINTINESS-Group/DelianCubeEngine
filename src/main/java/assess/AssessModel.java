@@ -33,7 +33,6 @@ public final class AssessModel extends AbstractModel implements LabelingModel {
     private final DeltaScheme delta;
     private final LabelingScheme labeling;
     private final List<ComparedCell> comparedCells = new ArrayList<>();
-    private final List<String> assessmentDomain;
 
     private final Map<Cell, Double> deltas = new LinkedHashMap<>();
     private Labeling assessmentLabeling;
@@ -43,7 +42,6 @@ public final class AssessModel extends AbstractModel implements LabelingModel {
         this.benchmark = benchmark;
         this.delta = delta;
         this.labeling = labeling;
-        this.assessmentDomain = labeling.getOrderedLabels();
     }
 
     @Override
@@ -61,7 +59,7 @@ public final class AssessModel extends AbstractModel implements LabelingModel {
             deltas.put(entry.getKey(), entry.getValue());
             labelByCell.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
         }
-        this.assessmentLabeling = new Labeling(assessmentDomain, true, labelByCell);
+        this.assessmentLabeling = new Labeling(labeling.domain(), labelByCell);
         return 0;
     }
 

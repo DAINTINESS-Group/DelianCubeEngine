@@ -73,7 +73,7 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
 
         boolean holds = concentration > threshold;
         AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("concentration", concentration).metric("count", (double) n);
+        verdict.metric("count", (double) n);
 
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONCENTRATION, concentration));

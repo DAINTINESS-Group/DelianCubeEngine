@@ -85,7 +85,6 @@ public final class LabelDistributionAlgorithm implements Algorithm {
         for (Map.Entry<String, Integer> e : counts.entrySet()) {
             verdict.metric("share_" + e.getKey(), total == 0 ? 0.0 : (double) e.getValue() / total);
         }
-        verdict.metric("dominantShare", dominantShare);
 
         List<Score> holisticScores = new ArrayList<>();
         if (dominant != null) {

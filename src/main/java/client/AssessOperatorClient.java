@@ -40,6 +40,7 @@ public class AssessOperatorClient {
         long start = System.nanoTime();
         OperatorResult result = operator.execute(query);
         List<ArchetypeProperty> registeredArchetypes = operator.registeredArchetypes();
+
         HighlightSet highlights = new HighlightExtractor(interestingness)
                 .extract(result, registeredArchetypes, schemaResolver);
         long ms = (System.nanoTime() - start) / 1_000_000;

@@ -13,23 +13,21 @@ import result.Cell;
  */
 public final class Labeling {
 
-    private final List<String> domain;
-    private final boolean ordered;
+    private final LabelDomain domain;
     private final Map<Cell, String> assignment;
 
-    public Labeling(List<String> domain, boolean ordered, Map<Cell, String> assignment) {
+    public Labeling(LabelDomain domain, Map<Cell, String> assignment) {
         this.domain = domain;
-        this.ordered = ordered;
         this.assignment = assignment;
     }
 
     /** The label set; in order when {@link #ordered()}. */
     public List<String> domain() {
-        return domain;
+        return domain.labels();
     }
 
     public boolean ordered() {
-        return ordered;
+        return domain.ordered();
     }
 
     /** The label assigned to the cell, or {@code null} if it is not labeled. */
@@ -48,6 +46,6 @@ public final class Labeling {
 
     /** The rank of a label in an ordered domain, or -1 if it is not part of the set. */
     public int rankOf(String label) {
-        return domain.indexOf(label);
+        return domain.rankOf(label);
     }
 }
