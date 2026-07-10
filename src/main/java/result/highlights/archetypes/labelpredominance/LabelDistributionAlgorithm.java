@@ -6,8 +6,6 @@ import result.highlights.metamodel.AlgorithmParams;
 import result.highlights.metamodel.ElementaryHighlightRole;
 import result.highlights.metamodel.NamedScoreType;
 import result.highlights.metamodel.ScoreType;
-import result.highlights.instance.AlgorithmExecution;
-import result.highlights.instance.AlgorithmResult;
 import result.highlights.instance.ArchetypeResult;
 import result.highlights.instance.Score;
 import result.highlights.instance.ScoredFinding;
@@ -81,11 +79,6 @@ public final class LabelDistributionAlgorithm implements Algorithm {
         double dominantShare = total == 0 ? 0.0 : (double) dominantCount / total;
         boolean holds = dominantShare > 0.5;
 
-        AlgorithmResult verdict = new AlgorithmResult(holds);
-        for (Map.Entry<String, Integer> e : counts.entrySet()) {
-            verdict.metric("share_" + e.getKey(), total == 0 ? 0.0 : (double) e.getValue() / total);
-        }
-
         List<Score> holisticScores = new ArrayList<>();
         if (dominant != null) {
             holisticScores.add(new Score(LABEL, labeling.rankOf(dominant), dominant));
@@ -93,8 +86,11 @@ public final class LabelDistributionAlgorithm implements Algorithm {
         holisticScores.add(new Score(DOMINANT_SHARE, dominantShare));
 
         List<ScoredFinding> salient = selectSalient(labeling, dominant, magnitude);
-        AlgorithmExecution execution = new AlgorithmExecution(NAME, params(), verdict);
-        return new ArchetypeResult(execution, holisticScores, salient);
+        ArchetypeResult result = new ArchetypeResult(holds, holisticScores, salient);
+        for (Map.Entry<String, Integer> e : counts.entrySet()) {
+            result.metric("share_" + e.getKey(), total == 0 ? 0.0 : (double) e.getValue() / total);
+        }
+        return result;
     }
 
     /** The magnitude by which a cell stands out: the derived measure if present, else the studied measure. */

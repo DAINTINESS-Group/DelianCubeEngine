@@ -3,6 +3,7 @@ package result.highlights.instance;
 import result.highlights.metamodel.ArchetypeProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class HolisticHighlight extends Highlight {
     public final AlgorithmExecution execution;
     public final Measure mainMeasure;
     public final List<Level> explanators;
-    public final List<ElementaryHighlight> elementary = new ArrayList<>();
+    private final List<ElementaryHighlight> elementary = new ArrayList<>();
 
     public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
                              Measure mainMeasure, List<Level> explanators) {
@@ -39,6 +40,8 @@ public class HolisticHighlight extends Highlight {
 
     public HolisticHighlight addElementary(ElementaryHighlight e) { elementary.add(e); return this; }
 
+    public List<ElementaryHighlight> elementary() { return Collections.unmodifiableList(elementary); }
+
     /** The algorithm instantiation that tested this highlight: the algorithm name and its parameters. */
     private String instantiation() {
         String params = execution.params == null ? "" : execution.params.toString();
@@ -50,12 +53,12 @@ public class HolisticHighlight extends Highlight {
         String explanatorNames = explanators.stream().map(Level::getName).collect(Collectors.joining(", "));
         String scoreText = scores.stream().map(Score::toString).collect(Collectors.joining(", "));
         String measureName = mainMeasure == null ? "(unresolved measure)" : mainMeasure.getName();
-        String metrics = execution.result.auxiliaryMetrics.entrySet().stream()
+        String metrics = execution.result.auxiliaryMetrics().entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining(", "));
         String verdict = metrics.isEmpty()
-                ? String.valueOf(execution.result.verdict)
-                : execution.result.verdict + " [" + metrics + "]";
+                ? String.valueOf(execution.result.verdict())
+                : execution.result.verdict() + " [" + metrics + "]";
         return String.format(
                 "The %s for %s, tested via %s and supported by {%s}, results in %s with {%s}.",
                 archetype.name, measureName, instantiation(),

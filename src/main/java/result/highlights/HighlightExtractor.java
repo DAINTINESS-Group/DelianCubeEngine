@@ -10,6 +10,7 @@ import result.highlights.instance.ElementaryHighlight;
 import result.highlights.instance.Highlight;
 import result.highlights.instance.HolisticHighlight;
 import result.highlights.instance.MeasureValue;
+import result.highlights.instance.Score;
 import result.highlights.instance.ScoredFinding;
 
 import java.util.ArrayList;
@@ -53,18 +54,24 @@ public final class HighlightExtractor {
             Algorithm algorithm = applicableAlgorithm(archetype, result);
             if (algorithm == null) continue;
 
+            // The archetype's interestingness facets depend only on the query result, so score them once.
+            List<Score> facetScores = interestingness == null
+                    ? Collections.<Score>emptyList()
+                    : interestingness.scores(archetype.hhScoreTypes, result.query, result.data);
+
             if (archetype.axis == EvaluationAxis.LABELING) {
                 for (int i = 0; i < labelings.size(); i++) {
-                    out.add(buildHolistic(result, archetype, algorithm, schema, i, null, explanators));
+                    out.add(buildHolistic(result, archetype, algorithm, schema, i,
+                            schema.resolveMeasure(null), explanators, facetScores));
                 }
             } else if (measures.isEmpty()) {
                 evaluateMeasure(result, archetype, algorithm, schema, 0, AggregationFunction.UNKNOWN,
-                        schema.resolveMeasure(null), explanators, out);
+                        schema.resolveMeasure(null), explanators, out, facetScores);
             } else {
                 for (int index = 0; index < measures.size(); index++) {
                     QueryMeasure qm = measures.get(index);
                     evaluateMeasure(result, archetype, algorithm, schema, index, qm.getAggregationFunction(),
-                            schema.resolveMeasure(qm.getName()), explanators, out);
+                            schema.resolveMeasure(qm.getName()), explanators, out, facetScores);
                 }
             }
         }
@@ -74,9 +81,11 @@ public final class HighlightExtractor {
     /** Evaluates one candidate archetype against a single main measure (its column index + resolved Measure). */
     private void evaluateMeasure(OperatorResult result, ArchetypeProperty archetype, Algorithm algorithm,
                                  CubeSchemaResolver schema, int measureIndex, AggregationFunction aggregation,
-                                 Measure mainMeasure, List<Level> explanators, List<Highlight> out) {
+                                 Measure mainMeasure, List<Level> explanators, List<Highlight> out,
+                                 List<Score> facetScores) {
         if (archetype.mainMeasureRole.constraint == MeasureConstraint.ADDITIVE && !aggregation.additive) return;
-        out.add(buildHolistic(result, archetype, algorithm, schema, measureIndex, mainMeasure, explanators));
+        out.add(buildHolistic(result, archetype, algorithm, schema, measureIndex, mainMeasure, explanators,
+                facetScores));
     }
 
     private Algorithm applicableAlgorithm(ArchetypeProperty archetype, OperatorResult result) {
@@ -88,18 +97,17 @@ public final class HighlightExtractor {
 
     private HolisticHighlight buildHolistic(OperatorResult result, ArchetypeProperty archetype,
                                             Algorithm algorithm, CubeSchemaResolver schema,
-                                            int measureIndex, Measure mainMeasure, List<Level> explanators) {
+                                            int measureIndex, Measure mainMeasure, List<Level> explanators,
+                                            List<Score> facetScores) {
         ArchetypeResult tested = (ArchetypeResult) algorithm.run(result, measureIndex);
-        AlgorithmExecution execution = tested.execution;
+        AlgorithmExecution execution = new AlgorithmExecution(algorithm.name(), algorithm.params(), tested);
 
         HolisticHighlight holistic = new HolisticHighlight(
                 result.data, archetype, execution, mainMeasure, explanators);
-        tested.holisticScores.forEach(holistic::addScore);
-        if (interestingness != null) {
-            interestingness.scores(archetype.hhScoreTypes, result.query, result.data).forEach(holistic::addScore);
-        }
+        tested.holisticScores().forEach(holistic::addScore);
+        facetScores.forEach(holistic::addScore);
 
-        for (ScoredFinding sf : tested.elementary) {
+        for (ScoredFinding sf : tested.elementary()) {
             ElementaryHighlight elementary = new ElementaryHighlight(
                     result.data, schema.charactersOf(sf.dimensionIndices, sf.members, explanators),
                     new MeasureValue(mainMeasure, sf.value),

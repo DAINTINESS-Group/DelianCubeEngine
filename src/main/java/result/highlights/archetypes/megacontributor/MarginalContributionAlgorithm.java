@@ -6,8 +6,6 @@ import result.highlights.metamodel.AlgorithmParams;
 import result.highlights.metamodel.ElementaryHighlightRole;
 import result.highlights.metamodel.NamedScoreType;
 import result.highlights.metamodel.ScoreType;
-import result.highlights.instance.AlgorithmExecution;
-import result.highlights.instance.AlgorithmResult;
 import result.highlights.instance.ArchetypeResult;
 import result.highlights.instance.Score;
 import result.highlights.instance.ScoredFinding;
@@ -83,13 +81,9 @@ public final class MarginalContributionAlgorithm implements Algorithm {
         }
 
         boolean holds = !salient.isEmpty();
-        AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("count", (double) cells.size());
-
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONTRIBUTION_SHARE, topShare));
-
-        AlgorithmExecution execution = new AlgorithmExecution(NAME, params, verdict);
-        return new ArchetypeResult(execution, holisticScores, salient);
+        return new ArchetypeResult(holds, holisticScores, salient)
+                .metric("count", (double) cells.size());
     }
 }

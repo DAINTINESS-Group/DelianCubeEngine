@@ -5,8 +5,6 @@ import result.highlights.metamodel.Algorithm;
 import result.highlights.metamodel.AlgorithmParams;
 import result.highlights.metamodel.NamedScoreType;
 import result.highlights.metamodel.ScoreType;
-import result.highlights.instance.AlgorithmExecution;
-import result.highlights.instance.AlgorithmResult;
 import result.highlights.instance.ArchetypeResult;
 import result.highlights.instance.Score;
 import result.highlights.instance.ScoredFinding;
@@ -72,13 +70,9 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
         }
 
         boolean holds = concentration > threshold;
-        AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("count", (double) n);
-
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONCENTRATION, concentration));
-
-        AlgorithmExecution execution = new AlgorithmExecution(NAME, params(), verdict);
-        return new ArchetypeResult(execution, holisticScores, Collections.<ScoredFinding>emptyList());
+        return new ArchetypeResult(holds, holisticScores, Collections.<ScoredFinding>emptyList())
+                .metric("count", (double) n);
     }
 }

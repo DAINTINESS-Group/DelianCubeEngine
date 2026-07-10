@@ -200,11 +200,11 @@ public class AssessOperatorTest {
 
         assertNotNull("expected a LabelPredominance highlight", labelPredominance);
         assertNotNull("expected a MegaContributor highlight (sum is additive)", megaContributor);
-        assertTrue("LabelPredominance should hold", labelPredominance.result.verdict);
-        assertTrue("MegaContributor should hold", megaContributor.result.verdict);
+        assertTrue("LabelPredominance should hold", labelPredominance.execution.result.verdict());
+        assertTrue("MegaContributor should hold", megaContributor.execution.result.verdict());
 
         // the dominant member is surfaced as an elementary highlight, above the 0.5 dominance threshold
-        assertFalse(megaContributor.elementary.isEmpty());
+        assertFalse(megaContributor.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold",
                 scoreOf(megaContributor, "ContributionShare") > 0.5);
     }

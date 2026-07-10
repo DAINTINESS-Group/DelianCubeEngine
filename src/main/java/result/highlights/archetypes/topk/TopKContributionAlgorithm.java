@@ -5,8 +5,6 @@ import result.highlights.archetypes.megacontributor.MarginalContributionAlgorith
 import result.highlights.metamodel.Algorithm;
 import result.highlights.metamodel.AlgorithmParams;
 import result.highlights.metamodel.ElementaryHighlightRole;
-import result.highlights.instance.AlgorithmExecution;
-import result.highlights.instance.AlgorithmResult;
 import result.highlights.instance.ArchetypeResult;
 import result.highlights.instance.Score;
 import result.highlights.instance.ScoredFinding;
@@ -83,13 +81,9 @@ public final class TopKContributionAlgorithm implements Algorithm {
         }
 
         boolean holds = !salient.isEmpty();
-        AlgorithmResult verdict = new AlgorithmResult(holds);
-        verdict.metric("k", (double) k);
-
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(MarginalContributionAlgorithm.CONTRIBUTION_SHARE, topShare));
-
-        AlgorithmExecution execution = new AlgorithmExecution(NAME, params(), verdict);
-        return new ArchetypeResult(execution, holisticScores, salient);
+        return new ArchetypeResult(holds, holisticScores, salient)
+                .metric("k", (double) k);
     }
 }

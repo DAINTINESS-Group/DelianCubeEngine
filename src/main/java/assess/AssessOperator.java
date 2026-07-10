@@ -161,7 +161,7 @@ final class AssessReport {
                 for (Highlight h : highlights.highlights()) {
                     writer.append("### ").append(h.toText()).append("\n");
                     if (h instanceof HolisticHighlight) {
-                        for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary) {
+                        for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary()) {
                             writer.append("- ").append(eh.toText()).append("\n");
                         }
                     }

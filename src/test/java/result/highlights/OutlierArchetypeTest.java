@@ -59,10 +59,10 @@ public class OutlierArchetypeTest {
 
         List<Double> flaggedValues = new ArrayList<>();
         for (HolisticHighlight holistic : holistics) {
-            assertTrue("holistic must hold", holistic.result.verdict);
-            assertEquals("exactly one outlier cell", 1, holistic.elementary.size());
+            assertTrue("holistic must hold", holistic.execution.result.verdict());
+            assertEquals("exactly one outlier cell", 1, holistic.elementary().size());
 
-            ElementaryHighlight outlier = holistic.elementary.get(0);
+            ElementaryHighlight outlier = holistic.elementary().get(0);
             flaggedValues.add(outlier.measureValue.value);
             assertTrue("z-score above threshold", zScoreOf(outlier) > 2.2);
 

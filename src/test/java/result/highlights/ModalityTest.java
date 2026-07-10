@@ -54,16 +54,16 @@ public class ModalityTest {
     @Test
     public void uniformMassIsNotConcentrated() {
         HolisticHighlight h = modalityOf(new double[]{100, 100, 100, 100});
-        assertFalse("uniform does not hold", h.result.verdict);
+        assertFalse("uniform does not hold", h.execution.result.verdict());
         assertEquals("uniform concentration ~ 0", 0.0, concentrationOf(h), 1e-9);
-        assertTrue("holistic-only", h.elementary.isEmpty());
+        assertTrue("holistic-only", h.elementary().isEmpty());
     }
 
     @Test
     public void spikedMassIsConcentrated() {
         HolisticHighlight h = modalityOf(new double[]{970, 10, 10, 10});
-        assertTrue("spiked holds", h.result.verdict);
+        assertTrue("spiked holds", h.execution.result.verdict());
         assertTrue("spiked concentration > 0.5", concentrationOf(h) > 0.5);
-        assertTrue("holistic-only", h.elementary.isEmpty());
+        assertTrue("holistic-only", h.elementary().isEmpty());
     }
 }

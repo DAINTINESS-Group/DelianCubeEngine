@@ -59,11 +59,12 @@ public final class HighlightSet {
         return new HighlightSet(out);
     }
 
-    /** ORDER BY score DESC, LIMIT k. Highlights lacking the score sort last. */
+    /** ORDER BY |score| DESC, LIMIT k. Highlights lacking the score sort last; k is clamped to [0, size]. */
     public HighlightSet topK(String scoreType, int k) {
         List<Highlight> sorted = new ArrayList<>(highlights);
         sorted.sort((a, b) -> Double.compare(scoreValue(b, scoreType), scoreValue(a, scoreType)));
-        return new HighlightSet(sorted.subList(0, Math.min(k, sorted.size())));
+        int limit = Math.max(0, Math.min(k, sorted.size()));
+        return new HighlightSet(sorted.subList(0, limit));
     }
 
     /** Set union with another HighlightSet. */
@@ -76,10 +77,11 @@ public final class HighlightSet {
     /** Restrict to a kind/shape of highlight. */
     public HighlightSet project(Predicate<Highlight> kindFilter) { return prune(kindFilter); }
 
+    /** The magnitude of a highlight's score of the given type, matching {@link #pruneByScore}; -inf if absent. */
     private static double scoreValue(Highlight h, String scoreType) {
         return h.getScores().stream()
                 .filter(s -> s.type.name().equals(scoreType))
-                .mapToDouble(s -> s.value)
+                .mapToDouble(s -> Math.abs(s.value))
                 .findFirst()
                 .orElse(Double.NEGATIVE_INFINITY);
     }

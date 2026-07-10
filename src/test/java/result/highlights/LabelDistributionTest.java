@@ -16,6 +16,7 @@ import org.junit.Test;
 import cubemanager.cubebase.CubeQuery;
 import model.abstracts.AbstractModel;
 import model.labeling.DerivedMeasure;
+import model.labeling.LabelDomain;
 import model.labeling.Labeling;
 import model.labeling.LabelingModel;
 import result.Cell;
@@ -67,7 +68,7 @@ public class LabelDistributionTest {
         labels.put(cells[1], "high");
         labels.put(cells[2], "high");
         labels.put(cells[3], "low");
-        Labeling labeling = new Labeling(Arrays.asList("low", "mid", "high"), true, labels);
+        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
 
         Map<Cell, Double> deltas = new LinkedHashMap<>();
         deltas.put(cells[0], 10.0);
@@ -91,11 +92,11 @@ public class LabelDistributionTest {
         assertEquals(1, highlights.size());
 
         HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
-        assertTrue("high predominates (3 of 4)", holistic.result.verdict);
+        assertTrue("high predominates (3 of 4)", holistic.execution.result.verdict());
         assertTrue("dominant label is reported", holistic.getScores().stream()
                 .anyMatch(s -> "high".equals(s.label)));
-        assertFalse("salient cells surfaced", holistic.elementary.isEmpty());
-        assertTrue("a salient cell carries the derived-measure magnitude", holistic.elementary.stream()
+        assertFalse("salient cells surfaced", holistic.elementary().isEmpty());
+        assertTrue("a salient cell carries the derived-measure magnitude", holistic.elementary().stream()
                 .flatMap(e -> e.getScores().stream())
                 .anyMatch(s -> s.type == LabelDistributionAlgorithm.MAGNITUDE));
     }
@@ -123,8 +124,8 @@ public class LabelDistributionTest {
         outlier.put(cells[3], "outlier");
 
         List<Labeling> labelings = Arrays.asList(
-                new Labeling(Arrays.asList("low", "mid", "high"), true, assessment),
-                new Labeling(Arrays.asList("non-outlier", "outlier"), true, outlier));
+                new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), assessment),
+                new Labeling(new LabelDomain(Arrays.asList("non-outlier", "outlier"), true), outlier));
 
         AbstractModel model = new StubLabelingModel(data, labelings, Collections.<DerivedMeasure>emptyList());
 

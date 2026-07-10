@@ -47,7 +47,7 @@ public class TopKContributorsTest {
 
         HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
         List<Double> reported = new ArrayList<>();
-        for (ElementaryHighlight e : holistic.elementary) reported.add(e.measureValue.value);
+        for (ElementaryHighlight e : holistic.elementary()) reported.add(e.measureValue.value);
 
         // Exactly the three largest, in descending value order.
         assertEquals("k largest contributors", java.util.Arrays.asList(500.0, 300.0, 100.0), reported);

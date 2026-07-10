@@ -47,11 +47,14 @@ public final class CubeSchemaResolver {
             for (Dimension d : dimensions) {
                 if (d.hasSameName(dimName)) { resolved = d.getLevel(levelName).orElse(null); break; }
             }
-            if (resolved == null) { // fall back: match the level name across any dimension
+            if (resolved == null) { // fall back to the level name, but only when it is unambiguous
+                Level unique = null;
+                int matches = 0;
                 for (Dimension d : dimensions) {
                     Optional<Level> o = d.getLevel(levelName);
-                    if (o.isPresent()) { resolved = o.get(); break; }
+                    if (o.isPresent()) { unique = o.get(); matches++; }
                 }
+                if (matches == 1) resolved = unique;
             }
             if (resolved != null) levels.add(resolved);
         }

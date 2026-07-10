@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cubemanager.cubebase.CubeQuery;
 import interestingnessengine.InterestingnessManager;
@@ -19,6 +21,8 @@ import result.highlights.metamodel.ScoreType;
  * scoring; facets that cannot be computed for the available session state are omitted.
  */
 public final class Interestingness {
+
+    private static final Logger LOG = Logger.getLogger(Interestingness.class.getName());
 
     private static final Map<InterestingnessFacet, String> ENGINE_MEASURE =
             new EnumMap<>(InterestingnessFacet.class);
@@ -56,6 +60,7 @@ public final class Interestingness {
             double value = manager.computeMeasure(measure, query, data);
             return Double.isNaN(value) ? null : new Score(facet, value);
         } catch (RuntimeException e) {
+            LOG.log(Level.FINE, e, () -> "interestingness facet " + facet + " (" + measure + ") not computed");
             return null;
         }
     }
