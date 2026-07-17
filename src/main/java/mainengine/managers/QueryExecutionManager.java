@@ -16,14 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
 import interestingnessengine.InterestingnessManager;
-import mainengine.ModelManager;
-import mainengine.ModelSelector;
+import model.ModelManager;
+import model.ModelSelector;
 import result.Result;
 import result.ResultFileMetadata;
 import setup.ModeOfWork;

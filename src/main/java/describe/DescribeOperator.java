@@ -9,7 +9,7 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import describe.report.DescribeReport;
 import describe.syntax.DescribeParserManager;
-import mainengine.ModelManager;
+import model.ModelManager;
 import model.abstracts.AbstractModel;
 import result.Result;
 import result.ResultFileMetadata;

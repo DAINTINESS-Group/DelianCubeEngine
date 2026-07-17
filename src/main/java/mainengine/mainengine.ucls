@@ -28,7 +28,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="mainengine.ModelManager" project="DelianCubeEngine" 
+  <class id="4" language="java" name="model.ModelManager" project="DelianCubeEngine"
     file="/DelianCubeEngine/src/main/java/mainengine/ModelManager.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="766" y="479"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -37,7 +37,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="mainengine.ModelSelector" project="DelianCubeEngine" 
+  <class id="5" language="java" name="model.ModelSelector" project="DelianCubeEngine"
     file="/DelianCubeEngine/src/main/java/mainengine/ModelSelector.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1128" y="908"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
