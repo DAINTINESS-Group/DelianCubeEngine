@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.AggregationFunction;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;

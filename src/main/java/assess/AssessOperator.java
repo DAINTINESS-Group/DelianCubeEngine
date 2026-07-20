@@ -1,9 +1,7 @@
 package assess;
 
-import result.highlights.CubeSchemaResolver;
 import result.highlights.HighlightExtractor;
 import result.highlights.HighlightSet;
-import result.highlights.IntentionalOperator;
 import result.highlights.OperatorResult;
 import result.highlights.metamodel.ArchetypeProperty;
 import result.highlights.instance.ElementaryHighlight;
@@ -14,6 +12,8 @@ import assess.syntax.AssessQueryParser;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
+import cubemanager.CubeSchemaResolver;
+import intentionaloperator.IntentionalOperator;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;

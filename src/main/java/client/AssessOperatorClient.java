@@ -2,11 +2,11 @@ package client;
 
 import assess.AssessOperator;
 import cubemanager.CubeManager;
+import cubemanager.CubeSchemaResolver;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 
 import interestingnessengine.InterestingnessManager;
-import result.highlights.CubeSchemaResolver;
 import result.highlights.HighlightExtractor;
 import result.highlights.HighlightSet;
 import result.highlights.Interestingness;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cubemanager.cubebase.CubeQuery;
+import intentionaloperator.IntentionalOperator;
 import model.abstracts.AbstractModel;
 import model.labeling.DerivedMeasure;
 import model.labeling.Labeling;

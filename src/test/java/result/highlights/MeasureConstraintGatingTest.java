@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
 import result.Cell;
 import result.Result;

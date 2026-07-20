@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
 import model.abstracts.AbstractModel;
 import model.labeling.DerivedMeasure;

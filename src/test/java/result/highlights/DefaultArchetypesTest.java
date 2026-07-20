@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import intentionaloperator.IntentionalOperator;
 import result.highlights.archetypes.DefaultArchetypes;
 import result.highlights.metamodel.ArchetypeProperty;
 

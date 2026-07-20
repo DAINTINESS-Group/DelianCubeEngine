@@ -1,4 +1,4 @@
-package result.highlights;
+package cubemanager;
 
 import result.highlights.instance.Character;
 
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;

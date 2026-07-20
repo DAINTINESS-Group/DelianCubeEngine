@@ -1,7 +1,8 @@
-package result.highlights;
+package intentionaloperator;
 
 import java.util.List;
 
+import result.highlights.OperatorResult;
 import result.highlights.archetypes.DefaultArchetypes;
 import result.highlights.metamodel.ArchetypeProperty;
 

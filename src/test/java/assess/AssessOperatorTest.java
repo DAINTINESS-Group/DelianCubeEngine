@@ -2,10 +2,11 @@ package assess;
 
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
+import cubemanager.CubeSchemaResolver;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
-import result.highlights.CubeSchemaResolver;
+
 import result.highlights.HighlightExtractor;
 import result.highlights.HighlightSet;
 import result.highlights.OperatorResult;

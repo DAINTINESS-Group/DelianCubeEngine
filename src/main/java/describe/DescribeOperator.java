@@ -9,11 +9,11 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import describe.report.DescribeReport;
 import describe.syntax.DescribeParserManager;
+import intentionaloperator.IntentionalOperator;
 import model.ModelManager;
 import model.abstracts.AbstractModel;
 import result.Result;
 import result.ResultFileMetadata;
-import result.highlights.IntentionalOperator;
 import result.highlights.OperatorResult;
 
 /**
