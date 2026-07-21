@@ -1,11 +1,22 @@
 package analyze.report;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import analyze.AnalyzeQuery;
+import assess.AssessModel;
+import assess.utils.ComparedCell;
+import assess.utils.LabeledCell;
 import result.Result;
+import result.highlights.HighlightSet;
+import result.highlights.OperatorResult;
+import result.highlights.instance.ElementaryHighlight;
+import result.highlights.instance.Highlight;
+import result.highlights.instance.HolisticHighlight;
 
 /**
  * Class that sets-up the report file with the Analyze Query results
@@ -184,4 +195,38 @@ public class AnalyzeReport {
 			e.printStackTrace();
 		}
 	}
+	public static String writeHighlightsReport(String query, OperatorResult result, HighlightSet highlights, String outputName) {
+		File dir = new File("OutputFiles/analyze");
+		File out = new File(dir, outputName + ".md");
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(out, true))) {
+			writer.append("## Query\n").append(query).append("\n\n");
+
+			if (!highlights.isEmpty()) {
+				writer.append("## Highlights\n");
+				for (Highlight h : highlights.highlights()) {
+					writer.append("### ").append(h.toText()).append("\n");
+					if (h instanceof HolisticHighlight) {
+						for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary()) {
+							writer.append("- ").append(eh.toText()).append("\n");
+						}
+					}
+					writer.append("\n");
+				}
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			System.out.println("Failed to export to MarkDown");
+		}
+		return out.getPath();
+	}
+
+	public void clearHighlightsReport(String outputName){
+		File dir = new File("OutputFiles/analyze");
+		File out = new File(dir, outputName + ".md");
+		if(out.delete()) {
+			return;
+		}
+		return;
+	}
 }
+
