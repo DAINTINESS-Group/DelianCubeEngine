@@ -1,18 +1,19 @@
 package assess;
 
+import assess.models.AssessModel;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
+import highlights.HighlightExtractor;
+import highlights.HighlightSet;
+import highlights.instance.Highlight;
+import highlights.instance.HolisticHighlight;
+import highlights.instance.Score;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import result.highlights.HighlightExtractor;
-import result.highlights.HighlightSet;
-import result.highlights.OperatorResult;
-import result.highlights.instance.Highlight;
-import result.highlights.instance.HolisticHighlight;
-import result.highlights.instance.Score;
+import intentionaloperator.OperatorResult;
 
 import java.io.File;
 import java.rmi.RemoteException;

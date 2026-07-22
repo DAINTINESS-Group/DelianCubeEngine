@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import cubemanager.cubebase.CubeQuery;
 import describe.DescribeQuery; // Using the wrapper class
+import highlights.HighlightSet;
+import highlights.instance.ElementaryHighlight;
+import highlights.instance.Highlight;
+import highlights.instance.HolisticHighlight;
 import cubemanager.cubebase.QueryMeasure;
 import result.Cell;
 import result.Result;
@@ -20,8 +24,9 @@ public class DescribeReport {
 	//Describe input query
     private String incomingExpression;
     //Wrapper holding both query definition and result
-    private DescribeQuery describeQuery; 
-    
+    private DescribeQuery describeQuery;
+    private HighlightSet highlights;
+
     private String localFolder;
     private String reportFile;
     private boolean errorStatus;
@@ -34,6 +39,10 @@ public class DescribeReport {
     
     public void setDescribeQuery(DescribeQuery describeQuery) {
         this.describeQuery = describeQuery;
+    }
+
+    public void setHighlights(HighlightSet highlights) {
+        this.highlights = highlights;
     }
     
     public void setErrorStatus(boolean errorStatus) {
@@ -101,11 +110,32 @@ public class DescribeReport {
                         writer.write("No results found.\n\n");
                     }
                 }
+
+                writeHighlights(writer);
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+     * Writes the highlights extracted over the result, one holistic per line with its elementary highlights.
+     */
+    private void writeHighlights(FileWriter writer) throws IOException {
+        if (highlights == null || highlights.isEmpty()) {
+            return;
+        }
+        writer.write("### HIGHLIGHTS\n");
+        for (Highlight h : highlights.highlights()) {
+            writer.write("- " + h.toText() + "\n");
+            if (h instanceof HolisticHighlight) {
+                for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary()) {
+                    writer.write("  - " + eh.toText() + "\n");
+                }
+            }
+        }
+        writer.write("\n");
     }
     
     /*
@@ -116,8 +146,6 @@ public class DescribeReport {
         ArrayList<Cell> cells = result.getCells();
 
         if (cells == null || cells.isEmpty()) return "No Results Found.";
-        
-        ArrayList<String[][]> modelOutputs = describeQuery.getModelOutputs();
 
         sb.append("|");
         
@@ -146,16 +174,7 @@ public class DescribeReport {
             }
             sb.append(header).append("|");
         }
-        
-        if (modelOutputs != null) {
-            for (String[][] modelData : modelOutputs) {
-                if (modelData.length > 0) {
-                    for (String colHeader : modelData[0]) {
-                        sb.append(colHeader).append("|");
-                    }
-                }
-            }
-        }
+
         sb.append("\n|");
 
         int totalCols;
@@ -165,39 +184,20 @@ public class DescribeReport {
         } else {
             totalCols = 1 + numSQLMeasures;
         }
-        
-        if (modelOutputs != null) {
-            for (String[][] modelData : modelOutputs) {
-                 if (modelData.length > 0) totalCols += modelData[0].length;
-            }
-        }
+
         for (int i = 0; i < totalCols; i++) sb.append("---|");
         sb.append("\n");
 
-        int rowIndex = 0;
         for (Cell c : cells) {
             sb.append("|");
-            
+
             //Dimensions
             for (String dim : c.getDimensionMembers()) sb.append(dim).append("|");
-            
+
             //SQL Measures
             for (String val : c.getMeasures()) sb.append(val).append("|");
-            
-            if (modelOutputs != null) {
-                for (String[][] modelData : modelOutputs) {
-                    if (rowIndex + 1 < modelData.length) {
-                        for (String val : modelData[rowIndex + 1]) {
-                            sb.append(val).append("|");
-                        }
-                    } else {
-                        for (int k=0; k<modelData[0].length; k++) sb.append("N/A|");
-                    }
-                }
-            }
-            
+
             sb.append("\n");
-            rowIndex++;
         }
 
         return sb.toString();

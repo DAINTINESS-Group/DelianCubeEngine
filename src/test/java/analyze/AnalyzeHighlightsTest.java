@@ -2,25 +2,22 @@ package analyze;
 
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
+import highlights.HighlightExtractor;
+import highlights.HighlightSet;
+import highlights.instance.HolisticHighlight;
 import mainengine.Session;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import result.Result;
-import result.highlights.HighlightExtractor;
-import result.highlights.HighlightSet;
-import result.highlights.OperatorResult;
-import result.highlights.instance.Highlight;
-import result.highlights.instance.HolisticHighlight;
-import result.highlights.instance.Score;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import intentionaloperator.OperatorResult;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
+import static highlights.HighlightTestSupport.holisticFor;
+import static highlights.HighlightTestSupport.scoreOf;
 
 public class AnalyzeHighlightsTest {
     private static CubeManager testCubeManager;
@@ -44,35 +41,6 @@ public class AnalyzeHighlightsTest {
         testSession = new Session(testCubeManager);
         testSession.initialize(typeOfConnection, userInputList);
         testTypeOfConnection = typeOfConnection;
-    }
-
-    private static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {
-        for (Highlight h : highlights.highlights()) {
-            if (h instanceof HolisticHighlight
-                    && ((HolisticHighlight) h).archetype.name.equals(archetypeName)) {
-                return (HolisticHighlight) h;
-            }
-        }
-        return null;
-    }
-
-    private static double scoreOf(HolisticHighlight highlight, String scoreType) {
-        for (Score score : highlight.getScores()) {
-            if (score.type.name().equals(scoreType)) return score.value;
-        }
-        return Double.NaN;
-    }
-
-    public String getFileContents(String fileName) throws IOException {
-        StringBuilder retString = new StringBuilder();
-        String str;
-        File file = new File(fileName);
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        while((str = br.readLine()) != null) {
-            retString.append(str).append("\n");
-        }
-        br.close();
-        return retString.toString();
     }
 
     @Test

@@ -129,51 +129,23 @@ public class NaiveJavaClient {
 		
 		String queryFired = queryForModels12;
 		String queryName = queryName12;
-		String [] modelsToGenerate = {"Rank","Outlier", "KMeansApache", "KPIMedianBased"};
-		//String [] modelsToGenerate = {"Outlier"};
-		//String [] modelsToGenerate = {};
-		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithModels(queryFired, modelsToGenerate);
+		ResultFileMetadata resMetadata = service.answerCubeQueryFromStringWithMetadata(queryFired);
 		
 
 		
 		String remoteFolder = resMetadata.getLocalFolder();
 		String remoteResultsFile = resMetadata.getResultFile();
 		String remoteInfoFile = resMetadata.getResultInfoFile();
-		ArrayList<String> models = resMetadata.getComponentResultFiles();
-		ArrayList<String> modelInfos = resMetadata.getComponentResultInfoFiles();
-		
-		System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile + "\nCOMP\t" + models.get(0));
-		
+
+		System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile);
+
 		String localFolder = "ClientCache" + File.separator;
 		File remoteRes = new File(remoteResultsFile);
 		ClientRMITransferer.download(service, remoteRes, new File( localFolder + queryName + ".tab"));
 		File remoteIRes = new File(remoteInfoFile);
 		ClientRMITransferer.download(service, remoteIRes, new File(localFolder + queryName + "_Info.txt"));
-		
-		if(models.size() > 0) {	
-			for(String model: models){
-				String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
-				String [] array = model.split(sep);
-				String localModelName = "NoName";
-				if (array.length > 0)
-					localModelName = array[array.length-1].trim();
-				File remote = new File(model);
-				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localModelName));
-			}//end for
-			for(String modelInfo: modelInfos){
-				String sep = "\\" + File.separator;	//Java idioms. You need to add the "\\" before!
-				String [] array = modelInfo.split(sep);
-				String localModelName = "NoName";
-				if (array.length > 0)
-					localModelName = array[array.length-1].trim();
-				File remote = new File(modelInfo);
-				ClientRMITransferer.download(service, remote, new File("ClientCache"+ File.separator  + localModelName));
-			}//end for
 
-		
-		}//end if
-		
-		
+
 		System.out.println("Execution of client is complete");
 	}//end main
 

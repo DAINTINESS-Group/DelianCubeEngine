@@ -5,18 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import analyze.AnalyzeQuery;
-import assess.AssessModel;
-import assess.utils.ComparedCell;
-import assess.utils.LabeledCell;
+import highlights.HighlightSet;
+import highlights.instance.ElementaryHighlight;
+import highlights.instance.Highlight;
+import highlights.instance.HolisticHighlight;
 import result.Result;
-import result.highlights.HighlightSet;
-import result.highlights.OperatorResult;
-import result.highlights.instance.ElementaryHighlight;
-import result.highlights.instance.Highlight;
-import result.highlights.instance.HolisticHighlight;
+import intentionaloperator.OperatorResult;
 
 /**
  * Class that sets-up the report file with the Analyze Query results

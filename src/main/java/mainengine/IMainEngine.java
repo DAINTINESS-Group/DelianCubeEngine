@@ -35,7 +35,7 @@ import org.apache.spark.sql.AnalysisException;
 import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
-import model.decisiontree.labeling.RuleSet;
+import decisiontree.labeling.RuleSet;
 import result.ResultFileMetadata;
 
 
@@ -161,20 +161,6 @@ public interface IMainEngine extends IServer {
 	 */
 	ResultFileMetadata answerCubeQueryFromStringWithMetadata(String queryRawString) throws RemoteException;
 
-	
-	
-	/**
-	 * Answers a query as prescribed in a String and returns a file with the results of the query and a set of models produced over the result of the query 
-	 * 
-	 * See the answerCubeQueryFromString
-	 * 
-	 * @param queryRawString	A String with the query definition
-	 * @param modelsToGenerate	An array of Strings with the model names to generate; if empty, a list of default models are applied
-	 * @return	A ResultFileMetadata object containing the respective String values on the location of the produced files and their parent folder 
-	 * @throws RemoteException
-	 * @see answerCubeQueryFromString
-	 */
-	ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String [] modelsToGenerate) throws RemoteException;
 	
 	
 	//TODO the javadoc

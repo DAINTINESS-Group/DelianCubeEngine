@@ -33,7 +33,7 @@ import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
-import model.decisiontree.labeling.RuleSet;
+import decisiontree.labeling.RuleSet;
 import mainengine.managers.Director;
 import mainengine.managers.ManagerType;
 import mainengine.managers.RequestCTO;
@@ -43,7 +43,7 @@ import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
-import model.decisiontree.services.DatasetManager;
+import decisiontree.services.DatasetManager;
 import result.Result;
 import result.ResultFileMetadata;
 
@@ -191,17 +191,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//answerCubeQueryFromStringWithMetadata
 
 
-	@Override
-	public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate)
-			throws RemoteException {
-
-		HashMap<String, Object> params = new HashMap<>();
-        params.put("query", queryRawString);
-        params.put("models", modelsToGenerate);
-        return (ResultFileMetadata) delegateExecution("answer_with_models", params);
-	}//end method answerCubeQueryFromStringWithModels
-	
-	
 	/**
 	 * Helper method to delegate execution requests to the Director
 	 * 

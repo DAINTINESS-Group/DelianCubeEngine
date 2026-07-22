@@ -19,7 +19,6 @@
 package result;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The class storing the cells of a cube

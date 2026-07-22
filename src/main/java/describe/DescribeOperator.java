@@ -6,15 +6,19 @@ import java.util.List;
 import org.antlr.runtime.RecognitionException;
 
 import cubemanager.CubeManager;
+import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
+import describe.models.KMeansLabelingModel;
+import describe.models.KPIMedianLabelingModel;
 import describe.report.DescribeReport;
 import describe.syntax.DescribeParserManager;
+import highlights.HighlightExtractor;
+import highlights.HighlightSet;
 import intentionaloperator.IntentionalOperator;
-import model.ModelManager;
-import model.abstracts.AbstractModel;
+import intentionaloperator.OperatorResult;
+import labeling.LabelingModel;
 import result.Result;
 import result.ResultFileMetadata;
-import result.highlights.OperatorResult;
 
 /**
  * A class for the intentional operator Describe
@@ -28,7 +32,8 @@ public class DescribeOperator implements IntentionalOperator {
 	private DescribeReport describeReport;
     private Result result;
     private DescribeQuery describeQuery;
-    private List<AbstractModel> launchedModels = new ArrayList<>();
+    private List<LabelingModel> models = new ArrayList<>();
+    private HighlightSet highlights;
     
     public DescribeOperator(CubeManager cubeManager) {
         this.cubeManager = cubeManager;
@@ -99,11 +104,10 @@ public class DescribeOperator implements IntentionalOperator {
                 Result result = cubeManager.executeQuery(cq);
                 this.result = result;
                 
-                //Apply models after getting the results
+                //Build the labeling models the query requested and extract highlights over the result
                 DescribeParams params = parserManager.getParams();
-                if(params.getModelList() != null && !params.getModelList().isEmpty()) {
-                    resultFile = applyModels(resultFile, result, params.getModelList());
-                }
+                this.models = buildLabelingModels(result, params.getModelList());
+                this.highlights = extractHighlights(cq, result, this.models);
 
                 //Process the Result object that came from the execution
                 String[][] resultArray = (result != null) ? result.getResultArray() : null;
@@ -118,6 +122,7 @@ public class DescribeOperator implements IntentionalOperator {
                 
                 startTime = System.nanoTime();
                 describeReport.setDescribeQuery(describeQuery);
+                describeReport.setHighlights(highlights);
                 describeReport.createTextReportFile();
                 endTime = System.nanoTime();
                 System.out.println("Reporting Result Time: " + (endTime - startTime) / 1000000.0 + " ms");
@@ -143,27 +148,38 @@ public class DescribeOperator implements IntentionalOperator {
         return resultFile;
     }
     
-    private ResultFileMetadata applyModels(ResultFileMetadata resMetadata, Result data, ArrayList<String> models) {
-        String[] modelArray = models.toArray(new String[0]);
-        
-        ModelManager modelManager = new ModelManager(data);
-        
-        ArrayList<AbstractModel> launchedModels = modelManager.selectModelsToLaunch(modelArray);
-
-        int modelGenFlag = modelManager.executeModelConstruction("Describe Query");
-
-        if (modelGenFlag == 0) {
-            modelManager.addComponentsToResultMetadata(resMetadata);
-
-            if (launchedModels != null) {
-                this.launchedModels = launchedModels;
-                for (AbstractModel model : launchedModels) {
-                    String[][] output = model.printAs2DStringArray();
-                    this.describeQuery.addModelOutput(output);
+    /** Instantiates the {@link LabelingModel}s named by the query's USING clause and computes each over the result. */
+    private List<LabelingModel> buildLabelingModels(Result data, List<String> modelNames) {
+        List<LabelingModel> built = new ArrayList<>();
+        if (modelNames == null) {
+            return built;
+        }
+        for (String modelName : modelNames) {
+            if (KPIMedianLabelingModel.NAME.equals(modelName)) {
+                KPIMedianLabelingModel model = new KPIMedianLabelingModel(data);
+                if (model.compute() == 0) {
+                    built.add(model);
+                }
+            } else if (KMeansLabelingModel.NAME.equals(modelName)) {
+                KMeansLabelingModel model = new KMeansLabelingModel(data);
+                if (model.compute() == 0) {
+                    built.add(model);
                 }
             }
         }
-        return resMetadata;
+        return built;
+    }
+
+    /** Runs the registered archetypes over the operator result and returns the highlights they produce. */
+    private HighlightSet extractHighlights(CubeQuery cubeQuery, Result data, List<LabelingModel> labelingModels) {
+        OperatorResult operatorResult = new OperatorResult(cubeQuery, data, labelingModels);
+        try {
+            CubeSchemaResolver schema = CubeSchemaResolver.from(cubeManager);
+            return new HighlightExtractor().extract(operatorResult, registeredArchetypes(), schema);
+        } catch (Exception e) {
+            System.err.println("DESCRIBE highlight extraction failed: " + e.getMessage());
+            return HighlightSet.empty();
+        }
     }
 
     public DescribeQuery getDescribeQuery() {
@@ -177,7 +193,7 @@ public class DescribeOperator implements IntentionalOperator {
     @Override
     public OperatorResult toOperatorResult() {
         CubeQuery cq = describeQuery == null ? null : describeQuery.getCubeQuery();
-        return new OperatorResult(cq, result, launchedModels);
+        return new OperatorResult(cq, result, models);
     }
 
     // registeredArchetypes() inherits the default set from IntentionalOperator.

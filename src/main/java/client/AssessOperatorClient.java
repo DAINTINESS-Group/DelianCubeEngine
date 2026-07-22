@@ -3,17 +3,16 @@ package client;
 import assess.AssessOperator;
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
+import highlights.HighlightExtractor;
+import highlights.HighlightSet;
+import highlights.Interestingness;
+import highlights.instance.Highlight;
+import highlights.metamodel.ArchetypeProperty;
 import mainengine.Session;
 import org.antlr.runtime.RecognitionException;
 
 import interestingnessengine.InterestingnessManager;
-import result.highlights.HighlightExtractor;
-import result.highlights.HighlightSet;
-import result.highlights.Interestingness;
-import result.highlights.OperatorResult;
-import result.highlights.Interestingness;
-import result.highlights.instance.Highlight;
-import result.highlights.metamodel.ArchetypeProperty;
+import intentionaloperator.OperatorResult;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package assess.labelers;
 
-import model.labeling.LabelDomain;
+import labeling.LabelDomain;
 
 /**
  * We are using a strategy pattern so that the AssessQueryBuilder can dynamically

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chartManagement.IChartQueryNModelGenerator;
-import model.abstracts.AbstractModel;
 
 public class ModelListFactory {
 	

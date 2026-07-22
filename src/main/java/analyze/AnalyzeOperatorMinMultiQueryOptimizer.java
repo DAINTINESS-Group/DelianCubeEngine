@@ -7,14 +7,15 @@ import analyze.report.AnalyzeReport;
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
+import highlights.*;
+import highlights.archetypes.megacontributor.MegaContributorArchetype;
+import highlights.archetypes.outlier.OutlierArchetype;
+import highlights.archetypes.topk.TopKContributorsArchetype;
+import highlights.metamodel.ArchetypeProperty;
 import intentionaloperator.IntentionalOperator;
+import intentionaloperator.OperatorResult;
 import result.Result;
 import result.ResultFileMetadata;
-import result.highlights.*;
-import result.highlights.archetypes.megacontributor.MegaContributorArchetype;
-import result.highlights.archetypes.outlier.OutlierArchetype;
-import result.highlights.archetypes.topk.TopKContributorsArchetype;
-import result.highlights.metamodel.ArchetypeProperty;
 
 
 public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperator {

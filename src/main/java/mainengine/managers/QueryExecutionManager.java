@@ -21,8 +21,6 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryHistoryManager;
 import interestingnessengine.InterestingnessManager;
-import model.ModelManager;
-import model.ModelSelector;
 import result.Result;
 import result.ResultFileMetadata;
 import setup.ModeOfWork;
@@ -55,8 +53,6 @@ public class QueryExecutionManager implements IBuilder {
             	return answerCubeQueryFromStringWithMetadata((String) params.get("query"), cubeManager, historyManager);
             case "answer_from_file":
             	return answerCubeQueriesFromFile((File) params.get("file"), cubeManager, historyManager);
-            case "answer_with_models":
-            	return answerCubeQueryFromStringWithModels((String) params.get("query"), (String[]) params.get("models"), cubeManager, historyManager);
             case "answer_with_interest_measures":
             	if (interestManager == null) throw new Exception("InterestManager is null in parameters");
                 return computeMeasuresSingle((String) params.get("query"), (List<String>) params.get("measures"), cubeManager, historyManager, interestManager);
@@ -201,59 +197,6 @@ public class QueryExecutionManager implements IBuilder {
         return resMetadata;
     }
 
-    
-    public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate, CubeManager cubeManager, QueryHistoryManager historyManager) throws RemoteException {
-        int numOfModelsGenerated = 0;
-        int numOfModelsRequested = 0;
-
-        //0. answer the query and get its result and info files
-        ResultFileMetadata resMetadata = answerCubeQueryFromStringWithMetadata(queryRawString, cubeManager, historyManager);
-
-        /*
-		 * postConditions: Result, cubeQuery and cubeQueryName are populated; resMetadata has info on folder, query results and query info
-		*/
-
-		// Used to work fine. Replace so that we can introduce model selection explicitly via a dedicated class
-		//		/* 
-		//		 * 1. Choosing which models to fire. 
-		//		 *    We will work with the modelNames variable; 
-		//		 *    if you pass an non-empty parameter it works with your parameter, else it works with the defaults.
-		//		*/
-		//		String [] modelNames = {"Rank","Outlier"};
-		//		if(modelsToGenerate.length > 0) {
-		//			modelNames = modelsToGenerate.clone(); 
-		//		}
-		//		numOfModelsRequested = modelNames.length;
-		//		System.out.println("\nModel selection of " + numOfModelsRequested + " models");		
-        
-        if((modelsToGenerate == null) ||(modelsToGenerate.length == 0)) {
-            numOfModelsRequested = 0;
-        } else {
-            numOfModelsRequested = modelsToGenerate.length;
-        }
-
-        String [] modelNames;
-        ModelSelector modelSelector = new ModelSelector(currentQueryName);
-        modelNames = modelSelector.decideModelsToExecute(currentQueryName, modelsToGenerate);
-
-		//2. select the models to fire
-        ModelManager modelManager = new ModelManager(this.currentResult);
-        modelManager.selectModelsToLaunch(modelNames);
-        
-        //3. execute the selected models
-        int modelGenFlag = modelManager.executeModelConstruction(this.currentQueryName);
-        
-        //4.Populate resMetadata with the outcome of model generation
-        if (modelGenFlag == 0) {	//all went OK
-            numOfModelsGenerated = modelManager.addComponentsToResultMetadata(resMetadata);
-
-            if( (numOfModelsRequested > 0) && (numOfModelsGenerated < numOfModelsRequested)) {
-                System.err.println("Warning: Model generation of " + numOfModelsGenerated + " models, for " + numOfModelsRequested + " requested models");
-            }
-        }
-        return resMetadata;
-    }
-    
     
     private String[] computeMeasuresSingle(String queryString, List<String> measures, CubeManager cubeManager, QueryHistoryManager historyManager, InterestingnessManager interestManager) throws Exception {
         //Execute Query

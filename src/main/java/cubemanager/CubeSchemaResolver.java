@@ -1,7 +1,5 @@
 package cubemanager;
 
-import result.highlights.instance.Character;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +8,7 @@ import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;
+import highlights.instance.Character;
 
 /**
  * Resolves a cube query and its result cells into the typed building blocks of a highlight:

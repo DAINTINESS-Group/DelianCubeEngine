@@ -1,25 +1,26 @@
 package assess;
 
-import result.highlights.HighlightExtractor;
-import result.highlights.HighlightSet;
-import result.highlights.OperatorResult;
-import result.highlights.metamodel.ArchetypeProperty;
-import result.highlights.instance.ElementaryHighlight;
-import result.highlights.instance.Highlight;
-import result.highlights.instance.HolisticHighlight;
+import intentionaloperator.OperatorResult;
+import labeling.LabelingModel;
+import assess.models.AssessModel;
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
+import highlights.HighlightExtractor;
+import highlights.HighlightSet;
+import highlights.instance.ElementaryHighlight;
+import highlights.instance.Highlight;
+import highlights.instance.HolisticHighlight;
+import highlights.metamodel.ArchetypeProperty;
 import intentionaloperator.IntentionalOperator;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import result.ResultFileMetadata;
-import model.abstracts.AbstractModel;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -74,7 +75,7 @@ public class AssessOperator implements IntentionalOperator {
 
         operatorResult = new OperatorResult(
                 parsedQuery.targetCubeQuery, parsedQuery.targetCube,
-                Collections.<AbstractModel>singletonList(assessModel));
+                Collections.<LabelingModel>singletonList(assessModel));
 
         return operatorResult;
     }

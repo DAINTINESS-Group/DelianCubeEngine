@@ -2,9 +2,8 @@ package intentionaloperator;
 
 import java.util.List;
 
-import result.highlights.OperatorResult;
-import result.highlights.archetypes.DefaultArchetypes;
-import result.highlights.metamodel.ArchetypeProperty;
+import highlights.archetypes.DefaultArchetypes;
+import highlights.metamodel.ArchetypeProperty;
 
 /**
  * An intentional operator (ASSESS, DESCRIBE, ANALYZE, ...). Its product is an {@link OperatorResult}
