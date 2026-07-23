@@ -23,7 +23,7 @@ import result.Result;
  */
 public final class KMeansLabelingModel implements LabelingModel {
 
-    /** Identifies this model's output within an OperatorResult. */
+    /** Identifies this model's output within an LabeledResult. */
     public static final String NAME = "KMeansApache";
 
     private static final int DEFAULT_NUM_CLUSTERS = 3;

@@ -21,7 +21,7 @@ import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.DerivedMeasure;
 import labeling.LabelDomain;
 import labeling.Labeling;
@@ -82,7 +82,7 @@ public class LabelDistributionTest {
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
-        OperatorResult operatorResult = new OperatorResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -131,7 +131,7 @@ public class LabelDistributionTest {
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
-        OperatorResult operatorResult = new OperatorResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 

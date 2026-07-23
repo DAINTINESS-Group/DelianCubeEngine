@@ -22,7 +22,7 @@ import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
 import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.ScoreType;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.Cell;
 import result.Result;
 
@@ -50,7 +50,7 @@ public class OutlierArchetypeTest {
         query.addQueryMeasure("sum", "revenue", "revenue");
         query.addQueryMeasure("sum", "units", "units");
 
-        OperatorResult operatorResult = new OperatorResult(query, data, null);
+        LabeledResult operatorResult = new LabeledResult(query, data, null);
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(OutlierArchetype.create());
 

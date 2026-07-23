@@ -18,12 +18,12 @@ import result.Result;
 /**
  * A {@link LabelingModel} that, over one measure of a result, labels each cell {@code Low}/{@code OK}/
  * {@code High} by its distance from the cells' own median and exposes the value-to-median ratio as a
- * {@link DerivedMeasure}. An operator attaches it to its {@code OperatorResult}, where the
+ * {@link DerivedMeasure}. An operator attaches it to its {@code LabeledResult}, where the
  * {@code labelpredominance} archetype consumes the ordered labeling to surface highlights.
  */
 public final class KPIMedianLabelingModel implements LabelingModel {
 
-    /** Identifies this model's output within an OperatorResult. */
+    /** Identifies this model's output within an LabeledResult. */
     public static final String NAME = "KPIMedianBased";
 
     /** A cell is High above this multiple of the median, Low below the lower one. */

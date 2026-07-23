@@ -1,6 +1,6 @@
 package highlights.archetypes.megacontributor;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -46,12 +46,12 @@ public final class MarginalContributionAlgorithm implements Algorithm {
     }
 
     @Override
-    public boolean appliesTo(OperatorResult context) {
+    public boolean appliesTo(LabeledResult context) {
         return context.data != null && !context.data.getCells().isEmpty();
     }
 
     @Override
-    public ArchetypeResult run(OperatorResult context, int measureIndex) {
+    public ArchetypeResult run(LabeledResult context, int measureIndex) {
         AlgorithmParams params = params();
         double threshold = params.get("dominanceThreshold", DEFAULT_DOMINANCE_THRESHOLD);
 

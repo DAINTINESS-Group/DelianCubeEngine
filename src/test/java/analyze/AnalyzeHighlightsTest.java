@@ -10,7 +10,7 @@ import mainengine.managers.IntentionalProfile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class AnalyzeHighlightsTest {
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
         AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
 
-        List<OperatorResult> minMQOQueries = testAnalyzeOperator.execute(incomingExpression);
+        List<LabeledResult> minMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 
         HighlightSet highlightsBase = new HighlightExtractor().extract(minMQOQueries.get(0), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierBase = holisticFor(highlightsBase, "Outlier");

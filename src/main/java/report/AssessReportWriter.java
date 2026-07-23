@@ -8,7 +8,7 @@ import assess.models.AssessModel;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import highlights.HighlightSet;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 /**
  * Writes the ASSESS result — its comparisons, labelings, and highlights — under
@@ -22,7 +22,7 @@ public class AssessReportWriter extends MarkdownReportWriter {
     }
 
     @Override
-    protected void writeBody(BufferedWriter writer, String query, OperatorResult result, HighlightSet highlights)
+    protected void writeBody(BufferedWriter writer, String query, LabeledResult result, HighlightSet highlights)
             throws IOException {
         AssessModel model = (AssessModel) result.model(AssessModel.NAME);
         List<ComparedCell> comparedCells = model.getComparedCells();

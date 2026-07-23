@@ -16,7 +16,7 @@ import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
 import cubemanager.CubeManager;
 import intentionaloperator.IntentionalOperator;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.LabelingModel;
 
 /**
@@ -38,7 +38,7 @@ public class AssessOperator implements IntentionalOperator {
      * @param assessQuery The user-provided query for assessment reasons
      */
     @Override
-    public List<OperatorResult> execute(String assessQuery) {
+    public List<LabeledResult> execute(String assessQuery) {
         AssessQuery parsedQuery = parseQuery(assessQuery);
 
         AssessModel assessModel = new AssessModel(
@@ -49,7 +49,7 @@ public class AssessOperator implements IntentionalOperator {
             throw new RuntimeException("No cells collected from the target cube query");
         }
 
-        OperatorResult operatorResult = new OperatorResult(
+        LabeledResult operatorResult = new LabeledResult(
                 parsedQuery.targetCubeQuery, parsedQuery.targetCube,
                 Collections.<LabelingModel>singletonList(assessModel));
 

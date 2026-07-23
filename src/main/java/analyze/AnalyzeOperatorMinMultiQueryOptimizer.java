@@ -6,7 +6,7 @@ import java.util.List;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import intentionaloperator.IntentionalOperator;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.Result;
 
 public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperator {
@@ -51,11 +51,11 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 
 	/**
 	 * Parses the incoming expression, generates the analyze queries, executes them, and returns one
-	 * {@link OperatorResult} per query. Throws on syntax or query-generation errors.
-	 * @return List < OperatorResult >
+	 * {@link LabeledResult} per query. Throws on syntax or query-generation errors.
+	 * @return List < LabeledResult >
 	 */
 	@Override
-	public List<OperatorResult> execute(String query){
+	public List<LabeledResult> execute(String query){
 		if (!constructUpdatedAnalyzeQueries()) {
 			throw new RuntimeException("ANALYZE incoming expression contains syntax errors!");
 		}
@@ -63,12 +63,12 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 			throw new RuntimeException("Expressions or values of the given ANALYZE incoming expression are invalid!");
 		}
 
-		List<OperatorResult> results = new ArrayList<OperatorResult>();
+		List<LabeledResult> results = new ArrayList<LabeledResult>();
 		for(AnalyzeQuery aq: analyzeQueries) {
 			CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
 			Result result = cubeManager.executeQuery(analyzeCubeQuery);
 			aq.setAnalyzeQueryResult(result);
-			results.add(new OperatorResult(analyzeCubeQuery, result, null));
+			results.add(new LabeledResult(analyzeCubeQuery, result, null));
 		}
 		return results;
 	}

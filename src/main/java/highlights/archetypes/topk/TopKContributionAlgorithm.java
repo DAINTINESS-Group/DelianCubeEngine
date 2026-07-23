@@ -1,6 +1,6 @@
 package highlights.archetypes.topk;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,12 +43,12 @@ public final class TopKContributionAlgorithm implements Algorithm {
     }
 
     @Override
-    public boolean appliesTo(OperatorResult context) {
+    public boolean appliesTo(LabeledResult context) {
         return context.data != null && !context.data.getCells().isEmpty();
     }
 
     @Override
-    public ArchetypeResult run(OperatorResult context, int measureIndex) {
+    public ArchetypeResult run(LabeledResult context, int measureIndex) {
         int k = (int) params().get("k", DEFAULT_K);
 
         List<Cell> cells = context.data.getCells();

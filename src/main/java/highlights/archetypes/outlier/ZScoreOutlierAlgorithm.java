@@ -1,6 +1,6 @@
 package highlights.archetypes.outlier;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +45,12 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
     }
 
     @Override
-    public boolean appliesTo(OperatorResult context) {
+    public boolean appliesTo(LabeledResult context) {
         return context.data != null && !context.data.getCells().isEmpty();
     }
 
     @Override
-    public ArchetypeResult run(OperatorResult context, int measureIndex) {
+    public ArchetypeResult run(LabeledResult context, int measureIndex) {
         double threshold = params().get("absZThreshold", ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
         ZScoreOutlierModel model = new ZScoreOutlierModel(context.data, measureIndex, threshold);
 

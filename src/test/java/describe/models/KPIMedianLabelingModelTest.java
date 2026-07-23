@@ -19,7 +19,7 @@ import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
 import result.Cell;
 import result.Result;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.LabelingModel;
 
 /**
@@ -44,8 +44,8 @@ public class KPIMedianLabelingModelTest {
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
-        OperatorResult operatorResult =
-                new OperatorResult(query, data, Collections.<LabelingModel>singletonList(model));
+        LabeledResult operatorResult =
+                new LabeledResult(query, data, Collections.<LabelingModel>singletonList(model));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 

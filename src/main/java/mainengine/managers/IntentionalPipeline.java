@@ -8,7 +8,7 @@ import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import intentionaloperator.IntentionalOperator;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.ResultFileMetadata;
 
 /**
@@ -23,11 +23,11 @@ public final class IntentionalPipeline {
     public static ResultFileMetadata run(IntentionalOperator operator, String query,
             IntentionalProfile profile, CubeManager cubeManager) {
         try {
-            List<OperatorResult> results = operator.execute(query);
+            List<LabeledResult> results = operator.execute(query);
             CubeSchemaResolver schema = CubeSchemaResolver.from(cubeManager);
             HighlightExtractor extractor = new HighlightExtractor();
             List<HighlightSet> highlights = new ArrayList<>();
-            for (OperatorResult result : results) {
+            for (LabeledResult result : results) {
                 highlights.add(extractor.extract(result, profile.archetypes(), schema));
             }
             return profile.writer().write(query, results, highlights);

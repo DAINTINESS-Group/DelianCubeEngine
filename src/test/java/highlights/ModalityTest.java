@@ -18,7 +18,7 @@ import highlights.archetypes.modality.NormalizedEntropyModalityAlgorithm;
 import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
 import highlights.metamodel.ArchetypeProperty;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.Cell;
 import result.Result;
 
@@ -38,7 +38,7 @@ public class ModalityTest {
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
-        OperatorResult operatorResult = new OperatorResult(query, data, null);
+        LabeledResult operatorResult = new LabeledResult(query, data, null);
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(
                 highlights.archetypes.modality.ModalityArchetype.create());

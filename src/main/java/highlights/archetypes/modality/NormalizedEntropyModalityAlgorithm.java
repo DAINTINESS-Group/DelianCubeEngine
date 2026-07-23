@@ -1,6 +1,6 @@
 package highlights.archetypes.modality;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,12 +40,12 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
     }
 
     @Override
-    public boolean appliesTo(OperatorResult context) {
+    public boolean appliesTo(LabeledResult context) {
         return context.data != null && !context.data.getCells().isEmpty();
     }
 
     @Override
-    public ArchetypeResult run(OperatorResult context, int measureIndex) {
+    public ArchetypeResult run(LabeledResult context, int measureIndex) {
         double threshold = params().get("concentrationThreshold", DEFAULT_CONCENTRATION_THRESHOLD);
 
         List<Cell> cells = context.data.getCells();

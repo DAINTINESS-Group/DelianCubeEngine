@@ -13,7 +13,7 @@ import highlights.HighlightSet;
 import highlights.instance.ElementaryHighlight;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.Cell;
 import result.Result;
 import result.ResultFileMetadata;
@@ -29,11 +29,11 @@ abstract class MarkdownReportWriter implements ReportWriter {
     protected abstract String subdirectory();
 
     /** Renders one result — its query and operator-specific sections — including its highlights. */
-    protected abstract void writeBody(BufferedWriter writer, String query, OperatorResult result,
+    protected abstract void writeBody(BufferedWriter writer, String query, LabeledResult result,
             HighlightSet highlights) throws IOException;
 
     @Override
-    public final ResultFileMetadata write(String query, List<OperatorResult> results, List<HighlightSet> highlights) {
+    public final ResultFileMetadata write(String query, List<LabeledResult> results, List<HighlightSet> highlights) {
         File dir = new File("OutputFiles/" + subdirectory());
         dir.mkdirs();
         File out = new File(dir, results.get(0).query.getName() + ".md");
@@ -69,7 +69,7 @@ abstract class MarkdownReportWriter implements ReportWriter {
     }
 
     /** Appends the result table: the cells headed by the query's grouper dimensions and measures. */
-    protected void appendResults(BufferedWriter writer, OperatorResult result) throws IOException {
+    protected void appendResults(BufferedWriter writer, LabeledResult result) throws IOException {
         writer.append("## Results\n").append(buildTable(result.query, result.data)).append("\n\n");
     }
 

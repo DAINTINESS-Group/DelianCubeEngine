@@ -13,7 +13,7 @@ import cubemanager.cubebase.CubeQuery;
 import highlights.HighlightExtractor;
 import highlights.archetypes.megacontributor.MegaContributorArchetype;
 import highlights.metamodel.ArchetypeProperty;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.Cell;
 import result.Result;
 
@@ -36,7 +36,7 @@ public class MeasureConstraintGatingTest {
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure(function, "amount", "amount");
 
-        OperatorResult operatorResult = new OperatorResult(query, twoRegionResult(), null);
+        LabeledResult operatorResult = new LabeledResult(query, twoRegionResult(), null);
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(MegaContributorArchetype.create());
 

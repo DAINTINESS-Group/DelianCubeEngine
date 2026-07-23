@@ -25,7 +25,7 @@ import result.Result;
  */
 public final class AssessModel implements LabelingModel {
 
-    /** Identifies this model's output within an OperatorResult. */
+    /** Identifies this model's output within an LabeledResult. */
     public static final String NAME = "AssessDelta";
 
     private final AssessBenchmark benchmark;

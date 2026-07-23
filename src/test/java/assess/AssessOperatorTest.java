@@ -14,7 +14,7 @@ import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -193,7 +193,7 @@ public class AssessOperatorTest {
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkHighlightsTest";
 
-        OperatorResult result = operator.execute(query).get(0);
+        LabeledResult result = operator.execute(query).get(0);
         HighlightSet highlights = new HighlightExtractor()
                 .extract(result, IntentionalProfile.ASSESS.archetypes(), CubeSchemaResolver.from(cubeManager));
 

@@ -1,6 +1,6 @@
 package highlights.archetypes.labelpredominance;
 
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.DerivedMeasure;
 import labeling.Labeling;
 
@@ -52,12 +52,12 @@ public final class LabelDistributionAlgorithm implements Algorithm {
     public AlgorithmParams params() { return new AlgorithmParams(); }
 
     @Override
-    public boolean appliesTo(OperatorResult context) {
+    public boolean appliesTo(LabeledResult context) {
         return !context.labelings().isEmpty();
     }
 
     @Override
-    public ArchetypeResult run(OperatorResult context, int labelingIndex) {
+    public ArchetypeResult run(LabeledResult context, int labelingIndex) {
         Labeling labeling = context.labelings().get(labelingIndex);
         List<DerivedMeasure> derived = context.derivedMeasures();
         DerivedMeasure magnitude = labelingIndex < derived.size() ? derived.get(labelingIndex) : null;

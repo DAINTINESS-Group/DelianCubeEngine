@@ -18,7 +18,7 @@ import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 
 public class DescribeHighlightsTest {
 
@@ -47,7 +47,7 @@ public class DescribeHighlightsTest {
                 + "GROUP BY district_name, region USING " + KPIMedianLabelingModel.NAME;
 
         DescribeOperator operator = new DescribeOperator(testCubeManager);
-        OperatorResult operatorResult = operator.execute(incomingExpression).get(0);
+        LabeledResult operatorResult = operator.execute(incomingExpression).get(0);
         assertNotNull("DESCRIBE should produce an operator result", operatorResult);
 
         HighlightSet highlights = new HighlightExtractor().extract(

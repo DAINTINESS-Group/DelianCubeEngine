@@ -3,7 +3,7 @@ package report;
 import java.util.List;
 
 import highlights.HighlightSet;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import result.ResultFileMetadata;
 
 /**
@@ -13,5 +13,5 @@ import result.ResultFileMetadata;
  */
 public interface ReportWriter {
 
-    ResultFileMetadata write(String query, List<OperatorResult> results, List<HighlightSet> highlights);
+    ResultFileMetadata write(String query, List<LabeledResult> results, List<HighlightSet> highlights);
 }

@@ -12,7 +12,7 @@ import describe.models.KMeansLabelingModel;
 import describe.models.KPIMedianLabelingModel;
 import describe.syntax.DescribeParserManager;
 import intentionaloperator.IntentionalOperator;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.LabelingModel;
 import result.Result;
 
@@ -40,7 +40,7 @@ public class DescribeOperator implements IntentionalOperator {
      * returns the result as a single-element list. Throws on syntax or translation errors.
      */
     @Override
-    public List<OperatorResult> execute(String queryString) {
+    public List<LabeledResult> execute(String queryString) {
         System.out.println("Processing DESCRIBE: " + queryString);
 
         boolean incomingExpressionIsValid = false;
@@ -68,7 +68,7 @@ public class DescribeOperator implements IntentionalOperator {
         this.models = buildLabelingModels(result, params.getModelList());
         this.describeQuery.setDescribeQueryResult(result);
 
-        return Collections.singletonList(new OperatorResult(cubeQuery, result, this.models));
+        return Collections.singletonList(new LabeledResult(cubeQuery, result, this.models));
     }
 
     /** Instantiates the {@link LabelingModel}s named by the query's USING clause and computes each over the result. */

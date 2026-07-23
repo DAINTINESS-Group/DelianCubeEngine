@@ -21,11 +21,11 @@ import highlights.metamodel.Algorithm;
 import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.EvaluationAxis;
 import highlights.metamodel.MeasureConstraint;
-import intentionaloperator.OperatorResult;
+import labeling.LabeledResult;
 import labeling.Labeling;
 
 /**
- * Stage 2 of the pipeline: runs the data-driven archetype evaluation over an {@link OperatorResult} and
+ * Stage 2 of the pipeline: runs the data-driven archetype evaluation over an {@link LabeledResult} and
  * produces highlights. Each candidate {@link ArchetypeProperty} is evaluated once per query measure: for a
  * measure whose aggregation satisfies the archetype's Main Measure Role constraint (e.g. additivity) and
  * that has an applicable candidate {@link Algorithm}, it runs the algorithm over that measure and builds
@@ -41,7 +41,7 @@ public final class HighlightExtractor {
     /** Uses the given interestingness source to score each holistic's declared interestingness facets. */
     public HighlightExtractor(Interestingness interestingness) { this.interestingness = interestingness; }
 
-    public HighlightSet extract(OperatorResult result, List<ArchetypeProperty> candidates,
+    public HighlightSet extract(LabeledResult result, List<ArchetypeProperty> candidates,
                                 CubeSchemaResolver schema) {
         List<Highlight> out = new ArrayList<>();
         List<Level> explanators = schema.resolveExplanators(result.query);
@@ -80,7 +80,7 @@ public final class HighlightExtractor {
     }
 
     /** Evaluates one candidate archetype against a single main measure (its column index + resolved Measure). */
-    private void evaluateMeasure(OperatorResult result, ArchetypeProperty archetype, Algorithm algorithm,
+    private void evaluateMeasure(LabeledResult result, ArchetypeProperty archetype, Algorithm algorithm,
                                  CubeSchemaResolver schema, int measureIndex, AggregationFunction aggregation,
                                  Measure mainMeasure, List<Level> explanators, List<Highlight> out,
                                  List<Score> facetScores) {
@@ -89,14 +89,14 @@ public final class HighlightExtractor {
                 facetScores));
     }
 
-    private Algorithm applicableAlgorithm(ArchetypeProperty archetype, OperatorResult result) {
+    private Algorithm applicableAlgorithm(ArchetypeProperty archetype, LabeledResult result) {
         for (Algorithm algorithm : archetype.candidateAlgorithms) {
             if (algorithm.appliesTo(result)) return algorithm;
         }
         return null;
     }
 
-    private HolisticHighlight buildHolistic(OperatorResult result, ArchetypeProperty archetype,
+    private HolisticHighlight buildHolistic(LabeledResult result, ArchetypeProperty archetype,
                                             Algorithm algorithm, CubeSchemaResolver schema,
                                             int measureIndex, Measure mainMeasure, List<Level> explanators,
                                             List<Score> facetScores) {
