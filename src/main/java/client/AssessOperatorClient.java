@@ -9,6 +9,7 @@ import highlights.Interestingness;
 import highlights.instance.Highlight;
 import highlights.metamodel.ArchetypeProperty;
 import mainengine.Session;
+import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
 
 import interestingnessengine.InterestingnessManager;
@@ -38,7 +39,7 @@ public class AssessOperatorClient {
         // Stage 1: the operator produces its result. Stage 2: highlight extraction runs on top of it.
         long start = System.nanoTime();
         OperatorResult result = operator.execute(query).get(0);
-        List<ArchetypeProperty> registeredArchetypes = operator.registeredArchetypes();
+        List<ArchetypeProperty> registeredArchetypes = IntentionalProfile.ASSESS.archetypes();
 
         HighlightSet highlights = new HighlightExtractor(interestingness)
                 .extract(result, registeredArchetypes, schemaResolver);

@@ -17,6 +17,7 @@ import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
 import mainengine.Session;
+import mainengine.managers.IntentionalProfile;
 import intentionaloperator.OperatorResult;
 
 public class DescribeHighlightsTest {
@@ -50,7 +51,7 @@ public class DescribeHighlightsTest {
         assertNotNull("DESCRIBE should produce an operator result", operatorResult);
 
         HighlightSet highlights = new HighlightExtractor().extract(
-                operatorResult, operator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+                operatorResult, IntentionalProfile.DESCRIBE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         assertFalse("DESCRIBE should produce highlights", highlights.isEmpty());
 
         HolisticHighlight outlier = holisticFor(highlights, "Outlier");

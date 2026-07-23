@@ -1,228 +1,110 @@
 package analyze.report;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import analyze.AnalyzeQuery;
-import highlights.HighlightSet;
-import highlights.instance.ElementaryHighlight;
-import highlights.instance.Highlight;
-import highlights.instance.HolisticHighlight;
 import result.Result;
-import intentionaloperator.OperatorResult;
+import result.ResultFileMetadata;
 
 /**
- * Class that sets-up the report file with the Analyze Query results
- * @author mariosjkb
- *
+ * Writes the ANALYZE results table — the produced cube queries and their tuples — to a Markdown file
+ * under {@code OutputFiles}, returning its {@link ResultFileMetadata}. A non-null {@code errorMessage}
+ * produces an error report instead of the results.
  */
-public class AnalyzeReport {
-	
-	// Analyze input query
-	private String incomingExpression;
-	
-	// Spark or RDBMS dataset connection
-	private String connectionType;
-	
-	// Produced queries for Analyze execution
-	private ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
-	
-	// Folder where the report file is stored
-	private String localFolder;
-	
-	// Name of the report file
-	private String reportFile;
-	
-	// Boolean variable that is true when no errors occured during operator execution
-	private boolean errorStatus;
-	
-	// Message with the error occured
-	private String errorMessage;
-	
-	public AnalyzeReport(String incomingExpression,String connectionType) {
-		this.incomingExpression = incomingExpression;
-		this.connectionType = connectionType;
-	}
-	
-	public boolean getErrorStatus() {
-		return errorStatus;
-	}
-	
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	public String getLocalFolder() {
-		return localFolder;
-	}
-	
-	public String getReportFile() {
-		return reportFile;
-	}
-	
-	public void setAnalyzeQueries(ArrayList<AnalyzeQuery> analyzeQueries) {
-		this.analyzeQueries = analyzeQueries;
-	}
-	
-	public void setErrorStatus(boolean errorStatus) {
-		this.errorStatus = errorStatus;
-	}
-	
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-	
-	// Method that creates the report file based on the info gained from the Analyze Query objects
-	public void createTextReportFile() {
-//		System.out.println("AGGELIKI 'S TEST : " + analyzeQueries.get(0)
-//		.getAnalyzeCubeQuery()
-//		.getName());
-		String fileName = analyzeQueries.get(0)
-										.getAnalyzeCubeQuery()
-										.getName()
-										.split("-")[0];
-	
-		try {
-			this.reportFile = fileName + "-Analyze_Operator_Report.md";
-			this.localFolder = "OutputFiles" + File.separator;
-			FileWriter reportFile = new FileWriter(this.localFolder + this.reportFile);
-			
-			reportFile.write("## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n");		
-			
-			reportFile.write("ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" + incomingExpression + "**\n\n");
+public final class AnalyzeReport {
 
-			if(errorStatus == true) {
-				reportFile.write("**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n");
-				reportFile.write("AnalyzeExecutionError: " + errorMessage + "\n\n");
-				reportFile.close();
-			}else {
-			
-				reportFile.write("### -----------------------------------------PRODUCED CUBE QUERIES--------------------------------------\n\n");
-				
-				for(AnalyzeQuery aq: analyzeQueries) {
-					Result result = aq.getAnalyzeQueryResult();
-					if(result == null) {
-						continue;
-					}
-					String[][] resultArray = result.getResultArray();
-					String resultString = "";
-					if(resultArray == null) {
-						resultString = "The result of the Cube Query is empty!";
-					}else {
-						if(connectionType.equals("RDBMS")) {
-							// set up markdown table
-							for(int i = 2;i<resultArray.length;i++) {
-								if(i==2) {
-									resultString += "|";
-									if(i == 2) {
-										for(int k=0;k<resultArray[i].length-1;k++) {
-											if(k == resultArray[i].length-2) {
-												resultString += "Metric|";
-											}else {
-												resultString += "Grouper " + Integer.toString(k+1) + "|";
-											}
-										}
-										resultString += "\n|";
-										for(int k=0;k<resultArray[i].length-1;k++) {
-											resultString += "---|";
-										}
-										resultString += "\n|";
-									}
-								}
-								// fill table with data
-								for(int j = 0;j<resultArray[i].length-1;j++) {
-									resultString += resultArray[i][j] + "|";
-								}
-								resultString += "\n";
-								if(i < resultArray.length - 1) {
-									resultString += "|";
-								}
-							}
-						}else if(connectionType.equals("Spark")) {
-							// set-up markdown table
-							for(int i = 0;i<resultArray.length-2;i++) {
-								if(i==0) {
-									resultString += "|";
-									if(i == 0) {
-										for(int k=0;k<resultArray[i].length-1;k++) {
-											if(k == resultArray[i].length-2) {
-												resultString += "Metric|";
-											}else {
-												resultString += "Grouper " + Integer.toString(k+1) + "|";
-											}
-										}
-										resultString += "\n|";
-										for(int k=0;k<resultArray[i].length-1;k++) {
-											resultString += "---|";
-										}
-										resultString += "\n|";
-									}
-								}
-								//fill table with data
-								for(int j = 0;j<resultArray[i].length-1;j++) {
-									
-									resultString += resultArray[i][j] + "|";
-								}
-								resultString += "\n";
-								if(i < resultArray.length - 3) {
-									resultString += "|";
-								}
-							}
-						}
-					}
-					
-					reportFile.write("#### ANALYZE CUBE QUERY\n\n"
-									+ aq.getAnalyzeCubeQuery().toString() + "\n\n"
-									+ "##### ANALYZE CUBE QUERY DETAILS\n\n" 
-									+ "Cube Query Type: **" + aq.getType() + "**\n"
-									+ "Filter value that is modified compared to the Base Query: **" + aq.getOriginalSigmaValue() + "**\n"
-									+ "Filter value after modification: **" + aq.getModifiedSigmaValue() + "**\n"
-									+ "Grouper value that is modified compared to the Base Query: **" + aq.getOriginalGammaValue() + "**\n"
-									+ "Grouper value after modification: **" + aq.getModifiedGammaValue() + "**\n"
-									+ "Result of the Cube Query in ascending order:\n" + resultString + "\n"
-									+ "-----------------------------------------------------------------\n");
-				}
-				reportFile.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	public static String writeHighlightsReport(String query, OperatorResult result, HighlightSet highlights, String outputName) {
-		File dir = new File("OutputFiles/analyze");
-		File out = new File(dir, outputName + ".md");
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(out, true))) {
-			writer.append("## Query\n").append(query).append("\n\n");
+    private AnalyzeReport() {}
 
-			if (!highlights.isEmpty()) {
-				writer.append("## Highlights\n");
-				for (Highlight h : highlights.highlights()) {
-					writer.append("### ").append(h.toText()).append("\n");
-					if (h instanceof HolisticHighlight) {
-						for (ElementaryHighlight eh : ((HolisticHighlight) h).elementary()) {
-							writer.append("- ").append(eh.toText()).append("\n");
-						}
-					}
-					writer.append("\n");
-				}
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			System.out.println("Failed to export to MarkDown");
-		}
-		return out.getPath();
-	}
+    public static ResultFileMetadata write(String incomingExpression, String connectionType,
+            List<AnalyzeQuery> queries, String errorMessage) {
+        String localFolder = "OutputFiles" + File.separator;
+        String baseName = queries.isEmpty() ? "Analyze"
+                : queries.get(0).getAnalyzeCubeQuery().getName().split("-")[0];
+        String reportFile = baseName + "-Analyze_Operator_Report.md";
 
-	public void clearHighlightsReport(String outputName){
-		File dir = new File("OutputFiles/analyze");
-		File out = new File(dir, outputName + ".md");
-		if(out.delete()) {
-			return;
-		}
-		return;
-	}
+        try (FileWriter writer = new FileWriter(localFolder + reportFile)) {
+            writer.write("## ------------------------------------ANALYZE OPERATOR REPORT-------------------------\n\n");
+            writer.write("ANALYZE OPERATOR INTENTIONAL QUERY: \n\n**" + incomingExpression + "**\n\n");
+            if (errorMessage != null) {
+                writer.write("**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n");
+                writer.write("AnalyzeExecutionError: " + errorMessage + "\n\n");
+            } else {
+                writer.write("### -----------------------------------------PRODUCED CUBE QUERIES--------------------------------------\n\n");
+                for (AnalyzeQuery aq : queries) {
+                    appendQuery(writer, aq, connectionType);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ResultFileMetadata metadata = new ResultFileMetadata();
+        metadata.setLocalFolder(localFolder);
+        metadata.setResultFile(reportFile);
+        if (errorMessage != null) {
+            metadata.setErrorCheckingStatus(errorMessage);
+        }
+        return metadata;
+    }
+
+    private static void appendQuery(FileWriter writer, AnalyzeQuery aq, String connectionType) throws IOException {
+        Result result = aq.getAnalyzeQueryResult();
+        if (result == null) {
+            return;
+        }
+        String[][] resultArray = result.getResultArray();
+        String resultString = (resultArray == null)
+                ? "The result of the Cube Query is empty!"
+                : buildTable(resultArray, connectionType);
+
+        writer.write("#### ANALYZE CUBE QUERY\n\n"
+                + aq.getAnalyzeCubeQuery().toString() + "\n\n"
+                + "##### ANALYZE CUBE QUERY DETAILS\n\n"
+                + "Cube Query Type: **" + aq.getType() + "**\n"
+                + "Filter value that is modified compared to the Base Query: **" + aq.getOriginalSigmaValue() + "**\n"
+                + "Filter value after modification: **" + aq.getModifiedSigmaValue() + "**\n"
+                + "Grouper value that is modified compared to the Base Query: **" + aq.getOriginalGammaValue() + "**\n"
+                + "Grouper value after modification: **" + aq.getModifiedGammaValue() + "**\n"
+                + "Result of the Cube Query in ascending order:\n" + resultString + "\n"
+                + "-----------------------------------------------------------------\n");
+    }
+
+    /** Renders the result rows as a Markdown table. RDBMS results carry two header rows; Spark two trailing. */
+    private static String buildTable(String[][] resultArray, String connectionType) {
+        int first;
+        int last;
+        if ("Spark".equals(connectionType)) {
+            first = 0;
+            last = resultArray.length - 2;
+        } else {
+            first = 2;
+            last = resultArray.length;
+        }
+
+        StringBuilder table = new StringBuilder();
+        for (int i = first; i < last; i++) {
+            if (i == first) {
+                table.append("|");
+                for (int k = 0; k < resultArray[i].length - 1; k++) {
+                    table.append(k == resultArray[i].length - 2 ? "Metric|" : "Grouper " + (k + 1) + "|");
+                }
+                table.append("\n|");
+                for (int k = 0; k < resultArray[i].length - 1; k++) {
+                    table.append("---|");
+                }
+                table.append("\n|");
+            }
+            for (int j = 0; j < resultArray[i].length - 1; j++) {
+                table.append(resultArray[i][j]).append("|");
+            }
+            table.append("\n");
+            if (i < last - 1) {
+                table.append("|");
+            }
+        }
+        return table.toString();
+    }
 }
-

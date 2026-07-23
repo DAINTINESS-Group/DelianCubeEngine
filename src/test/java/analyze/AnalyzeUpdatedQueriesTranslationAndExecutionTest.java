@@ -136,9 +136,9 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeQueryExecutionResults.csv");
 		}
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-		AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
-		
-		testAnalyzeOperator.executeToReport(incomingExpression);
+		AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

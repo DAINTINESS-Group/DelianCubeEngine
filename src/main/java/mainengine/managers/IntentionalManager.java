@@ -31,13 +31,13 @@ public class IntentionalManager implements IBuilder {
         switch (cto.getCommandAlias().toLowerCase()) {
             
             case "describe":
-                DescribeOperator descOp = new DescribeOperator(cto.getCubeManager());
-                results = descOp.executeToReport(query);
+                results = IntentionalPipeline.run(new DescribeOperator(cto.getCubeManager()),
+                        query, IntentionalProfile.DESCRIBE, cto.getCubeManager());
                 break;
 
             case "assess":
-                AssessOperator assessOp = new AssessOperator(cto.getCubeManager());
-                results = assessOp.executeToReport(query);
+                results = IntentionalPipeline.run(new AssessOperator(cto.getCubeManager()),
+                        query, IntentionalProfile.ASSESS, cto.getCubeManager());
                 break;
 
             case "analyze_iakovidis":
@@ -58,12 +58,10 @@ public class IntentionalManager implements IBuilder {
                     (String) params.get("connectionType")
                 );
                 AnalyzeOperatorMinMultiQueryOptimizer minOp = new AnalyzeOperatorMinMultiQueryOptimizer(
-                    query, 
-                    cto.getCubeManager(), 
-                    (String) params.get("connectionType"), 
+                    cto.getCubeManager(),
                     minTrans
                 );
-                results = minOp.executeToReport(query);
+                results = IntentionalPipeline.run(minOp, query, IntentionalProfile.ANALYZE, cto.getCubeManager());
                 break;
 
             case "analyze_max_mqo":

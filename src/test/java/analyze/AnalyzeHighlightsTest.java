@@ -6,13 +6,13 @@ import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
 import mainengine.Session;
+import mainengine.managers.IntentionalProfile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import intentionaloperator.OperatorResult;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,11 +53,11 @@ public class AnalyzeHighlightsTest {
                 "                    AS 3rd_working_example";
 
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-        AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(incomingExpression, testCubeManager, testTypeOfConnection, testAnalyzeTranslationManager);
+        AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
 
         List<OperatorResult> minMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 
-        HighlightSet highlightsBase = new HighlightExtractor().extract(minMQOQueries.get(0), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlightsBase = new HighlightExtractor().extract(minMQOQueries.get(0), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierBase = holisticFor(highlightsBase, "Outlier");
         HolisticHighlight topKBase = holisticFor(highlightsBase, "TopKContributors");
         HolisticHighlight megaContributorBase = holisticFor(highlightsBase, "MegaContributor");
@@ -70,7 +70,7 @@ public class AnalyzeHighlightsTest {
         assertFalse(megaContributorBase.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorBase, "ContributionShare") > 0.5);
 
-        HighlightSet highlightsSib1 = new HighlightExtractor().extract(minMQOQueries.get(1), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlightsSib1 = new HighlightExtractor().extract(minMQOQueries.get(1), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierSib1 = holisticFor(highlightsSib1, "Outlier");
         HolisticHighlight topKSib1 = holisticFor(highlightsSib1, "TopKContributors");
         HolisticHighlight megaContributorSib1 = holisticFor(highlightsSib1, "MegaContributor");
@@ -83,7 +83,7 @@ public class AnalyzeHighlightsTest {
         assertFalse(megaContributorSib1.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorSib1, "ContributionShare") > 0.5);
 
-        HighlightSet highlightsSib2 = new HighlightExtractor().extract(minMQOQueries.get(2), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlightsSib2 = new HighlightExtractor().extract(minMQOQueries.get(2), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierSib2 = holisticFor(highlightsSib2, "Outlier");
         HolisticHighlight topKSib2 = holisticFor(highlightsSib2, "TopKContributors");
         HolisticHighlight megaContributorSib2 = holisticFor(highlightsSib2, "MegaContributor");
@@ -96,7 +96,7 @@ public class AnalyzeHighlightsTest {
         assertFalse(megaContributorSib2.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold", scoreOf(megaContributorSib2, "ContributionShare") > 0.5);
 
-        HighlightSet highlightsDD1 = new HighlightExtractor().extract(minMQOQueries.get(3), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlightsDD1 = new HighlightExtractor().extract(minMQOQueries.get(3), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierDD1 = holisticFor(highlightsDD1, "Outlier");
         HolisticHighlight topKDD1 = holisticFor(highlightsDD1, "TopKContributors");
         HolisticHighlight megaContributorDD1 = holisticFor(highlightsDD1, "MegaContributor");
@@ -107,7 +107,7 @@ public class AnalyzeHighlightsTest {
         assertTrue("Top-k contributors should hold", topKDD1.execution.result.verdict());
         assertFalse("MegaContributor should not hold", megaContributorDD1.execution.result.verdict());
 
-        HighlightSet highlightsDD2 = new HighlightExtractor().extract(minMQOQueries.get(4), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlightsDD2 = new HighlightExtractor().extract(minMQOQueries.get(4), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierDD2 = holisticFor(highlightsDD2, "Outlier");
         HolisticHighlight topKDD2 = holisticFor(highlightsDD2, "TopKContributors");
         HolisticHighlight megaContributorDD2 = holisticFor(highlightsDD2, "MegaContributor");

@@ -10,12 +10,12 @@ import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
 import mainengine.Session;
+import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import intentionaloperator.OperatorResult;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -195,7 +195,7 @@ public class AssessOperatorTest {
 
         OperatorResult result = operator.execute(query).get(0);
         HighlightSet highlights = new HighlightExtractor()
-                .extract(result, operator.registeredArchetypes(), CubeSchemaResolver.from(cubeManager));
+                .extract(result, IntentionalProfile.ASSESS.archetypes(), CubeSchemaResolver.from(cubeManager));
 
         HolisticHighlight labelPredominance = holisticFor(highlights, "LabelPredominance");
         HolisticHighlight megaContributor = holisticFor(highlights, "MegaContributor");

@@ -22,15 +22,16 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 			// Collection of AnalyzeCubeQueries
 			private ArrayList<AnalyzeQuery> analyzeQueries;
 			
-			// Analyze operator result object
-			private AnalyzeReport analyzeReport;
-						
+			// The intentional query and its dataset connection, kept for reporting
+			private String incomingExpression;
+			private String connectionType;
+
 			public AnalyzeOperatorMidMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager, String connectionType,AnalyzeTranslationManager analyzeTranslationManager) {
 				this.cubeManager = cubeManager;
 				this.analyzeTranslationManager = analyzeTranslationManager;
 				this.analyzeQueries = new ArrayList<AnalyzeQuery>();
-				this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
-				System.out.println("$$ ---------------------------------------------------------");
+				this.incomingExpression = incomingExpression;
+				this.connectionType = connectionType;
 			}
 
 			
@@ -68,22 +69,16 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 				int mqoResultSize =0;
 				double totalExecutionTime = 0.0;
 				double mqoResultManagementTime = 0.0;
+				String errorMessage = null;
 				boolean translationStatus = this.constructUpdatedAnalyzeQueries();
 				boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
 				if(translationStatus == false) {
 					System.err.println("ANALYZE operator execution is aborting...");
-					analyzeReport.setErrorStatus(true);
-					analyzeReport.setErrorMessage("ANALYZE incoming expression contains syntax errors!Please check.");
-					analyzeReport.setAnalyzeQueries(analyzeQueries);
-					analyzeReport.createTextReportFile();
+					errorMessage = "ANALYZE incoming expression contains syntax errors!Please check.";
 				}else if(cubeQueryGenerationStatus == false){
 					System.err.println("ANALYZE expression encountered errors!\nANALYZE operator execution is aborting...");
-					analyzeReport.setErrorStatus(true);
-					analyzeReport.setErrorMessage("Expressions or values of the given ANALYZE incoming expression are invalid!Please check.");
-					analyzeReport.setAnalyzeQueries(analyzeQueries);
-					analyzeReport.createTextReportFile();
+					errorMessage = "Expressions or values of the given ANALYZE incoming expression are invalid!Please check.";
 				}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
-					analyzeReport.setErrorStatus(false);
 					AggregateAdapterFactory aggrAdapterFactory = new AggregateAdapterFactory();
 					AggregateAdapter aggrAdapter = aggrAdapterFactory.createAdapter(analyzeTranslationManager.getAggrFunc());
 					
@@ -167,12 +162,9 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 					double reportingTime = endTime - startTime;
 					System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");*/
 				}
-				ResultFileMetadata resultFile = new ResultFileMetadata();
-				resultFile.setLocalFolder(analyzeReport.getLocalFolder());
-				resultFile.setResultFile(analyzeReport.getReportFile());
-				if(analyzeReport.getErrorStatus() == true) {
-					resultFile.setErrorCheckingStatus(analyzeReport.getErrorMessage());
-				}
+				ResultFileMetadata resultFile = (errorMessage != null)
+						? AnalyzeReport.write(incomingExpression, connectionType, analyzeQueries, errorMessage)
+						: new ResultFileMetadata();
 				System.out.println("Number of generated queries: " + Integer.toString(analyzeQueries.size()) + " queries");
 				System.out.println("Number of resulted tuples: " + Integer.toString(resultTuplesCounter));
 				System.out.println("Number of resulted tuples after the multi-query optimization: " + Integer.toString(mqoResultSize));

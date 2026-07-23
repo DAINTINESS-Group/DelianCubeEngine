@@ -20,6 +20,8 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import describe.DescribeOperator;
 import mainengine.Session;
+import mainengine.managers.IntentionalPipeline;
+import mainengine.managers.IntentionalProfile;
 import result.Result;
 import result.ResultFileMetadata;
 
@@ -114,13 +116,15 @@ public class QueryRunner {
     }
 
     private void runDescribe(String q) throws Exception {
-        ResultFileMetadata md = new DescribeOperator(cubeManager).executeToReport(q);
+        ResultFileMetadata md = IntentionalPipeline.run(new DescribeOperator(cubeManager), q,
+                IntentionalProfile.DESCRIBE, cubeManager);
         showReport("DESCRIBE", md);
     }
 
     private void runAssess(String q) throws Exception {
         new File("OutputFiles/assessments").mkdirs();
-        ResultFileMetadata md = new AssessOperator(cubeManager).executeToReport(q);
+        ResultFileMetadata md = IntentionalPipeline.run(new AssessOperator(cubeManager), q,
+                IntentionalProfile.ASSESS, cubeManager);
         if (md != null && md.getErrorCheckingStatus() != null) {
             System.out.println("[ASSESS error] " + md.getErrorCheckingStatus());
             return;
@@ -161,7 +165,8 @@ public class QueryRunner {
         switch (analyzeStrategy) {
             case "min": {
                 AnalyzeTranslationManager tm = new AnalyzeTranslationManager(q, cubeManager, schemaName, CONN);
-                md = new AnalyzeOperatorMinMultiQueryOptimizer(q, cubeManager, CONN, tm).executeToReport(q);
+                md = IntentionalPipeline.run(new AnalyzeOperatorMinMultiQueryOptimizer(cubeManager, tm), q,
+                        IntentionalProfile.ANALYZE, cubeManager);
                 break;
             }
             case "max": {

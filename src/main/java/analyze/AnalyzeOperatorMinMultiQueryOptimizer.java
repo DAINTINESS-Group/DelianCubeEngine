@@ -3,47 +3,27 @@ package analyze;
 import java.util.ArrayList;
 import java.util.List;
 
-import analyze.report.AnalyzeReport;
 import cubemanager.CubeManager;
-import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.*;
-import highlights.archetypes.megacontributor.MegaContributorArchetype;
-import highlights.archetypes.outlier.OutlierArchetype;
-import highlights.archetypes.topk.TopKContributorsArchetype;
-import highlights.metamodel.ArchetypeProperty;
 import intentionaloperator.IntentionalOperator;
 import intentionaloperator.OperatorResult;
 import result.Result;
-import result.ResultFileMetadata;
-
 
 public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperator {
 
 	// CubeManager object to manage the cube
 	private CubeManager cubeManager;
-	
+
 	// A manager object that manages the whole translation process
 	private AnalyzeTranslationManager analyzeTranslationManager;
-	
+
 	// Collection of AnalyzeCubeQueries
 	private ArrayList<AnalyzeQuery> analyzeQueries;
 
-	private List<ArchetypeProperty> registeredArchetypes;
-
-	private String outputFileName;
-
-	// Analyze operator result object
-	private AnalyzeReport analyzeReport;
-
-		
-	public AnalyzeOperatorMinMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager,String connectionType,AnalyzeTranslationManager analyzeTranslationManager) {
+	public AnalyzeOperatorMinMultiQueryOptimizer(CubeManager cubeManager, AnalyzeTranslationManager analyzeTranslationManager) {
 		this.cubeManager = cubeManager;
 		this.analyzeQueries = new ArrayList<AnalyzeQuery>();
-		this.analyzeReport = new AnalyzeReport(incomingExpression,connectionType);
 		this.analyzeTranslationManager = analyzeTranslationManager;
-		this.registeredArchetypes = registeredArchetypes();
-		System.out.println("$$ ---------------------------------------------------------");
 	}
 
 	/**
@@ -70,96 +50,27 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 	}
 
 	/**
-	 * Auxiliary method that registers the Archetype Properties to be checked in the operator's query results.
-	 * @return ArrayList < ArchetypeProperty >
-	 */
-	public ArrayList<ArchetypeProperty> registeredArchetypes(){
-		ArrayList<ArchetypeProperty> archetypes = new ArrayList<ArchetypeProperty>();
-		archetypes.add(MegaContributorArchetype.create());
-		archetypes.add(TopKContributorsArchetype.create());
-		archetypes.add(OutlierArchetype.create());
-		return archetypes;
-	}
-
-	/**
-	 * Stage-1 producer: parses the incoming expression (supplied via the constructor), generates the
-	 * analyze queries, executes them, and returns one {@link OperatorResult} per query for Highlights
-	 * Extraction. The {@code query} argument is ignored — ANALYZE receives its expression at construction.
+	 * Parses the incoming expression, generates the analyze queries, executes them, and returns one
+	 * {@link OperatorResult} per query. Throws on syntax or query-generation errors.
 	 * @return List < OperatorResult >
 	 */
 	@Override
 	public List<OperatorResult> execute(String query){
-		//this must return a Intentional Result object, not null, not void, not int
-		ArrayList<OperatorResult> analyzeMinMQOResults = new ArrayList<OperatorResult>();
-		int resultTuplesCounter = 0;
-		double totalExecutionTime = 0.0;
-		boolean translationStatus = this.constructUpdatedAnalyzeQueries();
-		boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
-		if(!translationStatus) {
-			System.err.println("ANALYZE operator execution is aborting...");
-			analyzeReport.setErrorStatus(true);
-			analyzeReport.setErrorMessage("ANALYZE incoming expression contains syntax errors!Please check.");
-			analyzeReport.setAnalyzeQueries(analyzeQueries);
-			analyzeReport.createTextReportFile();
-		}else if(!cubeQueryGenerationStatus){
-			System.err.println("ANALYZE expression encountered errors!\nANALYZE operator execution is aborting...");
-			analyzeReport.setErrorStatus(true);
-			analyzeReport.setErrorMessage("Expressions or values of the given ANALYZE incoming expression are invalid!Please check.");
-			analyzeReport.setAnalyzeQueries(analyzeQueries);
-			analyzeReport.createTextReportFile();
-		}else if(translationStatus && cubeQueryGenerationStatus) {
-			analyzeReport.setErrorStatus(false);
-			for(AnalyzeQuery aq: analyzeQueries) {
-				//long startTime = System.nanoTime();
-				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-				Result result = cubeManager.executeQuery(analyzeCubeQuery);
-				String[][] resultArray = result.getResultArray();
-				System.out.println(aq.getType());
-				if(resultArray!=null) {
-					// first 2 rows contain column names!
-					resultTuplesCounter += resultArray.length - 2;
-				}
-
-				if(aq.getType() == AnalyzeQuery.TypeOfAnalyzeQuery.Base){
-					outputFileName = "Analyze Highlights Report-" + aq.getAnalyzeCubeQuery().getName();
-				}
-
-				aq.setAnalyzeQueryResult(result);
-				OperatorResult opResult = new OperatorResult(analyzeCubeQuery,result,null);
-				analyzeMinMQOResults.add(opResult);
-			}
-			analyzeReport.setAnalyzeQueries(analyzeQueries);
-			analyzeReport.createTextReportFile();
+		if (!constructUpdatedAnalyzeQueries()) {
+			throw new RuntimeException("ANALYZE incoming expression contains syntax errors!");
 		}
-		return analyzeMinMQOResults;
-	}
+		if (!analyzeTranslationManager.getCubeQueryGenerationStatus()) {
+			throw new RuntimeException("Expressions or values of the given ANALYZE incoming expression are invalid!");
+		}
 
-	/**
-	 * Legacy file path: extract highlights from the analyze query results using the registered Archetype
-	 * Properties. The results are written in a markdown file. The {@code query} argument is ignored —
-	 * ANALYZE receives its expression at construction.
-	 * @return ResultFileMetadata
-	 */
-	@Override
-	public ResultFileMetadata executeToReport(String query) {
-		ResultFileMetadata resultFile = new ResultFileMetadata();
-		resultFile.setLocalFolder(analyzeReport.getLocalFolder());
-		resultFile.setResultFile(analyzeReport.getReportFile());
-		CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
-		if(analyzeReport.getErrorStatus()) {
-			resultFile.setErrorCheckingStatus(analyzeReport.getErrorMessage());
+		List<OperatorResult> results = new ArrayList<OperatorResult>();
+		for(AnalyzeQuery aq: analyzeQueries) {
+			CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
+			Result result = cubeManager.executeQuery(analyzeCubeQuery);
+			aq.setAnalyzeQueryResult(result);
+			results.add(new OperatorResult(analyzeCubeQuery, result, null));
 		}
-		try {
-			List<OperatorResult> results = execute(query);
-			analyzeReport.clearHighlightsReport(outputFileName);
-			for (OperatorResult opResult: results) {
-				HighlightSet highlights = new HighlightExtractor().extract(opResult, registeredArchetypes, schemaResolver);
-				resultFile.setResultFile(AnalyzeReport.writeHighlightsReport(opResult.query.toString(), opResult, highlights, outputFileName));
-			}
-		} catch (RuntimeException e) {
-			resultFile.setErrorCheckingStatus(e.toString());
-		}
-		return resultFile;
+		return results;
 	}
 
 	public ArrayList<AnalyzeQuery> getAnalyzeQueries(){
