@@ -13,7 +13,7 @@ import highlights.HighlightSet;
 import highlights.instance.ElementaryHighlight;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 import result.ResultFileMetadata;

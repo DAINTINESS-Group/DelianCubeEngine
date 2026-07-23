@@ -21,11 +21,11 @@ import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
-import labeling.LabeledResult;
-import labeling.DerivedMeasure;
-import labeling.LabelDomain;
-import labeling.Labeling;
-import labeling.LabelingModel;
+import intentional.result.DerivedMeasure;
+import intentional.result.LabelDomain;
+import intentional.result.LabeledResult;
+import intentional.result.Labeling;
+import intentional.result.LabelingModel;
 import result.Cell;
 import result.Result;
 

@@ -18,7 +18,7 @@ import highlights.archetypes.modality.NormalizedEntropyModalityAlgorithm;
 import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
 import highlights.metamodel.ArchetypeProperty;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 

@@ -17,10 +17,10 @@ import highlights.HighlightSet;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
+import intentional.result.LabeledResult;
+import intentional.result.LabelingModel;
 import result.Cell;
 import result.Result;
-import labeling.LabeledResult;
-import labeling.LabelingModel;
 
 /**
  * The KPI model labels each cell Low/OK/High by its distance from the median, and the label-predominance

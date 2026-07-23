@@ -1,8 +1,8 @@
-package intentionaloperator;
+package intentional.operator;
 
 import java.util.List;
 
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 
 /**
  * An intentional operator (ASSESS, DESCRIBE, ANALYZE, ...). Runs a query and returns one

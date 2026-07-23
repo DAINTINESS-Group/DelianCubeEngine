@@ -17,7 +17,7 @@ import highlights.archetypes.topk.TopKContributorsArchetype;
 import highlights.instance.ElementaryHighlight;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 

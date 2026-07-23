@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import highlights.HighlightSet;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 
 /**
  * Writes the ANALYZE results — each query and the highlights extracted over it — under

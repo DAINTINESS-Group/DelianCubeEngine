@@ -15,9 +15,9 @@ import assess.models.AssessModel;
 import assess.syntax.AssessQueryLexer;
 import assess.syntax.AssessQueryParser;
 import cubemanager.CubeManager;
-import intentionaloperator.IntentionalOperator;
-import labeling.LabeledResult;
-import labeling.LabelingModel;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
+import intentional.result.LabelingModel;
 
 /**
  * The top layer class for any assessments done in the intentional model.

@@ -9,12 +9,11 @@ import highlights.HighlightSet;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
+import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
-
-import labeling.LabeledResult;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;

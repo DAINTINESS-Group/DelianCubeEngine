@@ -8,12 +8,12 @@ import highlights.HighlightSet;
 import highlights.Interestingness;
 import highlights.instance.Highlight;
 import highlights.metamodel.ArchetypeProperty;
+import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
 
 import interestingnessengine.InterestingnessManager;
-import labeling.LabeledResult;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;

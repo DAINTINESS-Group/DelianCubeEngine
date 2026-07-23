@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import highlights.HighlightSet;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 
 /**
  * Writes the DESCRIBE result — its query, result table, and highlights — under {@code OutputFiles/describe}.

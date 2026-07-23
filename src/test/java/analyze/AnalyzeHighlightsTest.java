@@ -5,12 +5,11 @@ import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
+import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import labeling.LabeledResult;
 
 import java.io.IOException;
 import java.util.HashMap;

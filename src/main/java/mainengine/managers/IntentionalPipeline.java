@@ -7,8 +7,8 @@ import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
-import intentionaloperator.IntentionalOperator;
-import labeling.LabeledResult;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
 import result.ResultFileMetadata;
 
 /**

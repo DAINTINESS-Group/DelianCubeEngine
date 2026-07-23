@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import labeling.DerivedMeasure;
-import labeling.LabelDomain;
-import labeling.Labeling;
-import labeling.LabelingModel;
+import intentional.result.DerivedMeasure;
+import intentional.result.LabelDomain;
+import intentional.result.Labeling;
+import intentional.result.LabelingModel;
 import result.Cell;
 import result.Result;
 

@@ -1,7 +1,5 @@
 package highlights.archetypes.modality;
 
-import labeling.LabeledResult;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +11,7 @@ import highlights.metamodel.Algorithm;
 import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.NamedScoreType;
 import highlights.metamodel.ScoreType;
+import intentional.result.LabeledResult;
 import result.Cell;
 
 /**

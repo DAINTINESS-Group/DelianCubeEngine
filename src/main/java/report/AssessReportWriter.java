@@ -8,7 +8,7 @@ import assess.models.AssessModel;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
 import highlights.HighlightSet;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 
 /**
  * Writes the ASSESS result — its comparisons, labelings, and highlights — under

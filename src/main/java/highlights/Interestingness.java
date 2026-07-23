@@ -41,7 +41,7 @@ public final class Interestingness {
     public void observe(CubeQuery query, Result data) { manager.updateState(query, data); }
 
     /** Scores every interestingness facet among the given score types over the current query result. */
-    public List<Score> scores(List<ScoreType> scoreTypes, CubeQuery query, Result data) {
+    public List<Score> computeScores(List<ScoreType> scoreTypes, CubeQuery query, Result data) {
         List<Score> out = new ArrayList<>();
         for (ScoreType type : scoreTypes) {
             if (type instanceof InterestingnessFacet) {

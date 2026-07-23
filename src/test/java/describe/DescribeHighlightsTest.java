@@ -16,9 +16,9 @@ import describe.models.KPIMedianLabelingModel;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
+import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
-import labeling.LabeledResult;
 
 public class DescribeHighlightsTest {
 

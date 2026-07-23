@@ -1,7 +1,5 @@
 package highlights.archetypes.megacontributor;
 
-import labeling.LabeledResult;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +13,7 @@ import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.NamedScoreType;
 import highlights.metamodel.ScoreType;
+import intentional.result.LabeledResult;
 import result.Cell;
 
 /**

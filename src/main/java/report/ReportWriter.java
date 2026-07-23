@@ -3,7 +3,7 @@ package report;
 import java.util.List;
 
 import highlights.HighlightSet;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.ResultFileMetadata;
 
 /**

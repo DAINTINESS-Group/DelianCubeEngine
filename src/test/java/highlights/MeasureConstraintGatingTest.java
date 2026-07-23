@@ -13,7 +13,7 @@ import cubemanager.cubebase.CubeQuery;
 import highlights.HighlightExtractor;
 import highlights.archetypes.megacontributor.MegaContributorArchetype;
 import highlights.metamodel.ArchetypeProperty;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 

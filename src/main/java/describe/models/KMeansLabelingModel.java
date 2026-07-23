@@ -9,9 +9,9 @@ import java.util.Map;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
-import labeling.LabelDomain;
-import labeling.Labeling;
-import labeling.LabelingModel;
+import intentional.result.LabelDomain;
+import intentional.result.Labeling;
+import intentional.result.LabelingModel;
 import result.Cell;
 import result.CellWrapper;
 import result.Result;

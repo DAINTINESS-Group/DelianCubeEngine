@@ -22,7 +22,7 @@ import highlights.instance.HolisticHighlight;
 import highlights.instance.Score;
 import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.ScoreType;
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 

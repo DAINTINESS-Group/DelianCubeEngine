@@ -12,9 +12,9 @@ import assess.deltas.DeltaScheme;
 import assess.labelers.LabelingScheme;
 import assess.utils.ComparedCell;
 import assess.utils.LabeledCell;
-import labeling.DerivedMeasure;
-import labeling.Labeling;
-import labeling.LabelingModel;
+import intentional.result.DerivedMeasure;
+import intentional.result.Labeling;
+import intentional.result.LabelingModel;
 import result.Cell;
 import result.Result;
 

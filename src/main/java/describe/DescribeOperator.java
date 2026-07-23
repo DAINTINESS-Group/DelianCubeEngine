@@ -11,9 +11,9 @@ import cubemanager.cubebase.CubeQuery;
 import describe.models.KMeansLabelingModel;
 import describe.models.KPIMedianLabelingModel;
 import describe.syntax.DescribeParserManager;
-import intentionaloperator.IntentionalOperator;
-import labeling.LabeledResult;
-import labeling.LabelingModel;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
+import intentional.result.LabelingModel;
 import result.Result;
 
 /**

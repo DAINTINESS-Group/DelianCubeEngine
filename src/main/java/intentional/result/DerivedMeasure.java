@@ -1,4 +1,4 @@
-package labeling;
+package intentional.result;
 
 import java.util.Map;
 

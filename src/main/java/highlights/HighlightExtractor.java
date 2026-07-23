@@ -21,8 +21,8 @@ import highlights.metamodel.Algorithm;
 import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.EvaluationAxis;
 import highlights.metamodel.MeasureConstraint;
-import labeling.LabeledResult;
-import labeling.Labeling;
+import intentional.result.LabeledResult;
+import intentional.result.Labeling;
 
 /**
  * Stage 2 of the pipeline: runs the data-driven archetype evaluation over an {@link LabeledResult} and
@@ -58,7 +58,7 @@ public final class HighlightExtractor {
             // The archetype's interestingness facets depend only on the query result, so score them once.
             List<Score> facetScores = interestingness == null
                     ? Collections.<Score>emptyList()
-                    : interestingness.scores(archetype.hhScoreTypes, result.query, result.data);
+                    : interestingness.computeScores(archetype.hhScoreTypes, result.query, result.data);
 
             if (archetype.axis == EvaluationAxis.LABELING) {
                 for (int i = 0; i < labelings.size(); i++) {

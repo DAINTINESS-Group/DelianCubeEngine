@@ -1,6 +1,6 @@
 package highlights.metamodel;
 
-import labeling.LabeledResult;
+import intentional.result.LabeledResult;
 
 /**
  * The testing logic an {@link ArchetypeProperty} utilizes to evaluate its hypothesis. It declares whether

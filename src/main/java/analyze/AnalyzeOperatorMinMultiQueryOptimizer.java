@@ -5,8 +5,8 @@ import java.util.List;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import intentionaloperator.IntentionalOperator;
-import labeling.LabeledResult;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
 import result.Result;
 
 public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperator {

@@ -1,7 +1,5 @@
 package highlights.archetypes.topk;
 
-import labeling.LabeledResult;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,6 +12,7 @@ import highlights.instance.ScoredFinding;
 import highlights.metamodel.Algorithm;
 import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
+import intentional.result.LabeledResult;
 import result.Cell;
 
 /**
