@@ -43,8 +43,11 @@ public class HolisticHighlight extends Highlight {
 
     /** The algorithm instantiation that tested this highlight: the algorithm name and its parameters. */
     private String instantiation() {
-        String params = execution.params == null ? "" : execution.params.toString();
-        return params.isEmpty() ? execution.name : execution.name + "(" + params + ")";
+        String name = execution.algorithm.name();
+        String params = execution.parameters.stream()
+                .map(ParameterInstantiation::toString)
+                .collect(Collectors.joining(", "));
+        return params.isEmpty() ? name : name + "(" + params + ")";
     }
 
     @Override

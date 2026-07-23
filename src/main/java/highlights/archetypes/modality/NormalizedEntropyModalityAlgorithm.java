@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import highlights.instance.ArchetypeResult;
+import highlights.instance.AlgorithmExecution;
+import highlights.instance.AlgorithmResult;
+import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.NamedScoreType;
+import highlights.metamodel.ParameterRole;
 import highlights.metamodel.ScoreType;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -22,10 +24,13 @@ import result.Cell;
  * threshold. A dataset-level shape verdict — it produces no elementary highlights. Assumes non-negative
  * additive mass; a non-positive total is treated as unassessable (concentration 0).
  */
-public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
+public final class NormalizedEntropyModalityAlgorithm implements ExecutableAlgorithm {
 
     private static final String NAME = "NormalizedEntropyModality";
-    private static final double DEFAULT_CONCENTRATION_THRESHOLD = 0.5;
+
+    /** The concentration above which the mass counts as concentrated rather than spread. */
+    public static final ParameterRole CONCENTRATION_THRESHOLD = new ParameterRole(
+            "concentrationThreshold", "Concentration above which the mass counts as concentrated", 0.5);
 
     /** How far the mass distribution departs from uniform: {@code 1 - H/ln(n)}, in [0, 1]. */
     public static final ScoreType CONCENTRATION = new NamedScoreType("Concentration");
@@ -34,8 +39,8 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
     public String name() { return NAME; }
 
     @Override
-    public AlgorithmParams params() {
-        return new AlgorithmParams().set("concentrationThreshold", DEFAULT_CONCENTRATION_THRESHOLD);
+    public List<ParameterRole> parameterRoles() {
+        return Collections.singletonList(CONCENTRATION_THRESHOLD);
     }
 
     @Override
@@ -44,8 +49,9 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
     }
 
     @Override
-    public ArchetypeResult run(LabeledResult context, int measureIndex) {
-        double threshold = params().get("concentrationThreshold", DEFAULT_CONCENTRATION_THRESHOLD);
+    public AlgorithmExecution run(LabeledResult context, int measureIndex) {
+        ParameterInstantiation concentrationThreshold = ParameterInstantiation.ofDefault(CONCENTRATION_THRESHOLD);
+        double threshold = concentrationThreshold.value;
 
         List<Cell> cells = context.data.getCells();
         int n = cells.size();
@@ -71,7 +77,8 @@ public final class NormalizedEntropyModalityAlgorithm implements Algorithm {
         boolean holds = concentration > threshold;
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONCENTRATION, concentration));
-        return new ArchetypeResult(holds, holisticScores, Collections.<ScoredFinding>emptyList())
-                .metric("count", (double) n);
+        AlgorithmResult result = new AlgorithmResult(holds).metric("count", (double) n);
+        return new AlgorithmExecution(this, Collections.singletonList(concentrationThreshold), result,
+                holisticScores, Collections.<ScoredFinding>emptyList());
     }
 }

@@ -1,17 +1,20 @@
 package highlights.archetypes.megacontributor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import highlights.instance.ArchetypeResult;
+import highlights.instance.AlgorithmExecution;
+import highlights.instance.AlgorithmResult;
+import highlights.instance.ParameterInstantiation;
+import highlights.instance.ExecutableAlgorithm;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.NamedScoreType;
+import highlights.metamodel.ParameterRole;
 import highlights.metamodel.ScoreType;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -22,10 +25,13 @@ import result.Cell;
  * dimensions — and checks whether a member holds more than a threshold share of the total. Each dominating
  * member is surfaced as an elementary highlight along its dimension.
  */
-public final class MarginalContributionAlgorithm implements Algorithm {
+public final class MarginalContributionAlgorithm implements ExecutableAlgorithm {
 
     private static final String NAME = "MarginalContribution";
-    private static final double DEFAULT_DOMINANCE_THRESHOLD = 0.5;
+
+    /** The minimum share of the total a member must hold along its breakdown dimension to dominate. */
+    public static final ParameterRole DOMINANCE_THRESHOLD =
+            new ParameterRole("dominanceThreshold", "Minimum share of the total to dominate", 0.5);
 
     /** The share of the total a member holds along its breakdown dimension. */
     public static final ScoreType CONTRIBUTION_SHARE = new NamedScoreType("ContributionShare");
@@ -40,8 +46,8 @@ public final class MarginalContributionAlgorithm implements Algorithm {
     public String name() { return NAME; }
 
     @Override
-    public AlgorithmParams params() {
-        return new AlgorithmParams().set("dominanceThreshold", DEFAULT_DOMINANCE_THRESHOLD);
+    public List<ParameterRole> parameterRoles() {
+        return Collections.singletonList(DOMINANCE_THRESHOLD);
     }
 
     @Override
@@ -50,9 +56,9 @@ public final class MarginalContributionAlgorithm implements Algorithm {
     }
 
     @Override
-    public ArchetypeResult run(LabeledResult context, int measureIndex) {
-        AlgorithmParams params = params();
-        double threshold = params.get("dominanceThreshold", DEFAULT_DOMINANCE_THRESHOLD);
+    public AlgorithmExecution run(LabeledResult context, int measureIndex) {
+        ParameterInstantiation dominance = ParameterInstantiation.ofDefault(DOMINANCE_THRESHOLD);
+        double threshold = dominance.value;
 
         List<Cell> cells = context.data.getCells();
         double total = 0.0;
@@ -82,7 +88,7 @@ public final class MarginalContributionAlgorithm implements Algorithm {
         boolean holds = !salient.isEmpty();
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(CONTRIBUTION_SHARE, topShare));
-        return new ArchetypeResult(holds, holisticScores, salient)
-                .metric("count", (double) cells.size());
+        AlgorithmResult result = new AlgorithmResult(holds).metric("count", (double) cells.size());
+        return new AlgorithmExecution(this, Collections.singletonList(dominance), result, holisticScores, salient);
     }
 }

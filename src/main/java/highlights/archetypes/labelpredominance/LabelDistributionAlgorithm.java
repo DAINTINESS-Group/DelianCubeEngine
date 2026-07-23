@@ -1,17 +1,20 @@
 package highlights.archetypes.labelpredominance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import highlights.instance.ArchetypeResult;
+import highlights.instance.AlgorithmExecution;
+import highlights.instance.AlgorithmResult;
+import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.NamedScoreType;
+import highlights.metamodel.ParameterRole;
 import highlights.metamodel.ScoreType;
 import intentional.result.DerivedMeasure;
 import intentional.result.LabeledResult;
@@ -26,7 +29,7 @@ import result.Cell;
  * {@link DerivedMeasure} when the labeling's model provides one, otherwise the studied measure. The model
  * or operator that produced the labeling stays out of view.
  */
-public final class LabelDistributionAlgorithm implements Algorithm {
+public final class LabelDistributionAlgorithm implements ExecutableAlgorithm {
 
     private static final String NAME = "LabelDistribution";
     private static final int SALIENT_PER_GROUP = 3;
@@ -48,7 +51,7 @@ public final class LabelDistributionAlgorithm implements Algorithm {
     public String name() { return NAME; }
 
     @Override
-    public AlgorithmParams params() { return new AlgorithmParams(); }
+    public List<ParameterRole> parameterRoles() { return Collections.emptyList(); }
 
     @Override
     public boolean appliesTo(LabeledResult context) {
@@ -56,7 +59,7 @@ public final class LabelDistributionAlgorithm implements Algorithm {
     }
 
     @Override
-    public ArchetypeResult run(LabeledResult context, int labelingIndex) {
+    public AlgorithmExecution run(LabeledResult context, int labelingIndex) {
         Labeling labeling = context.labelings().get(labelingIndex);
         List<DerivedMeasure> derived = context.derivedMeasures();
         DerivedMeasure magnitude = labelingIndex < derived.size() ? derived.get(labelingIndex) : null;
@@ -86,11 +89,12 @@ public final class LabelDistributionAlgorithm implements Algorithm {
         holisticScores.add(new Score(DOMINANT_SHARE, dominantShare));
 
         List<ScoredFinding> salient = selectSalient(labeling, dominant, magnitude);
-        ArchetypeResult result = new ArchetypeResult(holds, holisticScores, salient);
+        AlgorithmResult result = new AlgorithmResult(holds);
         for (Map.Entry<String, Integer> e : counts.entrySet()) {
             result.metric("share_" + e.getKey(), total == 0 ? 0.0 : (double) e.getValue() / total);
         }
-        return result;
+        return new AlgorithmExecution(this, Collections.<ParameterInstantiation>emptyList(), result,
+                holisticScores, salient);
     }
 
     /** The magnitude by which a cell stands out: the derived measure if present, else the studied measure. */

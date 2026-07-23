@@ -10,8 +10,8 @@ import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;
 import cubemanager.cubebase.QueryMeasure;
 import highlights.instance.AlgorithmExecution;
-import highlights.instance.ArchetypeResult;
 import highlights.instance.ElementaryHighlight;
+import highlights.instance.ExecutableAlgorithm;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
 import highlights.instance.MeasureValue;
@@ -52,7 +52,7 @@ public final class HighlightExtractor {
         List<Labeling> labelings = result.labelings();
 
         for (ArchetypeProperty archetype : candidates) {
-            Algorithm algorithm = applicableAlgorithm(archetype, result);
+            ExecutableAlgorithm algorithm = applicableAlgorithm(archetype, result);
             if (algorithm == null) continue;
 
             // The archetype's interestingness facets depend only on the query result, so score them once.
@@ -80,7 +80,7 @@ public final class HighlightExtractor {
     }
 
     /** Evaluates one candidate archetype against a single main measure (its column index + resolved Measure). */
-    private void evaluateMeasure(LabeledResult result, ArchetypeProperty archetype, Algorithm algorithm,
+    private void evaluateMeasure(LabeledResult result, ArchetypeProperty archetype, ExecutableAlgorithm algorithm,
                                  CubeSchemaResolver schema, int measureIndex, AggregationFunction aggregation,
                                  Measure mainMeasure, List<Level> explanators, List<Highlight> out,
                                  List<Score> facetScores) {
@@ -89,26 +89,26 @@ public final class HighlightExtractor {
                 facetScores));
     }
 
-    private Algorithm applicableAlgorithm(ArchetypeProperty archetype, LabeledResult result) {
+    private ExecutableAlgorithm applicableAlgorithm(ArchetypeProperty archetype, LabeledResult result) {
         for (Algorithm algorithm : archetype.candidateAlgorithms) {
-            if (algorithm.appliesTo(result)) return algorithm;
+            ExecutableAlgorithm executable = (ExecutableAlgorithm) algorithm;
+            if (executable.appliesTo(result)) return executable;
         }
         return null;
     }
 
     private HolisticHighlight buildHolistic(LabeledResult result, ArchetypeProperty archetype,
-                                            Algorithm algorithm, CubeSchemaResolver schema,
+                                            ExecutableAlgorithm algorithm, CubeSchemaResolver schema,
                                             int measureIndex, Measure mainMeasure, List<Level> explanators,
                                             List<Score> facetScores) {
-        ArchetypeResult tested = (ArchetypeResult) algorithm.run(result, measureIndex);
-        AlgorithmExecution execution = new AlgorithmExecution(algorithm.name(), algorithm.params(), tested);
+        AlgorithmExecution execution = algorithm.run(result, measureIndex);
 
         HolisticHighlight holistic = new HolisticHighlight(
                 result.data, archetype, execution, mainMeasure, explanators);
-        tested.holisticScores().forEach(holistic::addScore);
+        execution.holisticScores.forEach(holistic::addScore);
         facetScores.forEach(holistic::addScore);
 
-        for (ScoredFinding sf : tested.elementary()) {
+        for (ScoredFinding sf : execution.salient) {
             ElementaryHighlight elementary = new ElementaryHighlight(
                     result.data, schema.charactersOf(sf.dimensionIndices, sf.members, explanators),
                     new MeasureValue(mainMeasure, sf.value),

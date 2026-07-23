@@ -1,15 +1,18 @@
 package highlights.archetypes.outlier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import highlights.instance.ArchetypeResult;
+import highlights.instance.AlgorithmExecution;
+import highlights.instance.AlgorithmResult;
+import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.NamedScoreType;
+import highlights.metamodel.ParameterRole;
 import highlights.metamodel.ScoreType;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -22,9 +25,14 @@ import result.Cell;
  * extractor's own measure loop. The computation is the archetype's own, kept out of the {@code model.*}
  * layer so no operator need run a model for outliers to be found.
  */
-public final class ZScoreOutlierAlgorithm implements Algorithm {
+public final class ZScoreOutlierAlgorithm implements ExecutableAlgorithm {
 
     private static final String NAME = "ZScoreOutlier";
+
+    /** The absolute z-score above which a cell is flagged as an outlier. */
+    public static final ParameterRole ABS_Z_THRESHOLD = new ParameterRole(
+            "absZThreshold", "Absolute z-score above which a cell is an outlier",
+            ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
 
     /** A cell's z-score over the analyzed measure's distribution. */
     public static final ScoreType ZSCORE = new NamedScoreType("ZScore");
@@ -39,8 +47,8 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
     public String name() { return NAME; }
 
     @Override
-    public AlgorithmParams params() {
-        return new AlgorithmParams().set("absZThreshold", ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
+    public List<ParameterRole> parameterRoles() {
+        return Collections.singletonList(ABS_Z_THRESHOLD);
     }
 
     @Override
@@ -49,9 +57,9 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
     }
 
     @Override
-    public ArchetypeResult run(LabeledResult context, int measureIndex) {
-        double threshold = params().get("absZThreshold", ZScoreOutlierModel.ABS_ZSCORE_OUTLIER_THRESHOLD);
-        ZScoreOutlierModel model = new ZScoreOutlierModel(context.data, measureIndex, threshold);
+    public AlgorithmExecution run(LabeledResult context, int measureIndex) {
+        ParameterInstantiation zThreshold = ParameterInstantiation.ofDefault(ABS_Z_THRESHOLD);
+        ZScoreOutlierModel model = new ZScoreOutlierModel(context.data, measureIndex, zThreshold.value);
 
         List<Cell> cells = context.data.getCells();
         double maxAbsZ = 0.0;
@@ -69,7 +77,7 @@ public final class ZScoreOutlierAlgorithm implements Algorithm {
         boolean holds = !salient.isEmpty();
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(ZSCORE, maxAbsZ));
-        return new ArchetypeResult(holds, holisticScores, salient)
-                .metric("outlierCount", (double) salient.size());
+        AlgorithmResult result = new AlgorithmResult(holds).metric("outlierCount", (double) salient.size());
+        return new AlgorithmExecution(this, Collections.singletonList(zThreshold), result, holisticScores, salient);
     }
 }

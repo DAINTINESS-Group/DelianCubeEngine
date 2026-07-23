@@ -1,17 +1,20 @@
 package highlights.archetypes.topk;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import highlights.archetypes.megacontributor.MarginalContributionAlgorithm;
-import highlights.instance.ArchetypeResult;
+import highlights.instance.AlgorithmExecution;
+import highlights.instance.AlgorithmResult;
+import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.AlgorithmParams;
 import highlights.metamodel.ElementaryHighlightRole;
+import highlights.metamodel.ParameterRole;
 import intentional.result.LabeledResult;
 import result.Cell;
 
@@ -22,10 +25,12 @@ import result.Cell;
  * share: within a breakdown the two order identically (share is value over a fixed total), and value stays
  * meaningful when the measure can be zero or negative. Share is reported alongside as a score.
  */
-public final class TopKContributionAlgorithm implements Algorithm {
+public final class TopKContributionAlgorithm implements ExecutableAlgorithm {
 
     private static final String NAME = "TopKContribution";
-    private static final int DEFAULT_K = 3;
+
+    /** How many top-contributing members to surface per breakdown dimension. */
+    public static final ParameterRole K = new ParameterRole("k", "Number of top contributors to surface", 3);
 
     private final ElementaryHighlightRole topContributorRole;
 
@@ -37,8 +42,8 @@ public final class TopKContributionAlgorithm implements Algorithm {
     public String name() { return NAME; }
 
     @Override
-    public AlgorithmParams params() {
-        return new AlgorithmParams().set("k", DEFAULT_K);
+    public List<ParameterRole> parameterRoles() {
+        return Collections.singletonList(K);
     }
 
     @Override
@@ -47,8 +52,9 @@ public final class TopKContributionAlgorithm implements Algorithm {
     }
 
     @Override
-    public ArchetypeResult run(LabeledResult context, int measureIndex) {
-        int k = (int) params().get("k", DEFAULT_K);
+    public AlgorithmExecution run(LabeledResult context, int measureIndex) {
+        ParameterInstantiation kParam = ParameterInstantiation.ofDefault(K);
+        int k = (int) kParam.value;
 
         List<Cell> cells = context.data.getCells();
         double total = 0.0;
@@ -82,7 +88,7 @@ public final class TopKContributionAlgorithm implements Algorithm {
         boolean holds = !salient.isEmpty();
         List<Score> holisticScores = new ArrayList<>();
         holisticScores.add(new Score(MarginalContributionAlgorithm.CONTRIBUTION_SHARE, topShare));
-        return new ArchetypeResult(holds, holisticScores, salient)
-                .metric("k", (double) k);
+        AlgorithmResult result = new AlgorithmResult(holds).metric("k", (double) k);
+        return new AlgorithmExecution(this, Collections.singletonList(kParam), result, holisticScores, salient);
     }
 }
