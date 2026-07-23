@@ -61,7 +61,8 @@ public class AssessOperator implements IntentionalOperator {
      * @param assessQuery The user-provided query for assessment reasons
      * @throws RecognitionException If the query does not follow the defined syntax
      */
-    public OperatorResult execute(String assessQuery) throws RecognitionException {
+    @Override
+    public List<OperatorResult> execute(String assessQuery) {
         AssessQuery parsedQuery = parseQuery(assessQuery);
         outputFileName = parsedQuery.outputName;
 
@@ -77,37 +78,37 @@ public class AssessOperator implements IntentionalOperator {
                 parsedQuery.targetCubeQuery, parsedQuery.targetCube,
                 Collections.<LabelingModel>singletonList(assessModel));
 
-        return operatorResult;
+        return Collections.singletonList(operatorResult);
     }
-    
+
     /**
      * Produces the result, extracts highlights over it, and writes the ASSESS Markdown report.
      * The file-producing entry point for the RMI path; the extraction itself is external.
      */
-    public ResultFileMetadata execute(String assessQuery, String metadataFilename) {
+    @Override
+    public ResultFileMetadata executeToReport(String assessQuery) {
         ResultFileMetadata results = new ResultFileMetadata();
-        results.setComponentResultFiles(null);
-        results.setComponentResultInfoFiles(null);
-        results.setResultInfoFile(metadataFilename);
         CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
 
         try {
-            OperatorResult result = execute(assessQuery);
+            OperatorResult result = execute(assessQuery).get(0);
             HighlightSet highlights = new HighlightExtractor()
                     .extract(result, registeredArchetypes, schemaResolver);
             results.setResultFile(AssessReport.write(assessQuery, result, highlights, outputFileName));
-        } catch (RecognitionException | RuntimeException e) {
+        } catch (RuntimeException e) {
             results.setErrorCheckingStatus(e.toString());
         }
         return results;
     }
 
-    @Override
-    public OperatorResult toOperatorResult() { return operatorResult; }
-
-    private AssessQuery parseQuery(String assessQuery) throws RecognitionException {
+    private AssessQuery parseQuery(String assessQuery) {
         AssessQueryParser parser = createParser(assessQuery);
-        return parser.parse(new AssessQueryBuilder(cubeManager));
+        try {
+            return parser.parse(new AssessQueryBuilder(cubeManager));
+        } catch (RecognitionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private AssessQueryParser createParser(String incomingExpression) {

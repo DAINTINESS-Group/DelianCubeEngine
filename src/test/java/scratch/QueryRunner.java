@@ -114,13 +114,13 @@ public class QueryRunner {
     }
 
     private void runDescribe(String q) throws Exception {
-        ResultFileMetadata md = new DescribeOperator(cubeManager).execute(q);
+        ResultFileMetadata md = new DescribeOperator(cubeManager).executeToReport(q);
         showReport("DESCRIBE", md);
     }
 
     private void runAssess(String q) throws Exception {
         new File("OutputFiles/assessments").mkdirs();
-        ResultFileMetadata md = new AssessOperator(cubeManager).execute(q, "Metadata");
+        ResultFileMetadata md = new AssessOperator(cubeManager).executeToReport(q);
         if (md != null && md.getErrorCheckingStatus() != null) {
             System.out.println("[ASSESS error] " + md.getErrorCheckingStatus());
             return;
@@ -161,7 +161,7 @@ public class QueryRunner {
         switch (analyzeStrategy) {
             case "min": {
                 AnalyzeTranslationManager tm = new AnalyzeTranslationManager(q, cubeManager, schemaName, CONN);
-                md = new AnalyzeOperatorMinMultiQueryOptimizer(q, cubeManager, CONN, tm).executeAnalyzeWithMinMQO();
+                md = new AnalyzeOperatorMinMultiQueryOptimizer(q, cubeManager, CONN, tm).executeToReport(q);
                 break;
             }
             case "max": {

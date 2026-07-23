@@ -37,7 +37,7 @@ public class AssessOperatorClient {
 
         // Stage 1: the operator produces its result. Stage 2: highlight extraction runs on top of it.
         long start = System.nanoTime();
-        OperatorResult result = operator.execute(query);
+        OperatorResult result = operator.execute(query).get(0);
         List<ArchetypeProperty> registeredArchetypes = operator.registeredArchetypes();
 
         HighlightSet highlights = new HighlightExtractor(interestingness)

@@ -32,12 +32,12 @@ public class IntentionalManager implements IBuilder {
             
             case "describe":
                 DescribeOperator descOp = new DescribeOperator(cto.getCubeManager());
-                results = descOp.execute(query);
+                results = descOp.executeToReport(query);
                 break;
 
             case "assess":
                 AssessOperator assessOp = new AssessOperator(cto.getCubeManager());
-                results = assessOp.execute(query, "Metadata");
+                results = assessOp.executeToReport(query);
                 break;
 
             case "analyze_iakovidis":
@@ -63,7 +63,7 @@ public class IntentionalManager implements IBuilder {
                     (String) params.get("connectionType"), 
                     minTrans
                 );
-                results = minOp.executeAnalyzeWithMinMQO();
+                results = minOp.executeToReport(query);
                 break;
 
             case "analyze_max_mqo":

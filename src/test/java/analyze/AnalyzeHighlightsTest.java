@@ -14,6 +14,7 @@ import intentionaloperator.OperatorResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static highlights.HighlightTestSupport.holisticFor;
@@ -54,7 +55,7 @@ public class AnalyzeHighlightsTest {
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
         AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(incomingExpression, testCubeManager, testTypeOfConnection, testAnalyzeTranslationManager);
 
-        ArrayList<OperatorResult> minMQOQueries = testAnalyzeOperator.executeMinMQOQueries();
+        List<OperatorResult> minMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 
         HighlightSet highlightsBase = new HighlightExtractor().extract(minMQOQueries.get(0), testAnalyzeOperator.registeredArchetypes(), CubeSchemaResolver.from(testCubeManager));
         HolisticHighlight outlierBase = holisticFor(highlightsBase, "Outlier");

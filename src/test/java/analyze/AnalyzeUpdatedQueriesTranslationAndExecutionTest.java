@@ -138,7 +138,7 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
 		AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
 		
-		testAnalyzeOperator.executeAnalyzeWithMinMQO();
+		testAnalyzeOperator.executeToReport(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

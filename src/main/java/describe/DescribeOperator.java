@@ -1,6 +1,7 @@
 package describe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.RecognitionException;
@@ -42,108 +43,82 @@ public class DescribeOperator implements IntentionalOperator {
     }
 
     /**
-     * Auxiliary method that checks the syntax, constructs the CubeQuery and executes it
-     * @return True if successful, False otherwise
-     * @throws RecognitionException 
+     * Stage-1 producer: validates and translates the DESCRIBE query, runs it, builds the requested
+     * labeling models, and returns the result as a single-element list. Throws on syntax/translation
+     * errors so the file path ({@link #executeToReport}) can surface them.
      */
-    public ResultFileMetadata execute(String queryString) throws RecognitionException {
-    	
-        //Initialize Report
-        this.describeReport = new DescribeReport(queryString, "RDBMS"); 
-        ResultFileMetadata resultFile = new ResultFileMetadata();
-        int resultTuplesCounter = 0;
-
+    @Override
+    public List<OperatorResult> execute(String queryString) {
         System.out.println("Processing DESCRIBE: " + queryString);
 
         //Validation of the incoming Describe query and parsing
-        boolean incomingExpressionIsValid = (parserManager.parse(queryString) == 0);
-        
+        boolean incomingExpressionIsValid = false;
+        try {
+            incomingExpressionIsValid = (parserManager.parse(queryString) == 0);
+        } catch (RecognitionException e) {
+            e.printStackTrace();
+        }
         if (!incomingExpressionIsValid) {
-            System.err.println("DESCRIBE incoming expression contains syntax errors! Aborting...");
+            throw new RuntimeException("Syntax Errors found in Describe expression.");
+        }
+
+        //Translation of said query into a Describe query
+        DescribeParams params = parserManager.getParams();
+        CubeQuery cubeQuery;
+        try {
+            cubeQuery = translationManager.translateDescribeToCubeQuery(params);
+        } catch (Exception e) {
+            throw new RuntimeException("Translation Error: " + e.getMessage(), e);
+        }
+
+        this.describeQuery = new DescribeQuery();
+        this.describeQuery.setCubeQuery(cubeQuery);
+
+        //Execution of the newly translated query and model building
+        Result result = cubeManager.executeQuery(cubeQuery);
+        this.result = result;
+        this.models = buildLabelingModels(result, params.getModelList());
+        this.describeQuery.setDescribeQueryResult(result);
+
+        return Collections.singletonList(new OperatorResult(cubeQuery, result, this.models));
+    }
+
+    /**
+     * Legacy file path: runs {@link #execute(String)}, extracts highlights over the result, and writes
+     * the DESCRIBE text report, returning the {@link ResultFileMetadata} pointing at it.
+     */
+    @Override
+    public ResultFileMetadata executeToReport(String queryString) {
+        this.describeReport = new DescribeReport(queryString, "RDBMS");
+        ResultFileMetadata resultFile = new ResultFileMetadata();
+
+        OperatorResult operatorResult;
+        try {
+            operatorResult = execute(queryString).get(0);
+        } catch (RuntimeException e) {
+            System.err.println("DESCRIBE aborting: " + e.getMessage());
             describeReport.setErrorStatus(true);
-            describeReport.setErrorMessage("Syntax Errors found in Describe expression.");
+            describeReport.setErrorMessage(e.getMessage());
             describeReport.createTextReportFile();
-            
-            resultFile.setErrorCheckingStatus("Syntax Errors");
+            resultFile.setErrorCheckingStatus(e.getMessage());
             resultFile.setResultFile(describeReport.getReportFile());
             resultFile.setLocalFolder(describeReport.getLocalFolder());
             return resultFile;
         }
-        
 
-        //Translation of said query into a Describe query
-        try {
-            long startTime = System.nanoTime();
-            
-            DescribeParams params = parserManager.getParams();
-            CubeQuery cubeQuery = translationManager.translateDescribeToCubeQuery(params);
-            
-            this.describeQuery = new DescribeQuery();
-            this.describeQuery.setCubeQuery(cubeQuery);
-            
-            long endTime = System.nanoTime();
-            System.out.println("Describe Cube Query Generation Time: " + (endTime - startTime) / 1000000.0 + " ms");
-            
-        } catch (Exception e) {
-            System.err.println("Translation failed: " + e.getMessage());
-            describeReport.setErrorStatus(true);
-            describeReport.setErrorMessage("Translation Error: " + e.getMessage());
-            describeReport.createTextReportFile();
-            resultFile.setErrorCheckingStatus("Translation Error");
-            return resultFile;
-        }
+        describeReport.setErrorStatus(false);
+        this.highlights = extractHighlights(operatorResult);
 
-        //Execution of the newly translated query
-        if (this.describeQuery != null && this.describeQuery.getCubeQuery() != null) {
-            describeReport.setErrorStatus(false);
-            
-            try {
-                long startTime = System.nanoTime();
-                
-                CubeQuery cq = describeQuery.getCubeQuery();
-                Result result = cubeManager.executeQuery(cq);
-                this.result = result;
-                
-                //Build the labeling models the query requested and extract highlights over the result
-                DescribeParams params = parserManager.getParams();
-                this.models = buildLabelingModels(result, params.getModelList());
-                this.highlights = extractHighlights(cq, result, this.models);
+        String[][] resultArray = (operatorResult.data != null) ? operatorResult.data.getResultArray() : null;
+        int resultTuplesCounter = (resultArray != null) ? resultArray.length : 0;
 
-                //Process the Result object that came from the execution
-                String[][] resultArray = (result != null) ? result.getResultArray() : null;
-                if (resultArray != null) {
-                    resultTuplesCounter += resultArray.length;
-                }
-
-                describeQuery.setDescribeQueryResult(result);
-                
-                long endTime = System.nanoTime();
-                System.out.println("Queries Execution Time: " + (endTime - startTime) / 1000000.0 + " ms");
-                
-                startTime = System.nanoTime();
-                describeReport.setDescribeQuery(describeQuery);
-                describeReport.setHighlights(highlights);
-                describeReport.createTextReportFile();
-                endTime = System.nanoTime();
-                System.out.println("Reporting Result Time: " + (endTime - startTime) / 1000000.0 + " ms");
-                
-                if(result != null) {
-                	resultFile.setLocalFolder(describeReport.getLocalFolder());
-            		resultFile.setResultFile(describeReport.getReportFile());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                resultFile.setErrorCheckingStatus("Execution Exception: " + e.getMessage());
-            }
-        }
+        describeReport.setDescribeQuery(this.describeQuery);
+        describeReport.setHighlights(highlights);
+        describeReport.createTextReportFile();
 
         resultFile.setLocalFolder(describeReport.getLocalFolder());
         resultFile.setResultFile(describeReport.getReportFile());
-        if (describeReport.getErrorStatus()) {
-            resultFile.setErrorCheckingStatus(describeReport.getErrorMessage());
-        }
-        
+
         System.out.println("Number of resulted tuples: " + resultTuplesCounter);
         return resultFile;
     }
@@ -171,8 +146,7 @@ public class DescribeOperator implements IntentionalOperator {
     }
 
     /** Runs the registered archetypes over the operator result and returns the highlights they produce. */
-    private HighlightSet extractHighlights(CubeQuery cubeQuery, Result data, List<LabelingModel> labelingModels) {
-        OperatorResult operatorResult = new OperatorResult(cubeQuery, data, labelingModels);
+    private HighlightSet extractHighlights(OperatorResult operatorResult) {
         try {
             CubeSchemaResolver schema = CubeSchemaResolver.from(cubeManager);
             return new HighlightExtractor().extract(operatorResult, registeredArchetypes(), schema);
@@ -190,11 +164,4 @@ public class DescribeOperator implements IntentionalOperator {
         return this.result;
     }
 
-    @Override
-    public OperatorResult toOperatorResult() {
-        CubeQuery cq = describeQuery == null ? null : describeQuery.getCubeQuery();
-        return new OperatorResult(cq, result, models);
-    }
-
-    // registeredArchetypes() inherits the default set from IntentionalOperator.
 }

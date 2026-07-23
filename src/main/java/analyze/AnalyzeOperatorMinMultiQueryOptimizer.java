@@ -82,11 +82,13 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 	}
 
 	/**
-	 * This method executes automatically parses the incoming expression, generates the 5 analyze queries, executes
-	 * them, and create OperatorResult objects (one per analyze query) to be used for Highlights Extraction.
-	 * @return ArrayList < OperatorResult >
+	 * Stage-1 producer: parses the incoming expression (supplied via the constructor), generates the
+	 * analyze queries, executes them, and returns one {@link OperatorResult} per query for Highlights
+	 * Extraction. The {@code query} argument is ignored — ANALYZE receives its expression at construction.
+	 * @return List < OperatorResult >
 	 */
-	public ArrayList<OperatorResult> executeMinMQOQueries(){
+	@Override
+	public List<OperatorResult> execute(String query){
 		//this must return a Intentional Result object, not null, not void, not int
 		ArrayList<OperatorResult> analyzeMinMQOResults = new ArrayList<OperatorResult>();
 		int resultTuplesCounter = 0;
@@ -133,11 +135,13 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 	}
 
 	/**
-	 * Extract highlights from the analyze query results using the registered Archetype Properties.
-	 * The results are written in a markdown file.
+	 * Legacy file path: extract highlights from the analyze query results using the registered Archetype
+	 * Properties. The results are written in a markdown file. The {@code query} argument is ignored —
+	 * ANALYZE receives its expression at construction.
 	 * @return ResultFileMetadata
 	 */
-	public ResultFileMetadata executeAnalyzeWithMinMQO() {
+	@Override
+	public ResultFileMetadata executeToReport(String query) {
 		ResultFileMetadata resultFile = new ResultFileMetadata();
 		resultFile.setLocalFolder(analyzeReport.getLocalFolder());
 		resultFile.setResultFile(analyzeReport.getReportFile());
@@ -146,7 +150,7 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 			resultFile.setErrorCheckingStatus(analyzeReport.getErrorMessage());
 		}
 		try {
-			ArrayList<OperatorResult> results = executeMinMQOQueries();
+			List<OperatorResult> results = execute(query);
 			analyzeReport.clearHighlightsReport(outputFileName);
 			for (OperatorResult opResult: results) {
 				HighlightSet highlights = new HighlightExtractor().extract(opResult, registeredArchetypes, schemaResolver);
@@ -160,11 +164,5 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 
 	public ArrayList<AnalyzeQuery> getAnalyzeQueries(){
 		return analyzeQueries;
-	}
-
-	// NULL until further notice
-	@Override
-	public OperatorResult toOperatorResult() {
-		return null;
 	}
 }

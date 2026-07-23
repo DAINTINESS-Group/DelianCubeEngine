@@ -78,7 +78,7 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
         assertEquals("mid_effort", labeledCells.get(0).label);
     }
 
@@ -90,7 +90,7 @@ public class AssessOperatorTest {
                 "using ratio(absolute(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
         for (LabeledCell labeledCell : labeledCells) {
             System.out.println(labeledCell.cell.toString(", "));
         }
@@ -105,7 +105,7 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
 
         for (LabeledCell labeledCell : labeledCells) {
             if (labeledCell.cell.toDouble() > constantBenchmark) {
@@ -124,7 +124,7 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low, [0.3, 0.6): mid, [0.6, 1]: high, (1, +inf): perfect}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
 
         for (LabeledCell labeledCell : labeledCells) {
             if (labeledCell.cell.toDouble() == 4980.0) {
@@ -141,7 +141,7 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
         assertEquals("low", labeledCells.get(0).label);
     }
 
@@ -153,7 +153,7 @@ public class AssessOperatorTest {
                 "using ratio(amount, benchmark.amount)\n" +
                 "labels {[0.0, 0.5]: low, (0.5, 1]: high, (1, +inf): ULTRA}";
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
         assertEquals("ULTRA", labeledCells.get(0).label);
     }
 
@@ -167,7 +167,7 @@ public class AssessOperatorTest {
         double magicNumber = 465504.0;
         boolean assertionCompleted = false;
 
-        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).model(AssessModel.NAME)).getLabeledCells();
+        List<LabeledCell> labeledCells = ((AssessModel) operator.execute(query).get(0).model(AssessModel.NAME)).getLabeledCells();
         labeledCells.stream().map(labeledCell -> labeledCell.cell.toDouble()).forEach(System.out::println);
 
         for (LabeledCell labeledCell : labeledCells) {
@@ -193,7 +193,7 @@ public class AssessOperatorTest {
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkHighlightsTest";
 
-        OperatorResult result = operator.execute(query);
+        OperatorResult result = operator.execute(query).get(0);
         HighlightSet highlights = new HighlightExtractor()
                 .extract(result, operator.registeredArchetypes(), CubeSchemaResolver.from(cubeManager));
 

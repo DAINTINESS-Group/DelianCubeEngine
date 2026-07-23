@@ -46,9 +46,7 @@ public class DescribeHighlightsTest {
                 + "GROUP BY district_name, region USING " + KPIMedianLabelingModel.NAME;
 
         DescribeOperator operator = new DescribeOperator(testCubeManager);
-        operator.execute(incomingExpression);
-
-        OperatorResult operatorResult = operator.toOperatorResult();
+        OperatorResult operatorResult = operator.execute(incomingExpression).get(0);
         assertNotNull("DESCRIBE should produce an operator result", operatorResult);
 
         HighlightSet highlights = new HighlightExtractor().extract(
