@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -42,6 +43,13 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 		testTypeOfConnection = typeOfConnection;
 	}
 	
+	/** Result rows sorted, so comparison ignores the DB-dependent order of rows tied on the measure. */
+	private static String sortedRows(String rows) {
+		String[] lines = rows.split("\n");
+		Arrays.sort(lines);
+		return String.join("\n", lines);
+	}
+
 	public String getFileContents(String fileName) throws IOException {
 		String retString = "";
 		String str;
@@ -164,7 +172,7 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 				
 			}
 		}
-		assertEquals(expectedResultString,testResultString);
+		assertEquals(sortedRows(expectedResultString), sortedRows(testResultString));
 	}
 
 }
