@@ -34,6 +34,8 @@ import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
 import decisiontree.labeling.RuleSet;
+import intentional.operator.IntentionalStrategy;
+import intentional.operator.IntentionalOperatorType;
 import mainengine.managers.Director;
 import mainengine.managers.ManagerType;
 import mainengine.managers.RequestCTO;
@@ -311,33 +313,33 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	//INTENTIONAL OPERATORS METHODS
 	public ResultFileMetadata analyzeByIakovidis(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_iakovidis", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.IAKOVIDIS.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMinMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_min_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MIN_MQO.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMaxMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_max_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MAX_MQO.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_mid_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MID_MQO.alias, incomingExpression);
     }
-	
+
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws Exception {
-		return dispatch(ManagerType.INTENTIONAL, "assess", incomingExpression);
+		return dispatch(ManagerType.INTENTIONAL, IntentionalOperatorType.ASSESS.alias, incomingExpression);
 	}
-	
+
 	@Override
 	public ResultFileMetadata describe(String incomingExpression) throws Exception{
 		System.out.println("Received Describe request: " + incomingExpression);
-		return dispatch(ManagerType.INTENTIONAL, "describe", incomingExpression);
+		return dispatch(ManagerType.INTENTIONAL, IntentionalOperatorType.DESCRIBE.alias, incomingExpression);
 	}
 	
 	/**

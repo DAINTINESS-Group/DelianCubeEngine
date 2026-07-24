@@ -6,7 +6,6 @@ import java.util.List;
 
 import analyze.mqoaggregateadapt.AggregateAdapter;
 import analyze.mqoaggregateadapt.AggregateAdapterFactory;
-import analyze.report.AnalyzeReport;
 import com.kitfox.svg.A;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
