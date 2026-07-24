@@ -37,11 +37,7 @@ public class AnalyzeOperatorMinMultiQueryOptimizer implements IntentionalOperato
 		//check if the incoming expression is written correctly and if so translate it to cube queries
 		incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
 		if(incomingExpressionIsValid) {
-			long startTime = System.nanoTime();
 			analyzeQueries = analyzeTranslationManager.translateToUpdatedCubeQueries();
-			long endTime = System.nanoTime();
-			double queriesGenerationTime = endTime - startTime;
-			System.out.println("$$ Analyze Cube Query Generation Time \t\t\t" + Double.toString(queriesGenerationTime/1000000));// + " ms");
 			return true;
 		}else {
 			System.err.println("ANALYZE incoming expression contains syntax errors!Please check.");

@@ -2,18 +2,23 @@ package analyze;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
 import analyze.mqoaggregateadapt.AggregateAdapter;
 import analyze.mqoaggregateadapt.AggregateAdapterFactory;
 import analyze.report.AnalyzeReport;
+import com.kitfox.svg.A;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 import result.ResultFileMetadata;
 
-public class AnalyzeOperatorMidMultiQueryOptimizer {
+public class AnalyzeOperatorMidMultiQueryOptimizer implements IntentionalOperator {
 	
-	// CubeManager object to manage the cube
+			// CubeManager object to manage the cube
 			private CubeManager cubeManager;
 			
 			// A manager object that manages the whole translation process
@@ -21,17 +26,12 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 			
 			// Collection of AnalyzeCubeQueries
 			private ArrayList<AnalyzeQuery> analyzeQueries;
-			
-			// The intentional query and its dataset connection, kept for reporting
-			private String incomingExpression;
-			private String connectionType;
 
-			public AnalyzeOperatorMidMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager, String connectionType,AnalyzeTranslationManager analyzeTranslationManager) {
+
+			public AnalyzeOperatorMidMultiQueryOptimizer(CubeManager cubeManager,AnalyzeTranslationManager analyzeTranslationManager) {
 				this.cubeManager = cubeManager;
-				this.analyzeTranslationManager = analyzeTranslationManager;
 				this.analyzeQueries = new ArrayList<AnalyzeQuery>();
-				this.incomingExpression = incomingExpression;
-				this.connectionType = connectionType;
+				this.analyzeTranslationManager = analyzeTranslationManager;
 			}
 
 			
@@ -45,130 +45,48 @@ public class AnalyzeOperatorMidMultiQueryOptimizer {
 				boolean incomingExpressionIsValid;
 				//check if the incoming expression is written correctly and if so translate it to cube queries
 				incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
-				if(incomingExpressionIsValid== true) {
-					long startTime = System.nanoTime();
+				if(incomingExpressionIsValid) {
 					analyzeQueries = analyzeTranslationManager.translateToOptimizedDuoCubeQueries();
-					long endTime = System.nanoTime();
-					double queriesGenerationTime = endTime - startTime;
-					System.out.println("$$ Analyze Cube Query Generation Time \t\t\t" + Double.toString(queriesGenerationTime/1000000));// + " ms");
 					return true;
 				}else {
 					System.err.println("ANALYZE incoming expression contains syntax errors!Please check.");
 					return false;
 				}
 			}
-			
 			/**
-			 * Method that executes the AnalyzeQueries, sets the Result field of the AnalyzeQueries
-			 * and creates the report file 
+			 * Parses the incoming expression, generates the analyze queries, executes them,
+			 * ditributes the MQO results and returns one
+			 * {@link LabeledResult} per query. Throws on syntax or query-generation errors.
+			 * @return List < LabeledResult >
 			 */
-			//#Strategy2
-			public ResultFileMetadata executeAnalyzeWithMidMQO() {
-				//this must return a Intentional Result object, not null, not void, not int
-				int resultTuplesCounter = 0;
-				int mqoResultSize =0;
-				double totalExecutionTime = 0.0;
-				double mqoResultManagementTime = 0.0;
-				String errorMessage = null;
-				boolean translationStatus = this.constructUpdatedAnalyzeQueries();
-				boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
-				if(translationStatus == false) {
-					System.err.println("ANALYZE operator execution is aborting...");
-					errorMessage = "ANALYZE incoming expression contains syntax errors!Please check.";
-				}else if(cubeQueryGenerationStatus == false){
-					System.err.println("ANALYZE expression encountered errors!\nANALYZE operator execution is aborting...");
-					errorMessage = "Expressions or values of the given ANALYZE incoming expression are invalid!Please check.";
-				}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
-					AggregateAdapterFactory aggrAdapterFactory = new AggregateAdapterFactory();
-					AggregateAdapter aggrAdapter = aggrAdapterFactory.createAdapter(analyzeTranslationManager.getAggrFunc());
-					
-					
-					long startTime = System.nanoTime();
-					double mqoProcessingTime = 0;
-					
-					for(int i=0; i<analyzeQueries.size(); i++) {
-						long executionStartTime = System.nanoTime();
-						AnalyzeQuery aq = analyzeQueries.get(i);
-						CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-						Result result = cubeManager.executeQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
-						String[][] resultArray = result.getResultArray();
-						if(resultArray!=null) {
-							resultTuplesCounter += resultArray.length;
-						}
-						aq.setAnalyzeQueryResult(result);
-						
-						long executionEndTime = System.nanoTime();
-						
-						ArrayList<Cell> resultCellsMQO = result.getCells(); 
-						long mqoStartTime = System.nanoTime();
-						ArrayList<String> mqoResult = new ArrayList<String>();
-						if(i==0) {//DRILL-DOWN AND BASE QUERY
-							AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
-							mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
-									analyzeTranslationManager.getSigmaExpressions(), 
-									analyzeTranslationManager.getSigmaExpressionsToValues(),
-									aggrAdapter);
-							
-						} else {//SIBLING QUERIES
-							AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
-							/*mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
-									analyzeTranslationManager.getSigmaExpressions(), 
-									analyzeTranslationManager.getSigmaExpressionsToValues(),
-									aggrAdapter);*/
-							Result siblingResult = aq.getAnalyzeQueryResult();
-							String[][] siblingResultArray = siblingResult.getResultArray();
-							if (siblingResultArray == null) {
-								double executionTime = executionEndTime - executionStartTime;
-								System.out.println(aq.getType());
-								System.out.println("$$ Query Execution Time \t " + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t"+ Double.toString(executionTime/1000000));// + " ms");
-								continue;
-							}
-							for(int j = 0;j<siblingResultArray.length;j++) {
-								if(j > 1) {
-									String resultRow = "";
-									for(int k = 0;k<siblingResultArray[j].length;k++) {
-										if(k ==0) {
-											resultRow += siblingResultArray[j][k];
-										}else {
-											resultRow += ',' + siblingResultArray[j][k];
-										}
-									}
-									mqoResult.add(resultRow);
-								}
-							}
-							
-						}
-						
-						aq.setAnalyzeMQOResult(mqoResult);
-						mqoResultSize += mqoResult.size();
-						double resultHandlingEndTime = System.nanoTime();
-						double executionTime = executionEndTime - executionStartTime;
-						double resultHandlingTime = resultHandlingEndTime - executionEndTime;
-						totalExecutionTime += executionTime;
-						if(i==0) {
-							mqoResultManagementTime = resultHandlingTime;
-						}
-						System.out.println(aq.getType());
-						System.out.println("$$ Query Execution Time \t" + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(executionTime/1000000));// + " ms");
-						System.out.println("$$ Multi-Query Optimization with Duo Query Strategy Processing Time \t " + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(resultHandlingTime/1000000));// + " ms");
-						
-					}
-					
-					/*analyzeReport.setAnalyzeQueries(analyzeQueries);			
-					
-					startTime = System.nanoTime();
-					analyzeReport.createTextReportFile();
-					long endTime = System.nanoTime();
-					double reportingTime = endTime - startTime;
-					System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");*/
+			@Override
+			public List<LabeledResult> execute(String query){
+				if(!constructUpdatedAnalyzeQueries()){
+					throw new RuntimeException("ANALYZE incoming expression contains syntax errors!");
 				}
-				ResultFileMetadata resultFile = (errorMessage != null)
-						? AnalyzeReport.write(incomingExpression, connectionType, analyzeQueries, errorMessage)
-						: new ResultFileMetadata();
-				System.out.println("Number of generated queries: " + Integer.toString(analyzeQueries.size()) + " queries");
-				System.out.println("Number of resulted tuples: " + Integer.toString(resultTuplesCounter));
-				System.out.println("Number of resulted tuples after the multi-query optimization: " + Integer.toString(mqoResultSize));
-				return resultFile;
+				if(!analyzeTranslationManager.getCubeQueryGenerationStatus()){
+					throw new RuntimeException("Expressions or values of the given ANALYZE incoming expression are invalid!");
+				}
+				AggregateAdapterFactory aggrAdapterFactory = new AggregateAdapterFactory();
+				AggregateAdapter aggrAdapter = aggrAdapterFactory.createAdapter(analyzeTranslationManager.getAggrFunc());
+				List<LabeledResult> results = new ArrayList<LabeledResult>();
+
+				for(AnalyzeQuery aq: analyzeQueries) {
+					CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
+					Result result = cubeManager.executeQuery(analyzeCubeQuery);
+					aq.setAnalyzeQueryResult(result);
+					if(aq.getType() == AnalyzeQuery.TypeOfAnalyzeQuery.DUOQUERYDRILLDOWNSOPTIMIZER){
+						ArrayList<Cell> resultCellsMQO = result.getCells();
+						AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMidMultiQueryOptimizerDDAndORGAuxiliaryQueryResultBuilder();
+						ArrayList<String> mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO,
+								analyzeTranslationManager.getSigmaExpressions(),
+								analyzeTranslationManager.getSigmaExpressionsToValues(),
+								aggrAdapter);
+						aq.setAnalyzeMQOResult(mqoResult);
+					}
+					results.add(new LabeledResult(analyzeCubeQuery,result,null));
+				}
+				return results;
 			}
 			
 			public ArrayList<AnalyzeQuery> getAnalyzeQueries(){

@@ -70,10 +70,12 @@ public class AnalyzeQueriesExecutionTest {
 		String testResultString = "";
 		
 		String expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionExpectedResults.csv");
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
 			
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
 		
-		testAnalyzeOperator.execute();
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		
@@ -117,10 +119,12 @@ public class AnalyzeQueriesExecutionTest {
 		}else {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithoutEmptyQueriesResults.csv");
 		}
-	
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
-		
-		testAnalyzeOperator.execute();
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		
@@ -157,10 +161,12 @@ public class AnalyzeQueriesExecutionTest {
 		String testResultString = "";
 		
 		String expectedResultString = getFileContents("src/test/resources/OutputFiles/pkdd99_star/AnalyzeQueryExecutionWithSomeEmptyQueriesResults.csv");
-		
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
-		
-		testAnalyzeOperator.execute();
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

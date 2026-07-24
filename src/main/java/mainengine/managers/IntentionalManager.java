@@ -41,13 +41,17 @@ public class IntentionalManager implements IBuilder {
                 break;
 
             case "analyze_iakovidis":
-                AnalyzeOperatorByIakovidis iakOp = new AnalyzeOperatorByIakovidis(
-                    query, 
-                    cto.getCubeManager(), 
-                    (String) params.get("schemaName"), 
-                    (String) params.get("connectionType")
+                AnalyzeTranslationManager iakOpTrans = new AnalyzeTranslationManager(
+                        query,
+                        cto.getCubeManager(),
+                        (String) params.get("schemaName"),
+                        (String) params.get("connectionType")
                 );
-                results = iakOp.execute();
+                AnalyzeOperatorByIakovidis iakOp = new AnalyzeOperatorByIakovidis(
+                    cto.getCubeManager(), 
+                    iakOpTrans
+                );
+                results = IntentionalPipeline.run(iakOp, query, IntentionalProfile.ANALYZE, cto.getCubeManager());
                 break;
 
             case "analyze_min_mqo":
@@ -72,28 +76,24 @@ public class IntentionalManager implements IBuilder {
                     (String) params.get("connectionType")
                 );
                 AnalyzeOperatorMaxMultiQueryOptimizer maxOp = new AnalyzeOperatorMaxMultiQueryOptimizer(
-                    query, 
-                    cto.getCubeManager(), 
-                    (String) params.get("connectionType"), 
+                    cto.getCubeManager(),
                     maxTrans
                 );
-                results = maxOp.executeAnalyzeWithMaxMQO();
+                results = IntentionalPipeline.run(maxOp, query, IntentionalProfile.ANALYZE, cto.getCubeManager());
                 break;
 
             case "analyze_mid_mqo":
                 AnalyzeTranslationManager midTrans = new AnalyzeTranslationManager(
-                    query, 
-                    cto.getCubeManager(), 
-                    (String) params.get("schemaName"), 
+                    query,
+                    cto.getCubeManager(),
+                    (String) params.get("schemaName"),
                     (String) params.get("connectionType")
                 );
                 AnalyzeOperatorMidMultiQueryOptimizer midOp = new AnalyzeOperatorMidMultiQueryOptimizer(
-                    query, 
-                    cto.getCubeManager(), 
-                    (String) params.get("connectionType"), 
+                    cto.getCubeManager(),
                     midTrans
                 );
-                results = midOp.executeAnalyzeWithMidMQO();
+                results = IntentionalPipeline.run(midOp, query, IntentionalProfile.ANALYZE, cto.getCubeManager());
                 break;
 
             default:

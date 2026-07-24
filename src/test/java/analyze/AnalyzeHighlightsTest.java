@@ -119,4 +119,86 @@ public class AnalyzeHighlightsTest {
         assertFalse(megaContributorDD2.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorDD2, "ContributionShare") > 0.5);
     }
+
+    @Test
+    public final void testAnalyzeMidMQOExecution() throws IOException {
+        String incomingExpression = "ANALYZE sum(store_sales) " +
+                "                    FROM sales " +
+                "                    FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' " +
+                "                    GROUP BY month, region " +
+                "                    AS 3rd_working_example";
+
+        AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
+        AnalyzeOperatorMidMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMidMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
+
+        List<LabeledResult> midMQOQueries = testAnalyzeOperator.execute(incomingExpression);
+
+        HighlightSet highlightsMid = new HighlightExtractor().extract(midMQOQueries.get(0), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
+        HolisticHighlight outlierMid = holisticFor(highlightsMid, "Outlier");
+        HolisticHighlight topKMid = holisticFor(highlightsMid, "TopKContributors");
+        HolisticHighlight megaContributorMid = holisticFor(highlightsMid, "MegaContributor");
+        assertNotNull("expected an Outlier highlight", outlierMid);
+        assertNotNull("expected a Top-k highlight", topKMid);
+        assertNotNull("expected a Mega Contributor highlight", megaContributorMid);
+        assertTrue("Outlier should hold", outlierMid.execution.result.verdict());
+        assertTrue("Top-k contributors should hold", topKMid.execution.result.verdict());
+        assertTrue("MegaContributor should hold", megaContributorMid.execution.result.verdict());
+        assertFalse(megaContributorMid.elementary().isEmpty());
+        assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorMid, "ContributionShare") > 0.5);
+
+
+        HighlightSet highlightsSib1 = new HighlightExtractor().extract(midMQOQueries.get(1), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
+        HolisticHighlight outlierSib1 = holisticFor(highlightsSib1, "Outlier");
+        HolisticHighlight topKSib1 = holisticFor(highlightsSib1, "TopKContributors");
+        HolisticHighlight megaContributorSib1 = holisticFor(highlightsSib1, "MegaContributor");
+        assertNotNull("expected an Outlier highlight", outlierSib1);
+        assertNotNull("expected a Top-k highlight", topKSib1);
+        assertNotNull("expected a Mega Contributor highlight", megaContributorSib1);
+        assertTrue("Outlier should hold", outlierSib1.execution.result.verdict());
+        assertTrue("Top-k contributors should hold", topKSib1.execution.result.verdict());
+        assertTrue("MegaContributor should hold", megaContributorSib1.execution.result.verdict());
+        assertFalse(megaContributorSib1.elementary().isEmpty());
+        assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorSib1, "ContributionShare") > 0.5);
+
+        HighlightSet highlightsSib2 = new HighlightExtractor().extract(midMQOQueries.get(2), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
+        HolisticHighlight outlierSib2 = holisticFor(highlightsSib2, "Outlier");
+        HolisticHighlight topKSib2 = holisticFor(highlightsSib2, "TopKContributors");
+        HolisticHighlight megaContributorSib2 = holisticFor(highlightsSib2, "MegaContributor");
+        assertNotNull("expected an Outlier highlight", outlierSib2);
+        assertNotNull("expected a Top-k highlight", topKSib2);
+        assertNotNull("expected a Mega Contributor highlight", megaContributorSib2);
+        assertFalse("Outlier should not hold", outlierSib2.execution.result.verdict());
+        assertTrue("Top-k contributors should hold", topKSib2.execution.result.verdict());
+        assertTrue("MegaContributor should hold", megaContributorSib2.execution.result.verdict());
+        assertFalse(megaContributorSib2.elementary().isEmpty());
+        assertTrue("dominant share should exceed the threshold", scoreOf(megaContributorSib2, "ContributionShare") > 0.5);
+
+    }
+
+    @Test
+    public final void testAnalyzeMaxMQOExecution() throws IOException {
+        String incomingExpression = "ANALYZE sum(store_sales) " +
+                "                    FROM sales " +
+                "                    FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' " +
+                "                    GROUP BY month, region " +
+                "                    AS 3rd_working_example";
+
+        AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
+        AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
+
+        List<LabeledResult> maxMQOQueries = testAnalyzeOperator.execute(incomingExpression);
+
+        HighlightSet highlightsMax = new HighlightExtractor().extract(maxMQOQueries.get(0), IntentionalProfile.ANALYZE.archetypes(), CubeSchemaResolver.from(testCubeManager));
+        HolisticHighlight outlierMax = holisticFor(highlightsMax, "Outlier");
+        HolisticHighlight topKMax = holisticFor(highlightsMax, "TopKContributors");
+        HolisticHighlight megaContributorMax = holisticFor(highlightsMax, "MegaContributor");
+        assertNotNull("expected an Outlier highlight", outlierMax);
+        assertNotNull("expected a Top-k highlight", topKMax);
+        assertNotNull("expected a Mega Contributor highlight", megaContributorMax);
+        assertTrue("Outlier should hold", outlierMax.execution.result.verdict());
+        assertTrue("Top-k contributors should hold", topKMax.execution.result.verdict());
+        assertTrue("MegaContributor should hold", megaContributorMax.execution.result.verdict());
+        assertFalse(megaContributorMax.elementary().isEmpty());
+        assertTrue("dominant share should exceed the threshold",scoreOf(megaContributorMax, "ContributionShare") > 0.5);
+    }
 }

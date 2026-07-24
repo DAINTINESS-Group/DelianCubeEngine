@@ -171,16 +171,20 @@ public class QueryRunner {
             }
             case "max": {
                 AnalyzeTranslationManager tm = new AnalyzeTranslationManager(q, cubeManager, schemaName, CONN);
-                md = new AnalyzeOperatorMaxMultiQueryOptimizer(q, cubeManager, CONN, tm).executeAnalyzeWithMaxMQO();
+                md = IntentionalPipeline.run(new AnalyzeOperatorMaxMultiQueryOptimizer(cubeManager, tm), q,
+                        IntentionalProfile.ANALYZE, cubeManager);
                 break;
             }
             case "mid": {
                 AnalyzeTranslationManager tm = new AnalyzeTranslationManager(q, cubeManager, schemaName, CONN);
-                md = new AnalyzeOperatorMidMultiQueryOptimizer(q, cubeManager, CONN, tm).executeAnalyzeWithMidMQO();
+                md = IntentionalPipeline.run(new AnalyzeOperatorMidMultiQueryOptimizer(cubeManager, tm), q,
+                        IntentionalProfile.ANALYZE, cubeManager);
                 break;
             }
             default:
-                md = new AnalyzeOperatorByIakovidis(q, cubeManager, schemaName, CONN).execute();
+                AnalyzeTranslationManager tm = new AnalyzeTranslationManager(q, cubeManager, schemaName, CONN);
+                md = IntentionalPipeline.run(new AnalyzeOperatorMidMultiQueryOptimizer(cubeManager, tm), q,
+                        IntentionalProfile.ANALYZE, cubeManager);
         }
         showReport("ANALYZE[" + analyzeStrategy + "]", md);
     }

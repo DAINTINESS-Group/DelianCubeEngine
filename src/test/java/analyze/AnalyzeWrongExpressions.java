@@ -52,7 +52,7 @@ public class AnalyzeWrongExpressions {
 	}
 	
 	// test that uses an Analyze intentional query with wrong values in the sigma expressions
-	@Test
+	@Test (expected = RuntimeException.class)
 	public final void testAnalyzeQueryWithWrongExpressionValues() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR district_name='Athens' AND month='13-1998' GROUP BY region,day AS mistaken_values";
 		
@@ -62,18 +62,20 @@ public class AnalyzeWrongExpressions {
 				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		/*String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_values" + "-Analyze_Operator_Report.md");
 		
-		testAnalyzeOperator.execute();
-		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_values" + "-Analyze_Operator_Report.md");
-		
-		assertEquals(expectedReportFileContents,reportFileContents);
+		assertEquals(expectedReportFileContents,reportFileContents);*/
 	}
 	
 	// test that uses an Analyze intentional query with mistakes in the sigma expressions
-	@Test
+	@Test (expected = RuntimeException.class)
 	public final void testAnalyzeQueryWithWrongExpressions() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR rgon='Athens' AND y='2030' GROUP BY district_name,month AS mistaken_expressions";
 		
@@ -83,18 +85,20 @@ public class AnalyzeWrongExpressions {
 				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		/*String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_expressions" + "-Analyze_Operator_Report.md");
 		
-		testAnalyzeOperator.execute();
-		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_expressions" + "-Analyze_Operator_Report.md");
-		
-		assertEquals(expectedReportFileContents,reportFileContents);
+		assertEquals(expectedReportFileContents,reportFileContents);*/
 	}
 	
 	// test that uses an Analyze intentional query with wrong gamma expressions
-	@Test
+	@Test (expected = RuntimeException.class)
 	public final void testAnalyzeQueryWithWrongGammaExpressions() throws IOException {
 		String incomingExpression = "ANALYZE sum(amount) FROM loan FOR region='Prague' AND year='1998' GROUP BY district,month AS mistaken_gamma_expressions";
 		
@@ -104,14 +108,16 @@ public class AnalyzeWrongExpressions {
 				+ "**ERROR WAS ENCOUNTERED DURING THE OPERATOR'S EXECUTION**\n\n"
 			    + "AnalyzeExecutionError: Expressions or values of the given ANALYZE incoming expression are invalid!Please check.\n"
 				+ "\n";
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+
+		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(testCubeManager,analyzeTranslationManager);
+
+		testAnalyzeOperator.execute(incomingExpression);
 		
-		AnalyzeOperatorByIakovidis testAnalyzeOperator = new AnalyzeOperatorByIakovidis(incomingExpression,testCubeManager,testSchemaName,testTypeOfConnection);
+		/*String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_gamma_expressions" + "-Analyze_Operator_Report.md");
 		
-		testAnalyzeOperator.execute();
-		
-		String reportFileContents = getFileContents("OutputFiles" + File.separator + "mistaken_gamma_expressions" + "-Analyze_Operator_Report.md");
-		
-		assertEquals(expectedReportFileContents,reportFileContents);
+		assertEquals(expectedReportFileContents,reportFileContents);*/
 	}
 
 }

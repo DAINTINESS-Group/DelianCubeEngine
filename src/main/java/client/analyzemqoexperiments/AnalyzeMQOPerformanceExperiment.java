@@ -54,11 +54,11 @@ public class AnalyzeMQOPerformanceExperiment {
 		// connection to datasets
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
-		userInputList.put("schemaName", "tpc_ds_cube_100m_new_indexed");
+		userInputList.put("schemaName", "tpc_ds_cube_2M");
 		userInputList.put("username", "CinecubesUser"); 
 		userInputList.put("password", "Cinecubes"); 
 		userInputList.put("cubeName", "store_sales");
-		userInputList.put("inputFolder", "tpc_ds_100m");
+		userInputList.put("inputFolder", "tpc_ds_2M");
 		
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Connection is successful.");
@@ -80,7 +80,7 @@ public class AnalyzeMQOPerformanceExperiment {
 		for(int i = 0;i<queryWorkload.length;i++) {
 			String incomingExpression = queryWorkload[i];
 			for(int j = 0;j < 5;j++) {
-				ResultFileMetadata operatorResult = service.analyzeWithMinMQO(incomingExpression);
+				ResultFileMetadata operatorResult = service.analyzeWithMidMQO(incomingExpression);
 				/*String localFolder = operatorResult.getLocalFolder();
 				String resultFile = operatorResult.getResultFile();
 				fetchData(localFolder,resultFile);*/

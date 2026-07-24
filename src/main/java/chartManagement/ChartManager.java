@@ -6,6 +6,7 @@ import java.util.List;
 
 import analyze.AnalyzeOperatorByIakovidis;
 import analyze.AnalyzeQuery;
+import analyze.AnalyzeTranslationManager;
 import chartManagement.models.ModelManager;
 import chartManagement.utils.ChartResponse;
 import chartManagement.utils.ChartScoreModel;
@@ -24,6 +25,7 @@ public class ChartManager {
 	private ModelManager modelManager;
 	private String chartType;
 	private String aggrFunc;
+	private String incomingQuery;
 	
 	public ChartManager(CubeManager cubeManager)
 	{
@@ -41,8 +43,10 @@ public class ChartManager {
 	
 	
 	public void createConnectionWithAnalyzeOperator(String incomingQuery,String schemaName, String connectionType){
-		
-		operator = new AnalyzeOperatorByIakovidis(incomingQuery, cubeManager, schemaName, connectionType);
+
+		AnalyzeTranslationManager analyzeTranslationManager = new AnalyzeTranslationManager(incomingQuery, cubeManager, schemaName, connectionType);
+		operator = new AnalyzeOperatorByIakovidis(cubeManager, analyzeTranslationManager);
+		this.incomingQuery = incomingQuery;
 		extractAggregationFunctionFromAnalyzeQuery(incomingQuery);
 		
 	}
@@ -67,7 +71,7 @@ public class ChartManager {
 	
 	public void generateQueries()
 	{
-		operator.execute();
+		operator.execute(incomingQuery);
 		producedQueries = operator.getAnalyzeQueries();
 		
 		

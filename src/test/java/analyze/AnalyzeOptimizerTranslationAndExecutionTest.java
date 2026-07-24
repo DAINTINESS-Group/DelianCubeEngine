@@ -94,9 +94,9 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
 
-		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
+		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
 		
-		testAnalyzeOperator.executeAnalyzeWithMaxMQO();
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		
@@ -143,9 +143,9 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
 
-		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(incomingExpression,testCubeManager,testTypeOfConnection,testAnalyzeTranslationManager);
+		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
 		
-		testAnalyzeOperator.executeAnalyzeWithMaxMQO();
+		testAnalyzeOperator.execute(incomingExpression);
 		
 		testAnalyzeQueries = testAnalyzeOperator.getAnalyzeQueries();
 		

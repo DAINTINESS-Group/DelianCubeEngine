@@ -1,17 +1,22 @@
 package analyze;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import analyze.mqoaggregateadapt.AggregateAdapter;
 import analyze.mqoaggregateadapt.AggregateAdapterFactory;
 import analyze.report.AnalyzeReport;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
+import intentional.operator.IntentionalOperator;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 import result.ResultFileMetadata;
 
 
-public class AnalyzeOperatorMaxMultiQueryOptimizer {
+public class AnalyzeOperatorMaxMultiQueryOptimizer implements IntentionalOperator {
 	
 	// CubeManager object to manage the cube
 		private CubeManager cubeManager;
@@ -21,18 +26,12 @@ public class AnalyzeOperatorMaxMultiQueryOptimizer {
 		
 		// Collection of AnalyzeCubeQueries
 		private ArrayList<AnalyzeQuery> analyzeQueries;
-		
-		// The intentional query and its dataset connection, kept for reporting
-		private String incomingExpression;
-		private String connectionType;
 
 
-		public AnalyzeOperatorMaxMultiQueryOptimizer(String incomingExpression, CubeManager cubeManager, String connectionType, AnalyzeTranslationManager analyzeTranslationManager) {
+		public AnalyzeOperatorMaxMultiQueryOptimizer(CubeManager cubeManager, AnalyzeTranslationManager analyzeTranslationManager) {
 			this.cubeManager = cubeManager;
-			this.analyzeTranslationManager = analyzeTranslationManager;
 			this.analyzeQueries = new ArrayList<AnalyzeQuery>();
-			this.incomingExpression = incomingExpression;
-			this.connectionType = connectionType;
+			this.analyzeTranslationManager = analyzeTranslationManager;
 		}
 		
 		/**
@@ -45,94 +44,49 @@ public class AnalyzeOperatorMaxMultiQueryOptimizer {
 			boolean incomingExpressionIsValid;
 			
 			incomingExpressionIsValid = this.analyzeTranslationManager.validateIncomingExpression();
-			if(incomingExpressionIsValid == true) {
-				long startTime = System.nanoTime();
+			if(incomingExpressionIsValid) {
 				analyzeQueries = analyzeTranslationManager.translateToOptimizedSingleCubeQueries();
-				long endTime = System.nanoTime();
-				double queriesGenerationTime = endTime - startTime;
-				System.out.println("$$ Analyze Cube Query Generation Time \t\t\t"  + Double.toString(queriesGenerationTime/1000000));// + " ms");
 				return true;
 			}else {
 				System.err.println("ANALYZE incoming expression contains syntax errors!Please check.");
 				return false;
 			}
 		}
-		
-
-		
 		/**
-		 * Method that executes the AnalyzeQueries, sets the Result field of the AnalyzeQueries
-		 * and creates the report file 
+		 * Parses the incoming expression, generates the analyze queries, executes them,
+		 * distributes the MQO results and returns one
+		 * {@link LabeledResult} per query. Throws on syntax or query-generation errors.
+		 * @return List < LabeledResult >
 		 */
-		//#Strategy1
-		public ResultFileMetadata executeAnalyzeWithMaxMQO() {
-			//this must return a Intentional Result object, not null, not void, not int
-			int resultTuplesCounter = 0;
-			int mqoResultSize =0;
-			String errorMessage = null;
-			boolean translationStatus = this.constructUpdatedAnalyzeQueries();
-			boolean cubeQueryGenerationStatus = analyzeTranslationManager.getCubeQueryGenerationStatus();
-			if(translationStatus == false) {
-				System.err.println("ANALYZE operator execution is aborting...");
-				errorMessage = "ANALYZE incoming expression contains syntax errors!Please check.";
-			}else if(cubeQueryGenerationStatus == false){
-				System.err.println("ANALYZE expression encountered errors!\nANALYZE operator execution is aborting...");
-				errorMessage = "Expressions or values of the given ANALYZE incoming expression are invalid!Please check.";
-			}else if(translationStatus == true && cubeQueryGenerationStatus == true) {
-				long startTime = System.nanoTime();
-				
-				AggregateAdapterFactory aggrAdapterFactory = new AggregateAdapterFactory();
-				AggregateAdapter aggrAdapter = aggrAdapterFactory.createAdapter(analyzeTranslationManager.getAggrFunc());
-				
-				//for(AnalyzeQuery aq: analyzeQueries) {
-				AnalyzeQuery aq = analyzeQueries.get(0);
-				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
-						
-				Result result = cubeManager.executeQuery(analyzeCubeQuery);//executeSimpleSqlQuery() method for a simpler version of SQL or executeQuery() for the old SQL query version
-				String[][] resultArray = result.getResultArray();
-				if(resultArray!=null) {
-					resultTuplesCounter += resultArray.length;
-				}
-				aq.setAnalyzeQueryResult(result);
-				
-				long mqoStartTime = System.nanoTime();
-				ArrayList<Cell> resultCellsMQO = result.getCells();
-				AnalyzeMaxMQOAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMaxMQOAuxiliaryQueryResultBuilder();	
-				ArrayList<String> mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO, 
-													analyzeTranslationManager.getSigmaExpressions(), 
-													analyzeTranslationManager.getSigmaExpressionsToValues(),
-													aggrAdapter);
-				aq.setAnalyzeMQOResult(mqoResult);
-				mqoResultSize = mqoResult.size();
-				long mqoEndTime = System.nanoTime();
-
-				//}
-				long endTime = System.nanoTime();
-				double mqoProcessingTime = mqoEndTime - mqoStartTime;
-				double executionTime = endTime - startTime - mqoProcessingTime ;
-				System.out.println("$$ Query Execution Time \t" + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(executionTime/1000000));// + " ms");
-				System.out.println("$$ Multi-Query Optimization Processing Time \t" + analyzeCubeQuery.getName().toString().split("-")[0]+ "\t" + aq.getType().toString() + "\t" + Double.toString(mqoProcessingTime/1000000));// + " ms");
-				/*analyzeReport.setAnalyzeQueries(analyzeQueries);
-
-				startTime = System.nanoTime();
-				analyzeReport.createTextReportFile();
-				endTime = System.nanoTime();
-				double reportingTime = endTime - startTime;
-				System.out.println("Reporting Result Time :" + Double.toString(reportingTime/1000000) + " ms");*/
+		@Override
+		public List<LabeledResult> execute(String query) {
+			if (!constructUpdatedAnalyzeQueries()) {
+				throw new RuntimeException("ANALYZE incoming expression contains syntax errors!");
 			}
-			ResultFileMetadata resultFile = (errorMessage != null)
-					? AnalyzeReport.write(incomingExpression, connectionType, analyzeQueries, errorMessage)
-					: new ResultFileMetadata();
-			System.out.println("Number of generated queries: " + Integer.toString(analyzeQueries.size()) + " queries");
-			System.out.println("Number of resulted tuples: " + Integer.toString(resultTuplesCounter));
-			System.out.println("Number of resulted tuples after the multi-query optimization: " + Integer.toString(mqoResultSize));
+			if (!analyzeTranslationManager.getCubeQueryGenerationStatus()) {
+				throw new RuntimeException("Expressions or values of the given ANALYZE incoming expression are invalid!");
+			}
+			AggregateAdapterFactory aggrAdapterFactory = new AggregateAdapterFactory();
+			AggregateAdapter aggrAdapter = aggrAdapterFactory.createAdapter(analyzeTranslationManager.getAggrFunc());
+			List<LabeledResult> results = new ArrayList<LabeledResult>();
 
-			
-			return resultFile;
+			for(AnalyzeQuery aq: analyzeQueries) {
+				CubeQuery analyzeCubeQuery = aq.getAnalyzeCubeQuery();
+				Result result = cubeManager.executeQuery(analyzeCubeQuery);
+				aq.setAnalyzeQueryResult(result);
+				ArrayList<Cell> resultCellsMQO = result.getCells();
+				AnalyzeMaxMQOAuxiliaryQueryResultBuilder auxResultBuilder = new AnalyzeMaxMQOAuxiliaryQueryResultBuilder();
+				ArrayList<String> mqoResult = auxResultBuilder.feedTheAuxiliaryQueriesfromMQO(resultCellsMQO,
+						analyzeTranslationManager.getSigmaExpressions(),
+						analyzeTranslationManager.getSigmaExpressionsToValues(),
+						aggrAdapter);
+				aq.setAnalyzeMQOResult(mqoResult);
+				results.add(new LabeledResult(analyzeCubeQuery, result, null));
+			}
+			return results;
 		}
-		
+
 		public ArrayList<AnalyzeQuery> getAnalyzeQueries(){
 			return analyzeQueries;
 		}
-		
 }
