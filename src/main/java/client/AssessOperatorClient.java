@@ -5,16 +5,12 @@ import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
-import highlights.Interestingness;
 import highlights.instance.Highlight;
 import highlights.metamodel.ArchetypeProperty;
 import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
-
-import interestingnessengine.InterestingnessManager;
-
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +30,13 @@ public class AssessOperatorClient {
                 "SAVE AS PastBenchmarkDemo";
 
         CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
-        Interestingness interestingness = new Interestingness(new InterestingnessManager(cubeManager, 3));
 
         // Stage 1: the operator produces its result. Stage 2: highlight extraction runs on top of it.
         long start = System.nanoTime();
         LabeledResult result = operator.execute(query).get(0);
         List<ArchetypeProperty> registeredArchetypes = IntentionalProfile.ASSESS.archetypes();
 
-        HighlightSet highlights = new HighlightExtractor(interestingness)
+        HighlightSet highlights = new HighlightExtractor()
                 .extract(result, registeredArchetypes, schemaResolver);
         long ms = (System.nanoTime() - start) / 1_000_000;
 
