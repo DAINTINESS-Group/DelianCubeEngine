@@ -3,7 +3,7 @@ package chartManagement.utils;
 import java.io.Serializable;
 import java.util.List;
 
-import analyze.AnalyzeQuery;
+import intentional.analyze.AnalyzeQuery;
 
 public class ChartVisModel implements Serializable{
 	

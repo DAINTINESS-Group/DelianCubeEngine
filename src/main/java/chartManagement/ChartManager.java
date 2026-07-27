@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import analyze.AnalyzeOperatorByIakovidis;
-import analyze.AnalyzeQuery;
-import analyze.AnalyzeTranslationManager;
+import intentional.analyze.AnalyzeOperatorByIakovidis;
+import intentional.analyze.AnalyzeQuery;
+import intentional.analyze.AnalyzeTranslationManager;
 import chartManagement.models.ModelManager;
 import chartManagement.utils.ChartResponse;
 import chartManagement.utils.ChartScoreModel;

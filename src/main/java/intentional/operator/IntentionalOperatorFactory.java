@@ -2,14 +2,14 @@ package intentional.operator;
 
 import java.util.Map;
 
-import analyze.AnalyzeOperatorByIakovidis;
-import analyze.AnalyzeOperatorMaxMultiQueryOptimizer;
-import analyze.AnalyzeOperatorMidMultiQueryOptimizer;
-import analyze.AnalyzeOperatorMinMultiQueryOptimizer;
-import analyze.AnalyzeTranslationManager;
-import assess.AssessOperator;
+import intentional.analyze.AnalyzeOperatorByIakovidis;
+import intentional.analyze.AnalyzeOperatorMaxMultiQueryOptimizer;
+import intentional.analyze.AnalyzeOperatorMidMultiQueryOptimizer;
+import intentional.analyze.AnalyzeOperatorMinMultiQueryOptimizer;
+import intentional.analyze.AnalyzeTranslationManager;
+import intentional.assess.AssessOperator;
 import cubemanager.CubeManager;
-import describe.DescribeOperator;
+import intentional.describe.DescribeOperator;
 
 /**
  * Builds the {@link IntentionalOperator} for a command: describe and assess take only the cube manager,

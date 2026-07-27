@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import analyze.AnalyzeQuery;
+import intentional.analyze.AnalyzeQuery;
 import chartManagement.utils.DataPoint;
 import result.Result;
 

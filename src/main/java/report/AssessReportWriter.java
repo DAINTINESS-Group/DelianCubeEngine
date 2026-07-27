@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 
-import assess.models.AssessModel;
-import assess.utils.ComparedCell;
-import assess.utils.LabeledCell;
+import intentional.assess.models.AssessModel;
+import intentional.assess.utils.ComparedCell;
+import intentional.assess.utils.LabeledCell;
 import highlights.HighlightSet;
 import intentional.result.LabeledResult;
 

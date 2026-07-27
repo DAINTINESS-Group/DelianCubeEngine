@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.sun.javafx.charts.Legend;
 
-import analyze.AnalyzeQuery;
+import intentional.analyze.AnalyzeQuery;
 import chartManagement.utils.ChartResponse;
 import chartManagement.utils.ChartScoreModel;
 import chartManagement.utils.ChartVisModel;

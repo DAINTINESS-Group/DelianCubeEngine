@@ -1,6 +1,6 @@
 package client;
 
-import assess.AssessOperator;
+import intentional.assess.AssessOperator;
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
