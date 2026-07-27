@@ -1,8 +1,8 @@
 package highlights.metamodel;
 
 /**
- * An arithmetic significance facet identified by a name, ordered by its numeric value. Used for
- * algorithm-computed metrics (e.g. a contribution share) that are not part of the interestingness taxonomy.
+ * A named score type ordered by its numeric value — the algorithm-computed metric a highlight
+ * carries (e.g. a contribution share, a z-score, a concentration, or an enumerated label's rank).
  */
 public final class NamedScoreType implements ScoreType {
     private final String name;

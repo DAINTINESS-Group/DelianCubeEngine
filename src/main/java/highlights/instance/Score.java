@@ -3,8 +3,8 @@ package highlights.instance;
 import highlights.metamodel.ScoreType;
 
 /**
- * A significance value: a {@link ScoreType} together with an arithmetic value, or, for an
- * enumerated facet, the ordinal rank of a label plus the label itself.
+ * A score: a {@link ScoreType} together with an arithmetic value, or, for an enumerated label,
+ * the ordinal rank of a label plus the label itself.
  */
 public final class Score {
     public final ScoreType type;
