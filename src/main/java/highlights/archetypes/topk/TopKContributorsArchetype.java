@@ -10,7 +10,6 @@ import highlights.metamodel.CharacterRole;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.ExplanatorConstraint;
 import highlights.metamodel.ExplanatorRole;
-import highlights.metamodel.InterestingnessFacet;
 import highlights.metamodel.MainMeasureRole;
 import highlights.metamodel.MeasureConstraint;
 import highlights.metamodel.MeasureRole;
@@ -40,7 +39,7 @@ public final class TopKContributorsArchetype {
                 new MainMeasureRole("Mass", MeasureConstraint.ADDITIVE),
                 Collections.singletonList(new ExplanatorRole("Breakdown", ExplanatorConstraint.ANY)),
                 Collections.singletonList(algorithm),
-                Arrays.<ScoreType>asList(MarginalContributionAlgorithm.CONTRIBUTION_SHARE, InterestingnessFacet.PECULIARITY),
+                Arrays.<ScoreType>asList(MarginalContributionAlgorithm.CONTRIBUTION_SHARE),
                 Collections.singletonList(topContributorRole));
     }
 }

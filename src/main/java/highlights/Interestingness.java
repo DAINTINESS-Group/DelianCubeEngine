@@ -1,67 +1,23 @@
 package highlights;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import cubemanager.cubebase.CubeQuery;
-import highlights.instance.Score;
-import highlights.metamodel.InterestingnessFacet;
-import highlights.metamodel.ScoreType;
-import interestingnessengine.InterestingnessManager;
-import result.Result;
+import highlights.instance.Highlight;
 
 /**
- * Computes the interestingness of holistic highlights via the engine's {@code interestingnessengine}: each
- * {@link InterestingnessFacet} maps to an interestingness measure evaluated over a query result. The
- * measures are session-relative, so {@link #observe(CubeQuery, Result)} registers the current result before
- * scoring; facets that cannot be computed for the available session state are omitted.
+ * Post-pass over a result's highlights: attaches interestingness to each holistic. Runs over the
+ * whole set — not per holistic — because interestingness is relative: a highlight is peculiar
+ * relative to the rest, novel relative to the session, relevant relative to the query, and
+ * surprising relative to an expectation. Injected optionally into {@link HighlightExtractor}; when
+ * absent, highlights carry only their algorithm scores.
+ *
+ * <p>Interestingness is defined by its <em>context</em> (data / query / session / expectation), not
+ * by a fixed score-type enum, so no facet type is modelled here. Facet computation itself is not
+ * yet implemented — this is the model-level seam.
  */
 public final class Interestingness {
 
-    private static final Logger LOG = Logger.getLogger(Interestingness.class.getName());
-
-    private static final Map<InterestingnessFacet, String> ENGINE_MEASURE =
-            new EnumMap<>(InterestingnessFacet.class);
-    static {
-        ENGINE_MEASURE.put(InterestingnessFacet.PECULIARITY, "Partial Syntactic Average Peculiarity");
-        ENGINE_MEASURE.put(InterestingnessFacet.NOVELTY, "Direct Novelty");
-        ENGINE_MEASURE.put(InterestingnessFacet.RELEVANCE, "Partial Detailed Extensional Relevance");
-        ENGINE_MEASURE.put(InterestingnessFacet.SURPRISE, "Value Surprise");
-    }
-
-    private final InterestingnessManager manager;
-
-    public Interestingness(InterestingnessManager manager) { this.manager = manager; }
-
-    /** Registers the query result as the current session state for subsequent facet computations. */
-    public void observe(CubeQuery query, Result data) { manager.updateState(query, data); }
-
-    /** Scores every interestingness facet among the given score types over the current query result. */
-    public List<Score> computeScores(List<ScoreType> scoreTypes, CubeQuery query, Result data) {
-        List<Score> out = new ArrayList<>();
-        for (ScoreType type : scoreTypes) {
-            if (type instanceof InterestingnessFacet) {
-                Score score = score((InterestingnessFacet) type, query, data);
-                if (score != null) out.add(score);
-            }
-        }
-        return out;
-    }
-
-    /** The score for one facet over the current query result, or null if it cannot be computed. */
-    public Score score(InterestingnessFacet facet, CubeQuery query, Result data) {
-        String measure = ENGINE_MEASURE.get(facet);
-        if (measure == null) return null;
-        try {
-            double value = manager.computeMeasure(measure, query, data);
-            return Double.isNaN(value) ? null : new Score(facet, value);
-        } catch (RuntimeException e) {
-            LOG.log(Level.FINE, e, () -> "interestingness facet " + facet + " (" + measure + ") not computed");
-            return null;
-        }
+    public void score(List<Highlight> highlights) {
+        // TODO: compute + attach interestingness (context-driven: data / query / session / expectation).
     }
 }

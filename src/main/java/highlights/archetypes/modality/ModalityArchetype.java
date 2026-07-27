@@ -7,7 +7,6 @@ import highlights.metamodel.Algorithm;
 import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.ExplanatorRole;
-import highlights.metamodel.InterestingnessFacet;
 import highlights.metamodel.MainMeasureRole;
 import highlights.metamodel.MeasureConstraint;
 import highlights.metamodel.ScoreType;
@@ -30,7 +29,7 @@ public final class ModalityArchetype {
                 new MainMeasureRole("Mass", MeasureConstraint.ADDITIVE),
                 Collections.<ExplanatorRole>emptyList(),
                 Collections.singletonList(algorithm),
-                Arrays.<ScoreType>asList(NormalizedEntropyModalityAlgorithm.CONCENTRATION, InterestingnessFacet.PECULIARITY),
+                Arrays.<ScoreType>asList(NormalizedEntropyModalityAlgorithm.CONCENTRATION),
                 Collections.<ElementaryHighlightRole>emptyList());
     }
 }

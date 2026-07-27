@@ -10,7 +10,6 @@ import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.EvaluationAxis;
 import highlights.metamodel.ExplanatorConstraint;
 import highlights.metamodel.ExplanatorRole;
-import highlights.metamodel.InterestingnessFacet;
 import highlights.metamodel.MainMeasureRole;
 import highlights.metamodel.MeasureConstraint;
 import highlights.metamodel.MeasureRole;
@@ -32,13 +31,14 @@ public final class LabelPredominanceArchetype {
                 Collections.singletonList(new CharacterRole("LabeledCell")),
                 new MeasureRole("LabeledMeasure"),
                 Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+                
         Algorithm algorithm = new LabelDistributionAlgorithm(labeledCell);
         return new ArchetypeProperty(
                 "LabelPredominance",
                 new MainMeasureRole("Labeled", MeasureConstraint.ANY),
                 Collections.singletonList(new ExplanatorRole("Breakdown", ExplanatorConstraint.ANY)),
                 Collections.singletonList(algorithm),
-                Arrays.<ScoreType>asList(LabelDistributionAlgorithm.DOMINANT_SHARE, InterestingnessFacet.PECULIARITY),
+                Arrays.<ScoreType>asList(LabelDistributionAlgorithm.DOMINANT_SHARE),
                 Collections.singletonList(labeledCell),
                 EvaluationAxis.LABELING);
     }
