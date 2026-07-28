@@ -36,24 +36,41 @@ public final class LabelDistributionAlgorithm implements ExecutableAlgorithm {
 
     /** A cell's label, valued by its rank in the labeling's ordered domain. */
     public static final ScoreType LABEL = new NamedScoreType("Label");
-    /** The share of labeled cells carrying the winning label. */
-    public static final ScoreType DOMINANT_SHARE = new NamedScoreType("DominantShare");
+    /** The share of the cast vote behind the winning label. */
+    public static final ScoreType WINNER_SHARE = new NamedScoreType("WinnerShare");
     /** The {@link VotingRule} that ran the election, valued by its ordinal. */
     public static final ScoreType VOTING_RULE = new NamedScoreType("VotingRule");
+    /** The {@link Weighting} the ballots were cast under, valued by its ordinal. */
+    public static final ScoreType WEIGHTING = new NamedScoreType("Weighting");
     /** The magnitude by which a salient cell stands out. */
     public static final ScoreType MAGNITUDE = new NamedScoreType("Magnitude");
+
+    /**
+     * What a cell's ballot weighs: one vote each; the cell's magnitude, so the vote follows the volume the
+     * labels stand on; or the cell's reference value, so the vote follows the volume that was expected of
+     * them. Under {@link VotingRule#MEDIAN_VOTER} a weighted vote elects the label holding the barycenter
+     * of the total weight.
+     */
+    public enum Weighting { CELL_COUNT, MAGNITUDE, REFERENCE }
 
     private final ElementaryHighlightRole labeledCellRole;
     /** The imposed rule, or {@code null} to let each labeling get {@link VotingRule#defaultFor}. */
     private final VotingRule votingRule;
+    private final Weighting weighting;
 
     public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole) {
-        this(labeledCellRole, null);
+        this(labeledCellRole, null, Weighting.CELL_COUNT);
     }
 
     public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole, VotingRule votingRule) {
+        this(labeledCellRole, votingRule, Weighting.CELL_COUNT);
+    }
+
+    public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole, VotingRule votingRule,
+                                      Weighting weighting) {
         this.labeledCellRole = labeledCellRole;
         this.votingRule = votingRule;
+        this.weighting = weighting;
     }
 
     @Override
@@ -72,31 +89,33 @@ public final class LabelDistributionAlgorithm implements ExecutableAlgorithm {
         Labeling labeling = context.labelings().get(labelingIndex);
         Map<Cell, String> labelByCell = labeling.assignment();
 
-        Map<String, Integer> counts = new LinkedHashMap<>();
-        for (String label : labeling.domain()) counts.put(label, 0);
-        int total = 0;
-        for (String label : labelByCell.values()) {
+        Map<String, Double> tallies = new LinkedHashMap<>();
+        for (String label : labeling.domain()) tallies.put(label, 0.0);
+        double tallyTotal = 0.0;
+        for (Map.Entry<Cell, String> e : labelByCell.entrySet()) {
+            String label = e.getValue();
             if (label == null) continue;
-            counts.merge(label, 1, Integer::sum);
-            total++;
+            double ballot = ballotOf(e.getKey(), labeling);
+            tallies.merge(label, ballot, Double::sum);
+            tallyTotal += ballot;
         }
 
         VotingRule rule = votingRule != null ? votingRule : VotingRule.defaultFor(labeling.ordered());
-        String winner = rule.elect(labeling.domain(), labeling.ordered(), counts, total);
+        String winner = rule.elect(labeling.domain(), labeling.ordered(), tallies, tallyTotal);
         boolean holds = winner != null;
-        double dominantShare = winner == null ? 0.0 : (double) counts.get(winner) / total;
 
         List<Score> holisticScores = new ArrayList<>();
         if (winner != null) {
             holisticScores.add(new Score(LABEL, labeling.rankOf(winner), winner));
+            holisticScores.add(new Score(WINNER_SHARE, tallies.get(winner) / tallyTotal));
         }
-        holisticScores.add(new Score(DOMINANT_SHARE, dominantShare));
         holisticScores.add(new Score(VOTING_RULE, rule.ordinal(), rule.name()));
+        holisticScores.add(new Score(WEIGHTING, weighting.ordinal(), weighting.name()));
 
         List<ScoredFinding> salient = selectSalient(labeling, winner);
         AlgorithmResult result = new AlgorithmResult(holds);
-        for (Map.Entry<String, Integer> e : counts.entrySet()) {
-            result.metric("share_" + e.getKey(), total == 0 ? 0.0 : (double) e.getValue() / total);
+        for (Map.Entry<String, Double> e : tallies.entrySet()) {
+            result.metric("share_" + e.getKey(), tallyTotal == 0.0 ? 0.0 : e.getValue() / tallyTotal);
         }
         return new AlgorithmExecution(this, Collections.<ParameterInstantiation>emptyList(), result,
                 holisticScores, salient);
@@ -106,6 +125,24 @@ public final class LabelDistributionAlgorithm implements ExecutableAlgorithm {
     private static double magnitudeOf(Cell cell, Labeling labeling) {
         double magnitude = labeling.magnitudeOf(cell);
         return Math.abs(Double.isNaN(magnitude) ? cell.toDouble(labeling.measureIndex()) : magnitude);
+    }
+
+    /** The reference a cell was judged against: the labeling's own if present, else the studied measure. */
+    private static double referenceOf(Cell cell, Labeling labeling) {
+        double reference = labeling.referenceOf(cell);
+        return Math.abs(Double.isNaN(reference) ? cell.toDouble(labeling.measureIndex()) : reference);
+    }
+
+    /** The weight of a cell's ballot under this algorithm's {@link Weighting}. */
+    private double ballotOf(Cell cell, Labeling labeling) {
+        switch (weighting) {
+            case MAGNITUDE:
+                return magnitudeOf(cell, labeling);
+            case REFERENCE:
+                return referenceOf(cell, labeling);
+            default:
+                return 1.0;
+        }
     }
 
     private List<ScoredFinding> selectSalient(Labeling labeling, String dominant) {

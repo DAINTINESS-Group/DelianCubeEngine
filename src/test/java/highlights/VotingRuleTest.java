@@ -13,42 +13,42 @@ import org.junit.Test;
 import highlights.archetypes.labelpredominance.VotingRule;
 
 /**
- * The voting rules over the wine example of the DOLAP 2024 paper (Figures 1, 2 and 4): the five cells of
- * one labeling scheme vote with their labels, tallied per label over the ordered domain BAD &lt; OK &lt; GOOD.
+ * The voting rules over per-label tallies on the ordered domain BAD &lt; OK &lt; GOOD — plain ballot
+ * counts, or volume weights for the weighted vote.
  */
 public class VotingRuleTest {
 
     private static final List<String> DOMAIN = Arrays.asList("BAD", "OK", "GOOD");
 
-    private static Map<String, Integer> tally(int bad, int ok, int good) {
-        Map<String, Integer> counts = new LinkedHashMap<>();
-        counts.put("BAD", bad);
-        counts.put("OK", ok);
-        counts.put("GOOD", good);
-        return counts;
+    private static Map<String, Double> tally(double bad, double ok, double good) {
+        Map<String, Double> tallies = new LinkedHashMap<>();
+        tallies.put("BAD", bad);
+        tallies.put("OK", ok);
+        tallies.put("GOOD", good);
+        return tallies;
     }
 
-    /** Scheme L1 labels the cells BAD,OK,OK,OK,GOOD — every rule elects OK (Figures 2, 3, 4). */
+    /** A tally piled on the center label is elected by every rule. */
     @Test
-    public void schemeL1ElectsOkUnderEveryRule() {
-        Map<String, Integer> l1 = tally(1, 3, 1);
-        assertEquals("OK", VotingRule.MAJORITY.elect(DOMAIN, true, l1, 5));
-        assertEquals("OK", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, l1, 5));
-        assertEquals("OK", VotingRule.VALENCE_MEDIAN.elect(DOMAIN, true, l1, 5));
-        assertEquals("OK", VotingRule.BORDA.elect(DOMAIN, true, l1, 5));
+    public void centeredTallyElectsOkUnderEveryRule() {
+        Map<String, Double> tallies = tally(1, 3, 1);
+        assertEquals("OK", VotingRule.MAJORITY.elect(DOMAIN, true, tallies, 5));
+        assertEquals("OK", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, tallies, 5));
+        assertEquals("OK", VotingRule.VALENCE_MEDIAN.elect(DOMAIN, true, tallies, 5));
+        assertEquals("OK", VotingRule.BORDA.elect(DOMAIN, true, tallies, 5));
     }
 
-    /** Scheme L2 labels the cells BAD,BAD,OK,GOOD,GOOD — no majority, but the median voter is OK (Figure 2). */
+    /** A polarized tally has no absolute majority, yet its median voter sits on the center label. */
     @Test
-    public void schemeL2HasNoMajorityButAMedian() {
-        Map<String, Integer> l2 = tally(2, 1, 2);
-        assertNull(VotingRule.MAJORITY.elect(DOMAIN, true, l2, 5));
-        assertEquals("OK", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, l2, 5));
+    public void polarizedTallyHasNoMajorityButAMedian() {
+        Map<String, Double> tallies = tally(2, 1, 2);
+        assertNull(VotingRule.MAJORITY.elect(DOMAIN, true, tallies, 5));
+        assertEquals("OK", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, tallies, 5));
     }
 
-    /** Scheme L3 tallies 2,2,1 — Borda ties BAD and OK at 1.5 and elects no one (Figure 4). */
+    /** Two labels with equal tallies tie on points, and Borda elects no one. */
     @Test
-    public void bordaCannotUntieSchemeL3() {
+    public void bordaCannotUntieEqualTallies() {
         assertNull(VotingRule.BORDA.elect(DOMAIN, true, tally(2, 2, 1), 5));
     }
 
@@ -61,9 +61,16 @@ public class VotingRuleTest {
     /** The ordinal rules elect nothing over an unordered domain. */
     @Test
     public void ordinalRulesNeedAnOrderedDomain() {
-        Map<String, Integer> l1 = tally(1, 3, 1);
-        assertNull(VotingRule.MEDIAN_VOTER.elect(DOMAIN, false, l1, 5));
-        assertNull(VotingRule.VALENCE_MEDIAN.elect(DOMAIN, false, l1, 5));
-        assertEquals("OK", VotingRule.MAJORITY.elect(DOMAIN, false, l1, 5));
+        Map<String, Double> tallies = tally(1, 3, 1);
+        assertNull(VotingRule.MEDIAN_VOTER.elect(DOMAIN, false, tallies, 5));
+        assertNull(VotingRule.VALENCE_MEDIAN.elect(DOMAIN, false, tallies, 5));
+        assertEquals("OK", VotingRule.MAJORITY.elect(DOMAIN, false, tallies, 5));
+    }
+
+    /** Volume weights move the barycenter to a label the ballot counts alone would not elect. */
+    @Test
+    public void weightedTalliesShiftTheMedian() {
+        assertEquals("BAD", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, tally(11, 0, 9), 20));
+        assertEquals("OK", VotingRule.MEDIAN_VOTER.elect(DOMAIN, true, tally(28, 34, 11), 73));
     }
 }

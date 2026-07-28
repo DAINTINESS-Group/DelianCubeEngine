@@ -57,8 +57,14 @@ public final class AssessModel implements LabelingModel {
             deltas.put(entry.getKey(), entry.getValue());
             labelByCell.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
         }
-        this.assessmentLabeling =
-                new Labeling(labeling.domain(), labelByCell, 0, new LinkedHashMap<>(deltas));
+        Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
+        for (ComparedCell compared : comparedCells) {
+            if (compared.benchmark != null) {
+                benchmarkValues.put(compared.target, compared.benchmark.toDouble());
+            }
+        }
+        this.assessmentLabeling = new Labeling(labeling.domain(), labelByCell, 0,
+                new LinkedHashMap<>(deltas), benchmarkValues);
         return 0;
     }
 
@@ -82,7 +88,7 @@ public final class AssessModel implements LabelingModel {
         return labeledCells;
     }
 
-    /** The assessment label per cell, over the labeling scheme's ordered domain, with the delta as magnitude. */
+    /** The assessment label per cell, over the labeling scheme's ordered domain, carrying the delta as magnitude and the benchmark value as reference. */
     @Override
     public List<Labeling> labelings() {
         return Collections.singletonList(assessmentLabeling);

@@ -18,9 +18,16 @@ import cubemanager.cubebase.CubeQuery;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
+import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm.Weighting;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
+import highlights.archetypes.labelpredominance.VotingRule;
+import highlights.instance.AlgorithmExecution;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
+import highlights.metamodel.CharacterRole;
+import highlights.metamodel.ElementaryHighlightRole;
+import highlights.metamodel.MeasureRole;
+import highlights.metamodel.ScoreType;
 import intentional.result.LabelDomain;
 import intentional.result.LabeledResult;
 import intentional.result.Labeling;
@@ -200,5 +207,101 @@ public class LabelDistributionTest {
         HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
         HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
         assertFalse("an even split across two labels elects no one", holistic.execution.result.verdict());
+    }
+
+    @Test
+    public void magnitudeWeightingShiftsTheWinner() {
+        Result data = new Result();
+        Cell[] cells = {
+                new Cell(new String[]{"r0", "100", "1"}, 1),
+                new Cell(new String[]{"r1", "100", "1"}, 1),
+                new Cell(new String[]{"r2", "100", "1"}, 1),
+                new Cell(new String[]{"r3", "100", "1"}, 1),
+                new Cell(new String[]{"r4", "100", "1"}, 1),
+        };
+        for (Cell c : cells) data.getCells().add(c);
+
+        Map<Cell, String> labels = new LinkedHashMap<>();
+        labels.put(cells[0], "low");
+        labels.put(cells[1], "low");
+        labels.put(cells[2], "mid");
+        labels.put(cells[3], "high");
+        labels.put(cells[4], "high");
+        Map<Cell, Double> magnitudes = new LinkedHashMap<>();
+        magnitudes.put(cells[0], 8.0);
+        magnitudes.put(cells[1], 3.0);
+        magnitudes.put(cells[2], 0.0);
+        magnitudes.put(cells[3], 2.0);
+        magnitudes.put(cells[4], 7.0);
+        Labeling labeling = new Labeling(
+                new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0, magnitudes);
+        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+
+        CubeQuery query = new CubeQuery("weightingTest");
+        query.setGammaExpressions(new ArrayList<String[]>());
+        query.addQueryMeasure("sum", "amount", "amount");
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+
+        ElementaryHighlightRole role = new ElementaryHighlightRole(
+                "LabeledCell",
+                Collections.singletonList(new CharacterRole("LabeledCell")),
+                new MeasureRole("LabeledMeasure"),
+                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+
+        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, 0);
+        AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
+                role, VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE).run(operatorResult, 0);
+
+        assertTrue("counted ballots elect the center label", byCount.holisticScores.stream()
+                .anyMatch(s -> "mid".equals(s.label)));
+        assertTrue("volume-weighted ballots elect the label holding the barycenter",
+                byVolume.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
+    }
+
+    @Test
+    public void referenceWeightingFollowsTheExpectedVolume() {
+        Result data = new Result();
+        Cell[] cells = {
+                new Cell(new String[]{"r0", "100", "1"}, 1),
+                new Cell(new String[]{"r1", "100", "1"}, 1),
+                new Cell(new String[]{"r2", "100", "1"}, 1),
+                new Cell(new String[]{"r3", "100", "1"}, 1),
+                new Cell(new String[]{"r4", "100", "1"}, 1),
+        };
+        for (Cell c : cells) data.getCells().add(c);
+
+        Map<Cell, String> labels = new LinkedHashMap<>();
+        labels.put(cells[0], "low");
+        labels.put(cells[1], "low");
+        labels.put(cells[2], "mid");
+        labels.put(cells[3], "high");
+        labels.put(cells[4], "high");
+        Map<Cell, Double> references = new LinkedHashMap<>();
+        references.put(cells[0], 20.0);
+        references.put(cells[1], 15.0);
+        references.put(cells[2], 1.0);
+        references.put(cells[3], 2.0);
+        references.put(cells[4], 2.0);
+        Labeling labeling = new Labeling(
+                new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0,
+                Collections.<Cell, Double>emptyMap(), references);
+        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+
+        CubeQuery query = new CubeQuery("referenceTest");
+        query.setGammaExpressions(new ArrayList<String[]>());
+        query.addQueryMeasure("sum", "amount", "amount");
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+
+        ElementaryHighlightRole role = new ElementaryHighlightRole(
+                "LabeledCell",
+                Collections.singletonList(new CharacterRole("LabeledCell")),
+                new MeasureRole("LabeledMeasure"),
+                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+
+        AlgorithmExecution byReference = new LabelDistributionAlgorithm(
+                role, VotingRule.MEDIAN_VOTER, Weighting.REFERENCE).run(operatorResult, 0);
+
+        assertTrue("ballots weighted by the judged-against values elect the label expected to carry the volume",
+                byReference.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
     }
 }

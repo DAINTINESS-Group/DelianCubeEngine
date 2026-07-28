@@ -12,8 +12,9 @@ import result.Cell;
  * archetype uses to reason about tendency or severity. Cell-keyed by identity over the result's cells.
  *
  * <p>A labeling is about one measure of the result, named by {@link #measureIndex()}. The model may also
- * attach a per-cell magnitude it computed while labeling (a delta, a ratio) — data, not a label — which an
- * archetype reads via {@link #magnitudeOf(Cell)} e.g. to rank the salient cells.
+ * attach per-cell data it computed while labeling: the magnitude of what it found (a delta, a ratio), read
+ * via {@link #magnitudeOf(Cell)} e.g. to rank the salient cells, and the reference value it judged the cell
+ * against (a benchmark, an expectation), read via {@link #referenceOf(Cell)}.
  */
 public final class Labeling {
 
@@ -21,17 +22,24 @@ public final class Labeling {
     private final Map<Cell, String> assignment;
     private final int measureIndex;
     private final Map<Cell, Double> magnitudes;
+    private final Map<Cell, Double> references;
 
     public Labeling(LabelDomain domain, Map<Cell, String> assignment) {
-        this(domain, assignment, 0, Collections.<Cell, Double>emptyMap());
+        this(domain, assignment, 0, Collections.<Cell, Double>emptyMap(), Collections.<Cell, Double>emptyMap());
     }
 
     public Labeling(LabelDomain domain, Map<Cell, String> assignment, int measureIndex,
                     Map<Cell, Double> magnitudes) {
+        this(domain, assignment, measureIndex, magnitudes, Collections.<Cell, Double>emptyMap());
+    }
+
+    public Labeling(LabelDomain domain, Map<Cell, String> assignment, int measureIndex,
+                    Map<Cell, Double> magnitudes, Map<Cell, Double> references) {
         this.domain = domain;
         this.assignment = assignment;
         this.measureIndex = measureIndex;
         this.magnitudes = magnitudes;
+        this.references = references;
     }
 
     /** The label set; in order when {@link #ordered()}. */
@@ -71,5 +79,11 @@ public final class Labeling {
     public double magnitudeOf(Cell cell) {
         Double magnitude = magnitudes.get(cell);
         return magnitude == null ? Double.NaN : magnitude;
+    }
+
+    /** The reference value the model judged the cell against, or {@code NaN} if it attached none. */
+    public double referenceOf(Cell cell) {
+        Double reference = references.get(cell);
+        return reference == null ? Double.NaN : reference;
     }
 }
