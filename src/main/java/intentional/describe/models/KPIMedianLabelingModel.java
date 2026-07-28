@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import intentional.result.DerivedMeasure;
 import intentional.result.LabelDomain;
 import intentional.result.Labeling;
 import intentional.result.LabelingModel;
@@ -17,8 +16,8 @@ import result.Result;
 
 /**
  * A {@link LabelingModel} that, over one measure of a result, labels each cell {@code Low}/{@code OK}/
- * {@code High} by its distance from the cells' own median and exposes the value-to-median ratio as a
- * {@link DerivedMeasure}. An operator attaches it to its {@code LabeledResult}, where the
+ * {@code High} by its distance from the cells' own median and attaches the value-to-median ratio as the
+ * labeling's magnitude. An operator attaches it to its {@code LabeledResult}, where the
  * {@code labelpredominance} archetype consumes the ordered labeling to surface highlights.
  */
 public final class KPIMedianLabelingModel implements LabelingModel {
@@ -41,7 +40,6 @@ public final class KPIMedianLabelingModel implements LabelingModel {
     private final int measureIndex;
     private double median;
     private Labeling kpiLabeling;
-    private final Map<Cell, Double> ratios = new LinkedHashMap<>();
 
     public KPIMedianLabelingModel(Result data) {
         this(data, 0);
@@ -58,19 +56,19 @@ public final class KPIMedianLabelingModel implements LabelingModel {
         if (cells.isEmpty()) {
             return -1;
         }
-        ratios.clear();
 
         DescriptiveStatistics stats = new DescriptiveStatistics();
         for (Cell cell : cells) stats.addValue(cell.toDouble(measureIndex));
         this.median = stats.getPercentile(50);
 
         Map<Cell, String> labelByCell = new LinkedHashMap<>();
+        Map<Cell, Double> ratios = new LinkedHashMap<>();
         for (Cell cell : cells) {
             double value = cell.toDouble(measureIndex);
             labelByCell.put(cell, labelFor(value));
             ratios.put(cell, median == 0.0 ? value : value / median);
         }
-        this.kpiLabeling = new Labeling(DOMAIN, labelByCell);
+        this.kpiLabeling = new Labeling(DOMAIN, labelByCell, measureIndex, ratios);
         return 0;
     }
 
@@ -87,11 +85,5 @@ public final class KPIMedianLabelingModel implements LabelingModel {
     @Override
     public List<Labeling> labelings() {
         return Collections.singletonList(kpiLabeling);
-    }
-
-    /** The value/median ratio per cell, as data the archetype can rank salient cells by. */
-    @Override
-    public List<DerivedMeasure> derivedMeasures() {
-        return Collections.singletonList(new DerivedMeasure(ratios));
     }
 }

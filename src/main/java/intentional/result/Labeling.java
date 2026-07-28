@@ -10,15 +10,28 @@ import result.Cell;
  * A per-cell labeling produced by a model: each cell is assigned a label from a fixed domain. When the
  * domain is {@link #ordered()}, a label's position in {@link #domain()} is its rank — the property an
  * archetype uses to reason about tendency or severity. Cell-keyed by identity over the result's cells.
+ *
+ * <p>A labeling is about one measure of the result, named by {@link #measureIndex()}. The model may also
+ * attach a per-cell magnitude it computed while labeling (a delta, a ratio) — data, not a label — which an
+ * archetype reads via {@link #magnitudeOf(Cell)} e.g. to rank the salient cells.
  */
 public final class Labeling {
 
     private final LabelDomain domain;
     private final Map<Cell, String> assignment;
+    private final int measureIndex;
+    private final Map<Cell, Double> magnitudes;
 
     public Labeling(LabelDomain domain, Map<Cell, String> assignment) {
+        this(domain, assignment, 0, Collections.<Cell, Double>emptyMap());
+    }
+
+    public Labeling(LabelDomain domain, Map<Cell, String> assignment, int measureIndex,
+                    Map<Cell, Double> magnitudes) {
         this.domain = domain;
         this.assignment = assignment;
+        this.measureIndex = measureIndex;
+        this.magnitudes = magnitudes;
     }
 
     /** The label set; in order when {@link #ordered()}. */
@@ -47,5 +60,16 @@ public final class Labeling {
     /** The rank of a label in an ordered domain, or -1 if it is not part of the set. */
     public int rankOf(String label) {
         return domain.rankOf(label);
+    }
+
+    /** Which measure of the result this labeling is about. */
+    public int measureIndex() {
+        return measureIndex;
+    }
+
+    /** The magnitude the model computed at the cell, or {@code NaN} if it attached none. */
+    public double magnitudeOf(Cell cell) {
+        Double magnitude = magnitudes.get(cell);
+        return magnitude == null ? Double.NaN : magnitude;
     }
 }

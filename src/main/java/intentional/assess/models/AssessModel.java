@@ -12,7 +12,6 @@ import intentional.assess.deltas.DeltaScheme;
 import intentional.assess.labelers.LabelingScheme;
 import intentional.assess.utils.ComparedCell;
 import intentional.assess.utils.LabeledCell;
-import intentional.result.DerivedMeasure;
 import intentional.result.Labeling;
 import intentional.result.LabelingModel;
 import result.Cell;
@@ -58,7 +57,8 @@ public final class AssessModel implements LabelingModel {
             deltas.put(entry.getKey(), entry.getValue());
             labelByCell.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
         }
-        this.assessmentLabeling = new Labeling(labeling.domain(), labelByCell);
+        this.assessmentLabeling =
+                new Labeling(labeling.domain(), labelByCell, 0, new LinkedHashMap<>(deltas));
         return 0;
     }
 
@@ -82,16 +82,10 @@ public final class AssessModel implements LabelingModel {
         return labeledCells;
     }
 
-    /** The assessment label per cell, over the labeling scheme's ordered domain. */
+    /** The assessment label per cell, over the labeling scheme's ordered domain, with the delta as magnitude. */
     @Override
     public List<Labeling> labelings() {
         return Collections.singletonList(assessmentLabeling);
-    }
-
-    /** The delta per cell, as data an archetype can rank by. */
-    @Override
-    public List<DerivedMeasure> derivedMeasures() {
-        return Collections.singletonList(new DerivedMeasure(deltas));
     }
 
     @Override

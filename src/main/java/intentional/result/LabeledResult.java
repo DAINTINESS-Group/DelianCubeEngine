@@ -36,11 +36,4 @@ public final class LabeledResult {
         for (LabelingModel m : models) out.addAll(m.labelings());
         return out;
     }
-
-    /** Every derived measure the models computed over the data. */
-    public List<DerivedMeasure> derivedMeasures() {
-        List<DerivedMeasure> out = new ArrayList<>();
-        for (LabelingModel m : models) out.addAll(m.derivedMeasures());
-        return out;
-    }
 }

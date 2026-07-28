@@ -21,7 +21,6 @@ import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
-import intentional.result.DerivedMeasure;
 import intentional.result.LabelDomain;
 import intentional.result.LabeledResult;
 import intentional.result.Labeling;
@@ -30,24 +29,21 @@ import result.Cell;
 import result.Result;
 
 /**
- * The benchmark-tendency archetype consumes any ordered labeling and a derived measure from the context —
- * with no reference to the model or operator that produced them. A stub labeling model stands in for ASSESS.
+ * The benchmark-tendency archetype consumes any ordered labeling from the context — with no reference to
+ * the model or operator that produced it. A stub labeling model stands in for ASSESS.
  */
 public class LabelDistributionTest {
 
-    /** A model that only supplies pre-built labelings and derived measures. */
+    /** A model that only supplies pre-built labelings. */
     private static final class StubLabelingModel implements LabelingModel {
         private final List<Labeling> labelings;
-        private final List<DerivedMeasure> derived;
 
-        StubLabelingModel(List<Labeling> labelings, List<DerivedMeasure> derived) {
+        StubLabelingModel(List<Labeling> labelings) {
             this.labelings = labelings;
-            this.derived = derived;
         }
 
         @Override public String getModelName() { return "stub"; }
         @Override public List<Labeling> labelings() { return labelings; }
-        @Override public List<DerivedMeasure> derivedMeasures() { return derived; }
     }
 
     @Test
@@ -66,17 +62,16 @@ public class LabelDistributionTest {
         labels.put(cells[1], "high");
         labels.put(cells[2], "high");
         labels.put(cells[3], "low");
-        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
 
         Map<Cell, Double> deltas = new LinkedHashMap<>();
         deltas.put(cells[0], 10.0);
         deltas.put(cells[1], 5.0);
         deltas.put(cells[2], 8.0);
         deltas.put(cells[3], -3.0);
-        DerivedMeasure delta = new DerivedMeasure(deltas);
+        Labeling labeling =
+                new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0, deltas);
 
-        LabelingModel model = new StubLabelingModel(
-                Collections.singletonList(labeling), Collections.singletonList(delta));
+        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
 
         CubeQuery query = new CubeQuery("labelTest");
         query.setGammaExpressions(new ArrayList<String[]>());
@@ -125,7 +120,7 @@ public class LabelDistributionTest {
                 new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), assessment),
                 new Labeling(new LabelDomain(Arrays.asList("non-outlier", "outlier"), true), outlier));
 
-        LabelingModel model = new StubLabelingModel(labelings, Collections.<DerivedMeasure>emptyList());
+        LabelingModel model = new StubLabelingModel(labelings);
 
         CubeQuery query = new CubeQuery("twoLabelings");
         query.setGammaExpressions(new ArrayList<String[]>());
@@ -137,5 +132,73 @@ public class LabelDistributionTest {
 
         HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
         assertEquals("one holistic per labeling, not just the first", 2, highlights.size());
+    }
+
+    @Test
+    public void medianVoterElectsTheCenterWithoutAPlurality() {
+        Result data = new Result();
+        Cell[] cells = {
+                new Cell(new String[]{"r0", "100", "1"}, 1),
+                new Cell(new String[]{"r1", "100", "1"}, 1),
+                new Cell(new String[]{"r2", "100", "1"}, 1),
+                new Cell(new String[]{"r3", "100", "1"}, 1),
+                new Cell(new String[]{"r4", "100", "1"}, 1),
+        };
+        for (Cell c : cells) data.getCells().add(c);
+
+        Map<Cell, String> labels = new LinkedHashMap<>();
+        labels.put(cells[0], "low");
+        labels.put(cells[1], "low");
+        labels.put(cells[2], "mid");
+        labels.put(cells[3], "high");
+        labels.put(cells[4], "high");
+        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
+        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+
+        CubeQuery query = new CubeQuery("medianTest");
+        query.setGammaExpressions(new ArrayList<String[]>());
+        query.addQueryMeasure("sum", "amount", "amount");
+
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
+        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
+
+        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
+        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
+        assertTrue("the median voter elects a winner", holistic.execution.result.verdict());
+        assertTrue("the center label wins although low and high out-poll it", holistic.getScores().stream()
+                .anyMatch(s -> "mid".equals(s.label)));
+    }
+
+    @Test
+    public void knifeEdgeVoteDoesNotHold() {
+        Result data = new Result();
+        Cell[] cells = {
+                new Cell(new String[]{"r0", "100", "1"}, 1),
+                new Cell(new String[]{"r1", "100", "1"}, 1),
+                new Cell(new String[]{"r2", "100", "1"}, 1),
+                new Cell(new String[]{"r3", "100", "1"}, 1),
+        };
+        for (Cell c : cells) data.getCells().add(c);
+
+        Map<Cell, String> labels = new LinkedHashMap<>();
+        labels.put(cells[0], "low");
+        labels.put(cells[1], "low");
+        labels.put(cells[2], "high");
+        labels.put(cells[3], "high");
+        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
+        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+
+        CubeQuery query = new CubeQuery("knifeEdgeTest");
+        query.setGammaExpressions(new ArrayList<String[]>());
+        query.addQueryMeasure("sum", "amount", "amount");
+
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
+        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
+
+        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
+        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
+        assertFalse("an even split across two labels elects no one", holistic.execution.result.verdict());
     }
 }

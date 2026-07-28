@@ -38,7 +38,8 @@ public final class LabelPredominanceArchetype {
                 new MainMeasureRole("Labeled", MeasureConstraint.ANY),
                 Collections.singletonList(new ExplanatorRole("Breakdown", ExplanatorConstraint.ANY)),
                 Collections.singletonList(algorithm),
-                Arrays.<ScoreType>asList(LabelDistributionAlgorithm.DOMINANT_SHARE),
+                Arrays.<ScoreType>asList(LabelDistributionAlgorithm.DOMINANT_SHARE,
+                        LabelDistributionAlgorithm.VOTING_RULE),
                 Collections.singletonList(labeledCell),
                 EvaluationAxis.LABELING);
     }
