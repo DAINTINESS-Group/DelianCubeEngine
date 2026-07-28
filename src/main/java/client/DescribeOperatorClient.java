@@ -1,9 +1,5 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -47,27 +43,10 @@ public class DescribeOperatorClient {
 		
 		ResultFileMetadata resultMetadata = service.describe(describeExpression);
 		if (resultMetadata != null) {
-			String localFolder = resultMetadata.getLocalFolder();
-			String resultFile = resultMetadata.getResultFile();
 			System.out.println("\n--- Result ---");
-			fetchData(localFolder, resultFile);
+			ReportPrinter.print(resultMetadata);
 		}else {
 			System.err.println("Execution failed or returned null metadata.");
-		}
-	}	
-	
-	public static void fetchData(String localFolder, String resultFile) throws IOException {
-		String str;
-		File reportFile = new File(localFolder + resultFile);
-		
-		if (reportFile.exists()) {
-			BufferedReader br = new BufferedReader(new FileReader(reportFile));
-			while((str = br.readLine()) != null) {
-				System.out.println(str);
-			}
-			br.close();
-		} else {
-			System.out.println("File not found: " + reportFile.getAbsolutePath());
 		}
 	}
 

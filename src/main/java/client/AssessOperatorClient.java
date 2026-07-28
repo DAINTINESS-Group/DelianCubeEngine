@@ -5,19 +5,21 @@ import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
-import highlights.instance.Highlight;
 import highlights.metamodel.ArchetypeProperty;
 import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
+import result.ResultFileMetadata;
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class AssessOperatorClient {
 
-    public static void main(String[] args) throws RecognitionException {
+    public static void main(String[] args) throws RecognitionException, IOException {
         CubeManager cubeManager = initCubeMangerB();
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "WITH loan\n" +
@@ -41,10 +43,9 @@ public class AssessOperatorClient {
         long ms = (System.nanoTime() - start) / 1_000_000;
 
         System.out.println("Execution + extraction: " + ms + " ms");
-        System.out.println(highlights.size() + " highlights:");
-        for (Highlight h : highlights.highlights()) {
-            System.out.println("  " + h.toText());
-        }
+        ResultFileMetadata report = IntentionalProfile.ASSESS.writer().write(query,
+                Collections.singletonList(result), Collections.singletonList(highlights));
+        ReportPrinter.print(report);
     }
 
     private static CubeManager initCubeMangerA() {
