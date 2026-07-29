@@ -36,12 +36,6 @@ import intentional.result.Labeling;
  */
 public final class HighlightExtractor {
 
-    private final Interestingness interestingness;
-
-    public HighlightExtractor() { this(null); }
-
-    /** Uses the given interestingness source as a post-pass to score the extracted highlights' facets. */
-    public HighlightExtractor(Interestingness interestingness) { this.interestingness = interestingness; }
 
     public HighlightSet extract(LabeledResult result, List<ArchetypeProperty> candidates,
                                 CubeSchemaResolver schema) {
@@ -72,10 +66,6 @@ public final class HighlightExtractor {
                 }
             }
         }
-
-        // Interestingness is a post-pass over the whole set: facets are relative (peculiarity vs the
-        // rest, novelty vs the session), so they cannot be scored per holistic in isolation.
-        if (interestingness != null) interestingness.score(out);
         return new HighlightSet(out);
     }
 
