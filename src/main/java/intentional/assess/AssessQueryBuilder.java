@@ -3,7 +3,7 @@ package intentional.assess;
 import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.benchmarks.BenchmarkFactory;
 import intentional.assess.deltas.DeltaScheme;
-import intentional.assess.labelers.CustomLabelingScheme;
+import intentional.labeling.schemes.CustomLabelingScheme;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 

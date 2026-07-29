@@ -1,6 +1,8 @@
-package intentional.assess.labelers;
+package intentional.labeling.schemes;
 
 import org.junit.Test;
+
+import intentional.labeling.LabelingScheme;
 
 import java.util.ArrayList;
 import java.util.Arrays;

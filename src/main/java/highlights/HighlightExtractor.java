@@ -23,7 +23,7 @@ import highlights.metamodel.ArchetypeProperty;
 import highlights.metamodel.EvaluationAxis;
 import highlights.metamodel.MeasureConstraint;
 import intentional.result.LabeledResult;
-import intentional.result.Labeling;
+import intentional.labeling.Labeling;
 
 /**
  * Stage 2 of the pipeline: runs the data-driven archetype evaluation over an {@link LabeledResult} and

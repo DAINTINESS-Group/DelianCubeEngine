@@ -31,7 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	intentional.analyze.AnalyzeWrongExpressions.class,
 	intentional.analyze.AnalyzeUpdatedQueriesTranslationAndExecutionTest.class,
 	intentional.assess.benchmarks.BenchmarkFactoryTest.class,
-	intentional.assess.labelers.CustomLabelingSchemeTest.class,
+	intentional.labeling.schemes.CustomLabelingSchemeTest.class,
 	intentional.assess.AssessQueryParserTest.class,
 	intentional.assess.AssessOperatorTest.class,
 	intentional.assess.utils.DatesHandlerTest.class,

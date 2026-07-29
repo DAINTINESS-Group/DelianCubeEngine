@@ -1,4 +1,4 @@
-package intentional.assess.labelers;
+package intentional.labeling.schemes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import intentional.result.LabelDomain;
+import intentional.labeling.LabelDomain;
+import intentional.labeling.LabelingScheme;
 
 /**
  * This implementation of a labeling scheme is used when the user provides
@@ -14,6 +15,9 @@ import intentional.result.LabelDomain;
  * E.g. [-2, 5): Good, [5, 10]: Excellent
  */
 public class CustomLabelingScheme implements LabelingScheme {
+
+    /** Identifies this scheme's labelings within a result. */
+    public static final String NAME = "Custom";
 
     private static class LabelingRule {
 
@@ -179,6 +183,9 @@ public class CustomLabelingScheme implements LabelingScheme {
         return oldRule.containsValue(newRule.lowLimit) &&
                 oldRule.highLimit != newRule.lowLimit;
     }
+
+    @Override
+    public String name() { return NAME; }
 
     @Override
     public String applyLabels(double value) {

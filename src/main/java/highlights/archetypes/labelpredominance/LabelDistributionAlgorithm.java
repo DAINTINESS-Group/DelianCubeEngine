@@ -18,7 +18,7 @@ import highlights.metamodel.ParameterRole;
 import highlights.metamodel.ScoreKind;
 import highlights.metamodel.ScoreType;
 import intentional.result.LabeledResult;
-import intentional.result.Labeling;
+import intentional.labeling.Labeling;
 import result.Cell;
 
 /**

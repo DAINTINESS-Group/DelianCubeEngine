@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import cubemanager.CubeManager;
 import cubemanager.CubeSchemaResolver;
-import intentional.describe.models.KPIMedianLabelingModel;
+import intentional.labeling.schemes.MedianDistanceScheme;
 import highlights.HighlightExtractor;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
@@ -44,7 +44,7 @@ public class DescribeHighlightsTest {
     public final void testDescribeWithKpiProducesHighlights() throws Exception {
         String incomingExpression = "WITH loan DESCRIBE SUM(amount) AS Total "
                 + "FOR region='south Bohemia' AND year <= '1998' "
-                + "GROUP BY district_name, region USING " + KPIMedianLabelingModel.NAME;
+                + "GROUP BY district_name, region USING " + MedianDistanceScheme.NAME;
 
         DescribeOperator operator = new DescribeOperator(testCubeManager);
         LabeledResult operatorResult = operator.execute(incomingExpression).get(0);

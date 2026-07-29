@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cubemanager.cubebase.CubeQuery;
+import intentional.labeling.Labeling;
+import intentional.labeling.LabelingModel;
 import result.Result;
 
 /**

@@ -1,7 +1,7 @@
 package highlights.instance;
 
 import intentional.result.LabeledResult;
-import intentional.result.Labeling;
+import intentional.labeling.Labeling;
 
 /**
  * An {@link ExecutableAlgorithm} evaluated over the {@link highlights.metamodel.EvaluationAxis#LABELING}

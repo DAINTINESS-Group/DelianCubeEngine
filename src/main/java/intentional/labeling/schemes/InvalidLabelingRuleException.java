@@ -1,4 +1,4 @@
-package intentional.assess.labelers;
+package intentional.labeling.schemes;
 
 public class InvalidLabelingRuleException extends RuntimeException {
 

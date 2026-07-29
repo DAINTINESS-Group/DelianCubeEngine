@@ -1,4 +1,4 @@
-package intentional.result;
+package intentional.labeling;
 
 import java.util.ArrayList;
 import java.util.Collections;

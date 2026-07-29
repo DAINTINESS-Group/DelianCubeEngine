@@ -9,11 +9,11 @@ import java.util.Map;
 
 import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.deltas.DeltaScheme;
-import intentional.assess.labelers.LabelingScheme;
+import intentional.labeling.LabelingScheme;
 import intentional.assess.utils.ComparedCell;
 import intentional.assess.utils.LabeledCell;
-import intentional.result.Labeling;
-import intentional.result.LabelingModel;
+import intentional.labeling.Labeling;
+import intentional.labeling.LabelingModel;
 import result.Cell;
 import result.Result;
 
@@ -29,17 +29,17 @@ public final class AssessModel implements LabelingModel {
 
     private final AssessBenchmark benchmark;
     private final DeltaScheme delta;
-    private final LabelingScheme labeling;
+    private final LabelingScheme scheme;
     private final Result data;
     private final List<ComparedCell> comparedCells = new ArrayList<>();
 
     private final Map<Cell, Double> deltas = new LinkedHashMap<>();
     private Labeling assessmentLabeling;
 
-    public AssessModel(AssessBenchmark benchmark, DeltaScheme delta, LabelingScheme labeling, Result data) {
+    public AssessModel(AssessBenchmark benchmark, DeltaScheme delta, LabelingScheme scheme, Result data) {
         this.benchmark = benchmark;
         this.delta = delta;
-        this.labeling = labeling;
+        this.scheme = scheme;
         this.data = data;
     }
 
@@ -50,21 +50,16 @@ public final class AssessModel implements LabelingModel {
         }
         comparedCells.clear();
         deltas.clear();
-        Map<Cell, String> labelByCell = new LinkedHashMap<>();
         HashMap<Cell, Double> computed =
                 delta.compareTargetToBenchmark(targetCells, benchmark, comparedCells);
-        for (Map.Entry<Cell, Double> entry : computed.entrySet()) {
-            deltas.put(entry.getKey(), entry.getValue());
-            labelByCell.put(entry.getKey(), labeling.applyLabels(entry.getValue()));
-        }
+        deltas.putAll(computed);
         Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
         for (ComparedCell compared : comparedCells) {
             if (compared.benchmark != null) {
                 benchmarkValues.put(compared.target, compared.benchmark.toDouble());
             }
         }
-        this.assessmentLabeling = new Labeling(labeling.domain(), labelByCell, 0,
-                new LinkedHashMap<>(deltas), benchmarkValues);
+        this.assessmentLabeling = new Labeling(scheme, new LinkedHashMap<>(deltas), 0, benchmarkValues);
         return 0;
     }
 
@@ -88,10 +83,12 @@ public final class AssessModel implements LabelingModel {
         return labeledCells;
     }
 
-    /** The assessment label per cell, over the labeling scheme's ordered domain, carrying the delta as magnitude and the benchmark value as reference. */
+    /** The assessment label per cell, over the labeling scheme's ordered domain, carrying the delta as magnitude and the benchmark value as reference; empty before {@link #compute()} has run. */
     @Override
     public List<Labeling> labelings() {
-        return Collections.singletonList(assessmentLabeling);
+        return assessmentLabeling == null
+                ? Collections.<Labeling>emptyList()
+                : Collections.singletonList(assessmentLabeling);
     }
 
     @Override

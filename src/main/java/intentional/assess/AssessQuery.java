@@ -2,7 +2,7 @@ package intentional.assess;
 
 import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.deltas.DeltaScheme;
-import intentional.assess.labelers.LabelingScheme;
+import intentional.labeling.LabelingScheme;
 import cubemanager.cubebase.CubeQuery;
 import result.Result;
 

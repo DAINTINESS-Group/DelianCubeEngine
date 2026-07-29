@@ -26,16 +26,18 @@ import highlights.metamodel.CharacterRole;
 import highlights.metamodel.ElementaryHighlightRole;
 import highlights.metamodel.MeasureRole;
 import highlights.metamodel.ScoreType;
-import intentional.result.LabelDomain;
+import intentional.labeling.LabelDomain;
+import intentional.labeling.Labeling;
+import intentional.labeling.LabelingModel;
+import intentional.labeling.LabelingScheme;
 import intentional.result.LabeledResult;
-import intentional.result.Labeling;
-import intentional.result.LabelingModel;
 import result.Cell;
 import result.Result;
 
 /**
  * The benchmark-tendency archetype consumes any ordered labeling from the context — with no reference to
- * the model or operator that produced it. A stub labeling model stands in for ASSESS.
+ * the model or operator that produced it. A stub labeling model supplies pre-built labelings, each labeled
+ * under a stub scheme that maps each quantity value to its label by lookup.
  */
 public class LabelDistributionTest {
 
@@ -51,38 +53,70 @@ public class LabelDistributionTest {
         @Override public List<Labeling> labelings() { return labelings; }
     }
 
+    /** A scheme labeling each value by lookup over an ordered domain. */
+    private static LabelingScheme lookupScheme(List<String> domainLabels, Map<Double, String> labelByValue) {
+        return new LabelingScheme() {
+            @Override public String name() { return "stub"; }
+            @Override public String applyLabels(double value) { return labelByValue.get(value); }
+            @Override public LabelDomain domain() { return new LabelDomain(domainLabels, true); }
+        };
+    }
+
+    private static Cell[] cells(int count) {
+        Cell[] cells = new Cell[count];
+        for (int i = 0; i < count; i++) {
+            cells[i] = new Cell(new String[]{"r" + i, "100", "1"}, 1);
+        }
+        return cells;
+    }
+
+    private static Result resultOf(Cell[] cells) {
+        Result data = new Result();
+        for (Cell c : cells) data.getCells().add(c);
+        return data;
+    }
+
+    private static LabeledResult operatorResult(String queryName, Result data, LabelingModel model) {
+        CubeQuery query = new CubeQuery(queryName);
+        query.setGammaExpressions(new ArrayList<String[]>());
+        query.addQueryMeasure("sum", "amount", "amount");
+        return new LabeledResult(query, data, Collections.singletonList(model));
+    }
+
+    private static Map<Double, String> rankLabels(String... labels) {
+        Map<Double, String> byValue = new LinkedHashMap<>();
+        for (int i = 0; i < labels.length; i++) byValue.put((double) i, labels[i]);
+        return byValue;
+    }
+
+    private static ElementaryHighlightRole labeledCellRole() {
+        return new ElementaryHighlightRole(
+                "LabeledCell",
+                Collections.singletonList(new CharacterRole("LabeledCell")),
+                new MeasureRole("LabeledMeasure"),
+                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+    }
+
     @Test
     public void predominantLabelHoldsAndSurfacesSalientCells() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
-
-        Map<Cell, String> labels = new LinkedHashMap<>();
-        labels.put(cells[0], "high");
-        labels.put(cells[1], "high");
-        labels.put(cells[2], "high");
-        labels.put(cells[3], "low");
+        Cell[] cells = cells(4);
+        Result data = resultOf(cells);
 
         Map<Cell, Double> deltas = new LinkedHashMap<>();
         deltas.put(cells[0], 10.0);
         deltas.put(cells[1], 5.0);
         deltas.put(cells[2], 8.0);
         deltas.put(cells[3], -3.0);
+        Map<Double, String> labelByDelta = new LinkedHashMap<>();
+        labelByDelta.put(10.0, "high");
+        labelByDelta.put(5.0, "high");
+        labelByDelta.put(8.0, "high");
+        labelByDelta.put(-3.0, "low");
         Labeling labeling =
-                new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0, deltas);
+                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByDelta), deltas);
 
-        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
-
-        CubeQuery query = new CubeQuery("labelTest");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = operatorResult(
+                "labelTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -94,44 +128,35 @@ public class LabelDistributionTest {
         assertTrue("dominant label is reported", holistic.getScores().stream()
                 .anyMatch(s -> "high".equals(s.label)));
         assertFalse("salient cells surfaced", holistic.elementary().isEmpty());
-        assertTrue("a salient cell carries the derived-measure magnitude", holistic.elementary().stream()
+        assertTrue("a salient cell carries the labeled quantity as magnitude", holistic.elementary().stream()
                 .flatMap(e -> e.getScores().stream())
                 .anyMatch(s -> s.type == LabelDistributionAlgorithm.MAGNITUDE));
     }
 
     @Test
     public void oneHolisticPerLabeling() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
+        Cell[] cells = cells(4);
+        Result data = resultOf(cells);
 
-        Map<Cell, String> assessment = new LinkedHashMap<>();
-        assessment.put(cells[0], "high");
-        assessment.put(cells[1], "high");
-        assessment.put(cells[2], "low");
-        assessment.put(cells[3], "high");
-        Map<Cell, String> outlier = new LinkedHashMap<>();
-        outlier.put(cells[0], "non-outlier");
-        outlier.put(cells[1], "non-outlier");
-        outlier.put(cells[2], "non-outlier");
-        outlier.put(cells[3], "outlier");
+        Map<Cell, Double> assessment = new LinkedHashMap<>();
+        assessment.put(cells[0], 2.0);
+        assessment.put(cells[1], 2.0);
+        assessment.put(cells[2], 0.0);
+        assessment.put(cells[3], 2.0);
+        Map<Cell, Double> outlierness = new LinkedHashMap<>();
+        outlierness.put(cells[0], 0.0);
+        outlierness.put(cells[1], 0.0);
+        outlierness.put(cells[2], 0.0);
+        outlierness.put(cells[3], 1.0);
 
         List<Labeling> labelings = Arrays.asList(
-                new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), assessment),
-                new Labeling(new LabelDomain(Arrays.asList("non-outlier", "outlier"), true), outlier));
+                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
+                        rankLabels("low", "mid", "high")), assessment),
+                new Labeling(lookupScheme(Arrays.asList("non-outlier", "outlier"),
+                        rankLabels("non-outlier", "outlier")), outlierness));
 
-        LabelingModel model = new StubLabelingModel(labelings);
-
-        CubeQuery query = new CubeQuery("twoLabelings");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = operatorResult(
+                "twoLabelings", data, new StubLabelingModel(labelings));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -141,30 +166,20 @@ public class LabelDistributionTest {
 
     @Test
     public void medianVoterElectsTheCenterWithoutAPlurality() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-                new Cell(new String[]{"r4", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
 
-        Map<Cell, String> labels = new LinkedHashMap<>();
-        labels.put(cells[0], "low");
-        labels.put(cells[1], "low");
-        labels.put(cells[2], "mid");
-        labels.put(cells[3], "high");
-        labels.put(cells[4], "high");
-        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
-        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+        Map<Cell, Double> ranks = new LinkedHashMap<>();
+        ranks.put(cells[0], 0.0);
+        ranks.put(cells[1], 0.0);
+        ranks.put(cells[2], 1.0);
+        ranks.put(cells[3], 2.0);
+        ranks.put(cells[4], 2.0);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
+                rankLabels("low", "mid", "high")), ranks);
 
-        CubeQuery query = new CubeQuery("medianTest");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = operatorResult(
+                "medianTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -177,28 +192,19 @@ public class LabelDistributionTest {
 
     @Test
     public void knifeEdgeVoteDoesNotHold() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
+        Cell[] cells = cells(4);
+        Result data = resultOf(cells);
 
-        Map<Cell, String> labels = new LinkedHashMap<>();
-        labels.put(cells[0], "low");
-        labels.put(cells[1], "low");
-        labels.put(cells[2], "high");
-        labels.put(cells[3], "high");
-        Labeling labeling = new Labeling(new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels);
-        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+        Map<Cell, Double> ranks = new LinkedHashMap<>();
+        ranks.put(cells[0], 0.0);
+        ranks.put(cells[1], 0.0);
+        ranks.put(cells[2], 2.0);
+        ranks.put(cells[3], 2.0);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
+                rankLabels("low", "mid", "high")), ranks);
 
-        CubeQuery query = new CubeQuery("knifeEdgeTest");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
+        LabeledResult operatorResult = operatorResult(
+                "knifeEdgeTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -209,42 +215,27 @@ public class LabelDistributionTest {
 
     @Test
     public void magnitudeWeightingShiftsTheWinner() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-                new Cell(new String[]{"r4", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
 
-        Map<Cell, String> labels = new LinkedHashMap<>();
-        labels.put(cells[0], "low");
-        labels.put(cells[1], "low");
-        labels.put(cells[2], "mid");
-        labels.put(cells[3], "high");
-        labels.put(cells[4], "high");
-        Map<Cell, Double> magnitudes = new LinkedHashMap<>();
-        magnitudes.put(cells[0], 8.0);
-        magnitudes.put(cells[1], 3.0);
-        magnitudes.put(cells[2], 0.0);
-        magnitudes.put(cells[3], 2.0);
-        magnitudes.put(cells[4], 7.0);
-        Labeling labeling = new Labeling(
-                new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0, magnitudes);
-        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+        Map<Cell, Double> quantity = new LinkedHashMap<>();
+        quantity.put(cells[0], 8.0);
+        quantity.put(cells[1], 3.0);
+        quantity.put(cells[2], 0.0);
+        quantity.put(cells[3], 2.0);
+        quantity.put(cells[4], 7.0);
+        Map<Double, String> labelByValue = new LinkedHashMap<>();
+        labelByValue.put(8.0, "low");
+        labelByValue.put(3.0, "low");
+        labelByValue.put(0.0, "mid");
+        labelByValue.put(2.0, "high");
+        labelByValue.put(7.0, "high");
+        Labeling labeling =
+                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
 
-        CubeQuery query = new CubeQuery("weightingTest");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
-
-        ElementaryHighlightRole role = new ElementaryHighlightRole(
-                "LabeledCell",
-                Collections.singletonList(new CharacterRole("LabeledCell")),
-                new MeasureRole("LabeledMeasure"),
-                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+        LabeledResult operatorResult = operatorResult(
+                "weightingTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+        ElementaryHighlightRole role = labeledCellRole();
 
         AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, labeling);
         AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
@@ -258,43 +249,27 @@ public class LabelDistributionTest {
 
     @Test
     public void referenceWeightingFollowsTheExpectedVolume() {
-        Result data = new Result();
-        Cell[] cells = {
-                new Cell(new String[]{"r0", "100", "1"}, 1),
-                new Cell(new String[]{"r1", "100", "1"}, 1),
-                new Cell(new String[]{"r2", "100", "1"}, 1),
-                new Cell(new String[]{"r3", "100", "1"}, 1),
-                new Cell(new String[]{"r4", "100", "1"}, 1),
-        };
-        for (Cell c : cells) data.getCells().add(c);
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
 
-        Map<Cell, String> labels = new LinkedHashMap<>();
-        labels.put(cells[0], "low");
-        labels.put(cells[1], "low");
-        labels.put(cells[2], "mid");
-        labels.put(cells[3], "high");
-        labels.put(cells[4], "high");
+        Map<Cell, Double> ranks = new LinkedHashMap<>();
+        ranks.put(cells[0], 0.0);
+        ranks.put(cells[1], 0.0);
+        ranks.put(cells[2], 1.0);
+        ranks.put(cells[3], 2.0);
+        ranks.put(cells[4], 2.0);
         Map<Cell, Double> references = new LinkedHashMap<>();
         references.put(cells[0], 20.0);
         references.put(cells[1], 15.0);
         references.put(cells[2], 1.0);
         references.put(cells[3], 2.0);
         references.put(cells[4], 2.0);
-        Labeling labeling = new Labeling(
-                new LabelDomain(Arrays.asList("low", "mid", "high"), true), labels, 0,
-                Collections.<Cell, Double>emptyMap(), references);
-        LabelingModel model = new StubLabelingModel(Collections.singletonList(labeling));
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
+                rankLabels("low", "mid", "high")), ranks, 0, references);
 
-        CubeQuery query = new CubeQuery("referenceTest");
-        query.setGammaExpressions(new ArrayList<String[]>());
-        query.addQueryMeasure("sum", "amount", "amount");
-        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(model));
-
-        ElementaryHighlightRole role = new ElementaryHighlightRole(
-                "LabeledCell",
-                Collections.singletonList(new CharacterRole("LabeledCell")),
-                new MeasureRole("LabeledMeasure"),
-                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+        LabeledResult operatorResult = operatorResult(
+                "referenceTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+        ElementaryHighlightRole role = labeledCellRole();
 
         AlgorithmExecution byReference = new LabelDistributionAlgorithm(
                 role, VotingRule.MEDIAN_VOTER, Weighting.REFERENCE).run(operatorResult, labeling);

@@ -8,12 +8,17 @@ import org.antlr.runtime.RecognitionException;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import intentional.describe.models.KMeansLabelingModel;
-import intentional.describe.models.KPIMedianLabelingModel;
 import intentional.describe.syntax.DescribeParserManager;
+import intentional.labeling.LabelingScheme;
+import intentional.labeling.MeasureLabelingModel;
+import intentional.labeling.schemes.EquiDepthScheme;
+import intentional.labeling.schemes.EquiWidthScheme;
+import intentional.labeling.schemes.KMeansScheme;
+import intentional.labeling.schemes.MedianDistanceScheme;
+import intentional.labeling.schemes.ZScoreLabelingScheme;
 import intentional.operator.IntentionalOperator;
 import intentional.result.LabeledResult;
-import intentional.result.LabelingModel;
+import intentional.labeling.LabelingModel;
 import result.Result;
 
 /**
@@ -71,26 +76,33 @@ public class DescribeOperator implements IntentionalOperator {
         return Collections.singletonList(new LabeledResult(cubeQuery, result, this.models));
     }
 
-    /** Instantiates the {@link LabelingModel}s named by the query's USING clause and computes each over the result. */
+    /** Instantiates a labeling model per scheme named by the query's USING clause and computes each over the result. */
     private List<LabelingModel> buildLabelingModels(Result data, List<String> modelNames) {
         List<LabelingModel> built = new ArrayList<>();
         if (modelNames == null) {
             return built;
         }
         for (String modelName : modelNames) {
-            if (KPIMedianLabelingModel.NAME.equals(modelName)) {
-                KPIMedianLabelingModel model = new KPIMedianLabelingModel(data);
-                if (model.compute() == 0) {
-                    built.add(model);
-                }
-            } else if (KMeansLabelingModel.NAME.equals(modelName)) {
-                KMeansLabelingModel model = new KMeansLabelingModel(data);
-                if (model.compute() == 0) {
-                    built.add(model);
-                }
+            LabelingScheme scheme = schemeFor(modelName);
+            if (scheme == null) {
+                continue;
+            }
+            MeasureLabelingModel model = new MeasureLabelingModel(data, scheme);
+            if (model.compute() == 0) {
+                built.add(model);
             }
         }
         return built;
+    }
+
+    /** The scheme a USING-clause name selects, or null if the name matches none. */
+    private static LabelingScheme schemeFor(String modelName) {
+        if (MedianDistanceScheme.NAME.equals(modelName)) return new MedianDistanceScheme();
+        if (KMeansScheme.NAME.equals(modelName)) return new KMeansScheme();
+        if (ZScoreLabelingScheme.NAME.equals(modelName)) return new ZScoreLabelingScheme();
+        if (EquiDepthScheme.NAME.equals(modelName)) return new EquiDepthScheme();
+        if (EquiWidthScheme.NAME.equals(modelName)) return new EquiWidthScheme();
+        return null;
     }
 
     public DescribeQuery getDescribeQuery() {
