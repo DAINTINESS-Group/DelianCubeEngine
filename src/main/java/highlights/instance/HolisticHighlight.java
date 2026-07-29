@@ -14,7 +14,9 @@ import result.Result;
 /**
  * A structured testimony that an {@link ArchetypeProperty} holds over the entire dataset,
  * produced by an algorithm execution over a Main Measure and a set of Explanators, carrying
- * the result, significance scores, and any elementary highlights that detail it.
+ * the result, significance scores, and any elementary highlights that detail it. Its scores are
+ * seeded from the execution's holistic scores; interestingness facets are added on top by the
+ * post-pass.
  *
  * A holistic highlight always materializes an archetype property (via an algorithm execution):
  * archetype-less holistics are not allowed.
@@ -35,6 +37,7 @@ public class HolisticHighlight extends Highlight {
                 "A holistic highlight must record the algorithm execution that produced it");
         this.mainMeasure = mainMeasure;
         this.explanators = explanators;
+        scores.addAll(execution.holisticScores);
     }
 
     public HolisticHighlight addElementary(ElementaryHighlight e) { elementary.add(e); return this; }

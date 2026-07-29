@@ -9,7 +9,7 @@ import java.util.Map;
 import highlights.archetypes.megacontributor.MarginalContributionAlgorithm;
 import highlights.instance.AlgorithmExecution;
 import highlights.instance.AlgorithmResult;
-import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.MeasureAlgorithm;
 import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
@@ -25,7 +25,7 @@ import result.Cell;
  * share: within a breakdown the two order identically (share is value over a fixed total), and value stays
  * meaningful when the measure can be zero or negative. Share is reported alongside as a score.
  */
-public final class TopKContributionAlgorithm implements ExecutableAlgorithm {
+public final class TopKContributionAlgorithm implements MeasureAlgorithm {
 
     private static final String NAME = "TopKContribution";
 

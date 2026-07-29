@@ -6,7 +6,7 @@ import java.util.List;
 
 import highlights.instance.AlgorithmExecution;
 import highlights.instance.AlgorithmResult;
-import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.MeasureAlgorithm;
 import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
@@ -24,7 +24,7 @@ import result.Cell;
  * threshold. A dataset-level shape verdict — it produces no elementary highlights. Assumes non-negative
  * additive mass; a non-positive total is treated as unassessable (concentration 0).
  */
-public final class NormalizedEntropyModalityAlgorithm implements ExecutableAlgorithm {
+public final class NormalizedEntropyModalityAlgorithm implements MeasureAlgorithm {
 
     private static final String NAME = "NormalizedEntropyModality";
 

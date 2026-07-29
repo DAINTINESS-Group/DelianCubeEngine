@@ -6,7 +6,7 @@ import java.util.List;
 
 import highlights.instance.AlgorithmExecution;
 import highlights.instance.AlgorithmResult;
-import highlights.instance.ExecutableAlgorithm;
+import highlights.instance.MeasureAlgorithm;
 import highlights.instance.ParameterInstantiation;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
@@ -25,7 +25,7 @@ import result.Cell;
  * extractor's own measure loop. The computation is the archetype's own, kept out of the {@code model.*}
  * layer so no operator need run a model for outliers to be found.
  */
-public final class ZScoreOutlierAlgorithm implements ExecutableAlgorithm {
+public final class ZScoreOutlierAlgorithm implements MeasureAlgorithm {
 
     private static final String NAME = "ZScoreOutlier";
 

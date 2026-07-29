@@ -15,8 +15,6 @@ import org.junit.Test;
 
 import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.HighlightExtractor;
-import highlights.HighlightSet;
 import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
 import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm.Weighting;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
@@ -248,9 +246,9 @@ public class LabelDistributionTest {
                 new MeasureRole("LabeledMeasure"),
                 Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
 
-        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, 0);
+        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, labeling);
         AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
-                role, VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE).run(operatorResult, 0);
+                role, VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE).run(operatorResult, labeling);
 
         assertTrue("counted ballots elect the center label", byCount.holisticScores.stream()
                 .anyMatch(s -> "mid".equals(s.label)));
@@ -299,7 +297,7 @@ public class LabelDistributionTest {
                 Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
 
         AlgorithmExecution byReference = new LabelDistributionAlgorithm(
-                role, VotingRule.MEDIAN_VOTER, Weighting.REFERENCE).run(operatorResult, 0);
+                role, VotingRule.MEDIAN_VOTER, Weighting.REFERENCE).run(operatorResult, labeling);
 
         assertTrue("ballots weighted by the judged-against values elect the label expected to carry the volume",
                 byReference.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));

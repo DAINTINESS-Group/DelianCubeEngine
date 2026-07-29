@@ -8,8 +8,8 @@ import java.util.Map;
 
 import highlights.instance.AlgorithmExecution;
 import highlights.instance.AlgorithmResult;
+import highlights.instance.MeasureAlgorithm;
 import highlights.instance.ParameterInstantiation;
-import highlights.instance.ExecutableAlgorithm;
 import highlights.instance.Score;
 import highlights.instance.ScoredFinding;
 import highlights.metamodel.ElementaryHighlightRole;
@@ -25,7 +25,7 @@ import result.Cell;
  * dimensions — and checks whether a member holds more than a threshold share of the total. Each dominating
  * member is surfaced as an elementary highlight along its dimension.
  */
-public final class MarginalContributionAlgorithm implements ExecutableAlgorithm {
+public final class MarginalContributionAlgorithm implements MeasureAlgorithm {
 
     private static final String NAME = "MarginalContribution";
 

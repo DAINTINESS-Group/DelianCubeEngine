@@ -1,10 +1,13 @@
 package highlights.instance;
 
+import highlights.metamodel.ScoreKind;
 import highlights.metamodel.ScoreType;
 
 /**
- * A score: a {@link ScoreType} together with an arithmetic value, or, for an enumerated label,
- * the ordinal rank of a label plus the label itself.
+ * A score: a {@link ScoreType} together with an arithmetic value, or, for a
+ * {@link ScoreKind#CATEGORICAL} type, the ordinal rank of a label plus the label itself. Scores are
+ * what highlight ranking and comparison consume; the diagnostics behind a verdict live in
+ * {@link AlgorithmResult#auxiliaryMetrics()} instead.
  */
 public final class Score {
     public final ScoreType type;

@@ -8,7 +8,9 @@ import highlights.metamodel.ResultType;
 
 /**
  * The Result of an {@link AlgorithmExecution}: the verdict on whether the tested archetype property holds,
- * together with the auxiliary metrics behind it (e.g. a p-value or a member count).
+ * together with the auxiliary metrics behind it (e.g. a p-value or a member count). Metrics are the
+ * verdict's evidence, kept for display and diagnosis; ranking and comparison read a highlight's
+ * {@link Score}s, never the metrics.
  */
 public final class AlgorithmResult implements ResultType {
 
