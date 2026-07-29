@@ -22,8 +22,7 @@ import result.Cell;
  */
 public final class Labeling {
 
-    private final String schemeName;
-    private final LabelDomain domain;
+    private final LabelingScheme scheme;
     private final Map<Cell, String> assignment;
     private final int measureIndex;
     private final Map<Cell, Double> magnitudes;
@@ -45,8 +44,7 @@ public final class Labeling {
         for (Map.Entry<Cell, Double> entry : quantityByCell.entrySet()) {
             labeled.put(entry.getKey(), scheme.applyLabels(entry.getValue()));
         }
-        this.schemeName = scheme.name();
-        this.domain = scheme.domain();
+        this.scheme = scheme;
         this.assignment = labeled;
         this.measureIndex = measureIndex;
         this.magnitudes = quantityByCell;
@@ -55,16 +53,16 @@ public final class Labeling {
 
     /** The name of the scheme the cells were labeled under. */
     public String schemeName() {
-        return schemeName;
+        return scheme.name();
     }
 
     /** The label set; in order when {@link #ordered()}. */
     public List<String> domain() {
-        return domain.labels();
+        return scheme.domain().labels();
     }
 
     public boolean ordered() {
-        return domain.ordered();
+        return scheme.domain().ordered();
     }
 
     /** The label assigned to the cell, or {@code null} if it is not labeled. */
@@ -83,7 +81,7 @@ public final class Labeling {
 
     /** The rank of a label in an ordered domain, or -1 if it is not part of the set. */
     public int rankOf(String label) {
-        return domain.rankOf(label);
+        return scheme.domain().rankOf(label);
     }
 
     /** Which measure of the result this labeling is about. */

@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -17,18 +19,17 @@ import highlights.HighlightSet;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
-import intentional.result.LabeledResult;
-import intentional.labeling.LabelingModel;
 import intentional.labeling.schemes.KMeansScheme;
 import intentional.labeling.schemes.MedianDistanceScheme;
+import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 
 /**
- * One model, any scheme: the model fits the scheme on a measure of the result and labels the cells, and
- * the label-predominance archetype consumes the labeling regardless of which scheme produced it.
+ * A measure labeled under any scheme: the labeling is built from the measure's values, and the
+ * label-predominance archetype consumes it regardless of which scheme produced it.
  */
-public class MeasureLabelingModelTest {
+public class MeasureLabelingTest {
 
     private static Result sixCells(String... measures) {
         Result data = new Result();
@@ -38,13 +39,19 @@ public class MeasureLabelingModelTest {
         return data;
     }
 
-    private static HolisticHighlight extractSingle(Result data, LabelingModel model) {
+    private static Labeling labelMeasure(Result data, LabelingScheme scheme) {
+        Map<Cell, Double> valueByCell = new LinkedHashMap<>();
+        for (Cell cell : data.getCells()) valueByCell.put(cell, cell.toDouble(0));
+        return new Labeling(scheme, valueByCell, 0);
+    }
+
+    private static HolisticHighlight extractSingle(Result data, Labeling labeling) {
         CubeQuery query = new CubeQuery("measureLabelingTest");
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
         LabeledResult operatorResult =
-                new LabeledResult(query, data, Collections.<LabelingModel>singletonList(model));
+                new LabeledResult(query, data, Collections.singletonList(labeling));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -56,11 +63,10 @@ public class MeasureLabelingModelTest {
     @Test
     public void medianSchemeLabelsCellsAndPredominanceHolds() {
         Result data = sixCells("10", "10", "10", "10", "100", "1");
-        MeasureLabelingModel model = new MeasureLabelingModel(data, new MedianDistanceScheme());
-        assertEquals(0, model.compute());
-        assertEquals(MedianDistanceScheme.NAME, model.getModelName());
+        Labeling labeling = labelMeasure(data, new MedianDistanceScheme());
+        assertEquals(MedianDistanceScheme.NAME, labeling.schemeName());
 
-        HolisticHighlight holistic = extractSingle(data, model);
+        HolisticHighlight holistic = extractSingle(data, labeling);
         assertTrue("OK predominates (4 of 6)", holistic.execution.result.verdict());
         assertTrue("dominant label OK is reported", holistic.getScores().stream()
                 .anyMatch(s -> "OK".equals(s.label)));
@@ -70,11 +76,10 @@ public class MeasureLabelingModelTest {
     @Test
     public void kmeansSchemeClustersCellsAndPredominanceHolds() {
         Result data = sixCells("1", "2", "1", "2", "100", "1000");
-        MeasureLabelingModel model = new MeasureLabelingModel(data, new KMeansScheme());
-        assertEquals(0, model.compute());
-        assertEquals(KMeansScheme.NAME, model.getModelName());
+        Labeling labeling = labelMeasure(data, new KMeansScheme());
+        assertEquals(KMeansScheme.NAME, labeling.schemeName());
 
-        HolisticHighlight holistic = extractSingle(data, model);
+        HolisticHighlight holistic = extractSingle(data, labeling);
         assertTrue("the four low-valued cells form a predominant cluster (4 of 6)",
                 holistic.execution.result.verdict());
         assertTrue("dominant cluster label is reported", holistic.getScores().stream()

@@ -28,7 +28,6 @@ import highlights.metamodel.MeasureRole;
 import highlights.metamodel.ScoreType;
 import intentional.labeling.LabelDomain;
 import intentional.labeling.Labeling;
-import intentional.labeling.LabelingModel;
 import intentional.labeling.LabelingScheme;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -36,22 +35,10 @@ import result.Result;
 
 /**
  * The benchmark-tendency archetype consumes any ordered labeling from the context — with no reference to
- * the model or operator that produced it. A stub labeling model supplies pre-built labelings, each labeled
- * under a stub scheme that maps each quantity value to its label by lookup.
+ * the operator that produced it. Labelings are built under a stub scheme that maps each quantity value to
+ * its label by lookup.
  */
 public class LabelDistributionTest {
-
-    /** A model that only supplies pre-built labelings. */
-    private static final class StubLabelingModel implements LabelingModel {
-        private final List<Labeling> labelings;
-
-        StubLabelingModel(List<Labeling> labelings) {
-            this.labelings = labelings;
-        }
-
-        @Override public String getModelName() { return "stub"; }
-        @Override public List<Labeling> labelings() { return labelings; }
-    }
 
     /** A scheme labeling each value by lookup over an ordered domain. */
     private static LabelingScheme lookupScheme(List<String> domainLabels, Map<Double, String> labelByValue) {
@@ -76,11 +63,11 @@ public class LabelDistributionTest {
         return data;
     }
 
-    private static LabeledResult operatorResult(String queryName, Result data, LabelingModel model) {
+    private static LabeledResult operatorResult(String queryName, Result data, List<Labeling> labelings) {
         CubeQuery query = new CubeQuery(queryName);
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
-        return new LabeledResult(query, data, Collections.singletonList(model));
+        return new LabeledResult(query, data, labelings);
     }
 
     private static Map<Double, String> rankLabels(String... labels) {
@@ -116,7 +103,7 @@ public class LabelDistributionTest {
                 new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByDelta), deltas);
 
         LabeledResult operatorResult = operatorResult(
-                "labelTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+                "labelTest", data, Collections.singletonList(labeling));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -156,7 +143,7 @@ public class LabelDistributionTest {
                         rankLabels("non-outlier", "outlier")), outlierness));
 
         LabeledResult operatorResult = operatorResult(
-                "twoLabelings", data, new StubLabelingModel(labelings));
+                "twoLabelings", data, labelings);
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -179,7 +166,7 @@ public class LabelDistributionTest {
                 rankLabels("low", "mid", "high")), ranks);
 
         LabeledResult operatorResult = operatorResult(
-                "medianTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+                "medianTest", data, Collections.singletonList(labeling));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -204,7 +191,7 @@ public class LabelDistributionTest {
                 rankLabels("low", "mid", "high")), ranks);
 
         LabeledResult operatorResult = operatorResult(
-                "knifeEdgeTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+                "knifeEdgeTest", data, Collections.singletonList(labeling));
         CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
         List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
 
@@ -234,7 +221,7 @@ public class LabelDistributionTest {
                 new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
 
         LabeledResult operatorResult = operatorResult(
-                "weightingTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+                "weightingTest", data, Collections.singletonList(labeling));
         ElementaryHighlightRole role = labeledCellRole();
 
         AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, labeling);
@@ -268,7 +255,7 @@ public class LabelDistributionTest {
                 rankLabels("low", "mid", "high")), ranks, 0, references);
 
         LabeledResult operatorResult = operatorResult(
-                "referenceTest", data, new StubLabelingModel(Collections.singletonList(labeling)));
+                "referenceTest", data, Collections.singletonList(labeling));
         ElementaryHighlightRole role = labeledCellRole();
 
         AlgorithmExecution byReference = new LabelDistributionAlgorithm(

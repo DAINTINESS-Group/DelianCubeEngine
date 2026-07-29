@@ -3,12 +3,12 @@ package report;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-import intentional.assess.models.AssessModel;
-import intentional.assess.utils.ComparedCell;
-import intentional.assess.utils.LabeledCell;
 import highlights.HighlightSet;
+import intentional.labeling.Labeling;
 import intentional.result.LabeledResult;
+import result.Cell;
 
 /**
  * Writes the ASSESS result — its comparisons, labelings, and highlights — under
@@ -24,23 +24,31 @@ public class AssessReportWriter extends MarkdownReportWriter {
     @Override
     protected void writeBody(BufferedWriter writer, String query, LabeledResult result, HighlightSet highlights)
             throws IOException {
-        AssessModel model = (AssessModel) result.model(AssessModel.NAME);
-        List<ComparedCell> comparedCells = model.getComparedCells();
-        List<LabeledCell> labeledCells = model.getLabeledCells();
+        Labeling labeling = result.labelings().get(0);
+        List<Cell> cells = result.data.getCells();
 
         writer.append("## Query\n").append(query).append("\n\n");
         appendResults(writer, result);
 
         writer.append("## Comparisons Made (")
-                .append(Integer.toString(comparedCells.size())).append(" in total)\n");
-        for (ComparedCell comparedCell : comparedCells) {
-            writer.append(comparedCell.toString()).append("\n\n");
+                .append(Integer.toString(cells.size())).append(" in total)\n");
+        for (Cell cell : cells) {
+            writer.append("Target Cell: ").append(cell.toString(", ")).append("\n");
+            if (labeling.covers(cell)) {
+                writer.append("was compared against benchmark value ")
+                        .append(Double.toString(labeling.referenceOf(cell))).append("\n\n");
+            } else {
+                writer.append("had no match, thus will not be labeled\n\n");
+            }
         }
 
         writer.append("## Labeling Results (")
-                .append(Integer.toString(labeledCells.size())).append(" in total)\n");
-        for (LabeledCell cell : labeledCells) {
-            writer.append(cell.toString()).append("\n\n");
+                .append(Integer.toString(labeling.assignment().size())).append(" in total)\n");
+        for (Map.Entry<Cell, String> labeled : labeling.assignment().entrySet()) {
+            writer.append("Cell: ").append(labeled.getKey().toString(", ")).append("\n")
+                    .append("Comparison Result: ")
+                    .append(Double.toString(labeling.magnitudeOf(labeled.getKey()))).append("\n")
+                    .append("Label: ").append(labeled.getValue()).append("\n\n");
         }
 
         appendHighlights(writer, highlights);

@@ -4,20 +4,24 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
-import intentional.assess.models.AssessModel;
+import cubemanager.CubeManager;
 import intentional.assess.syntax.AssessQueryLexer;
 import intentional.assess.syntax.AssessQueryParser;
-import cubemanager.CubeManager;
+import intentional.assess.utils.ComparedCell;
+import intentional.labeling.Labeling;
 import intentional.operator.IntentionalOperator;
 import intentional.result.LabeledResult;
-import intentional.labeling.LabelingModel;
+import result.Cell;
 
 /**
  * The top layer class for any assessments done in the intentional model.
@@ -32,8 +36,8 @@ public class AssessOperator implements IntentionalOperator {
     }
 
     /**
-     * Parses the query, runs the {@link AssessModel} (benchmark + delta + labeling) over the cube data,
-     * and returns the operator's product as a single-element list.
+     * Parses the query, compares the cube data against its benchmark and labels the deltas under the
+     * query's scheme, returning the operator's product as a single-element list.
      *
      * @param assessQuery The user-provided query for assessment reasons
      */
@@ -41,19 +45,34 @@ public class AssessOperator implements IntentionalOperator {
     public List<LabeledResult> execute(String assessQuery) {
         AssessQuery parsedQuery = parseQuery(assessQuery);
 
-        AssessModel assessModel = new AssessModel(
-                parsedQuery.benchmark, parsedQuery.deltaFunction, parsedQuery.labelingScheme,
-                parsedQuery.targetCube);
-
-        if (assessModel.compute() != 0) {
-            throw new RuntimeException("No cells collected from the target cube query");
-        }
-
         LabeledResult operatorResult = new LabeledResult(
                 parsedQuery.targetCubeQuery, parsedQuery.targetCube,
-                Collections.<LabelingModel>singletonList(assessModel));
+                Collections.singletonList(assess(parsedQuery)));
 
         return Collections.singletonList(operatorResult);
+    }
+
+    /**
+     * Compares each target cell to the query's benchmark via its delta scheme and labels the deltas: the
+     * labeling carries the delta as magnitude and the matched benchmark value as reference; cells without
+     * a benchmark match stay unlabeled.
+     */
+    private static Labeling assess(AssessQuery query) {
+        List<Cell> targetCells = query.targetCube.getCells();
+        if (targetCells.isEmpty()) {
+            throw new RuntimeException("No cells collected from the target cube query");
+        }
+        List<ComparedCell> comparedCells = new ArrayList<>();
+        Map<Cell, Double> deltas = new LinkedHashMap<>(
+                query.deltaFunction.compareTargetToBenchmark(targetCells, query.benchmark, comparedCells));
+
+        Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
+        for (ComparedCell compared : comparedCells) {
+            if (compared.benchmark != null) {
+                benchmarkValues.put(compared.target, compared.benchmark.toDouble());
+            }
+        }
+        return new Labeling(query.labelingScheme, deltas, 0, benchmarkValues);
     }
 
     private AssessQuery parseQuery(String assessQuery) {
