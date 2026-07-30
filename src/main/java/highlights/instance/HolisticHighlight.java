@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;
 import highlights.metamodel.ArchetypeProperty;
+import intentional.labeling.Labeling;
 import result.Result;
 
 /**
@@ -26,10 +27,17 @@ public class HolisticHighlight extends Highlight {
     public final AlgorithmExecution execution;
     public final Measure mainMeasure;
     public final List<Level> explanators;
+    /** The labeling the archetype was evaluated over, or {@code null} for measure-axis highlights. */
+    public final Labeling labeling;
     private final List<ElementaryHighlight> elementary = new ArrayList<>();
 
     public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
                              Measure mainMeasure, List<Level> explanators) {
+        this(dataset, archetype, execution, mainMeasure, explanators, null);
+    }
+
+    public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
+                             Measure mainMeasure, List<Level> explanators, Labeling labeling) {
         super(dataset);
         this.archetype = Objects.requireNonNull(archetype,
                 "A holistic highlight must materialize an archetype property");
@@ -37,6 +45,7 @@ public class HolisticHighlight extends Highlight {
                 "A holistic highlight must record the algorithm execution that produced it");
         this.mainMeasure = mainMeasure;
         this.explanators = explanators;
+        this.labeling = labeling;
         scores.addAll(execution.holisticScores);
     }
 
@@ -58,6 +67,9 @@ public class HolisticHighlight extends Highlight {
         String explanatorNames = explanators.stream().map(Level::getName).collect(Collectors.joining(", "));
         String scoreText = scores.stream().map(Score::toString).collect(Collectors.joining(", "));
         String measureName = mainMeasure == null ? "(unresolved measure)" : mainMeasure.getName();
+        if (labeling != null) {
+            measureName = "the " + labeling.schemeName() + " labeling of " + measureName;
+        }
         String metrics = execution.result.auxiliaryMetrics().entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining(", "));

@@ -53,7 +53,7 @@ public final class HighlightExtractor {
                 LabelingAlgorithm overLabelings = (LabelingAlgorithm) algorithm;
                 for (Labeling labeling : result.labelings()) {
                     out.add(buildHolistic(result, archetype, overLabelings.run(result, labeling), schema,
-                            schema.resolveMeasure(null), explanators));
+                            schema.resolveMeasure(null), explanators, labeling));
                 }
             } else if (measures.isEmpty()) {
                 evaluateMeasure(result, archetype, (MeasureAlgorithm) algorithm, schema, 0,
@@ -75,7 +75,7 @@ public final class HighlightExtractor {
                                  Measure mainMeasure, List<Level> explanators, List<Highlight> out) {
         if (archetype.mainMeasureRole.constraint == MeasureConstraint.ADDITIVE && !aggregation.additive) return;
         out.add(buildHolistic(result, archetype, algorithm.run(result, measureIndex), schema,
-                mainMeasure, explanators));
+                mainMeasure, explanators, null));
     }
 
     /**
@@ -100,9 +100,9 @@ public final class HighlightExtractor {
 
     private HolisticHighlight buildHolistic(LabeledResult result, ArchetypeProperty archetype,
                                             AlgorithmExecution execution, CubeSchemaResolver schema,
-                                            Measure mainMeasure, List<Level> explanators) {
+                                            Measure mainMeasure, List<Level> explanators, Labeling labeling) {
         HolisticHighlight holistic = new HolisticHighlight(
-                result.data, archetype, execution, mainMeasure, explanators);
+                result.data, archetype, execution, mainMeasure, explanators, labeling);
 
         for (ScoredFinding sf : execution.salient) {
             ElementaryHighlight elementary = new ElementaryHighlight(
