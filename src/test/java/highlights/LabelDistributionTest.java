@@ -152,6 +152,43 @@ public class LabelDistributionTest {
     }
 
     @Test
+    public void sharedDomainLabelingsGainAConsensusHolistic() {
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
+
+        List<Labeling> labelings = Arrays.asList(
+                labelingOf(cells, "s1", 0, 1, 1, 1, 2),
+                labelingOf(cells, "s2", 0, 0, 1, 2, 2),
+                labelingOf(cells, "s3", 0, 0, 1, 1, 2));
+
+        LabeledResult operatorResult = operatorResult("consensusTest", data, labelings);
+        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
+        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
+
+        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
+        assertEquals("one holistic per labeling plus the consensus", 4, highlights.size());
+        assertTrue("the consensus holistic names its group", highlights.highlights().stream()
+                .map(h -> ((HolisticHighlight) h).labeling.schemeName())
+                .anyMatch("Consensus(s1,s2,s3)"::equals));
+    }
+
+    private static Labeling labelingOf(Cell[] cells, String schemeName, double... ranks) {
+        Map<Cell, Double> rankByCell = new LinkedHashMap<>();
+        for (int i = 0; i < cells.length; i++) {
+            rankByCell.put(cells[i], ranks[i]);
+        }
+        Map<Double, String> labelByRank = rankLabels("low", "mid", "high");
+        LabelingScheme scheme = new LabelingScheme() {
+            @Override public String name() { return schemeName; }
+            @Override public String applyLabels(double value) { return labelByRank.get(value); }
+            @Override public LabelDomain domain() {
+                return new LabelDomain(Arrays.asList("low", "mid", "high"), true);
+            }
+        };
+        return new Labeling(scheme, rankByCell);
+    }
+
+    @Test
     public void medianVoterElectsTheCenterWithoutAPlurality() {
         Cell[] cells = cells(5);
         Result data = resultOf(cells);

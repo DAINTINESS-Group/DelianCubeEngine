@@ -51,7 +51,9 @@ public final class HighlightExtractor {
 
             if (archetype.axis == EvaluationAxis.LABELING) {
                 LabelingAlgorithm overLabelings = (LabelingAlgorithm) algorithm;
-                for (Labeling labeling : result.labelings()) {
+                List<Labeling> subjects = new ArrayList<>(result.labelings());
+                subjects.addAll(result.consensuses());
+                for (Labeling labeling : subjects) {
                     out.add(buildHolistic(result, archetype, overLabelings.run(result, labeling), schema,
                             schema.resolveMeasure(null), explanators, labeling));
                 }
