@@ -168,6 +168,92 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void benchmarklessAssessLabelsTheRawMeasure() throws RecognitionException {
+        String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
+                "assess sum(amount)\n" +
+                "labels {[0, 500000): small, [500000, +inf): big} AS size, EquiDepth(small, big)";
+
+        LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
+
+        assertEquals("one labeling per scheme", 2, result.labelings().size());
+        assertEquals("size", result.labelings().get(0).schemeName());
+        assertEquals("the shared domain yields one consensus", 1, result.consensuses().size());
+
+        Labeling labeling = result.labelings().get(0);
+        Cell first = labeling.assignment().keySet().iterator().next();
+        assertEquals("with no benchmark, the labeled quantity is the raw measure",
+                first.toDouble(), labeling.magnitudeOf(first), 0.0001);
+    }
+
+    @Test
+    public void derivedMeasureAssessLabelsTheExpression() throws RecognitionException {
+        String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
+                "assess sum(amount) - sum(payments) AS Profit\n" +
+                "labels {[-inf, 100000): thin, [100000, +inf): fat} AS margin, EquiDepth(thin, fat)";
+
+        LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
+
+        assertEquals("Profit", result.query.getQueryMeasures().get(0).getAlias());
+        assertEquals("one labeling per scheme", 2, result.labelings().size());
+        assertEquals(1, result.consensuses().size());
+
+        Labeling labeling = result.labelings().get(0);
+        Cell first = labeling.assignment().keySet().iterator().next();
+        assertEquals("the labeled quantity is the derived measure",
+                first.toDouble(), labeling.magnitudeOf(first), 0.0001);
+    }
+
+    @Test
+    public void parenthesizedTargetMeasureWithConstantParses() throws RecognitionException {
+        String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
+                "assess (sum(amount) - sum(payments)) / 1000 AS ProfitK\n" +
+                "labels {[-inf, 100): thin, [100, +inf): fat}";
+
+        LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
+
+        assertEquals("ProfitK", result.query.getQueryMeasures().get(0).getAlias());
+        Labeling labeling = result.labelings().get(0);
+        assertFalse(labeling.assignment().isEmpty());
+    }
+
+    @Test
+    public void derivedMeasureAssessAgainstPastBenchmark() throws RecognitionException {
+        String query = "with loan for month = '11/1997', region = 'south Moravia' by month, region\n" +
+                "AssEsS max(amount) - max(payments) AS Spread agAinSt PaST 5\n" +
+                "using ratio(amount, benchmark.amount)\n" +
+                "labels {[0.0, 1]: shrunk, (1, +inf): grown}";
+
+        Labeling labeling = assess(query);
+        assertFalse("the benchmark carries the derived measure too", labeling.assignment().isEmpty());
+        Cell first = labeling.assignment().keySet().iterator().next();
+        assertFalse("a matched benchmark value rides as the reference",
+                Double.isNaN(labeling.referenceOf(first)));
+    }
+
+    @Test
+    public void multiSchemeLabelsProduceLabelingsAndAConsensus() throws RecognitionException {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "WITH loan\n" +
+                "FOR year = '1997'\n" +
+                "BY region, year, status\n" +
+                "ASSESS sum(amount)\n" +
+                "AGAINST PAST 2\n" +
+                "USING ratio(absolute(amount, benchmark.amount))\n" +
+                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
+                "       EquiDepth(low, high, ultra),\n" +
+                "       EquiWidth(low, high, ultra)";
+
+        LabeledResult result = operator.execute(query).get(0);
+
+        assertEquals("one labeling per scheme", 3, result.labelings().size());
+        assertEquals("analyst", result.labelings().get(0).schemeName());
+        assertEquals("EquiDepth", result.labelings().get(1).schemeName());
+        assertEquals("EquiWidth", result.labelings().get(2).schemeName());
+        assertEquals("the shared domain yields one consensus", 1, result.consensuses().size());
+        assertEquals("Consensus(analyst,EquiDepth,EquiWidth)", result.consensuses().get(0).schemeName());
+    }
+
+    @Test
     public void executeProducesHighlights() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "WITH loan\n" +

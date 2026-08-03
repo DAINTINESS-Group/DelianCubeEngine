@@ -25,7 +25,6 @@ public class DescribeParams {
 	private boolean isJoined = false;
 	
 	private ArrayList<String> orderExpressions = new ArrayList<>();
-	private ArrayList<String> modelList = new ArrayList<>();
 	
 	public String getAggrFunc() {
 		return aggrFunc;
@@ -104,13 +103,6 @@ public class DescribeParams {
 		return orderExpressions;
 	}
 	public void addOrderExpression(String order) {
-		this.orderExpressions.add(order); 
-	}
-	
-	public ArrayList<String> getModelList() {
-		return modelList;
-	}
-	public void addModel(String model) { 
-		this.modelList.add(model);
+		this.orderExpressions.add(order);
 	}
 }

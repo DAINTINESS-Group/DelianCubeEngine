@@ -29,7 +29,11 @@ public class DeltaScheme {
 
     private final List<ComparisonFunction> appliedMethods = new ArrayList<>();
 
+    /** With no methods, comparison values stay the target values themselves. */
     public DeltaScheme(List<String> methods) {
+        if (methods == null) {
+            return;
+        }
         Collections.reverse(methods);
         for (String method : methods) {
             appliedMethods.add(functionsMap.get(method));

@@ -58,7 +58,6 @@ singleStatement
         (FOR sigmaExpressionsList)? 
         (GROUP BY gammaExpressionsList)?
         (ORDER BY orderExpressionsList)?
-        (USING usingList)?
         (AS queryAlias)?
     ;
 
@@ -170,15 +169,6 @@ sortDirection
 	;
 
 
-usingList
-	:	modelName (COMMA modelName)*
-	;
-
-modelName
-	:	WORD { params.addModel($WORD.text); }
-	;
-
-
 queryAlias
 	: 	WORD { params.setQueryAlias($WORD.text); }
 	;
@@ -206,7 +196,6 @@ NOT: 'NOT';
 AND: 'AND';
 AS: 'AS';
 ORDER: 'ORDER';
-USING: 'USING';
 ASC: 'ASC';
 DESC: 'DESC';
 

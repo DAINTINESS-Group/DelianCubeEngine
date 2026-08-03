@@ -29,8 +29,7 @@ query returns [AssessQuery query]
     : WITH targetCube = ID {builder.setTargetCubeName($targetCube.text);}
       (FOR predicates = selection_predicates {builder.setSelectionPredicates(predicates);})?
       BY gammas = group_by_set {builder.setGroupBySet(gammas);}
-      ASSESS AGGREGATE {builder.setAggregationFunction($AGGREGATE.text);}
-      '(' measurement = ID {builder.setMeasurement($measurement.text);} ')'
+      ASSESS target_measure
 
       (AGAINST parsedBenchmark = benchmark
       {builder.setBenchmarkDetails(parsedBenchmark);})?
@@ -38,12 +37,8 @@ query returns [AssessQuery query]
       (USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
       {builder.setDeltaFunctions(updatedComparisonMethods);})?
 
-      // Build the Labeling Scheme Here
-      LABELS (labelingMethod = ID
-      {builder.buildLabelingScheme($labelingMethod.text);}
-      | labelingSystem = custom_labeling
-      {builder.setLabelingRules(labelingSystem);}
-      )
+      // Build the Labeling Schemes Here
+      LABELS labeler (',' labeler)*
       (SAVE AS output_name = ID {builder.setOutputName($output_name.text);})?
       {$query = builder.build();}
     ;
@@ -109,6 +104,43 @@ comparison_scheme [List<String> comparisonMethods] returns [List<String> updated
     '(' (comparison_scheme[$updatedComparisonMethods] | comparison_args) ')';
 
 comparison_args : ID ',' ( ('benchmark.')? ID | INT);
+
+target_measure
+    : e = measure_expression (AS alias = ID)?
+      { builder.setTargetMeasure($e.text, $alias.text); }
+    ;
+
+measure_expression
+    : measure_term (SIGN measure_term)*
+    ;
+
+measure_term
+    : measure_factor (('*' | '/') measure_factor)*
+    ;
+
+measure_factor
+    : AGGREGATE '(' measure_expression ')'
+    | '(' measure_expression ')'
+    | ID
+    | INT
+    | FLOAT
+    ;
+
+labeler
+    @init { List<String> schemeArgs = null; }
+    : labelingSystem = custom_labeling (AS customName = ID)?
+      {builder.addCustomLabeler(labelingSystem, $customName.text);}
+    | schemeName = ID ('(' parsedArgs = labeler_args {schemeArgs = $parsedArgs.args;} ')')?
+      {builder.addNamedLabeler($schemeName.text, schemeArgs);}
+    ;
+
+labeler_args returns [List<String> args]
+    @init {args = new ArrayList<String>();}
+    : a = labeler_arg {args.add($a.text);}
+      (',' b = labeler_arg {args.add($b.text);})*
+    ;
+
+labeler_arg : ID | INT | FLOAT;
 
 custom_labeling returns [List<List<String>> labelingTerms]
     @init {labelingTerms = new ArrayList<List<String>>();}

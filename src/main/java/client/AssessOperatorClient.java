@@ -28,7 +28,9 @@ public class AssessOperatorClient {
                 "ASSESS sum(amount)\n" +
                 "AGAINST PAST 2\n" +
                 "USING ratio(absolute(amount, benchmark.amount))\n" +
-                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
+                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
+                "       EquiDepth(low, high, ultra),\n" +
+                "       EquiWidth(low, high, ultra)\n" +
                 "SAVE AS PastBenchmarkDemo";
 
         CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);

@@ -3,13 +3,17 @@ package intentional.assess;
 import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.benchmarks.BenchmarkFactory;
 import intentional.assess.deltas.DeltaScheme;
+import intentional.labeling.LabelingScheme;
 import intentional.labeling.schemes.CustomLabelingScheme;
+import intentional.labeling.schemes.SchemeCatalog;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Set;
 
 /**
@@ -21,7 +25,7 @@ public class AssessQueryBuilder {
     private final CubeManagerAdapter queryGenerator;
     private List<String> benchmarkDetails = new ArrayList<>(); // Default, as it can be empty
     private List<String> deltaFunctions;
-    private List<List<String>> labelingRules;
+    private final List<LabelingScheme> labelers = new ArrayList<>();
     private String outputName = null;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
@@ -40,6 +44,31 @@ public class AssessQueryBuilder {
     public AssessQueryBuilder setMeasurement(String measurement) {
         queryGenerator.setMeasurement(measurement);
         return this;
+    }
+
+    private static final Pattern SIMPLE_TARGET =
+            Pattern.compile("(?i)^([a-z]+)\\s*\\(\\s*([a-z0-9_]+)\\s*\\)$");
+    private static final Pattern FIRST_AGGREGATE =
+            Pattern.compile("(?i)([a-z]+)\\s*\\(\\s*([a-z0-9_]+)");
+
+    /**
+     * The query's target measure: a single aggregate keeps the plain translation; an expression or an
+     * aliased measure goes through the derived-measure path, anchored on its first aggregate and column.
+     */
+    public void setTargetMeasure(String expression, String alias) {
+        String trimmed = expression.trim();
+        Matcher simple = SIMPLE_TARGET.matcher(trimmed);
+        if (alias == null && simple.matches()) {
+            setAggregationFunction(simple.group(1));
+            setMeasurement(simple.group(2));
+            return;
+        }
+        Matcher base = FIRST_AGGREGATE.matcher(trimmed);
+        if (!base.find()) {
+            throw new IllegalArgumentException(
+                    "The target measure needs at least one aggregate: " + expression);
+        }
+        queryGenerator.setMeasureExpression(trimmed, alias, base.group(1), base.group(2));
     }
 
     public void setOutputName(String name) {
@@ -68,21 +97,28 @@ public class AssessQueryBuilder {
         deltaFunctions = methods;
     }
 
-    /* FUTURE: Create a factory method that contains the overriding methods
-     * buildLabelingScheme.
-     */
-    public void setLabelingRules(List<List<String>> rulesList) {
-        labelingRules = rulesList;
+    /** Appends a custom rule scheme from the LABELS clause, under the analyst's name when given. */
+    public void addCustomLabeler(List<List<String>> rulesList, String name) {
+        labelers.add(name == null
+                ? new CustomLabelingScheme(rulesList)
+                : new CustomLabelingScheme(rulesList, name));
     }
 
-    /**
-     * FUTURE: Builds a labeling scheme based on a predefined method
-     *
-     * @param method the predefined labeling method to be applied
-     */
+    /** Appends a ready-made scheme the LABELS clause names, configured by its arguments. */
+    public void addNamedLabeler(String schemeName, List<String> args) {
+        LabelingScheme scheme = SchemeCatalog.byName(schemeName, args);
+        if (scheme == null) {
+            throw new IllegalArgumentException("Unknown labeling scheme: " + schemeName);
+        }
+        labelers.add(scheme);
+    }
+
+    public void setLabelingRules(List<List<String>> rulesList) {
+        addCustomLabeler(rulesList, null);
+    }
+
     public void buildLabelingScheme(String method) {
-        System.out.println("I am not currently implemented!");
-        System.out.println("Labeling Method: " + method);
+        addNamedLabeler(method, null);
     }
 
     public AssessQuery build() {
@@ -92,7 +128,7 @@ public class AssessQueryBuilder {
                 queryGenerator.executeCubeQuery(targetCubeQuery),
                 buildBenchmark(),
                 new DeltaScheme(deltaFunctions),
-                new CustomLabelingScheme(labelingRules),
+                labelers,
                 outputName);
     }
 }

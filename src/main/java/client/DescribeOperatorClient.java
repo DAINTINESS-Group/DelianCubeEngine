@@ -38,7 +38,7 @@ public class DescribeOperatorClient {
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Connection is successful.");
 		
-		String describeExpression = "WITH loan DESCRIBE (SUM(amount) - SUM(payments)) AS Test FOR region IN {'Prague', 'north Bohemia'} AND year >= '1997' GROUP BY district_name, month USING KPIMedianBased, EquiDepth, EquiWidth";
+		String describeExpression = "WITH loan DESCRIBE (SUM(amount) - SUM(payments)) AS Test FOR region IN {'Prague', 'north Bohemia'} AND year >= '1997' GROUP BY district_name, month";
 		System.out.println("Sending Query: " + describeExpression);
 		
 		ResultFileMetadata resultMetadata = service.describe(describeExpression);

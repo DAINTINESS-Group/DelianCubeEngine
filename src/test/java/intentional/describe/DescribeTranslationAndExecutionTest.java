@@ -271,7 +271,7 @@ public class DescribeTranslationAndExecutionTest {
     
     @Test
     public final void testDescribeQueryExecutionUsingModel() throws IOException, RecognitionException {
-        String incomingExpression = "WITH loan DESCRIBE SUM(amount) AS Total , SUM(amount - payments) AS SomethingIGuess FOR region='south Bohemia' AND year <= '1998' GROUP BY district_name, region USING Rank";
+        String incomingExpression = "WITH loan DESCRIBE SUM(amount) AS Total , SUM(amount - payments) AS SomethingIGuess FOR region='south Bohemia' AND year <= '1998' GROUP BY district_name, region";
         String testResultString = "";
 
         DescribeOperator testDescribeOperator = new DescribeOperator(testCubeManager);

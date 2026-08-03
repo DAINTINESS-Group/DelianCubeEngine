@@ -5,6 +5,7 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.Cube;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Level;
+import cubemanager.cubebase.QueryMeasure;
 import result.Result;
 
 import java.rmi.RemoteException;
@@ -22,6 +23,8 @@ public class CubeManagerAdapter {
 
     private String aggregationFunction;
     private String measurement;
+    private String measureExpression;
+    private String measureAlias;
     private Set<String> groupBySet;
     private final DatesHandler datesHandler;
 
@@ -70,13 +73,34 @@ public class CubeManagerAdapter {
         this.measurement = measurement;
     }
 
+    /**
+     * A derived target measure: the base aggregate and column feed the query template, and the full
+     * expression replaces the query's measure after translation — so every re-translation (each
+     * benchmark date included) carries the expression.
+     */
+    public void setMeasureExpression(String expression, String alias,
+                                     String baseAggregation, String baseColumn) {
+        this.measureExpression = expression;
+        this.measureAlias = alias;
+        this.aggregationFunction = baseAggregation.toLowerCase();
+        this.measurement = baseColumn;
+    }
+
     public void setGroupBySet(Set<String> groupBySet) {
         this.groupBySet = groupBySet;
     }
 
     public CubeQuery translateToCubeQuery() {
         try {
-            return cubeManager.createCubeQueryFromString(generateQuery(), new HashMap<>());
+            CubeQuery query = cubeManager.createCubeQueryFromString(generateQuery(), new HashMap<>());
+            if (measureExpression != null) {
+                QueryMeasure derived = new QueryMeasure(measureAlias == null
+                        ? measureExpression
+                        : measureExpression + " AS " + measureAlias);
+                query.getQueryMeasures().clear();
+                query.addQueryMeasure(derived.getFunction(), derived.getName(), derived.getAlias());
+            }
+            return query;
         } catch (RemoteException re) {
             throw new RuntimeException(
                     "Failed to issue AssessQuery to the CubeManager\n" + re);

@@ -95,7 +95,15 @@ public class CustomLabelingScheme implements LabelingScheme {
     List<LabelingRule> rules = new ArrayList<>();
     // Should we be keeping a set of labels so that results are unique as well?
 
+    private final String name;
+
     public CustomLabelingScheme(List<List<String>> rulesList) {
+        this(rulesList, NAME);
+    }
+
+    /** A rule scheme under the analyst's own name, so several custom labelings stay distinguishable. */
+    public CustomLabelingScheme(List<List<String>> rulesList, String name) {
+        this.name = name;
         for (List<String> parsedRule : rulesList) {
             LabelingRule newRule = new LabelingRule(parsedRule);
             validateRule(newRule);
@@ -185,7 +193,7 @@ public class CustomLabelingScheme implements LabelingScheme {
     }
 
     @Override
-    public String name() { return NAME; }
+    public String name() { return name; }
 
     @Override
     public String applyLabels(double value) {

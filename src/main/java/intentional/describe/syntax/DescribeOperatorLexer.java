@@ -1,4 +1,4 @@
-// $ANTLR 3.4 DescribeOperator.g 2026-01-15 16:15:41
+// $ANTLR 3.4 DescribeOperator.g 2026-08-03 20:28:13
 
     package intentional.describe.syntax;
 
@@ -45,10 +45,9 @@ public class DescribeOperatorLexer extends Lexer {
     public static final int SLASH=35;
     public static final int STAR=36;
     public static final int TEXTVALUE=37;
-    public static final int USING=38;
-    public static final int WITH=39;
-    public static final int WORD=40;
-    public static final int WS=41;
+    public static final int WITH=38;
+    public static final int WORD=39;
+    public static final int WS=40;
 
     // delegates
     // delegators
@@ -70,8 +69,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = DESCRIBE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:197:9: ( 'DESCRIBE' )
-            // DescribeOperator.g:197:11: 'DESCRIBE'
+            // DescribeOperator.g:187:9: ( 'DESCRIBE' )
+            // DescribeOperator.g:187:11: 'DESCRIBE'
             {
             match("DESCRIBE"); 
 
@@ -93,8 +92,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = WITH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:198:5: ( 'WITH' )
-            // DescribeOperator.g:198:7: 'WITH'
+            // DescribeOperator.g:188:5: ( 'WITH' )
+            // DescribeOperator.g:188:7: 'WITH'
             {
             match("WITH"); 
 
@@ -116,8 +115,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = FOR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:199:4: ( 'FOR' )
-            // DescribeOperator.g:199:6: 'FOR'
+            // DescribeOperator.g:189:4: ( 'FOR' )
+            // DescribeOperator.g:189:6: 'FOR'
             {
             match("FOR"); 
 
@@ -139,8 +138,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = GROUP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:200:6: ( 'GROUP' )
-            // DescribeOperator.g:200:8: 'GROUP'
+            // DescribeOperator.g:190:6: ( 'GROUP' )
+            // DescribeOperator.g:190:8: 'GROUP'
             {
             match("GROUP"); 
 
@@ -162,8 +161,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = BY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:201:3: ( 'BY' )
-            // DescribeOperator.g:201:5: 'BY'
+            // DescribeOperator.g:191:3: ( 'BY' )
+            // DescribeOperator.g:191:5: 'BY'
             {
             match("BY"); 
 
@@ -185,8 +184,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = JOIN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:202:5: ( 'JOIN' )
-            // DescribeOperator.g:202:7: 'JOIN'
+            // DescribeOperator.g:192:5: ( 'JOIN' )
+            // DescribeOperator.g:192:7: 'JOIN'
             {
             match("JOIN"); 
 
@@ -208,8 +207,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = ON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:203:3: ( 'ON' )
-            // DescribeOperator.g:203:5: 'ON'
+            // DescribeOperator.g:193:3: ( 'ON' )
+            // DescribeOperator.g:193:5: 'ON'
             {
             match("ON"); 
 
@@ -231,8 +230,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = IN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:204:3: ( 'IN' )
-            // DescribeOperator.g:204:5: 'IN'
+            // DescribeOperator.g:194:3: ( 'IN' )
+            // DescribeOperator.g:194:5: 'IN'
             {
             match("IN"); 
 
@@ -254,8 +253,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:205:4: ( 'NOT' )
-            // DescribeOperator.g:205:6: 'NOT'
+            // DescribeOperator.g:195:4: ( 'NOT' )
+            // DescribeOperator.g:195:6: 'NOT'
             {
             match("NOT"); 
 
@@ -277,8 +276,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = AND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:206:4: ( 'AND' )
-            // DescribeOperator.g:206:6: 'AND'
+            // DescribeOperator.g:196:4: ( 'AND' )
+            // DescribeOperator.g:196:6: 'AND'
             {
             match("AND"); 
 
@@ -300,8 +299,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = AS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:207:3: ( 'AS' )
-            // DescribeOperator.g:207:5: 'AS'
+            // DescribeOperator.g:197:3: ( 'AS' )
+            // DescribeOperator.g:197:5: 'AS'
             {
             match("AS"); 
 
@@ -323,8 +322,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = ORDER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:208:6: ( 'ORDER' )
-            // DescribeOperator.g:208:8: 'ORDER'
+            // DescribeOperator.g:198:6: ( 'ORDER' )
+            // DescribeOperator.g:198:8: 'ORDER'
             {
             match("ORDER"); 
 
@@ -341,36 +340,13 @@ public class DescribeOperatorLexer extends Lexer {
     }
     // $ANTLR end "ORDER"
 
-    // $ANTLR start "USING"
-    public final void mUSING() throws RecognitionException {
-        try {
-            int _type = USING;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:209:6: ( 'USING' )
-            // DescribeOperator.g:209:8: 'USING'
-            {
-            match("USING"); 
-
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "USING"
-
     // $ANTLR start "ASC"
     public final void mASC() throws RecognitionException {
         try {
             int _type = ASC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:210:4: ( 'ASC' )
-            // DescribeOperator.g:210:6: 'ASC'
+            // DescribeOperator.g:199:4: ( 'ASC' )
+            // DescribeOperator.g:199:6: 'ASC'
             {
             match("ASC"); 
 
@@ -392,8 +368,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = DESC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:211:5: ( 'DESC' )
-            // DescribeOperator.g:211:7: 'DESC'
+            // DescribeOperator.g:200:5: ( 'DESC' )
+            // DescribeOperator.g:200:7: 'DESC'
             {
             match("DESC"); 
 
@@ -415,10 +391,10 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = AGGRFUNC;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:213:9: ( ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' ) )
-            // DescribeOperator.g:213:11: ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' )
+            // DescribeOperator.g:202:9: ( ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' ) )
+            // DescribeOperator.g:202:11: ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' )
             {
-            // DescribeOperator.g:213:11: ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' )
+            // DescribeOperator.g:202:11: ( 'MIN' | 'MAX' | 'SUM' | 'AVG' | 'CNT' )
             int alt1=5;
             switch ( input.LA(1) ) {
             case 'M':
@@ -465,7 +441,7 @@ public class DescribeOperatorLexer extends Lexer {
 
             switch (alt1) {
                 case 1 :
-                    // DescribeOperator.g:213:12: 'MIN'
+                    // DescribeOperator.g:202:12: 'MIN'
                     {
                     match("MIN"); 
 
@@ -474,7 +450,7 @@ public class DescribeOperatorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DescribeOperator.g:213:18: 'MAX'
+                    // DescribeOperator.g:202:18: 'MAX'
                     {
                     match("MAX"); 
 
@@ -483,7 +459,7 @@ public class DescribeOperatorLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // DescribeOperator.g:213:24: 'SUM'
+                    // DescribeOperator.g:202:24: 'SUM'
                     {
                     match("SUM"); 
 
@@ -492,7 +468,7 @@ public class DescribeOperatorLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // DescribeOperator.g:213:30: 'AVG'
+                    // DescribeOperator.g:202:30: 'AVG'
                     {
                     match("AVG"); 
 
@@ -501,7 +477,7 @@ public class DescribeOperatorLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // DescribeOperator.g:213:36: 'CNT'
+                    // DescribeOperator.g:202:36: 'CNT'
                     {
                     match("CNT"); 
 
@@ -529,8 +505,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:215:5: ( '+' )
-            // DescribeOperator.g:215:7: '+'
+            // DescribeOperator.g:204:5: ( '+' )
+            // DescribeOperator.g:204:7: '+'
             {
             match('+'); 
 
@@ -550,8 +526,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:216:6: ( '-' )
-            // DescribeOperator.g:216:8: '-'
+            // DescribeOperator.g:205:6: ( '-' )
+            // DescribeOperator.g:205:8: '-'
             {
             match('-'); 
 
@@ -571,8 +547,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:217:5: ( '*' )
-            // DescribeOperator.g:217:7: '*'
+            // DescribeOperator.g:206:5: ( '*' )
+            // DescribeOperator.g:206:7: '*'
             {
             match('*'); 
 
@@ -592,8 +568,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:218:6: ( '/' )
-            // DescribeOperator.g:218:8: '/'
+            // DescribeOperator.g:207:6: ( '/' )
+            // DescribeOperator.g:207:8: '/'
             {
             match('/'); 
 
@@ -613,8 +589,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = EQUAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:220:6: ( '=' )
-            // DescribeOperator.g:220:8: '='
+            // DescribeOperator.g:209:6: ( '=' )
+            // DescribeOperator.g:209:8: '='
             {
             match('='); 
 
@@ -634,8 +610,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:221:3: ( '>' )
-            // DescribeOperator.g:221:5: '>'
+            // DescribeOperator.g:210:3: ( '>' )
+            // DescribeOperator.g:210:5: '>'
             {
             match('>'); 
 
@@ -655,8 +631,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:222:3: ( '<' )
-            // DescribeOperator.g:222:5: '<'
+            // DescribeOperator.g:211:3: ( '<' )
+            // DescribeOperator.g:211:5: '<'
             {
             match('<'); 
 
@@ -676,8 +652,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = GTE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:223:4: ( '>=' )
-            // DescribeOperator.g:223:6: '>='
+            // DescribeOperator.g:212:4: ( '>=' )
+            // DescribeOperator.g:212:6: '>='
             {
             match(">="); 
 
@@ -699,8 +675,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = LTE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:224:4: ( '<=' )
-            // DescribeOperator.g:224:6: '<='
+            // DescribeOperator.g:213:4: ( '<=' )
+            // DescribeOperator.g:213:6: '<='
             {
             match("<="); 
 
@@ -722,8 +698,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = NEQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:225:4: ( '!=' )
-            // DescribeOperator.g:225:6: '!='
+            // DescribeOperator.g:214:4: ( '!=' )
+            // DescribeOperator.g:214:6: '!='
             {
             match("!="); 
 
@@ -745,8 +721,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = LPARENTHESIS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:227:13: ( '(' )
-            // DescribeOperator.g:227:15: '('
+            // DescribeOperator.g:216:13: ( '(' )
+            // DescribeOperator.g:216:15: '('
             {
             match('('); 
 
@@ -766,8 +742,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = RPARENTHESIS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:228:13: ( ')' )
-            // DescribeOperator.g:228:15: ')'
+            // DescribeOperator.g:217:13: ( ')' )
+            // DescribeOperator.g:217:15: ')'
             {
             match(')'); 
 
@@ -787,8 +763,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:229:7: ( '{' )
-            // DescribeOperator.g:229:9: '{'
+            // DescribeOperator.g:218:7: ( '{' )
+            // DescribeOperator.g:218:9: '{'
             {
             match('{'); 
 
@@ -808,8 +784,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:230:7: ( '}' )
-            // DescribeOperator.g:230:9: '}'
+            // DescribeOperator.g:219:7: ( '}' )
+            // DescribeOperator.g:219:9: '}'
             {
             match('}'); 
 
@@ -829,8 +805,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:231:6: ( ',' )
-            // DescribeOperator.g:231:8: ','
+            // DescribeOperator.g:220:6: ( ',' )
+            // DescribeOperator.g:220:8: ','
             {
             match(','); 
 
@@ -850,8 +826,8 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:232:4: ( '.' )
-            // DescribeOperator.g:232:6: '.'
+            // DescribeOperator.g:221:4: ( '.' )
+            // DescribeOperator.g:221:6: '.'
             {
             match('.'); 
 
@@ -871,10 +847,10 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = WORD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:234:5: ( ( LETTER | '_' | DIGIT )+ ( DOT ( LETTER | '_' | DIGIT )+ )* )
-            // DescribeOperator.g:234:7: ( LETTER | '_' | DIGIT )+ ( DOT ( LETTER | '_' | DIGIT )+ )*
+            // DescribeOperator.g:223:5: ( ( LETTER | '_' | DIGIT )+ ( DOT ( LETTER | '_' | DIGIT )+ )* )
+            // DescribeOperator.g:223:7: ( LETTER | '_' | DIGIT )+ ( DOT ( LETTER | '_' | DIGIT )+ )*
             {
-            // DescribeOperator.g:234:7: ( LETTER | '_' | DIGIT )+
+            // DescribeOperator.g:223:7: ( LETTER | '_' | DIGIT )+
             int cnt2=0;
             loop2:
             do {
@@ -913,7 +889,7 @@ public class DescribeOperatorLexer extends Lexer {
             } while (true);
 
 
-            // DescribeOperator.g:234:31: ( DOT ( LETTER | '_' | DIGIT )+ )*
+            // DescribeOperator.g:223:31: ( DOT ( LETTER | '_' | DIGIT )+ )*
             loop4:
             do {
                 int alt4=2;
@@ -926,12 +902,12 @@ public class DescribeOperatorLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // DescribeOperator.g:234:32: DOT ( LETTER | '_' | DIGIT )+
+            	    // DescribeOperator.g:223:32: DOT ( LETTER | '_' | DIGIT )+
             	    {
             	    mDOT(); 
 
 
-            	    // DescribeOperator.g:234:36: ( LETTER | '_' | DIGIT )+
+            	    // DescribeOperator.g:223:36: ( LETTER | '_' | DIGIT )+
             	    int cnt3=0;
             	    loop3:
             	    do {
@@ -995,12 +971,12 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = TEXTVALUE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:236:10: ( '\\'' ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+ '\\'' )
-            // DescribeOperator.g:236:12: '\\'' ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+ '\\''
+            // DescribeOperator.g:225:10: ( '\\'' ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+ '\\'' )
+            // DescribeOperator.g:225:12: '\\'' ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+ '\\''
             {
             match('\''); 
 
-            // DescribeOperator.g:236:16: ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+
+            // DescribeOperator.g:225:16: ( LETTER | DIGIT | '_' | '/' | '-' | ' ' | '.' )+
             int cnt5=0;
             loop5:
             do {
@@ -1057,10 +1033,10 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:237:7: ( ( '\\'' )? ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? ( '\\'' )? )
-            // DescribeOperator.g:237:9: ( '\\'' )? ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? ( '\\'' )?
+            // DescribeOperator.g:226:7: ( ( '\\'' )? ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? ( '\\'' )? )
+            // DescribeOperator.g:226:9: ( '\\'' )? ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? ( '\\'' )?
             {
-            // DescribeOperator.g:237:9: ( '\\'' )?
+            // DescribeOperator.g:226:9: ( '\\'' )?
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -1069,7 +1045,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
             switch (alt6) {
                 case 1 :
-                    // DescribeOperator.g:237:9: '\\''
+                    // DescribeOperator.g:226:9: '\\''
                     {
                     match('\''); 
 
@@ -1079,7 +1055,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
 
 
-            // DescribeOperator.g:237:15: ( '-' )?
+            // DescribeOperator.g:226:15: ( '-' )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1088,7 +1064,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // DescribeOperator.g:237:16: '-'
+                    // DescribeOperator.g:226:16: '-'
                     {
                     match('-'); 
 
@@ -1098,7 +1074,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
 
 
-            // DescribeOperator.g:237:22: ( DIGIT )+
+            // DescribeOperator.g:226:22: ( DIGIT )+
             int cnt8=0;
             loop8:
             do {
@@ -1137,7 +1113,7 @@ public class DescribeOperatorLexer extends Lexer {
             } while (true);
 
 
-            // DescribeOperator.g:237:31: ( '.' ( DIGIT )+ )?
+            // DescribeOperator.g:226:31: ( '.' ( DIGIT )+ )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -1146,11 +1122,11 @@ public class DescribeOperatorLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // DescribeOperator.g:237:32: '.' ( DIGIT )+
+                    // DescribeOperator.g:226:32: '.' ( DIGIT )+
                     {
                     match('.'); 
 
-                    // DescribeOperator.g:237:36: ( DIGIT )+
+                    // DescribeOperator.g:226:36: ( DIGIT )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -1195,7 +1171,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
 
 
-            // DescribeOperator.g:237:47: ( '\\'' )?
+            // DescribeOperator.g:226:47: ( '\\'' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1204,7 +1180,7 @@ public class DescribeOperatorLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // DescribeOperator.g:237:47: '\\''
+                    // DescribeOperator.g:226:47: '\\''
                     {
                     match('\''); 
 
@@ -1228,7 +1204,7 @@ public class DescribeOperatorLexer extends Lexer {
     // $ANTLR start "DIGIT"
     public final void mDIGIT() throws RecognitionException {
         try {
-            // DescribeOperator.g:238:15: ( '0' .. '9' )
+            // DescribeOperator.g:227:15: ( '0' .. '9' )
             // DescribeOperator.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -1254,7 +1230,7 @@ public class DescribeOperatorLexer extends Lexer {
     // $ANTLR start "LETTER"
     public final void mLETTER() throws RecognitionException {
         try {
-            // DescribeOperator.g:239:16: ( 'a' .. 'z' | 'A' .. 'Z' )
+            // DescribeOperator.g:228:16: ( 'a' .. 'z' | 'A' .. 'Z' )
             // DescribeOperator.g:
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -1282,10 +1258,10 @@ public class DescribeOperatorLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // DescribeOperator.g:240:3: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' ) )
-            // DescribeOperator.g:240:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
+            // DescribeOperator.g:229:3: ( ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' ) )
+            // DescribeOperator.g:229:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
             {
-            // DescribeOperator.g:240:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
+            // DescribeOperator.g:229:5: ( ' ' | '\\t' | '\\r' | '\\n' | '\\r\\n' | '\\f' )
             int alt12=6;
             switch ( input.LA(1) ) {
             case ' ':
@@ -1330,35 +1306,35 @@ public class DescribeOperatorLexer extends Lexer {
 
             switch (alt12) {
                 case 1 :
-                    // DescribeOperator.g:240:6: ' '
+                    // DescribeOperator.g:229:6: ' '
                     {
                     match(' '); 
 
                     }
                     break;
                 case 2 :
-                    // DescribeOperator.g:240:12: '\\t'
+                    // DescribeOperator.g:229:12: '\\t'
                     {
                     match('\t'); 
 
                     }
                     break;
                 case 3 :
-                    // DescribeOperator.g:240:19: '\\r'
+                    // DescribeOperator.g:229:19: '\\r'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 4 :
-                    // DescribeOperator.g:240:25: '\\n'
+                    // DescribeOperator.g:229:25: '\\n'
                     {
                     match('\n'); 
 
                     }
                     break;
                 case 5 :
-                    // DescribeOperator.g:240:30: '\\r\\n'
+                    // DescribeOperator.g:229:30: '\\r\\n'
                     {
                     match("\r\n"); 
 
@@ -1367,7 +1343,7 @@ public class DescribeOperatorLexer extends Lexer {
                     }
                     break;
                 case 6 :
-                    // DescribeOperator.g:240:37: '\\f'
+                    // DescribeOperator.g:229:37: '\\f'
                     {
                     match('\f'); 
 
@@ -1391,8 +1367,8 @@ public class DescribeOperatorLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // DescribeOperator.g:1:8: ( DESCRIBE | WITH | FOR | GROUP | BY | JOIN | ON | IN | NOT | AND | AS | ORDER | USING | ASC | DESC | AGGRFUNC | PLUS | MINUS | STAR | SLASH | EQUAL | GT | LT | GTE | LTE | NEQ | LPARENTHESIS | RPARENTHESIS | LBRACE | RBRACE | COMMA | DOT | WORD | TEXTVALUE | NUMBER | WS )
-        int alt13=36;
+        // DescribeOperator.g:1:8: ( DESCRIBE | WITH | FOR | GROUP | BY | JOIN | ON | IN | NOT | AND | AS | ORDER | ASC | DESC | AGGRFUNC | PLUS | MINUS | STAR | SLASH | EQUAL | GT | LT | GTE | LTE | NEQ | LPARENTHESIS | RPARENTHESIS | LBRACE | RBRACE | COMMA | DOT | WORD | TEXTVALUE | NUMBER | WS )
+        int alt13=35;
         alt13 = dfa13.predict(input);
         switch (alt13) {
             case 1 :
@@ -1492,191 +1468,183 @@ public class DescribeOperatorLexer extends Lexer {
                 }
                 break;
             case 13 :
-                // DescribeOperator.g:1:65: USING
-                {
-                mUSING(); 
-
-
-                }
-                break;
-            case 14 :
-                // DescribeOperator.g:1:71: ASC
+                // DescribeOperator.g:1:65: ASC
                 {
                 mASC(); 
 
 
                 }
                 break;
-            case 15 :
-                // DescribeOperator.g:1:75: DESC
+            case 14 :
+                // DescribeOperator.g:1:69: DESC
                 {
                 mDESC(); 
 
 
                 }
                 break;
-            case 16 :
-                // DescribeOperator.g:1:80: AGGRFUNC
+            case 15 :
+                // DescribeOperator.g:1:74: AGGRFUNC
                 {
                 mAGGRFUNC(); 
 
 
                 }
                 break;
-            case 17 :
-                // DescribeOperator.g:1:89: PLUS
+            case 16 :
+                // DescribeOperator.g:1:83: PLUS
                 {
                 mPLUS(); 
 
 
                 }
                 break;
-            case 18 :
-                // DescribeOperator.g:1:94: MINUS
+            case 17 :
+                // DescribeOperator.g:1:88: MINUS
                 {
                 mMINUS(); 
 
 
                 }
                 break;
-            case 19 :
-                // DescribeOperator.g:1:100: STAR
+            case 18 :
+                // DescribeOperator.g:1:94: STAR
                 {
                 mSTAR(); 
 
 
                 }
                 break;
-            case 20 :
-                // DescribeOperator.g:1:105: SLASH
+            case 19 :
+                // DescribeOperator.g:1:99: SLASH
                 {
                 mSLASH(); 
 
 
                 }
                 break;
-            case 21 :
-                // DescribeOperator.g:1:111: EQUAL
+            case 20 :
+                // DescribeOperator.g:1:105: EQUAL
                 {
                 mEQUAL(); 
 
 
                 }
                 break;
-            case 22 :
-                // DescribeOperator.g:1:117: GT
+            case 21 :
+                // DescribeOperator.g:1:111: GT
                 {
                 mGT(); 
 
 
                 }
                 break;
-            case 23 :
-                // DescribeOperator.g:1:120: LT
+            case 22 :
+                // DescribeOperator.g:1:114: LT
                 {
                 mLT(); 
 
 
                 }
                 break;
-            case 24 :
-                // DescribeOperator.g:1:123: GTE
+            case 23 :
+                // DescribeOperator.g:1:117: GTE
                 {
                 mGTE(); 
 
 
                 }
                 break;
-            case 25 :
-                // DescribeOperator.g:1:127: LTE
+            case 24 :
+                // DescribeOperator.g:1:121: LTE
                 {
                 mLTE(); 
 
 
                 }
                 break;
-            case 26 :
-                // DescribeOperator.g:1:131: NEQ
+            case 25 :
+                // DescribeOperator.g:1:125: NEQ
                 {
                 mNEQ(); 
 
 
                 }
                 break;
-            case 27 :
-                // DescribeOperator.g:1:135: LPARENTHESIS
+            case 26 :
+                // DescribeOperator.g:1:129: LPARENTHESIS
                 {
                 mLPARENTHESIS(); 
 
 
                 }
                 break;
-            case 28 :
-                // DescribeOperator.g:1:148: RPARENTHESIS
+            case 27 :
+                // DescribeOperator.g:1:142: RPARENTHESIS
                 {
                 mRPARENTHESIS(); 
 
 
                 }
                 break;
-            case 29 :
-                // DescribeOperator.g:1:161: LBRACE
+            case 28 :
+                // DescribeOperator.g:1:155: LBRACE
                 {
                 mLBRACE(); 
 
 
                 }
                 break;
-            case 30 :
-                // DescribeOperator.g:1:168: RBRACE
+            case 29 :
+                // DescribeOperator.g:1:162: RBRACE
                 {
                 mRBRACE(); 
 
 
                 }
                 break;
-            case 31 :
-                // DescribeOperator.g:1:175: COMMA
+            case 30 :
+                // DescribeOperator.g:1:169: COMMA
                 {
                 mCOMMA(); 
 
 
                 }
                 break;
-            case 32 :
-                // DescribeOperator.g:1:181: DOT
+            case 31 :
+                // DescribeOperator.g:1:175: DOT
                 {
                 mDOT(); 
 
 
                 }
                 break;
-            case 33 :
-                // DescribeOperator.g:1:185: WORD
+            case 32 :
+                // DescribeOperator.g:1:179: WORD
                 {
                 mWORD(); 
 
 
                 }
                 break;
-            case 34 :
-                // DescribeOperator.g:1:190: TEXTVALUE
+            case 33 :
+                // DescribeOperator.g:1:184: TEXTVALUE
                 {
                 mTEXTVALUE(); 
 
 
                 }
                 break;
-            case 35 :
-                // DescribeOperator.g:1:200: NUMBER
+            case 34 :
+                // DescribeOperator.g:1:194: NUMBER
                 {
                 mNUMBER(); 
 
 
                 }
                 break;
-            case 36 :
-                // DescribeOperator.g:1:207: WS
+            case 35 :
+                // DescribeOperator.g:1:201: WS
                 {
                 mWS(); 
 
@@ -1691,67 +1659,66 @@ public class DescribeOperatorLexer extends Lexer {
 
     protected DFA13 dfa13 = new DFA13(this);
     static final String DFA13_eotS =
-        "\1\uffff\16\37\1\uffff\1\63\3\uffff\1\66\1\70\7\uffff\1\37\3\uffff"+
-        "\4\37\1\101\1\37\1\103\1\37\1\105\2\37\1\111\6\37\10\uffff\1\64"+
-        "\1\uffff\2\37\1\125\1\37\1\uffff\1\37\1\uffff\1\37\1\uffff\1\131"+
-        "\1\132\1\133\1\uffff\1\134\1\37\4\134\1\37\2\uffff\1\140\1\141\1"+
-        "\uffff\1\37\1\143\1\37\4\uffff\1\37\1\64\1\37\2\uffff\1\147\1\uffff"+
-        "\1\150\1\151\1\37\3\uffff\1\37\1\154\1\uffff";
+        "\1\uffff\15\36\1\uffff\1\61\3\uffff\1\64\1\66\7\uffff\1\36\3\uffff"+
+        "\4\36\1\77\1\36\1\101\1\36\1\103\2\36\1\107\5\36\10\uffff\1\62\1"+
+        "\uffff\2\36\1\122\1\36\1\uffff\1\36\1\uffff\1\36\1\uffff\1\126\1"+
+        "\127\1\130\1\uffff\5\131\1\36\2\uffff\1\134\1\135\1\uffff\1\36\1"+
+        "\137\1\36\4\uffff\1\62\1\36\2\uffff\1\142\1\uffff\1\143\1\36\2\uffff"+
+        "\1\36\1\146\1\uffff";
     static final String DFA13_eofS =
-        "\155\uffff";
+        "\147\uffff";
     static final String DFA13_minS =
-        "\1\11\1\105\1\111\1\117\1\122\1\131\1\117\2\116\1\117\1\116\1\123"+
-        "\1\101\1\125\1\116\1\uffff\1\60\3\uffff\2\75\7\uffff\1\47\1\40\2"+
-        "\uffff\1\123\1\124\1\122\1\117\1\56\1\111\1\56\1\104\1\56\1\124"+
-        "\1\104\1\56\1\107\1\111\1\116\1\130\1\115\1\124\6\uffff\1\60\2\40"+
-        "\1\uffff\1\103\1\110\1\56\1\125\1\uffff\1\116\1\uffff\1\105\1\uffff"+
-        "\3\56\1\uffff\1\56\1\116\4\56\1\47\1\uffff\1\40\2\56\1\uffff\1\120"+
-        "\1\56\1\122\4\uffff\1\107\1\40\1\111\2\uffff\1\56\1\uffff\2\56\1"+
-        "\102\3\uffff\1\105\1\56\1\uffff";
+        "\1\11\1\105\1\111\1\117\1\122\1\131\1\117\2\116\1\117\1\116\1\101"+
+        "\1\125\1\116\1\uffff\1\60\3\uffff\2\75\7\uffff\1\47\1\40\2\uffff"+
+        "\1\123\1\124\1\122\1\117\1\56\1\111\1\56\1\104\1\56\1\124\1\104"+
+        "\1\56\1\107\1\116\1\130\1\115\1\124\6\uffff\1\60\2\40\1\uffff\1"+
+        "\103\1\110\1\56\1\125\1\uffff\1\116\1\uffff\1\105\1\uffff\3\56\1"+
+        "\uffff\5\56\1\47\1\uffff\1\40\2\56\1\uffff\1\120\1\56\1\122\4\uffff"+
+        "\1\40\1\111\2\uffff\1\56\1\uffff\1\56\1\102\2\uffff\1\105\1\56\1"+
+        "\uffff";
     static final String DFA13_maxS =
         "\1\175\1\105\1\111\1\117\1\122\1\131\1\117\1\122\1\116\1\117\1\126"+
-        "\1\123\1\111\1\125\1\116\1\uffff\1\71\3\uffff\2\75\7\uffff\1\71"+
-        "\1\172\2\uffff\1\123\1\124\1\122\1\117\1\172\1\111\1\172\1\104\1"+
-        "\172\1\124\1\104\1\172\1\107\1\111\1\116\1\130\1\115\1\124\6\uffff"+
-        "\3\172\1\uffff\1\103\1\110\1\172\1\125\1\uffff\1\116\1\uffff\1\105"+
-        "\1\uffff\3\172\1\uffff\1\172\1\116\4\172\1\71\1\uffff\3\172\1\uffff"+
-        "\1\120\1\172\1\122\4\uffff\1\107\1\172\1\111\2\uffff\1\172\1\uffff"+
-        "\2\172\1\102\3\uffff\1\105\1\172\1\uffff";
+        "\1\111\1\125\1\116\1\uffff\1\71\3\uffff\2\75\7\uffff\1\71\1\172"+
+        "\2\uffff\1\123\1\124\1\122\1\117\1\172\1\111\1\172\1\104\1\172\1"+
+        "\124\1\104\1\172\1\107\1\116\1\130\1\115\1\124\6\uffff\3\172\1\uffff"+
+        "\1\103\1\110\1\172\1\125\1\uffff\1\116\1\uffff\1\105\1\uffff\3\172"+
+        "\1\uffff\5\172\1\71\1\uffff\3\172\1\uffff\1\120\1\172\1\122\4\uffff"+
+        "\1\172\1\111\2\uffff\1\172\1\uffff\1\172\1\102\2\uffff\1\105\1\172"+
+        "\1\uffff";
     static final String DFA13_acceptS =
-        "\17\uffff\1\21\1\uffff\1\23\1\24\1\25\2\uffff\1\32\1\33\1\34\1\35"+
-        "\1\36\1\37\1\40\2\uffff\1\41\1\44\22\uffff\1\22\1\43\1\30\1\26\1"+
-        "\31\1\27\3\uffff\1\42\4\uffff\1\5\1\uffff\1\7\1\uffff\1\10\3\uffff"+
-        "\1\13\7\uffff\1\42\3\uffff\1\3\3\uffff\1\11\1\12\1\16\1\20\3\uffff"+
-        "\1\17\1\2\1\uffff\1\6\3\uffff\1\4\1\14\1\15\2\uffff\1\1";
+        "\16\uffff\1\20\1\uffff\1\22\1\23\1\24\2\uffff\1\31\1\32\1\33\1\34"+
+        "\1\35\1\36\1\37\2\uffff\1\40\1\43\21\uffff\1\21\1\42\1\27\1\25\1"+
+        "\30\1\26\3\uffff\1\41\4\uffff\1\5\1\uffff\1\7\1\uffff\1\10\3\uffff"+
+        "\1\13\6\uffff\1\41\3\uffff\1\3\3\uffff\1\11\1\12\1\15\1\17\2\uffff"+
+        "\1\16\1\2\1\uffff\1\6\2\uffff\1\4\1\14\2\uffff\1\1";
     static final String DFA13_specialS =
-        "\155\uffff}>";
+        "\147\uffff}>";
     static final String[] DFA13_transitionS = {
-            "\2\40\1\uffff\2\40\22\uffff\1\40\1\26\5\uffff\1\36\1\27\1\30"+
-            "\1\21\1\17\1\33\1\20\1\34\1\22\12\35\2\uffff\1\25\1\23\1\24"+
-            "\2\uffff\1\12\1\5\1\16\1\1\1\37\1\3\1\4\1\37\1\10\1\6\2\37\1"+
-            "\14\1\11\1\7\3\37\1\15\1\37\1\13\1\37\1\2\3\37\4\uffff\1\37"+
-            "\1\uffff\32\37\1\31\1\uffff\1\32",
+            "\2\37\1\uffff\2\37\22\uffff\1\37\1\25\5\uffff\1\35\1\26\1\27"+
+            "\1\20\1\16\1\32\1\17\1\33\1\21\12\34\2\uffff\1\24\1\22\1\23"+
+            "\2\uffff\1\12\1\5\1\15\1\1\1\36\1\3\1\4\1\36\1\10\1\6\2\36\1"+
+            "\13\1\11\1\7\3\36\1\14\3\36\1\2\3\36\4\uffff\1\36\1\uffff\32"+
+            "\36\1\30\1\uffff\1\31",
+            "\1\40",
             "\1\41",
             "\1\42",
             "\1\43",
             "\1\44",
             "\1\45",
-            "\1\46",
-            "\1\47\3\uffff\1\50",
+            "\1\46\3\uffff\1\47",
+            "\1\50",
             "\1\51",
-            "\1\52",
-            "\1\53\4\uffff\1\54\2\uffff\1\55",
-            "\1\56",
-            "\1\60\7\uffff\1\57",
-            "\1\61",
-            "\1\62",
+            "\1\52\4\uffff\1\53\2\uffff\1\54",
+            "\1\56\7\uffff\1\55",
+            "\1\57",
+            "\1\60",
             "",
-            "\12\64",
+            "\12\62",
             "",
             "",
             "",
+            "\1\63",
             "\1\65",
-            "\1\67",
             "",
             "",
             "",
@@ -1759,92 +1726,87 @@ public class DescribeOperatorLexer extends Lexer {
             "",
             "",
             "",
-            "\1\64\6\uffff\1\71\1\uffff\12\35",
-            "\1\74\14\uffff\1\72\2\74\12\73\7\uffff\32\74\4\uffff\1\74\1"+
-            "\uffff\32\74",
+            "\1\62\6\uffff\1\67\1\uffff\12\34",
+            "\1\72\14\uffff\1\70\2\72\12\71\7\uffff\32\72\4\uffff\1\72\1"+
+            "\uffff\32\72",
             "",
             "",
+            "\1\73",
+            "\1\74",
             "\1\75",
             "\1\76",
-            "\1\77",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "\1\100",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "\1\102",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "\1\104",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\106",
-            "\1\107",
-            "\1\37\1\uffff\12\37\7\uffff\2\37\1\110\27\37\4\uffff\1\37\1"+
-            "\uffff\32\37",
+            "\1\105",
+            "\1\36\1\uffff\12\36\7\uffff\2\36\1\106\27\36\4\uffff\1\36\1"+
+            "\uffff\32\36",
+            "\1\110",
+            "\1\111",
             "\1\112",
             "\1\113",
             "\1\114",
-            "\1\115",
-            "\1\116",
-            "\1\117",
             "",
             "",
             "",
             "",
             "",
             "",
-            "\12\120\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\74\6\uffff\1\74\5\uffff\3\74\12\73\7\uffff\32\74\4\uffff"+
-            "\1\74\1\uffff\32\74",
-            "\1\74\6\uffff\1\121\5\uffff\1\74\1\122\1\74\12\73\7\uffff\32"+
-            "\74\4\uffff\1\74\1\uffff\32\74",
+            "\12\115\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\72\6\uffff\1\72\5\uffff\3\72\12\71\7\uffff\32\72\4\uffff"+
+            "\1\72\1\uffff\32\72",
+            "\1\72\6\uffff\1\116\5\uffff\1\72\1\117\1\72\12\71\7\uffff\32"+
+            "\72\4\uffff\1\72\1\uffff\32\72",
             "",
+            "\1\120",
+            "\1\121",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "\1\123",
+            "",
             "\1\124",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\126",
             "",
-            "\1\127",
+            "\1\125",
             "",
-            "\1\130",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\62\10\uffff\12\115",
             "",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\135",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\64\10\uffff\12\120",
+            "\1\72\6\uffff\1\72\5\uffff\3\72\12\132\7\uffff\32\72\4\uffff"+
+            "\1\72\1\uffff\32\72",
+            "\1\36\1\uffff\12\36\7\uffff\21\36\1\133\10\36\4\uffff\1\36"+
+            "\1\uffff\32\36",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "",
-            "\1\74\6\uffff\1\74\5\uffff\3\74\12\136\7\uffff\32\74\4\uffff"+
-            "\1\74\1\uffff\32\74",
-            "\1\37\1\uffff\12\37\7\uffff\21\37\1\137\10\37\4\uffff\1\37"+
-            "\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "\1\136",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "\1\140",
             "",
-            "\1\142",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "",
+            "",
+            "",
+            "\1\72\6\uffff\1\116\5\uffff\3\72\12\132\7\uffff\32\72\4\uffff"+
+            "\1\72\1\uffff\32\72",
+            "\1\141",
+            "",
+            "",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
+            "",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             "\1\144",
             "",
             "",
-            "",
-            "",
             "\1\145",
-            "\1\74\6\uffff\1\121\5\uffff\3\74\12\136\7\uffff\32\74\4\uffff"+
-            "\1\74\1\uffff\32\74",
-            "\1\146",
-            "",
-            "",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
-            "\1\152",
-            "",
-            "",
-            "",
-            "\1\153",
-            "\1\37\1\uffff\12\37\7\uffff\32\37\4\uffff\1\37\1\uffff\32\37",
+            "\1\36\1\uffff\12\36\7\uffff\32\36\4\uffff\1\36\1\uffff\32\36",
             ""
     };
 
@@ -1878,7 +1840,7 @@ public class DescribeOperatorLexer extends Lexer {
             this.transition = DFA13_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( DESCRIBE | WITH | FOR | GROUP | BY | JOIN | ON | IN | NOT | AND | AS | ORDER | USING | ASC | DESC | AGGRFUNC | PLUS | MINUS | STAR | SLASH | EQUAL | GT | LT | GTE | LTE | NEQ | LPARENTHESIS | RPARENTHESIS | LBRACE | RBRACE | COMMA | DOT | WORD | TEXTVALUE | NUMBER | WS );";
+            return "1:1: Tokens : ( DESCRIBE | WITH | FOR | GROUP | BY | JOIN | ON | IN | NOT | AND | AS | ORDER | ASC | DESC | AGGRFUNC | PLUS | MINUS | STAR | SLASH | EQUAL | GT | LT | GTE | LTE | NEQ | LPARENTHESIS | RPARENTHESIS | LBRACE | RBRACE | COMMA | DOT | WORD | TEXTVALUE | NUMBER | WS );";
         }
     }
  

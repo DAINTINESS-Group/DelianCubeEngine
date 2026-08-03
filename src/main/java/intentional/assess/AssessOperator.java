@@ -19,6 +19,7 @@ import intentional.assess.syntax.AssessQueryLexer;
 import intentional.assess.syntax.AssessQueryParser;
 import intentional.assess.utils.ComparedCell;
 import intentional.labeling.Labeling;
+import intentional.labeling.LabelingScheme;
 import intentional.operator.IntentionalOperator;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -37,7 +38,7 @@ public class AssessOperator implements IntentionalOperator {
 
     /**
      * Parses the query, compares the cube data against its benchmark and labels the deltas under the
-     * query's scheme, returning the operator's product as a single-element list.
+     * query's schemes, returning the operator's product as a single-element list.
      *
      * @param assessQuery The user-provided query for assessment reasons
      */
@@ -46,18 +47,18 @@ public class AssessOperator implements IntentionalOperator {
         AssessQuery parsedQuery = parseQuery(assessQuery);
 
         LabeledResult operatorResult = new LabeledResult(
-                parsedQuery.targetCubeQuery, parsedQuery.targetCube,
-                Collections.singletonList(assess(parsedQuery)));
+                parsedQuery.targetCubeQuery, parsedQuery.targetCube, assess(parsedQuery));
 
         return Collections.singletonList(operatorResult);
     }
 
     /**
-     * Compares each target cell to the query's benchmark via its delta scheme and labels the deltas: the
-     * labeling carries the delta as magnitude and the matched benchmark value as reference; cells without
-     * a benchmark match stay unlabeled.
+     * Compares each target cell to the query's benchmark via its delta scheme and labels the deltas under
+     * each of the query's schemes — one labeling per scheme over the same deltas, each carrying the delta
+     * as magnitude and the matched benchmark value as reference; cells without a benchmark match stay
+     * unlabeled.
      */
-    private static Labeling assess(AssessQuery query) {
+    private static List<Labeling> assess(AssessQuery query) {
         List<Cell> targetCells = query.targetCube.getCells();
         if (targetCells.isEmpty()) {
             throw new RuntimeException("No cells collected from the target cube query");
@@ -72,7 +73,11 @@ public class AssessOperator implements IntentionalOperator {
                 benchmarkValues.put(compared.target, compared.benchmark.toDouble());
             }
         }
-        return new Labeling(query.labelingScheme, deltas, 0, benchmarkValues);
+        List<Labeling> labelings = new ArrayList<>();
+        for (LabelingScheme scheme : query.labelingSchemes) {
+            labelings.add(new Labeling(scheme, deltas, 0, benchmarkValues));
+        }
+        return labelings;
     }
 
     private AssessQuery parseQuery(String assessQuery) {
