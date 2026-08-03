@@ -90,6 +90,11 @@ public class CubeManagerAdapter {
         this.groupBySet = groupBySet;
     }
 
+    /** The name the target measure answers to: its alias when derived, its column otherwise. */
+    public String getTargetMeasureReference() {
+        return measureAlias != null ? measureAlias : measurement;
+    }
+
     public CubeQuery translateToCubeQuery() {
         try {
             CubeQuery query = cubeManager.createCubeQueryFromString(generateQuery(), new HashMap<>());

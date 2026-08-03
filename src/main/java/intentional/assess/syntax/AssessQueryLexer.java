@@ -1,4 +1,4 @@
-// $ANTLR 3.4 AssessQuery.g 2026-08-03 20:50:19
+// $ANTLR 3.4 AssessQuery.g 2026-08-03 21:38:25
 
 package intentional.assess.syntax;
 
@@ -406,7 +406,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "A"
     public final void mA() throws RecognitionException {
         try {
-            // AssessQuery.g:168:12: ( ( 'A' | 'a' ) )
+            // AssessQuery.g:178:12: ( ( 'A' | 'a' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
@@ -432,7 +432,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "B"
     public final void mB() throws RecognitionException {
         try {
-            // AssessQuery.g:169:12: ( ( 'B' | 'b' ) )
+            // AssessQuery.g:179:12: ( ( 'B' | 'b' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='B'||input.LA(1)=='b' ) {
@@ -458,7 +458,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "C"
     public final void mC() throws RecognitionException {
         try {
-            // AssessQuery.g:170:12: ( ( 'C' | 'c' ) )
+            // AssessQuery.g:180:12: ( ( 'C' | 'c' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
@@ -484,7 +484,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "D"
     public final void mD() throws RecognitionException {
         try {
-            // AssessQuery.g:171:12: ( ( 'D' | 'd' ) )
+            // AssessQuery.g:181:12: ( ( 'D' | 'd' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
@@ -510,7 +510,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // AssessQuery.g:172:12: ( ( 'E' | 'e' ) )
+            // AssessQuery.g:182:12: ( ( 'E' | 'e' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
@@ -536,7 +536,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "F"
     public final void mF() throws RecognitionException {
         try {
-            // AssessQuery.g:173:12: ( ( 'F' | 'f' ) )
+            // AssessQuery.g:183:12: ( ( 'F' | 'f' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
@@ -562,7 +562,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "G"
     public final void mG() throws RecognitionException {
         try {
-            // AssessQuery.g:174:12: ( ( 'G' | 'g' ) )
+            // AssessQuery.g:184:12: ( ( 'G' | 'g' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='G'||input.LA(1)=='g' ) {
@@ -588,7 +588,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "H"
     public final void mH() throws RecognitionException {
         try {
-            // AssessQuery.g:175:12: ( ( 'H' | 'h' ) )
+            // AssessQuery.g:185:12: ( ( 'H' | 'h' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='H'||input.LA(1)=='h' ) {
@@ -614,7 +614,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "I"
     public final void mI() throws RecognitionException {
         try {
-            // AssessQuery.g:176:12: ( ( 'I' | 'i' ) )
+            // AssessQuery.g:186:12: ( ( 'I' | 'i' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
@@ -640,7 +640,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "J"
     public final void mJ() throws RecognitionException {
         try {
-            // AssessQuery.g:177:12: ( ( 'J' | 'j' ) )
+            // AssessQuery.g:187:12: ( ( 'J' | 'j' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='J'||input.LA(1)=='j' ) {
@@ -666,7 +666,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "K"
     public final void mK() throws RecognitionException {
         try {
-            // AssessQuery.g:178:12: ( ( 'K' | 'k' ) )
+            // AssessQuery.g:188:12: ( ( 'K' | 'k' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='K'||input.LA(1)=='k' ) {
@@ -692,7 +692,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "L"
     public final void mL() throws RecognitionException {
         try {
-            // AssessQuery.g:179:12: ( ( 'L' | 'l' ) )
+            // AssessQuery.g:189:12: ( ( 'L' | 'l' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
@@ -718,7 +718,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "M"
     public final void mM() throws RecognitionException {
         try {
-            // AssessQuery.g:180:12: ( ( 'M' | 'm' ) )
+            // AssessQuery.g:190:12: ( ( 'M' | 'm' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
@@ -744,7 +744,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "N"
     public final void mN() throws RecognitionException {
         try {
-            // AssessQuery.g:181:12: ( ( 'N' | 'n' ) )
+            // AssessQuery.g:191:12: ( ( 'N' | 'n' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
@@ -770,7 +770,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "O"
     public final void mO() throws RecognitionException {
         try {
-            // AssessQuery.g:182:12: ( ( 'O' | 'o' ) )
+            // AssessQuery.g:192:12: ( ( 'O' | 'o' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
@@ -796,7 +796,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "P"
     public final void mP() throws RecognitionException {
         try {
-            // AssessQuery.g:183:12: ( ( 'P' | 'p' ) )
+            // AssessQuery.g:193:12: ( ( 'P' | 'p' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='P'||input.LA(1)=='p' ) {
@@ -822,7 +822,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "Q"
     public final void mQ() throws RecognitionException {
         try {
-            // AssessQuery.g:184:12: ( ( 'Q' | 'q' ) )
+            // AssessQuery.g:194:12: ( ( 'Q' | 'q' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='Q'||input.LA(1)=='q' ) {
@@ -848,7 +848,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "R"
     public final void mR() throws RecognitionException {
         try {
-            // AssessQuery.g:185:12: ( ( 'R' | 'r' ) )
+            // AssessQuery.g:195:12: ( ( 'R' | 'r' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
@@ -874,7 +874,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "S"
     public final void mS() throws RecognitionException {
         try {
-            // AssessQuery.g:186:12: ( ( 'S' | 's' ) )
+            // AssessQuery.g:196:12: ( ( 'S' | 's' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
@@ -900,7 +900,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "T"
     public final void mT() throws RecognitionException {
         try {
-            // AssessQuery.g:187:12: ( ( 'T' | 't' ) )
+            // AssessQuery.g:197:12: ( ( 'T' | 't' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
@@ -926,7 +926,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "U"
     public final void mU() throws RecognitionException {
         try {
-            // AssessQuery.g:188:12: ( ( 'U' | 'u' ) )
+            // AssessQuery.g:198:12: ( ( 'U' | 'u' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
@@ -952,7 +952,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "V"
     public final void mV() throws RecognitionException {
         try {
-            // AssessQuery.g:189:12: ( ( 'V' | 'v' ) )
+            // AssessQuery.g:199:12: ( ( 'V' | 'v' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='V'||input.LA(1)=='v' ) {
@@ -978,7 +978,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "W"
     public final void mW() throws RecognitionException {
         try {
-            // AssessQuery.g:190:12: ( ( 'W' | 'w' ) )
+            // AssessQuery.g:200:12: ( ( 'W' | 'w' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='W'||input.LA(1)=='w' ) {
@@ -1004,7 +1004,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "X"
     public final void mX() throws RecognitionException {
         try {
-            // AssessQuery.g:191:12: ( ( 'X' | 'x' ) )
+            // AssessQuery.g:201:12: ( ( 'X' | 'x' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -1030,7 +1030,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "Y"
     public final void mY() throws RecognitionException {
         try {
-            // AssessQuery.g:192:12: ( ( 'Y' | 'y' ) )
+            // AssessQuery.g:202:12: ( ( 'Y' | 'y' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='Y'||input.LA(1)=='y' ) {
@@ -1056,7 +1056,7 @@ public class AssessQueryLexer extends Lexer {
     // $ANTLR start "Z"
     public final void mZ() throws RecognitionException {
         try {
-            // AssessQuery.g:193:12: ( ( 'Z' | 'z' ) )
+            // AssessQuery.g:203:12: ( ( 'Z' | 'z' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='Z'||input.LA(1)=='z' ) {
@@ -1084,8 +1084,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = AGAINST;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:196:9: ( A G A I N S T )
-            // AssessQuery.g:196:11: A G A I N S T
+            // AssessQuery.g:206:9: ( A G A I N S T )
+            // AssessQuery.g:206:11: A G A I N S T
             {
             mA(); 
 
@@ -1124,8 +1124,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = ASSESS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:197:8: ( A S S E S S )
-            // AssessQuery.g:197:10: A S S E S S
+            // AssessQuery.g:207:8: ( A S S E S S )
+            // AssessQuery.g:207:10: A S S E S S
             {
             mA(); 
 
@@ -1161,8 +1161,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = BY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:198:4: ( B Y )
-            // AssessQuery.g:198:6: B Y
+            // AssessQuery.g:208:4: ( B Y )
+            // AssessQuery.g:208:6: B Y
             {
             mB(); 
 
@@ -1186,8 +1186,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = FOR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:199:5: ( F O R )
-            // AssessQuery.g:199:7: F O R
+            // AssessQuery.g:209:5: ( F O R )
+            // AssessQuery.g:209:7: F O R
             {
             mF(); 
 
@@ -1214,8 +1214,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = LABELS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:200:8: ( L A B E L S )
-            // AssessQuery.g:200:10: L A B E L S
+            // AssessQuery.g:210:8: ( L A B E L S )
+            // AssessQuery.g:210:10: L A B E L S
             {
             mL(); 
 
@@ -1251,8 +1251,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = PAST;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:201:6: ( P A S T )
-            // AssessQuery.g:201:8: P A S T
+            // AssessQuery.g:211:6: ( P A S T )
+            // AssessQuery.g:211:8: P A S T
             {
             mP(); 
 
@@ -1282,8 +1282,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = USING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:202:7: ( U S I N G )
-            // AssessQuery.g:202:9: U S I N G
+            // AssessQuery.g:212:7: ( U S I N G )
+            // AssessQuery.g:212:9: U S I N G
             {
             mU(); 
 
@@ -1316,8 +1316,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = WITH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:203:6: ( W I T H )
-            // AssessQuery.g:203:8: W I T H
+            // AssessQuery.g:213:6: ( W I T H )
+            // AssessQuery.g:213:8: W I T H
             {
             mW(); 
 
@@ -1347,8 +1347,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = SAVE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:204:6: ( S A V E )
-            // AssessQuery.g:204:8: S A V E
+            // AssessQuery.g:214:6: ( S A V E )
+            // AssessQuery.g:214:8: S A V E
             {
             mS(); 
 
@@ -1378,8 +1378,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = AS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:205:4: ( A S )
-            // AssessQuery.g:205:6: A S
+            // AssessQuery.g:215:4: ( A S )
+            // AssessQuery.g:215:6: A S
             {
             mA(); 
 
@@ -1403,10 +1403,10 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = AGGREGATE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:207:11: ( ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T ) )
-            // AssessQuery.g:207:13: ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T )
+            // AssessQuery.g:217:11: ( ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T ) )
+            // AssessQuery.g:217:13: ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T )
             {
-            // AssessQuery.g:207:13: ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T )
+            // AssessQuery.g:217:13: ( A V G | A V E R A G E | M I N | M I N I M U M | M A X | M A X I M U M | S U M | C O U N T )
             int alt1=8;
             switch ( input.LA(1) ) {
             case 'A':
@@ -1518,7 +1518,7 @@ public class AssessQueryLexer extends Lexer {
 
             switch (alt1) {
                 case 1 :
-                    // AssessQuery.g:207:14: A V G
+                    // AssessQuery.g:217:14: A V G
                     {
                     mA(); 
 
@@ -1532,7 +1532,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // AssessQuery.g:207:22: A V E R A G E
+                    // AssessQuery.g:217:22: A V E R A G E
                     {
                     mA(); 
 
@@ -1558,7 +1558,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // AssessQuery.g:208:13: M I N
+                    // AssessQuery.g:218:13: M I N
                     {
                     mM(); 
 
@@ -1572,7 +1572,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // AssessQuery.g:208:21: M I N I M U M
+                    // AssessQuery.g:218:21: M I N I M U M
                     {
                     mM(); 
 
@@ -1598,7 +1598,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 5 :
-                    // AssessQuery.g:209:13: M A X
+                    // AssessQuery.g:219:13: M A X
                     {
                     mM(); 
 
@@ -1612,7 +1612,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 6 :
-                    // AssessQuery.g:209:21: M A X I M U M
+                    // AssessQuery.g:219:21: M A X I M U M
                     {
                     mM(); 
 
@@ -1638,7 +1638,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 7 :
-                    // AssessQuery.g:210:13: S U M
+                    // AssessQuery.g:220:13: S U M
                     {
                     mS(); 
 
@@ -1652,7 +1652,7 @@ public class AssessQueryLexer extends Lexer {
                     }
                     break;
                 case 8 :
-                    // AssessQuery.g:210:21: C O U N T
+                    // AssessQuery.g:220:21: C O U N T
                     {
                     mC(); 
 
@@ -1691,10 +1691,10 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:213:5: ( ( '0' .. '9' )+ )
-            // AssessQuery.g:213:7: ( '0' .. '9' )+
+            // AssessQuery.g:223:5: ( ( '0' .. '9' )+ )
+            // AssessQuery.g:223:7: ( '0' .. '9' )+
             {
-            // AssessQuery.g:213:7: ( '0' .. '9' )+
+            // AssessQuery.g:223:7: ( '0' .. '9' )+
             int cnt2=0;
             loop2:
             do {
@@ -1749,8 +1749,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = FLOAT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:214:7: ( INT '.' INT )
-            // AssessQuery.g:214:9: INT '.' INT
+            // AssessQuery.g:224:7: ( INT '.' INT )
+            // AssessQuery.g:224:9: INT '.' INT
             {
             mINT(); 
 
@@ -1776,7 +1776,7 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = SIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:215:6: ( ( '+' | '-' ) )
+            // AssessQuery.g:225:6: ( ( '+' | '-' ) )
             // AssessQuery.g:
             {
             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
@@ -1805,10 +1805,10 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:216:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+ )
-            // AssessQuery.g:216:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
+            // AssessQuery.g:226:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+ )
+            // AssessQuery.g:226:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
             {
-            // AssessQuery.g:216:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
+            // AssessQuery.g:226:6: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | INT )+
             int cnt3=0;
             loop3:
             do {
@@ -1898,28 +1898,28 @@ public class AssessQueryLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // AssessQuery.g:216:7: 'a' .. 'z'
+            	    // AssessQuery.g:226:7: 'a' .. 'z'
             	    {
             	    matchRange('a','z'); 
 
             	    }
             	    break;
             	case 2 :
-            	    // AssessQuery.g:216:16: 'A' .. 'Z'
+            	    // AssessQuery.g:226:16: 'A' .. 'Z'
             	    {
             	    matchRange('A','Z'); 
 
             	    }
             	    break;
             	case 3 :
-            	    // AssessQuery.g:216:25: '_'
+            	    // AssessQuery.g:226:25: '_'
             	    {
             	    match('_'); 
 
             	    }
             	    break;
             	case 4 :
-            	    // AssessQuery.g:216:29: INT
+            	    // AssessQuery.g:226:29: INT
             	    {
             	    mINT(); 
 
@@ -1953,8 +1953,8 @@ public class AssessQueryLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // AssessQuery.g:219:4: ( ( ' ' | '\\t' | '\\n' | '\\r' ) )
-            // AssessQuery.g:219:6: ( ' ' | '\\t' | '\\n' | '\\r' )
+            // AssessQuery.g:229:4: ( ( ' ' | '\\t' | '\\n' | '\\r' ) )
+            // AssessQuery.g:229:6: ( ' ' | '\\t' | '\\n' | '\\r' )
             {
             if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();

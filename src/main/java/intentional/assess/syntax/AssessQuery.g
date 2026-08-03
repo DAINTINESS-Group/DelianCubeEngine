@@ -103,7 +103,17 @@ comparison_scheme [List<String> comparisonMethods] returns [List<String> updated
     : method_name = ID {$updatedComparisonMethods.add($method_name.text);}
     '(' (comparison_scheme[$updatedComparisonMethods] | comparison_args) ')';
 
-comparison_args : ID ',' ( ('benchmark.')? ID | INT);
+comparison_args
+    : first = operand_ref ',' second = operand_ref
+      { if (builder != null) builder.setDeltaOperands($first.ref, $second.ref); }
+    ;
+
+operand_ref returns [String ref]
+    : 'benchmark.' id = ID { $ref = "benchmark." + $id.text; }
+    | id = ID { $ref = $id.text; }
+    | n = INT { $ref = $n.text; }
+    | f = FLOAT { $ref = $f.text; }
+    ;
 
 target_measure
     : e = measure_expression (AS alias = ID)?

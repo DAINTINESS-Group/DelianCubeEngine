@@ -27,6 +27,7 @@ public class AssessQueryBuilder {
     private List<String> deltaFunctions;
     private final List<LabelingScheme> labelers = new ArrayList<>();
     private String outputName = null;
+    private String[] deltaOperandRefs;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
         queryGenerator = new CubeManagerAdapter(cubeManager);
@@ -97,6 +98,42 @@ public class AssessQueryBuilder {
         deltaFunctions = methods;
     }
 
+    /** The operand references of the USING clause's innermost call, as written. */
+    public void setDeltaOperands(String first, String second) {
+        this.deltaOperandRefs = new String[]{first, second};
+    }
+
+    /**
+     * Binds an operand reference: a number is a constant, {@code benchmark.X} the benchmark's measure,
+     * a bare name the target's measure — where X must be the measure the result actually carries.
+     */
+    private DeltaScheme.Operand resolveOperand(String ref) {
+        if (ref.matches("[0-9.]+")) {
+            return DeltaScheme.Operand.constant(Double.parseDouble(ref));
+        }
+        boolean onBenchmark = ref.startsWith("benchmark.");
+        String name = onBenchmark ? ref.substring("benchmark.".length()) : ref;
+        String carried = queryGenerator.getTargetMeasureReference();
+        if (!name.equals(carried)) {
+            throw new IllegalArgumentException(String.format(
+                    "The delta operand '%s' does not resolve: the result carries the measure '%s'",
+                    ref, carried));
+        }
+        if (onBenchmark && benchmarkDetails.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The delta operand '" + ref + "' references the benchmark, but the query has no AGAINST clause");
+        }
+        return onBenchmark ? DeltaScheme.Operand.BENCHMARK : DeltaScheme.Operand.TARGET;
+    }
+
+    private DeltaScheme buildDeltaScheme() {
+        if (deltaOperandRefs == null) {
+            return new DeltaScheme(deltaFunctions);
+        }
+        return new DeltaScheme(deltaFunctions,
+                resolveOperand(deltaOperandRefs[0]), resolveOperand(deltaOperandRefs[1]));
+    }
+
     /** Appends a custom rule scheme from the LABELS clause, under the analyst's name when given. */
     public void addCustomLabeler(List<List<String>> rulesList, String name) {
         labelers.add(name == null
@@ -127,7 +164,7 @@ public class AssessQueryBuilder {
                 targetCubeQuery,
                 queryGenerator.executeCubeQuery(targetCubeQuery),
                 buildBenchmark(),
-                new DeltaScheme(deltaFunctions),
+                buildDeltaScheme(),
                 labelers,
                 outputName);
     }

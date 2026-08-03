@@ -204,6 +204,36 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void constantDeltaOperandDividesByTheConstant() throws RecognitionException {
+        int divisor = 20000;
+        String query = "with loan for region = 'central Bohemia' " +
+                "by month, region assess max(amount) against 10000\n" +
+                "using ratio(amount, " + divisor + ")\n" +
+                "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
+
+        Labeling labeling = assess(query);
+        for (Map.Entry<Cell, String> labeled : labeling.assignment().entrySet()) {
+            double expectedRatio = labeled.getKey().toDouble() / divisor;
+            assertEquals("the delta divides by the written constant, not the AGAINST value",
+                    expectedRatio, labeling.magnitudeOf(labeled.getKey()), 0.0001);
+            assertEquals(expectedRatio > 0.5 ? "high" : "low", labeled.getValue());
+        }
+    }
+
+    @Test
+    public void unresolvableDeltaOperandFailsLoudly() {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for region = 'central Bohemia' " +
+                "by month, region assess max(amount) against 10000\n" +
+                "using ratio(duration, benchmark.duration)\n" +
+                "labels {[0.0, 0.5]: low, (0.5, +inf]: high}";
+
+        IllegalArgumentException error =
+                assertThrows(IllegalArgumentException.class, () -> operator.execute(query));
+        assertTrue(error.getMessage().contains("does not resolve"));
+    }
+
+    @Test
     public void parenthesizedTargetMeasureWithConstantParses() throws RecognitionException {
         String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
                 "assess (sum(amount) - sum(payments)) / 1000 AS ProfitK\n" +
@@ -220,7 +250,7 @@ public class AssessOperatorTest {
     public void derivedMeasureAssessAgainstPastBenchmark() throws RecognitionException {
         String query = "with loan for month = '11/1997', region = 'south Moravia' by month, region\n" +
                 "AssEsS max(amount) - max(payments) AS Spread agAinSt PaST 5\n" +
-                "using ratio(amount, benchmark.amount)\n" +
+                "using ratio(Spread, benchmark.Spread)\n" +
                 "labels {[0.0, 1]: shrunk, (1, +inf): grown}";
 
         Labeling labeling = assess(query);
