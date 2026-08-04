@@ -64,11 +64,9 @@ public enum ConsensusRule {
             for (int c = 0; c < cells.size(); c++) {
                 rankByCell.put(cells.get(c), (double) best[c]);
             }
-            // TODO: the consensus weighs cells by their bucket rank and carries no references, so a
-            // weighted election over it is meaningless; it should inherit the per-cell magnitudes and
-            // references its group shares.
-            return new Labeling(consensusScheme(labelings, domain), rankByCell,
-                    labelings.get(0).measureIndex());
+            return Labeling.withInheritedMagnitudes(consensusScheme(labelings, domain), rankByCell,
+                    labelings.get(0).measureIndex(), meanMagnitudes(labelings, cells),
+                    meanReferences(labelings, cells));
         }
     };
 
@@ -103,6 +101,39 @@ public enum ConsensusRule {
             }
         }
         return cells;
+    }
+
+    /** Each cell's magnitude in the consensus: the mean of the group's magnitudes for it (all cover it). */
+    private static Map<Cell, Double> meanMagnitudes(List<Labeling> labelings, List<Cell> cells) {
+        Map<Cell, Double> means = new LinkedHashMap<>();
+        for (Cell cell : cells) {
+            double sum = 0;
+            for (Labeling labeling : labelings) {
+                sum += labeling.magnitudeOf(cell);
+            }
+            means.put(cell, sum / labelings.size());
+        }
+        return means;
+    }
+
+    /** Each cell's consensus reference: the mean over the group members that attached one, absent if none. */
+    private static Map<Cell, Double> meanReferences(List<Labeling> labelings, List<Cell> cells) {
+        Map<Cell, Double> means = new LinkedHashMap<>();
+        for (Cell cell : cells) {
+            double sum = 0;
+            int count = 0;
+            for (Labeling labeling : labelings) {
+                double reference = labeling.referenceOf(cell);
+                if (!Double.isNaN(reference)) {
+                    sum += reference;
+                    count++;
+                }
+            }
+            if (count > 0) {
+                means.put(cell, sum / count);
+            }
+        }
+        return means;
     }
 
     /** The climb starts: every vote itself, plus the cells' mean ranks rounded to buckets. */

@@ -26,13 +26,17 @@ public final class LabelPredominanceArchetype {
     private LabelPredominanceArchetype() {}
 
     public static ArchetypeProperty create() {
+        return create(ElectionSpec.DEFAULT);
+    }
+
+    public static ArchetypeProperty create(ElectionSpec election) {
         ElementaryHighlightRole labeledCell = new ElementaryHighlightRole(
                 "LabeledCell",
                 Collections.singletonList(new CharacterRole("LabeledCell")),
                 new MeasureRole("LabeledMeasure"),
                 Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
-                
-        Algorithm algorithm = new LabelDistributionAlgorithm(labeledCell);
+
+        Algorithm algorithm = new LabelDistributionAlgorithm(labeledCell, election);
         return new ArchetypeProperty(
                 "LabelPredominance",
                 new MainMeasureRole("Labeled", MeasureConstraint.ANY),

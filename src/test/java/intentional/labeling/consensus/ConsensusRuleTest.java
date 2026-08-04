@@ -40,6 +40,25 @@ public class ConsensusRuleTest {
         return new Labeling(rankScheme(schemeName, DOMAIN, true), rankByCell);
     }
 
+    /** A rule-based scheme labeling a real quantity into the ordered domain by two thresholds. */
+    private static LabelingScheme thresholdScheme(String name, double lowMax, double okMax) {
+        return new LabelingScheme() {
+            @Override public String name() { return name; }
+            @Override public String applyLabels(double value) {
+                return value <= lowMax ? "BAD" : value <= okMax ? "OK" : "GOOD";
+            }
+            @Override public LabelDomain domain() { return new LabelDomain(DOMAIN, true); }
+        };
+    }
+
+    private static Map<Cell, Double> byCell(Cell[] cells, double... values) {
+        Map<Cell, Double> map = new LinkedHashMap<>();
+        for (int i = 0; i < cells.length; i++) {
+            map.put(cells[i], values[i]);
+        }
+        return map;
+    }
+
     private static Cell[] fiveCells() {
         String[] names = {"Red", "Rose", "Copper", "Yellow", "White"};
         Cell[] cells = new Cell[names.length];
@@ -92,6 +111,40 @@ public class ConsensusRuleTest {
         assertEquals("OK", consensus.of(cells[2]));
         assertEquals("GOOD", consensus.of(cells[3]));
         assertEquals("GOOD", consensus.of(cells[4]));
+    }
+
+    @Test
+    public void consensusInheritsMeanMagnitudeAndReference() {
+        Cell[] cells = fiveCells();
+        Labeling a = new Labeling(thresholdScheme("A", 15, 35),
+                byCell(cells, 10, 20, 30, 40, 50), 0, byCell(cells, 5, 5, 5, 5, 5));
+        Labeling b = new Labeling(thresholdScheme("B", 15, 35),
+                byCell(cells, 12, 18, 34, 44, 46), 0, byCell(cells, 7, 7, 7, 7, 7));
+
+        Labeling consensus = ConsensusRule.KEMENY.consense(Arrays.asList(a, b));
+
+        assertEquals("magnitude is the group mean, not the bucket rank", 11.0,
+                consensus.magnitudeOf(cells[0]), 1e-9);
+        assertEquals(32.0, consensus.magnitudeOf(cells[2]), 1e-9);
+        assertEquals(48.0, consensus.magnitudeOf(cells[4]), 1e-9);
+        assertEquals("reference is the group mean", 6.0, consensus.referenceOf(cells[0]), 1e-9);
+        assertEquals(6.0, consensus.referenceOf(cells[4]), 1e-9);
+    }
+
+    @Test
+    public void consensusReferenceAveragesOnlyMembersThatAttachedOne() {
+        Cell[] cells = fiveCells();
+        Labeling withRef = new Labeling(thresholdScheme("A", 15, 35),
+                byCell(cells, 10, 20, 30, 40, 50), 0, byCell(cells, 5, 5, 5, 5, 5));
+        Labeling noRef = new Labeling(thresholdScheme("B", 15, 35),
+                byCell(cells, 12, 18, 34, 44, 46));
+
+        Labeling consensus = ConsensusRule.KEMENY.consense(Arrays.asList(withRef, noRef));
+
+        assertEquals("only the member that attached a reference is averaged", 5.0,
+                consensus.referenceOf(cells[0]), 1e-9);
+        assertEquals("magnitude still averages every member", 11.0,
+                consensus.magnitudeOf(cells[0]), 1e-9);
     }
 
     @Test

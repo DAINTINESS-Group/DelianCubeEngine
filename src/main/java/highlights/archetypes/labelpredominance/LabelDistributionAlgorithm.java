@@ -49,32 +49,16 @@ public final class LabelDistributionAlgorithm implements LabelingAlgorithm {
     public static final ParameterRole WEIGHTING = new ParameterRole(
             "weighting", "The Weighting the ballots are cast under, by ordinal", 0);
 
-    /**
-     * What a cell's ballot weighs: one vote each; the cell's magnitude, so the vote follows the volume the
-     * labels stand on; or the cell's reference value, so the vote follows the volume that was expected of
-     * them. Under {@link VotingRule#MEDIAN_VOTER} a weighted vote elects the label holding the barycenter
-     * of the total weight.
-     */
-    public enum Weighting { CELL_COUNT, MAGNITUDE, REFERENCE }
-
     private final ElementaryHighlightRole labeledCellRole;
-    /** The imposed rule, or {@code null} to let each labeling get {@link VotingRule#defaultFor}. */
-    private final VotingRule votingRule;
-    private final Weighting weighting;
+    private final ElectionSpec election;
 
     public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole) {
-        this(labeledCellRole, null, Weighting.CELL_COUNT);
+        this(labeledCellRole, ElectionSpec.DEFAULT);
     }
 
-    public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole, VotingRule votingRule) {
-        this(labeledCellRole, votingRule, Weighting.CELL_COUNT);
-    }
-
-    public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole, VotingRule votingRule,
-                                      Weighting weighting) {
+    public LabelDistributionAlgorithm(ElementaryHighlightRole labeledCellRole, ElectionSpec election) {
         this.labeledCellRole = labeledCellRole;
-        this.votingRule = votingRule;
-        this.weighting = weighting;
+        this.election = election;
     }
 
     @Override
@@ -103,7 +87,7 @@ public final class LabelDistributionAlgorithm implements LabelingAlgorithm {
             tallyTotal += ballot;
         }
 
-        VotingRule rule = votingRule != null ? votingRule : VotingRule.defaultFor(labeling.ordered());
+        VotingRule rule = election.ruleFor(labeling.ordered());
         String winner = rule.elect(labeling.domain(), labeling.ordered(), tallies, tallyTotal);
         boolean holds = winner != null;
 
@@ -113,6 +97,7 @@ public final class LabelDistributionAlgorithm implements LabelingAlgorithm {
             holisticScores.add(new Score(WINNER_SHARE, tallies.get(winner) / tallyTotal));
         }
 
+        Weighting weighting = election.weighting();
         List<ParameterInstantiation> parameters = Arrays.asList(
                 new ParameterInstantiation(VOTING_RULE, rule.ordinal(), rule.name()),
                 new ParameterInstantiation(WEIGHTING, weighting.ordinal(), weighting.name()));
@@ -137,9 +122,9 @@ public final class LabelDistributionAlgorithm implements LabelingAlgorithm {
         return Math.abs(Double.isNaN(reference) ? cell.toDouble(labeling.measureIndex()) : reference);
     }
 
-    /** The weight of a cell's ballot under this algorithm's {@link Weighting}. */
+    /** The weight of a cell's ballot under the election's {@link Weighting}. */
     private double ballotOf(Cell cell, Labeling labeling) {
-        switch (weighting) {
+        switch (election.weighting()) {
             case MAGNITUDE:
                 return magnitudeOf(cell, labeling);
             case REFERENCE:

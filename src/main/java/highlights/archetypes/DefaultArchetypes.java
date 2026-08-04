@@ -3,6 +3,7 @@ package highlights.archetypes;
 import java.util.ArrayList;
 import java.util.List;
 
+import highlights.archetypes.labelpredominance.ElectionSpec;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.archetypes.megacontributor.MegaContributorArchetype;
 import highlights.archetypes.modality.ModalityArchetype;
@@ -22,13 +23,19 @@ public final class DefaultArchetypes {
 
     private DefaultArchetypes() {}
 
+    /** The default archetypes with the default election running label-predominance. */
     public static List<ArchetypeProperty> all() {
+        return all(ElectionSpec.DEFAULT);
+    }
+
+    /** The default archetypes, with label-predominance running the given election. */
+    public static List<ArchetypeProperty> all(ElectionSpec election) {
         List<ArchetypeProperty> archetypes = new ArrayList<>();
         archetypes.add(MegaContributorArchetype.create());
         archetypes.add(TopKContributorsArchetype.create());
         archetypes.add(OutlierArchetype.create());
         archetypes.add(ModalityArchetype.create());
-        archetypes.add(LabelPredominanceArchetype.create());
+        archetypes.add(LabelPredominanceArchetype.create(election));
         return archetypes;
     }
 }

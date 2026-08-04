@@ -39,6 +39,21 @@ public final class Labeling {
     /** Labels the quantity under the scheme: fits the scheme on the values, then labels each cell by its own. */
     public Labeling(LabelingScheme scheme, Map<Cell, Double> quantityByCell, int measureIndex,
                     Map<Cell, Double> referencesByCell) {
+        this(scheme, quantityByCell, measureIndex, referencesByCell, quantityByCell);
+    }
+
+    /**
+     * A labeling whose labels are driven by one quantity but whose magnitudes and references come from
+     * elsewhere — the consensus, whose labels follow its bucket ranks while its magnitudes and references are
+     * inherited from the group it summarizes, so a weighted election reads real volume, not the ranks.
+     */
+    public static Labeling withInheritedMagnitudes(LabelingScheme scheme, Map<Cell, Double> labelDriver,
+            int measureIndex, Map<Cell, Double> magnitudesByCell, Map<Cell, Double> referencesByCell) {
+        return new Labeling(scheme, labelDriver, measureIndex, referencesByCell, magnitudesByCell);
+    }
+
+    private Labeling(LabelingScheme scheme, Map<Cell, Double> quantityByCell, int measureIndex,
+                     Map<Cell, Double> referencesByCell, Map<Cell, Double> magnitudesByCell) {
         scheme.fit(quantityByCell.values());
         Map<Cell, String> labeled = new LinkedHashMap<>();
         for (Map.Entry<Cell, Double> entry : quantityByCell.entrySet()) {
@@ -47,7 +62,7 @@ public final class Labeling {
         this.scheme = scheme;
         this.assignment = labeled;
         this.measureIndex = measureIndex;
-        this.magnitudes = quantityByCell;
+        this.magnitudes = magnitudesByCell;
         this.references = referencesByCell;
     }
 

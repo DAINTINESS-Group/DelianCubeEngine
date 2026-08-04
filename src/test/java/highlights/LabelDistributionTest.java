@@ -15,10 +15,11 @@ import org.junit.Test;
 
 import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
+import highlights.archetypes.labelpredominance.ElectionSpec;
 import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
-import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm.Weighting;
 import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
 import highlights.archetypes.labelpredominance.VotingRule;
+import highlights.archetypes.labelpredominance.Weighting;
 import highlights.instance.AlgorithmExecution;
 import highlights.instance.HolisticHighlight;
 import highlights.metamodel.ArchetypeProperty;
@@ -263,7 +264,7 @@ public class LabelDistributionTest {
 
         AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, labeling);
         AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
-                role, VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE).run(operatorResult, labeling);
+                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).run(operatorResult, labeling);
 
         assertTrue("counted ballots elect the center label", byCount.holisticScores.stream()
                 .anyMatch(s -> "mid".equals(s.label)));
@@ -296,9 +297,85 @@ public class LabelDistributionTest {
         ElementaryHighlightRole role = labeledCellRole();
 
         AlgorithmExecution byReference = new LabelDistributionAlgorithm(
-                role, VotingRule.MEDIAN_VOTER, Weighting.REFERENCE).run(operatorResult, labeling);
+                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.REFERENCE)).run(operatorResult, labeling);
 
         assertTrue("ballots weighted by the judged-against values elect the label expected to carry the volume",
                 byReference.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
+    }
+
+    @Test
+    public void magnitudeWeightedElectionOverConsensusReadsInheritedVolume() {
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
+
+        Map<Cell, Double> quantity = new LinkedHashMap<>();
+        quantity.put(cells[0], 8.0);
+        quantity.put(cells[1], 3.0);
+        quantity.put(cells[2], 0.0);
+        quantity.put(cells[3], 2.0);
+        quantity.put(cells[4], 7.0);
+        Map<Double, String> labelByValue = new LinkedHashMap<>();
+        labelByValue.put(8.0, "low");
+        labelByValue.put(3.0, "low");
+        labelByValue.put(0.0, "mid");
+        labelByValue.put(2.0, "high");
+        labelByValue.put(7.0, "high");
+        List<String> domain = Arrays.asList("low", "mid", "high");
+
+        // Two schemes over the same ordered domain, so the result derives a consensus of them.
+        List<Labeling> labelings = Arrays.asList(
+                new Labeling(lookupScheme(domain, labelByValue), quantity),
+                new Labeling(lookupScheme(domain, labelByValue), quantity));
+        LabeledResult operatorResult = operatorResult("consensusElection", data, labelings);
+        assertEquals("a consensus is derived from the two labelings", 1, operatorResult.consensuses().size());
+
+        Labeling consensus = operatorResult.consensuses().get(0);
+        assertEquals("the consensus inherits the group's magnitude, not the bucket rank", 8.0,
+                consensus.magnitudeOf(cells[0]), 1e-9);
+
+        ElementaryHighlightRole role = labeledCellRole();
+        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, consensus);
+        AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
+                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).run(operatorResult, consensus);
+
+        assertTrue("counted ballots over the consensus elect the center label", byCount.holisticScores.stream()
+                .anyMatch(s -> "mid".equals(s.label)));
+        assertTrue("magnitude-weighted ballots over the consensus follow the inherited volume, not ranks",
+                byVolume.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
+    }
+
+    @Test
+    public void electionSpecPropagatesThroughTheArchetypeToTheExtractor() {
+        Cell[] cells = cells(5);
+        Result data = resultOf(cells);
+
+        Map<Cell, Double> quantity = new LinkedHashMap<>();
+        quantity.put(cells[0], 8.0);
+        quantity.put(cells[1], 3.0);
+        quantity.put(cells[2], 0.0);
+        quantity.put(cells[3], 2.0);
+        quantity.put(cells[4], 7.0);
+        Map<Double, String> labelByValue = new LinkedHashMap<>();
+        labelByValue.put(8.0, "low");
+        labelByValue.put(3.0, "low");
+        labelByValue.put(0.0, "mid");
+        labelByValue.put(2.0, "high");
+        labelByValue.put(7.0, "high");
+        Labeling labeling =
+                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
+
+        LabeledResult operatorResult = operatorResult("propagation", data, Collections.singletonList(labeling));
+        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
+
+        HolisticHighlight byDefault = (HolisticHighlight) new HighlightExtractor().extract(operatorResult,
+                Collections.singletonList(LabelPredominanceArchetype.create()), schema).highlights().get(0);
+        HolisticHighlight byVolume = (HolisticHighlight) new HighlightExtractor().extract(operatorResult,
+                Collections.singletonList(LabelPredominanceArchetype.create(
+                        new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE))), schema).highlights().get(0);
+
+        assertTrue("the default archetype counts ballots and elects the center label",
+                byDefault.getScores().stream().anyMatch(s -> "mid".equals(s.label)));
+        assertTrue("the archetype built with a magnitude-weighted spec carries it into the election",
+                byVolume.getScores().stream().anyMatch(s -> "low".equals(s.label)));
     }
 }
