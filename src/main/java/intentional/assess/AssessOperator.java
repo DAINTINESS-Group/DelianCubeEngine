@@ -44,11 +44,7 @@ public class AssessOperator implements IntentionalOperator {
                 Collections.<ModelResult>emptyList());
         ComparisonModel comparison = new ComparisonModel(
                 parsedQuery.benchmark, parsedQuery.deltaFunction, parsedQuery.labelingSchemes);
-        List<ModelResult> models = comparison.run(target);
-
-        LabeledResult operatorResult =
-                new LabeledResult(parsedQuery.targetCubeQuery, parsedQuery.targetCube, models);
-        return Collections.singletonList(operatorResult);
+        return Collections.singletonList(comparison.run(target));
     }
 
     private AssessQuery parseQuery(String assessQuery) {

@@ -41,15 +41,16 @@ public final class ZScoreOutlierAlgorithm implements Model {
     }
 
     @Override
-    public List<ModelResult> run(LabeledResult context) {
-        List<ModelResult> out = new ArrayList<>();
+    public LabeledResult run(LabeledResult context) {
+        List<ModelResult> produced = new ArrayList<>();
         List<QueryMeasure> measures = context.measures();
         if (measures.isEmpty()) {
-            out.add(runMeasure(context, 0));
+            produced.add(runMeasure(context, 0));
         } else {
-            for (int index = 0; index < measures.size(); index++) out.add(runMeasure(context, index));
+            for (int index = 0; index < measures.size(); index++) produced.add(runMeasure(context, index));
         }
-        return out;
+        context.addModels(produced);
+        return context;
     }
 
     private ModelResult runMeasure(LabeledResult context, int measureIndex) {

@@ -10,52 +10,53 @@ import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.QueryMeasure;
 import intentional.labeling.Labeling;
 import intentional.labeling.consensus.ConsensusRule;
+import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import result.Result;
 
 /**
- * A cube query's {@link Result} together with the {@link ModelResult}s produced over it: the ones the
- * operator produced, and the ones the model-extraction sweep appended. This is passed around throughout all operators
- * and archetypes and filled along the way. 
+ * A cube query's {@link Result} together with the {@link ModelResult}s produced over it. Each result carries
+ * its {@link ModelResult#origin()}, so {@link #labelings()} views the operator's labellings and
+ * {@link #archetypeModels()} the model-extraction sweep's results.
  */
 public final class LabeledResult {
     public final CubeQuery query;
     public final Result data;
-    private final List<ModelResult> operatorModels;
-    private final List<ModelResult> archetypeModels = new ArrayList<>();
+    private final List<ModelResult> models = new ArrayList<>();
 
-    public LabeledResult(CubeQuery query, Result data, List<? extends ModelResult> operatorModels) {
+    public LabeledResult(CubeQuery query, Result data, List<? extends ModelResult> models) {
         this.query = query;
         this.data = data;
-        this.operatorModels = operatorModels == null
-                ? new ArrayList<ModelResult>() : new ArrayList<ModelResult>(operatorModels);
+        if (models != null) this.models.addAll(models);
     }
 
-    /** The models the operator produced. */
-    public List<ModelResult> operatorModels() {
-        return Collections.unmodifiableList(operatorModels);
-    }
-
-    /** The models the model-extraction sweep appended. */
-    public List<ModelResult> archetypeModels() {
-        return Collections.unmodifiableList(archetypeModels);
-    }
-
-    /** Every model over this result: the operator's, then the archetypes'. */
+    /** Every model over this result. */
     public List<ModelResult> models() {
-        List<ModelResult> all = new ArrayList<>(operatorModels);
-        all.addAll(archetypeModels);
-        return Collections.unmodifiableList(all);
+        return Collections.unmodifiableList(models);
     }
 
-    /** Appends the models produced by the model-extraction sweep. */
-    public void addArchetypeModels(List<? extends ModelResult> models) {
-        if (models != null) archetypeModels.addAll(models);
+    /** The models the model-extraction sweep produced. */
+    public List<ModelResult> archetypeModels() {
+        List<ModelResult> out = new ArrayList<>();
+        for (ModelResult model : models) {
+            if (model.origin() == ModelOrigin.ARCHETYPE) out.add(model);
+        }
+        return out;
+    }
+
+    /** Appends the models produced over this result. */
+    public void addModels(List<? extends ModelResult> produced) {
+        if (produced != null) models.addAll(produced);
     }
 
     /** Every labelling the operator produced, including the consensuses derived over them. */
     public List<Labeling> labelings() {
-        List<Labeling> base = labellingsOf(this.operatorModels);
+        List<Labeling> base = new ArrayList<>();
+        for (ModelResult model : models) {
+            if (model.origin() == ModelOrigin.OPERATOR && model.labelling() != null) {
+                base.add(model.labelling());
+            }
+        }
         List<Labeling> labelings = new ArrayList<>(base);
         labelings.addAll(deriveConsensuses(base));
         return Collections.unmodifiableList(labelings);
@@ -69,15 +70,6 @@ public final class LabeledResult {
         List<QueryMeasure> measures = measures();
         return measureIndex >= 0 && measureIndex < measures.size()
                 ? measures.get(measureIndex).getName() : null;
-    }
-
-    private static List<Labeling> labellingsOf(List<ModelResult> models) {
-        List<Labeling> out = new ArrayList<>();
-        for (ModelResult model : models) {
-            Labeling labelling = model.labelling();
-            if (labelling != null) out.add(labelling);
-        }
-        return out;
     }
 
     private static List<Labeling> deriveConsensuses(List<Labeling> labelings) {

@@ -39,15 +39,16 @@ public final class TopKContributionAlgorithm implements Model {
     }
 
     @Override
-    public List<ModelResult> run(LabeledResult context) {
-        List<ModelResult> out = new ArrayList<>();
+    public LabeledResult run(LabeledResult context) {
+        List<ModelResult> produced = new ArrayList<>();
         List<QueryMeasure> measures = context.measures();
         for (int index = 0; index < measures.size(); index++) {
             if (!measures.get(index).getAggregationFunction().additive) continue;
             ModelResult result = runMeasure(context, index);
-            if (result != null) out.add(result);
+            if (result != null) produced.add(result);
         }
-        return out;
+        context.addModels(produced);
+        return context;
     }
 
     private ModelResult runMeasure(LabeledResult context, int measureIndex) {

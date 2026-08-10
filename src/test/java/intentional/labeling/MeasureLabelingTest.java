@@ -16,6 +16,7 @@ import cubemanager.cubebase.CubeQuery;
 import highlights.HighlightTestSupport;
 import intentional.labeling.schemes.KMeansScheme;
 import intentional.labeling.schemes.MedianDistanceScheme;
+import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ModelResultImpl;
@@ -50,7 +51,7 @@ public class MeasureLabelingTest {
 
         LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(
                 new ModelResultImpl(labeling.schemeName(), true, labeling,
-                        Collections.<ParameterInstantiation>emptyList())));
+                        Collections.<ParameterInstantiation>emptyList()).origin(ModelOrigin.OPERATOR)));
         List<ModelResult> results = HighlightTestSupport.models(
                 operatorResult, intentional.model.archetypes.DefaultArchetypes.subset("LabelPredominance"));
         assertEquals(1, results.size());

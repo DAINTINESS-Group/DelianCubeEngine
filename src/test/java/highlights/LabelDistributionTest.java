@@ -17,6 +17,7 @@ import cubemanager.cubebase.CubeQuery;
 import intentional.labeling.LabelDomain;
 import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
+import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ModelResultImpl;
@@ -61,7 +62,7 @@ public class LabelDistributionTest {
         List<ModelResultImpl> models = new ArrayList<>();
         for (Labeling labeling : labelings) {
             models.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
-                    Collections.<ParameterInstantiation>emptyList()));
+                    Collections.<ParameterInstantiation>emptyList()).origin(ModelOrigin.OPERATOR));
         }
         return new LabeledResult(query, data, models);
     }
@@ -73,7 +74,8 @@ public class LabelDistributionTest {
     }
 
     private static List<ModelResult> predominance(LabeledResult operatorResult, ElectionSpec election) {
-        return new LabelDistributionAlgorithm(election).run(operatorResult);
+        new LabelDistributionAlgorithm(election).run(operatorResult);
+        return operatorResult.archetypeModels();
     }
 
     private static Labeling consensusOf(LabeledResult operatorResult) {
@@ -207,10 +209,10 @@ public class LabelDistributionTest {
         labelByValue.put(7.0, "high");
         Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
 
-        LabeledResult operatorResult = operatorResult("weightingTest", resultOf(cells),
-                Collections.singletonList(labeling));
-        ModelResult byCount = predominance(operatorResult, ElectionSpec.DEFAULT).get(0);
-        ModelResult byVolume = predominance(operatorResult,
+        ModelResult byCount = predominance(operatorResult("weightingTest", resultOf(cells),
+                Collections.singletonList(labeling)), ElectionSpec.DEFAULT).get(0);
+        ModelResult byVolume = predominance(operatorResult("weightingTest", resultOf(cells),
+                Collections.singletonList(labeling)),
                 new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).get(0);
 
         assertEquals("counted ballots elect the center label", "mid", byCount.holisticLabel());
@@ -267,10 +269,10 @@ public class LabelDistributionTest {
         assertEquals("the consensus inherits the group's magnitude, not the bucket rank", 8.0,
                 consensus.magnitudeOf(cells[0]), 1e-9);
 
-        LabeledResult overConsensus = operatorResult("consensusElection", resultOf(cells),
-                Collections.singletonList(consensus));
-        ModelResult byCount = predominance(overConsensus, ElectionSpec.DEFAULT).get(0);
-        ModelResult byVolume = predominance(overConsensus,
+        ModelResult byCount = predominance(operatorResult("consensusElection", resultOf(cells),
+                Collections.singletonList(consensus)), ElectionSpec.DEFAULT).get(0);
+        ModelResult byVolume = predominance(operatorResult("consensusElection", resultOf(cells),
+                Collections.singletonList(consensus)),
                 new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).get(0);
 
         assertEquals("counted ballots over the consensus elect the center label", "mid", byCount.holisticLabel());

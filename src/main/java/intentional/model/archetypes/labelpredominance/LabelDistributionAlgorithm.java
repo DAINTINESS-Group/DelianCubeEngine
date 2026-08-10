@@ -52,10 +52,11 @@ public final class LabelDistributionAlgorithm implements Model {
     }
 
     @Override
-    public List<ModelResult> run(LabeledResult context) {
-        List<ModelResult> out = new ArrayList<>();
-        for (Labeling labeling : context.labelings()) out.add(runLabeling(labeling));
-        return out;
+    public LabeledResult run(LabeledResult context) {
+        List<ModelResult> produced = new ArrayList<>();
+        for (Labeling labeling : context.labelings()) produced.add(runLabeling(labeling));
+        context.addModels(produced);
+        return context;
     }
 
     private ModelResult runLabeling(Labeling labeling) {

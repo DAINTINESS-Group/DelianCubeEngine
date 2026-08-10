@@ -12,6 +12,7 @@ import intentional.assess.utils.ComparedCell;
 import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
 import intentional.model.Model;
+import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ModelResultImpl;
@@ -41,7 +42,7 @@ public final class ComparisonModel implements Model {
     @Override public String name() { return NAME; }
 
     @Override
-    public List<ModelResult> run(LabeledResult context) {
+    public LabeledResult run(LabeledResult context) {
         List<Cell> targetCells = context.data.getCells();
         if (targetCells.isEmpty()) {
             throw new RuntimeException("No cells collected from the target cube query");
@@ -57,12 +58,13 @@ public final class ComparisonModel implements Model {
             }
         }
 
-        List<ModelResult> out = new ArrayList<>();
+        List<ModelResult> produced = new ArrayList<>();
         for (LabelingScheme scheme : labelingSchemes) {
             Labeling labeling = new Labeling(scheme, deltas, 0, benchmarkValues);
-            out.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
-                    Collections.<ParameterInstantiation>emptyList()));
+            produced.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
+                    Collections.<ParameterInstantiation>emptyList()).origin(ModelOrigin.OPERATOR));
         }
-        return out;
+        context.addModels(produced);
+        return context;
     }
 }
