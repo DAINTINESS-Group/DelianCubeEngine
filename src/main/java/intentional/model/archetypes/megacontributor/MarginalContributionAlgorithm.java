@@ -16,7 +16,7 @@ import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ParameterRole;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import result.Cell;
 
 /**
@@ -84,7 +84,7 @@ public final class MarginalContributionAlgorithm implements Model {
         if (shareByCell.isEmpty()) return null;
 
         Labeling labelling = new Labeling(scheme(threshold), shareByCell, 0);
-        return new Synthema(NAME, anyContributor, labelling,
+        return new ModelResultImpl(NAME, anyContributor, labelling,
                 Collections.singletonList(ParameterInstantiation.ofDefault(DOMINANCE_THRESHOLD)))
                 .holistic(topMember, topShare).measure(context.measureName(measureIndex))
                 .metric("count", (double) cells.size());

@@ -15,7 +15,7 @@ import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ParameterRole;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import result.Cell;
 
 /**
@@ -92,7 +92,7 @@ public final class LabelDistributionAlgorithm implements Model {
                 new ParameterInstantiation(VOTING_RULE, rule.ordinal(), rule.name()),
                 new ParameterInstantiation(WEIGHTING, weighting.ordinal(), weighting.name()));
 
-        Synthema result = new Synthema(NAME, holds, labelling, parameters).holistic(winner, winnerShare);
+        ModelResultImpl result = new ModelResultImpl(NAME, holds, labelling, parameters).holistic(winner, winnerShare);
         for (Map.Entry<String, Double> e : tallies.entrySet()) {
             result.metric("share_" + e.getKey(), tallyTotal == 0.0 ? 0.0 : e.getValue() / tallyTotal);
         }

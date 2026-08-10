@@ -14,7 +14,7 @@ import intentional.labeling.LabelingScheme;
 import intentional.model.Model;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import intentional.result.LabeledResult;
 import result.Cell;
 
@@ -60,7 +60,7 @@ public final class ComparisonModel implements Model {
         List<ModelResult> out = new ArrayList<>();
         for (LabelingScheme scheme : labelingSchemes) {
             Labeling labeling = new Labeling(scheme, deltas, 0, benchmarkValues);
-            out.add(new Synthema(labeling.schemeName(), true, labeling,
+            out.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
                     Collections.<ParameterInstantiation>emptyList()));
         }
         return out;

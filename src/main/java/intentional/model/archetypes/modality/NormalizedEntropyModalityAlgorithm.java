@@ -10,7 +10,7 @@ import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ParameterRole;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import result.Cell;
 
 /**
@@ -67,7 +67,7 @@ public final class NormalizedEntropyModalityAlgorithm implements Model {
         }
 
         boolean holds = concentration > threshold;
-        return new Synthema(NAME, holds, null,
+        return new ModelResultImpl(NAME, holds, null,
                 Collections.singletonList(ParameterInstantiation.ofDefault(CONCENTRATION_THRESHOLD)))
                 .holistic(null, concentration).measure(context.measureName(measureIndex)).metric("count", (double) n);
     }

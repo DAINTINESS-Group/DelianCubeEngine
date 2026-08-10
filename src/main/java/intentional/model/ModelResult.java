@@ -15,6 +15,9 @@ public interface ModelResult {
     /** The name of the model that produced this result. */
     String modelName();
 
+    /** Whether this result was produced by the operator or by the model-extraction sweep. */
+    default ModelOrigin origin() { return ModelOrigin.ARCHETYPE; }
+
     /** Whether the tested property holds over the dataset. */
     boolean verdict();
 

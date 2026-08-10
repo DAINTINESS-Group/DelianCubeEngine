@@ -16,7 +16,7 @@ import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ParameterRole;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import result.Cell;
 
 /**
@@ -69,7 +69,7 @@ public final class ZScoreOutlierAlgorithm implements Model {
 
         Labeling labelling = new Labeling(scheme(threshold), zByCell, measureIndex);
         boolean holds = outliers > 0;
-        return new Synthema(NAME, holds, labelling,
+        return new ModelResultImpl(NAME, holds, labelling,
                 Collections.singletonList(ParameterInstantiation.ofDefault(ABS_Z_THRESHOLD)))
                 .holistic(null, maxAbsZ).measure(context.measureName(measureIndex))
                 .metric("outlierCount", (double) outliers);

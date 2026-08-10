@@ -19,7 +19,7 @@ import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import intentional.model.archetypes.labelpredominance.ElectionSpec;
 import intentional.model.archetypes.labelpredominance.LabelDistributionAlgorithm;
 import intentional.model.archetypes.labelpredominance.VotingRule;
@@ -58,9 +58,9 @@ public class LabelDistributionTest {
         CubeQuery query = new CubeQuery(queryName);
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
-        List<Synthema> models = new ArrayList<>();
+        List<ModelResultImpl> models = new ArrayList<>();
         for (Labeling labeling : labelings) {
-            models.add(new Synthema(labeling.schemeName(), true, labeling,
+            models.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
                     Collections.<ParameterInstantiation>emptyList()));
         }
         return new LabeledResult(query, data, models);

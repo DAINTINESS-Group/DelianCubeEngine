@@ -18,7 +18,7 @@ import intentional.labeling.schemes.KMeansScheme;
 import intentional.labeling.schemes.MedianDistanceScheme;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
@@ -49,7 +49,7 @@ public class MeasureLabelingTest {
         query.addQueryMeasure("sum", "amount", "amount");
 
         LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(
-                new Synthema(labeling.schemeName(), true, labeling,
+                new ModelResultImpl(labeling.schemeName(), true, labeling,
                         Collections.<ParameterInstantiation>emptyList())));
         List<ModelResult> results = HighlightTestSupport.models(
                 operatorResult, intentional.model.archetypes.DefaultArchetypes.subset("LabelPredominance"));

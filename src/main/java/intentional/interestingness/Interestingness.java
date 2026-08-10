@@ -5,7 +5,7 @@ import java.util.List;
 import intentional.model.ModelResult;
 
 /**
- * The interestingness operator (ι): scores model results before the highlight extractor presents them.
+ * The interestingness operator: scores model results before the highlight extractor presents them.
  */
 public final class Interestingness {
 

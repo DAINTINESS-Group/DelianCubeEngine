@@ -31,11 +31,11 @@ public final class HighlightTestSupport {
         return null;
     }
 
-    /** Runs the model-extraction operator and the highlight extractor over an operator result with a cube. */
+    /** Runs the model-extraction sweep and the highlight extractor over an operator result with a cube. */
     public static HighlightSet highlights(LabeledResult result, List<ArchetypeProperty> archetypes,
                                           CubeManager cubeManager) {
-        return new HighlightExtractor().extract(result.data, result.query,
-                models(result, archetypes), HighlightRecipes.defaults(), cubeManager);
+        models(result, archetypes);
+        return new HighlightExtractor().extract(result, HighlightRecipes.defaults(), cubeManager);
     }
 
     public static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {

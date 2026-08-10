@@ -5,9 +5,7 @@ import cubemanager.CubeManager;
 import highlights.HighlightExtractor;
 import highlights.HighlightRecipes;
 import highlights.HighlightSet;
-import intentional.model.ArchetypeProperty;
 import intentional.model.ModelExtraction;
-import intentional.model.ModelResult;
 import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 public class AssessOperatorClient {
 
@@ -35,16 +32,11 @@ public class AssessOperatorClient {
                 "       EquiWidth(low, high, ultra)\n" +
                 "SAVE AS PastBenchmarkDemo";
 
-        // Stage 1: the operator produces its model results. Stage 2 (μ): the model-extraction operator runs
-        // the archetypes over them. Stage 3 (χ): highlight extraction turns the model results into highlights.
         long start = System.nanoTime();
         LabeledResult result = operator.execute(query).get(0);
-        List<ArchetypeProperty> registeredArchetypes = IntentionalProfile.ASSESS.archetypes();
-
-        List<ModelResult> archetypeResults = new ModelExtraction().run(result, registeredArchetypes);
-
+        new ModelExtraction().run(result, IntentionalProfile.ASSESS.archetypes());
         HighlightSet highlights = new HighlightExtractor()
-                .extract(result.data, result.query, archetypeResults, HighlightRecipes.defaults(), cubeManager);
+                .extract(result, HighlightRecipes.defaults(), cubeManager);
         long ms = (System.nanoTime() - start) / 1_000_000;
 
         System.out.println("Execution + extraction: " + ms + " ms");

@@ -19,29 +19,28 @@ import highlights.instance.MeasureValue;
 import highlights.metamodel.ElementaryHighlightRole;
 import intentional.labeling.Labeling;
 import intentional.model.ModelResult;
+import intentional.result.LabeledResult;
 import result.Cell;
-import result.Result;
 
 /**
- * Builds a {@link HolisticHighlight} from each {@link ModelResult}, with an {@link ElementaryHighlight} per
- * highlight-worthy label. A result with no recipe bears no highlight.
+ * Builds a {@link HolisticHighlight} from each {@link ModelResult} of a {@link LabeledResult}, with an
+ * {@link ElementaryHighlight} per highlight-worthy label. A result with no recipe bears no highlight.
  */
 public final class HighlightExtractor {
 
-    public HighlightSet extract(Result data, CubeQuery query, List<ModelResult> results,
-                                HighlightRecipes recipes, CubeManager cubeManager) {
+    public HighlightSet extract(LabeledResult result, HighlightRecipes recipes, CubeManager cubeManager) {
         List<Highlight> out = new ArrayList<>();
-        List<Level> explanators = resolveExplanators(query, cubeManager);
+        List<Level> explanators = resolveExplanators(result.query, cubeManager);
 
-        for (ModelResult result : results) {
-            Recipe recipe = recipes.forResult(result);
+        for (ModelResult model : result.models()) {
+            Recipe recipe = recipes.forResult(model);
             if (recipe == null) continue;
 
-            Measure mainMeasure = resolveMeasure(result.measureName(), cubeManager);
+            Measure mainMeasure = resolveMeasure(model.measureName(), cubeManager);
             HolisticHighlight holistic = new HolisticHighlight(
-                    data, recipe.displayName, result, mainMeasure, explanators);
+                    result.data, recipe.displayName, model, mainMeasure, explanators);
 
-            Labeling labelling = result.labelling();
+            Labeling labelling = model.labelling();
             if (labelling != null) {
                 for (Map.Entry<Cell, String> entry : labelling.assignment().entrySet()) {
                     ElementaryHighlightRole role = recipe.roleFor(entry.getValue());
@@ -50,7 +49,7 @@ public final class HighlightExtractor {
                     List<Character> characters = charactersOf(cell, explanators);
                     MeasureValue value = new MeasureValue(mainMeasure, cell.toDouble(labelling.measureIndex()));
                     holistic.addElementary(new ElementaryHighlight(
-                            data, characters, value, role, entry.getValue(), labelling.magnitudeOf(cell)));
+                            result.data, characters, value, role, entry.getValue(), labelling.magnitudeOf(cell)));
                 }
             }
             out.add(holistic);

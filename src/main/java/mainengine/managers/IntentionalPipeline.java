@@ -9,16 +9,15 @@ import highlights.HighlightRecipes;
 import highlights.HighlightSet;
 import intentional.interestingness.Interestingness;
 import intentional.model.ModelExtraction;
-import intentional.model.ModelResult;
 import intentional.operator.IntentionalOperator;
 import intentional.result.LabeledResult;
 import result.ResultFileMetadata;
 
 /**
- * Runs an intentional operator and renders its report along the μ → χ pipeline: executes the operator (its
- * own models), runs the model-extraction operator (μ) with the profile's archetypes over each result, then
- * extracts highlights (χ) from the model results and writes them. A failure during execution is returned as
- * the {@code errorCheckingStatus} of an otherwise empty result.
+ * Runs an intentional operator and renders its report: executes the operator, runs the model-extraction sweep
+ * with the profile's archetypes over each result, scores the model results, extracts highlights from them and
+ * writes them. A failure during execution is returned as the {@code errorCheckingStatus} of an otherwise empty
+ * result.
  */
 public final class IntentionalPipeline {
 
@@ -35,9 +34,9 @@ public final class IntentionalPipeline {
 
             List<HighlightSet> highlights = new ArrayList<>();
             for (LabeledResult result : results) {
-                List<ModelResult> archetypeResults = modelExtraction.run(result, profile.archetypes());
-                archetypeResults = interestingness.score(archetypeResults);
-                highlights.add(extractor.extract(result.data, result.query, archetypeResults, recipes, cubeManager));
+                modelExtraction.run(result, profile.archetypes());
+                interestingness.score(result.models());
+                highlights.add(extractor.extract(result, recipes, cubeManager));
             }
             return profile.writer().write(query, results, highlights);
         } catch (RuntimeException e) {

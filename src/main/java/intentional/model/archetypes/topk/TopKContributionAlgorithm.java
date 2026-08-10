@@ -16,7 +16,7 @@ import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
 import intentional.model.ParameterRole;
-import intentional.model.Synthema;
+import intentional.model.ModelResultImpl;
 import result.Cell;
 
 /**
@@ -81,7 +81,7 @@ public final class TopKContributionAlgorithm implements Model {
 
         Labeling labelling = Labeling.withInheritedMagnitudes(
                 scheme(k), rankByCell, 0, shareByCell, Collections.<Cell, Double>emptyMap());
-        return new Synthema(NAME, true, labelling,
+        return new ModelResultImpl(NAME, true, labelling,
                 Collections.singletonList(ParameterInstantiation.ofDefault(K)))
                 .holistic(null, topShare).measure(context.measureName(measureIndex)).metric("k", (double) k);
     }
