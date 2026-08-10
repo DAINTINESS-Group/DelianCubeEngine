@@ -15,8 +15,8 @@ import result.Result;
 
 /**
  * A cube query's {@link Result} together with the {@link ModelResult}s produced over it: the ones the
- * operator produced, and the ones the model-extraction sweep appended. {@link #labelings()} is the view over
- * the operator's labellings, including their derived consensuses.
+ * operator produced, and the ones the model-extraction sweep appended. This is passed around throughout all operators
+ * and archetypes and filled along the way. 
  */
 public final class LabeledResult {
     public final CubeQuery query;
