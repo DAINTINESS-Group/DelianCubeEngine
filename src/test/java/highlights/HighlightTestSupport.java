@@ -20,7 +20,8 @@ public final class HighlightTestSupport {
 
     /** The model results a set of archetypes produces over an operator result. */
     public static List<ModelResult> models(LabeledResult result, List<ArchetypeProperty> archetypes) {
-        return new ModelExtraction().run(result, archetypes);
+       new ModelExtraction().run(result, archetypes);
+       return result.archetypeModels();
     }
 
     /** The model result of the model with the given name, or {@code null}. */
