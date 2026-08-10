@@ -1,12 +1,10 @@
 package intentional.assess;
 
 import cubemanager.CubeManager;
-import cubemanager.CubeSchemaResolver;
-import highlights.HighlightExtractor;
+import highlights.HighlightTestSupport;
 import highlights.HighlightSet;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
-import highlights.instance.Score;
 import intentional.labeling.Labeling;
 import intentional.result.LabeledResult;
 import mainengine.Session;
@@ -16,7 +14,9 @@ import org.junit.Test;
 import result.Cell;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -175,9 +175,9 @@ public class AssessOperatorTest {
 
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
-        assertEquals("one labeling per scheme", 2, result.labelings().size());
+        assertEquals("one labeling per scheme", 2, result.labelings().size() - consensuses(result).size());
         assertEquals("size", result.labelings().get(0).schemeName());
-        assertEquals("the shared domain yields one consensus", 1, result.consensuses().size());
+        assertEquals("the shared domain yields one consensus", 1, consensuses(result).size());
 
         Labeling labeling = result.labelings().get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
@@ -194,8 +194,8 @@ public class AssessOperatorTest {
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
         assertEquals("Profit", result.query.getQueryMeasures().get(0).getAlias());
-        assertEquals("one labeling per scheme", 2, result.labelings().size());
-        assertEquals(1, result.consensuses().size());
+        assertEquals("one labeling per scheme", 2, result.labelings().size() - consensuses(result).size());
+        assertEquals(1, consensuses(result).size());
 
         Labeling labeling = result.labelings().get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
@@ -275,12 +275,12 @@ public class AssessOperatorTest {
 
         LabeledResult result = operator.execute(query).get(0);
 
-        assertEquals("one labeling per scheme", 3, result.labelings().size());
+        assertEquals("one labeling per scheme", 3, result.labelings().size() - consensuses(result).size());
         assertEquals("analyst", result.labelings().get(0).schemeName());
         assertEquals("EquiDepth", result.labelings().get(1).schemeName());
         assertEquals("EquiWidth", result.labelings().get(2).schemeName());
-        assertEquals("the shared domain yields one consensus", 1, result.consensuses().size());
-        assertEquals("Consensus(analyst,EquiDepth,EquiWidth)", result.consensuses().get(0).schemeName());
+        assertEquals("the shared domain yields one consensus", 1, consensuses(result).size());
+        assertEquals("Consensus(analyst,EquiDepth,EquiWidth)", consensuses(result).get(0).schemeName());
     }
 
     @Test
@@ -296,37 +296,37 @@ public class AssessOperatorTest {
                 "SAVE AS PastBenchmarkHighlightsTest";
 
         LabeledResult result = operator.execute(query).get(0);
-        HighlightSet highlights = new HighlightExtractor()
-                .extract(result, IntentionalProfile.ASSESS.archetypes(), CubeSchemaResolver.from(cubeManager));
+        HighlightSet highlights = HighlightTestSupport.highlights(result, IntentionalProfile.ASSESS.archetypes(), cubeManager);
 
         HolisticHighlight labelPredominance = holisticFor(highlights, "LabelPredominance");
         HolisticHighlight megaContributor = holisticFor(highlights, "MegaContributor");
 
         assertNotNull("expected a LabelPredominance highlight", labelPredominance);
         assertNotNull("expected a MegaContributor highlight (sum is additive)", megaContributor);
-        assertTrue("LabelPredominance should hold", labelPredominance.execution.result.verdict());
-        assertTrue("MegaContributor should hold", megaContributor.execution.result.verdict());
+        assertTrue("LabelPredominance should hold", labelPredominance.modelResult.verdict());
+        assertTrue("MegaContributor should hold", megaContributor.modelResult.verdict());
 
         // the dominant member is surfaced as an elementary highlight, above the 0.5 dominance threshold
         assertFalse(megaContributor.elementary().isEmpty());
         assertTrue("dominant share should exceed the threshold",
-                scoreOf(megaContributor, "ContributionShare") > 0.5);
+                megaContributor.modelResult.holisticMagnitude() > 0.5);
     }
 
     private static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {
         for (Highlight h : highlights.highlights()) {
             if (h instanceof HolisticHighlight
-                    && ((HolisticHighlight) h).archetype.name.equals(archetypeName)) {
+                    && ((HolisticHighlight) h).archetypeName.equals(archetypeName)) {
                 return (HolisticHighlight) h;
             }
         }
         return null;
     }
 
-    private static double scoreOf(HolisticHighlight highlight, String scoreType) {
-        for (Score score : highlight.getScores()) {
-            if (score.type.name().equals(scoreType)) return score.value;
+    private static List<Labeling> consensuses(LabeledResult result) {
+        List<Labeling> out = new ArrayList<>();
+        for (Labeling labeling : result.labelings()) {
+            if (labeling.schemeName().startsWith("Consensus")) out.add(labeling);
         }
-        return Double.NaN;
+        return out;
     }
 }

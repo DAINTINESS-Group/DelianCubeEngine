@@ -2,10 +2,12 @@ package client;
 
 import intentional.assess.AssessOperator;
 import cubemanager.CubeManager;
-import cubemanager.CubeSchemaResolver;
 import highlights.HighlightExtractor;
+import highlights.HighlightRecipes;
 import highlights.HighlightSet;
-import highlights.metamodel.ArchetypeProperty;
+import intentional.model.ArchetypeProperty;
+import intentional.model.ModelExtraction;
+import intentional.model.ModelResult;
 import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
@@ -33,15 +35,16 @@ public class AssessOperatorClient {
                 "       EquiWidth(low, high, ultra)\n" +
                 "SAVE AS PastBenchmarkDemo";
 
-        CubeSchemaResolver schemaResolver = CubeSchemaResolver.from(cubeManager);
-
-        // Stage 1: the operator produces its result. Stage 2: highlight extraction runs on top of it.
+        // Stage 1: the operator produces its model results. Stage 2 (μ): the model-extraction operator runs
+        // the archetypes over them. Stage 3 (χ): highlight extraction turns the model results into highlights.
         long start = System.nanoTime();
         LabeledResult result = operator.execute(query).get(0);
         List<ArchetypeProperty> registeredArchetypes = IntentionalProfile.ASSESS.archetypes();
 
+        List<ModelResult> archetypeResults = new ModelExtraction().run(result, registeredArchetypes);
+
         HighlightSet highlights = new HighlightExtractor()
-                .extract(result, registeredArchetypes, schemaResolver);
+                .extract(result.data, result.query, archetypeResults, HighlightRecipes.defaults(), cubeManager);
         long ms = (System.nanoTime() - start) / 1_000_000;
 
         System.out.println("Execution + extraction: " + ms + " ms");

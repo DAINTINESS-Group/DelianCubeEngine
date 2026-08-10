@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import highlights.archetypes.DefaultArchetypes;
-import highlights.metamodel.ArchetypeProperty;
+import intentional.model.ArchetypeProperty;
+import intentional.model.archetypes.DefaultArchetypes;
 
 /** The generic archetype set profiles start from. */
 public class DefaultArchetypesTest {

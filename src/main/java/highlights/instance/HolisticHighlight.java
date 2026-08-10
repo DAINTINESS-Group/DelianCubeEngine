@@ -8,55 +8,37 @@ import java.util.stream.Collectors;
 
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;
-import highlights.metamodel.ArchetypeProperty;
-import intentional.labeling.Labeling;
+import intentional.model.ModelResult;
+import intentional.model.ParameterInstantiation;
 import result.Result;
 
 /**
- * A structured testimony that an {@link ArchetypeProperty} holds over the entire dataset,
- * produced by an algorithm execution over a Main Measure and a set of Explanators, carrying
- * the result, significance scores, and any elementary highlights that detail it. Its scores are
- * seeded from the execution's holistic scores; interestingness facets are added on top by the
- * post-pass.
- *
- * A holistic highlight always materializes an archetype property (via an algorithm execution):
- * archetype-less holistics are not allowed.
+ * A highlight over the entire dataset, built from a {@link ModelResult} over a Main Measure and a set of
+ * Explanators, carrying its elementary highlights.
  */
 public class HolisticHighlight extends Highlight {
-    public final ArchetypeProperty archetype;
-    public final AlgorithmExecution execution;
+    public final String archetypeName;
+    public final ModelResult modelResult;
     public final Measure mainMeasure;
     public final List<Level> explanators;
-    /** The labeling the archetype was evaluated over, or {@code null} for measure-axis highlights. */
-    public final Labeling labeling;
     private final List<ElementaryHighlight> elementary = new ArrayList<>();
 
-    public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
+    public HolisticHighlight(Result dataset, String archetypeName, ModelResult modelResult,
                              Measure mainMeasure, List<Level> explanators) {
-        this(dataset, archetype, execution, mainMeasure, explanators, null);
-    }
-
-    public HolisticHighlight(Result dataset, ArchetypeProperty archetype, AlgorithmExecution execution,
-                             Measure mainMeasure, List<Level> explanators, Labeling labeling) {
         super(dataset);
-        this.archetype = Objects.requireNonNull(archetype,
-                "A holistic highlight must materialize an archetype property");
-        this.execution = Objects.requireNonNull(execution,
-                "A holistic highlight must record the algorithm execution that produced it");
+        this.archetypeName = Objects.requireNonNull(archetypeName);
+        this.modelResult = Objects.requireNonNull(modelResult);
         this.mainMeasure = mainMeasure;
         this.explanators = explanators;
-        this.labeling = labeling;
-        scores.addAll(execution.holisticScores);
     }
 
     public HolisticHighlight addElementary(ElementaryHighlight e) { elementary.add(e); return this; }
 
     public List<ElementaryHighlight> elementary() { return Collections.unmodifiableList(elementary); }
 
-    /** The algorithm instantiation that tested this highlight: the algorithm name and its parameters. */
     private String instantiation() {
-        String name = execution.algorithm.name();
-        String params = execution.parameters.stream()
+        String name = modelResult.modelName();
+        String params = modelResult.parameters().stream()
                 .map(ParameterInstantiation::toString)
                 .collect(Collectors.joining(", "));
         return params.isEmpty() ? name : name + "(" + params + ")";
@@ -65,20 +47,18 @@ public class HolisticHighlight extends Highlight {
     @Override
     public String toText() {
         String explanatorNames = explanators.stream().map(Level::getName).collect(Collectors.joining(", "));
-        String scoreText = scores.stream().map(Score::toString).collect(Collectors.joining(", "));
         String measureName = mainMeasure == null ? "(unresolved measure)" : mainMeasure.getName();
-        if (labeling != null) {
-            measureName = "the " + labeling.schemeName() + " labeling of " + measureName;
-        }
-        String metrics = execution.result.auxiliaryMetrics().entrySet().stream()
+        String metrics = modelResult.metrics().entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining(", "));
         String verdict = metrics.isEmpty()
-                ? String.valueOf(execution.result.verdict())
-                : execution.result.verdict() + " [" + metrics + "]";
+                ? String.valueOf(modelResult.verdict())
+                : modelResult.verdict() + " [" + metrics + "]";
+        String characterization = modelResult.holisticLabel() != null
+                ? modelResult.holisticLabel()
+                : String.valueOf(modelResult.holisticMagnitude());
         return String.format(
-                "The %s for %s, tested via %s and supported by {%s}, results in %s with {%s}.",
-                archetype.name, measureName, instantiation(),
-                explanatorNames, verdict, scoreText);
+                "The %s for %s, tested via %s and supported by {%s}, results in %s with %s.",
+                archetypeName, measureName, instantiation(), explanatorNames, verdict, characterization);
     }
 }

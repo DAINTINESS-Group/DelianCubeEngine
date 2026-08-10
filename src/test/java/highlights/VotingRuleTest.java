@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import highlights.archetypes.labelpredominance.VotingRule;
+import intentional.model.archetypes.labelpredominance.VotingRule;
 
 /**
  * The voting rules over per-label tallies on the ordered domain BAD &lt; OK &lt; GOOD — plain ballot

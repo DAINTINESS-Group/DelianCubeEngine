@@ -1,119 +1,115 @@
 package highlights;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import cubemanager.CubeSchemaResolver;
-import cubemanager.cubebase.AggregationFunction;
+import cubemanager.CubeManager;
+import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.Measure;
-import cubemanager.cubebase.QueryMeasure;
-import highlights.instance.AlgorithmExecution;
+import highlights.HighlightRecipes.Recipe;
+import highlights.instance.Character;
 import highlights.instance.ElementaryHighlight;
-import highlights.instance.ExecutableAlgorithm;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
-import highlights.instance.LabelingAlgorithm;
-import highlights.instance.MeasureAlgorithm;
 import highlights.instance.MeasureValue;
-import highlights.instance.ScoredFinding;
-import highlights.metamodel.Algorithm;
-import highlights.metamodel.ArchetypeProperty;
-import highlights.metamodel.EvaluationAxis;
-import highlights.metamodel.MeasureConstraint;
-import intentional.result.LabeledResult;
+import highlights.metamodel.ElementaryHighlightRole;
 import intentional.labeling.Labeling;
+import intentional.model.ModelResult;
+import result.Cell;
+import result.Result;
 
 /**
- * Stage 2 of the pipeline: runs the data-driven archetype evaluation over an {@link LabeledResult} and
- * produces highlights. Each candidate {@link ArchetypeProperty} is evaluated once per subject of its
- * evaluation axis — per query measure whose aggregation satisfies the archetype's Main Measure Role
- * constraint (e.g. additivity), or per labeling in the context — and each execution is built into one
- * {@link HolisticHighlight} composed of its {@link ElementaryHighlight}s. A non-holding execution still
- * yields a highlight: its verdict travels on the highlight for ranking and pruning to weigh. Cube-schema
- * resolution is delegated to {@link CubeSchemaResolver}.
+ * Builds a {@link HolisticHighlight} from each {@link ModelResult}, with an {@link ElementaryHighlight} per
+ * highlight-worthy label. A result with no recipe bears no highlight.
  */
 public final class HighlightExtractor {
 
-
-    public HighlightSet extract(LabeledResult result, List<ArchetypeProperty> candidates,
-                                CubeSchemaResolver schema) {
+    public HighlightSet extract(Result data, CubeQuery query, List<ModelResult> results,
+                                HighlightRecipes recipes, CubeManager cubeManager) {
         List<Highlight> out = new ArrayList<>();
-        List<Level> explanators = schema.resolveExplanators(result.query);
+        List<Level> explanators = resolveExplanators(query, cubeManager);
 
-        List<QueryMeasure> measures = result.query == null
-                ? Collections.<QueryMeasure>emptyList() : result.query.getQueryMeasures();
+        for (ModelResult result : results) {
+            Recipe recipe = recipes.forResult(result);
+            if (recipe == null) continue;
 
-        for (ArchetypeProperty archetype : candidates) {
-            ExecutableAlgorithm algorithm = applicableAlgorithm(archetype, result);
-            if (algorithm == null) continue;
+            Measure mainMeasure = resolveMeasure(result.measureName(), cubeManager);
+            HolisticHighlight holistic = new HolisticHighlight(
+                    data, recipe.displayName, result, mainMeasure, explanators);
 
-            if (archetype.axis == EvaluationAxis.LABELING) {
-                LabelingAlgorithm overLabelings = (LabelingAlgorithm) algorithm;
-                List<Labeling> subjects = new ArrayList<>(result.labelings());
-                subjects.addAll(result.consensuses());
-                for (Labeling labeling : subjects) {
-                    out.add(buildHolistic(result, archetype, overLabelings.run(result, labeling), schema,
-                            schema.resolveMeasure(null), explanators, labeling));
-                }
-            } else if (measures.isEmpty()) {
-                evaluateMeasure(result, archetype, (MeasureAlgorithm) algorithm, schema, 0,
-                        AggregationFunction.UNKNOWN, schema.resolveMeasure(null), explanators, out);
-            } else {
-                for (int index = 0; index < measures.size(); index++) {
-                    QueryMeasure qm = measures.get(index);
-                    evaluateMeasure(result, archetype, (MeasureAlgorithm) algorithm, schema, index,
-                            qm.getAggregationFunction(), schema.resolveMeasure(qm.getName()), explanators, out);
+            Labeling labelling = result.labelling();
+            if (labelling != null) {
+                for (Map.Entry<Cell, String> entry : labelling.assignment().entrySet()) {
+                    ElementaryHighlightRole role = recipe.roleFor(entry.getValue());
+                    if (role == null) continue;
+                    Cell cell = entry.getKey();
+                    List<Character> characters = charactersOf(cell, explanators);
+                    MeasureValue value = new MeasureValue(mainMeasure, cell.toDouble(labelling.measureIndex()));
+                    holistic.addElementary(new ElementaryHighlight(
+                            data, characters, value, role, entry.getValue(), labelling.magnitudeOf(cell)));
                 }
             }
+            out.add(holistic);
         }
         return new HighlightSet(out);
     }
 
-    /** Evaluates one candidate archetype against a single main measure (its column index + resolved Measure). */
-    private void evaluateMeasure(LabeledResult result, ArchetypeProperty archetype, MeasureAlgorithm algorithm,
-                                 CubeSchemaResolver schema, int measureIndex, AggregationFunction aggregation,
-                                 Measure mainMeasure, List<Level> explanators, List<Highlight> out) {
-        if (archetype.mainMeasureRole.constraint == MeasureConstraint.ADDITIVE && !aggregation.additive) return;
-        out.add(buildHolistic(result, archetype, algorithm.run(result, measureIndex), schema,
-                mainMeasure, explanators, null));
-    }
-
-    /**
-     * The first candidate algorithm applicable to the result, or {@code null} when none applies. A candidate
-     * whose execution contract does not match the archetype's evaluation axis is a catalog error, not a
-     * non-applicability, and fails loudly.
-     */
-    private ExecutableAlgorithm applicableAlgorithm(ArchetypeProperty archetype, LabeledResult result) {
-        Class<? extends ExecutableAlgorithm> required = archetype.axis == EvaluationAxis.LABELING
-                ? LabelingAlgorithm.class : MeasureAlgorithm.class;
-        for (Algorithm algorithm : archetype.candidateAlgorithms) {
-            if (!required.isInstance(algorithm)) {
-                throw new IllegalStateException("Archetype " + archetype.name + " evaluates over the "
-                        + archetype.axis + " axis but its candidate " + algorithm.name()
-                        + " is not a " + required.getSimpleName());
+    private List<Level> resolveExplanators(CubeQuery query, CubeManager cubeManager) {
+        List<Level> levels = new ArrayList<>();
+        for (String[] gamma : query.getGammaExpressions()) {
+            String dimName = gamma[0];
+            String levelName = gamma[1];
+            Level resolved = null;
+            for (Dimension d : cubeManager.getDimensions()) {
+                if (d.hasSameName(dimName)) { resolved = d.getLevel(levelName).orElse(null); break; }
             }
-            ExecutableAlgorithm executable = required.cast(algorithm);
-            if (executable.appliesTo(result)) return executable;
+            if (resolved == null) { // fall back to the level name, but only when it is unambiguous
+                Level unique = null;
+                int matches = 0;
+                for (Dimension d : cubeManager.getDimensions()) {
+                    Optional<Level> o = d.getLevel(levelName);
+                    if (o.isPresent()) { unique = o.get(); matches++; }
+                }
+                if (matches == 1) resolved = unique;
+            }
+            if (resolved != null) levels.add(resolved);
         }
-        return null;
+        return levels;
     }
 
-    private HolisticHighlight buildHolistic(LabeledResult result, ArchetypeProperty archetype,
-                                            AlgorithmExecution execution, CubeSchemaResolver schema,
-                                            Measure mainMeasure, List<Level> explanators, Labeling labeling) {
-        HolisticHighlight holistic = new HolisticHighlight(
-                result.data, archetype, execution, mainMeasure, explanators, labeling);
+    /** Resolves the cube Measure for the studied measurement (falls back to the first measure). */
+    public Measure resolveMainMeasure(CubeQuery query, CubeManager cubeManager) {
+        String attr = query.getQueryMeasures().isEmpty()
+                ? null : query.getQueryMeasures().get(0).getName();
+        return resolveMeasure(attr, cubeManager);
+    }
 
-        for (ScoredFinding sf : execution.salient) {
-            ElementaryHighlight elementary = new ElementaryHighlight(
-                    result.data, schema.charactersOf(sf.dimensionIndices, sf.members, explanators),
-                    new MeasureValue(mainMeasure, sf.value),
-                    sf.role);
-            sf.scores.forEach(elementary::addScore);
-            holistic.addElementary(elementary);
+    /** Resolves the named cube Measure by attribute, falling back to the first measure. */
+    public Measure resolveMeasure(String attr, CubeManager cubeManager) {
+        List<Measure> measures = cubeManager.getCubes().isEmpty()
+                ? new ArrayList<Measure>() : cubeManager.getCubes().get(0).getMeasuresList();
+        if (attr != null) {
+            for (Measure m : measures) {
+                if (attr.equalsIgnoreCase(m.getName())) return m;
+            }
         }
-        return holistic;
+        return measures.isEmpty() ? null : measures.get(0);
+    }
+    
+    /** Resolves a cell's bound dimension members into characters, skipping the {@link Cell#ALL} positions. */
+    private List<Character> charactersOf(Cell cell, List<Level> explanators) {
+        List<Character> characters = new ArrayList<>();
+        List<String> members = cell.getDimensionMembers();
+        for (int i = 0; i < members.size(); i++) {
+            if (Cell.ALL.equals(members.get(i))) continue; // a dimension aggregated over, not a character
+            if (i < explanators.size()) {
+                characters.add(new Character(explanators.get(i), members.get(i)));
+            }
+        }
+        return characters;
     }
 }

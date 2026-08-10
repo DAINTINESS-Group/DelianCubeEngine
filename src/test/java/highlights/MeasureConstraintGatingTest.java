@@ -3,24 +3,18 @@ package highlights;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
 
-import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.HighlightExtractor;
-import highlights.archetypes.megacontributor.MegaContributorArchetype;
-import highlights.metamodel.ArchetypeProperty;
+import intentional.model.archetypes.DefaultArchetypes;
 import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 
 /**
- * The additive main-measure constraint is honored via the typed aggregation function: an {@code ADDITIVE}
- * archetype (MegaContributor) is evaluated over a {@code sum} measure and skipped over a non-additive
- * {@code avg} one.
+ * The additive constraint is honored via the typed aggregation function: mega-contributor runs over a
+ * {@code sum} measure and is skipped over a non-additive {@code avg} one.
  */
 public class MeasureConstraintGatingTest {
 
@@ -31,25 +25,22 @@ public class MeasureConstraintGatingTest {
         return data;
     }
 
-    private static int megaContributorHolistics(String function) {
+    private static int megaContributorResults(String function) {
         CubeQuery query = new CubeQuery("gatingTest");
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure(function, "amount", "amount");
 
         LabeledResult operatorResult = new LabeledResult(query, twoRegionResult(), null);
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(MegaContributorArchetype.create());
-
-        return new HighlightExtractor().extract(operatorResult, candidates, schema).size();
+        return HighlightTestSupport.models(operatorResult, DefaultArchetypes.subset("MegaContributor")).size();
     }
 
     @Test
     public void additiveMeasureIsEvaluated() {
-        assertEquals("MegaContributor runs over a sum measure", 1, megaContributorHolistics("sum"));
+        assertEquals("MegaContributor runs over a sum measure", 1, megaContributorResults("sum"));
     }
 
     @Test
     public void nonAdditiveMeasureIsSkipped() {
-        assertEquals("MegaContributor is gated out over an avg measure", 0, megaContributorHolistics("avg"));
+        assertEquals("MegaContributor is gated out over an avg measure", 0, megaContributorResults("avg"));
     }
 }

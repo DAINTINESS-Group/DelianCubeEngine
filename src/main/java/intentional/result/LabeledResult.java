@@ -7,40 +7,58 @@ import java.util.List;
 import java.util.Map;
 
 import cubemanager.cubebase.CubeQuery;
+import cubemanager.cubebase.QueryMeasure;
 import intentional.labeling.Labeling;
 import intentional.labeling.consensus.ConsensusRule;
+import intentional.model.ModelResult;
 import result.Result;
 
 /**
- * A cube query's {@link Result} together with the {@link Labeling}s computed over it. This is the Stage-1
- * product over which Stage-2 archetype evaluation runs; it holds data and labelings only — each labeling
- * says which scheme produced it, and no producer crosses this boundary. Constructing the result derives
- * the {@link #consensuses()} of its labelings, the way a labeling derives its own assignment.
+ * A cube query's {@link Result} together with the {@link ModelResult}s the operator produced over it.
+ * {@link #labelings()} is the view over their labellings; constructing the result derives their consensuses.
  */
 public final class LabeledResult {
     public final CubeQuery query;
     public final Result data;
-    private final List<Labeling> labelings;
-    private final List<Labeling> consensuses;
+    private final List<ModelResult> models;
 
-    public LabeledResult(CubeQuery query, Result data, List<Labeling> labelings) {
+    public LabeledResult(CubeQuery query, Result data, List<? extends ModelResult> models) {
         this.query = query;
         this.data = data;
-        this.labelings = labelings == null ? new ArrayList<Labeling>() : labelings;
-        this.consensuses = deriveConsensuses(this.labelings);
+        this.models = models == null ? new ArrayList<ModelResult>() : new ArrayList<ModelResult>(models);
     }
 
-    /** Every per-cell labeling computed over the data. */
+    public List<ModelResult> models() {
+        return Collections.unmodifiableList(models);
+    }
+
+    /** Every labelling produced over the result, including the consensuses. */
     public List<Labeling> labelings() {
+        List<Labeling> base = labellingsOf(this.models);
+        List<Labeling> labelings = new ArrayList<>(base);
+        labelings.addAll(deriveConsensuses(base));
         return Collections.unmodifiableList(labelings);
     }
 
-    /** One consensus labeling per group of labelings sharing an ordered domain; empty below two members. */
-    public List<Labeling> consensuses() {
-        return Collections.unmodifiableList(consensuses);
+    public List<QueryMeasure> measures() {
+        return query == null ? Collections.<QueryMeasure>emptyList() : query.getQueryMeasures();
     }
 
-    /** Groups the labelings by their ordered domain and consenses every group of at least two. */
+    public String measureName(int measureIndex) {
+        List<QueryMeasure> measures = measures();
+        return measureIndex >= 0 && measureIndex < measures.size()
+                ? measures.get(measureIndex).getName() : null;
+    }
+
+    private static List<Labeling> labellingsOf(List<ModelResult> models) {
+        List<Labeling> out = new ArrayList<>();
+        for (ModelResult model : models) {
+            Labeling labelling = model.labelling();
+            if (labelling != null) out.add(labelling);
+        }
+        return out;
+    }
+
     private static List<Labeling> deriveConsensuses(List<Labeling> labelings) {
         Map<List<String>, List<Labeling>> groups = new LinkedHashMap<>();
         for (Labeling labeling : labelings) {

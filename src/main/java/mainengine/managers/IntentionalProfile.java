@@ -1,17 +1,13 @@
 package mainengine.managers;
 
-import java.util.Arrays;
 import java.util.List;
 
 import report.AnalyzeReportWriter;
 import report.AssessReportWriter;
 import report.DescribeReportWriter;
 import report.ReportWriter;
-import highlights.archetypes.DefaultArchetypes;
-import highlights.archetypes.megacontributor.MegaContributorArchetype;
-import highlights.archetypes.outlier.OutlierArchetype;
-import highlights.archetypes.topk.TopKContributorsArchetype;
-import highlights.metamodel.ArchetypeProperty;
+import intentional.model.ArchetypeProperty;
+import intentional.model.archetypes.DefaultArchetypes;
 import intentional.operator.IntentionalOperatorType;
 
 /**
@@ -23,10 +19,8 @@ public enum IntentionalProfile {
 
     DESCRIBE(IntentionalOperatorType.DESCRIBE, DefaultArchetypes.all(), new DescribeReportWriter()),
     ASSESS(IntentionalOperatorType.ASSESS, DefaultArchetypes.all(), new AssessReportWriter()),
-    ANALYZE(IntentionalOperatorType.ANALYZE, Arrays.asList(
-            MegaContributorArchetype.create(),
-            TopKContributorsArchetype.create(),
-            OutlierArchetype.create()), new AnalyzeReportWriter());
+    ANALYZE(IntentionalOperatorType.ANALYZE,
+            DefaultArchetypes.subset("MegaContributor", "TopKContributors", "Outlier"), new AnalyzeReportWriter());
 
     private final IntentionalOperatorType type;
     private final List<ArchetypeProperty> archetypes;

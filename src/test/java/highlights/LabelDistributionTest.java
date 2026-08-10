@@ -13,35 +13,27 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.archetypes.labelpredominance.ElectionSpec;
-import highlights.archetypes.labelpredominance.LabelDistributionAlgorithm;
-import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
-import highlights.archetypes.labelpredominance.VotingRule;
-import highlights.archetypes.labelpredominance.Weighting;
-import highlights.instance.AlgorithmExecution;
-import highlights.instance.HolisticHighlight;
-import highlights.metamodel.ArchetypeProperty;
-import highlights.metamodel.CharacterRole;
-import highlights.metamodel.ElementaryHighlightRole;
-import highlights.metamodel.MeasureRole;
-import highlights.metamodel.ScoreType;
 import intentional.labeling.LabelDomain;
 import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
+import intentional.model.ModelResult;
+import intentional.model.ParameterInstantiation;
+import intentional.model.Synthema;
+import intentional.model.archetypes.labelpredominance.ElectionSpec;
+import intentional.model.archetypes.labelpredominance.LabelDistributionAlgorithm;
+import intentional.model.archetypes.labelpredominance.VotingRule;
+import intentional.model.archetypes.labelpredominance.Weighting;
 import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 
 /**
- * The benchmark-tendency archetype consumes any ordered labeling from the context — with no reference to
- * the operator that produced it. Labelings are built under a stub scheme that maps each quantity value to
- * its label by lookup.
+ * Label-predominance consumes any ordered labelling: the cells vote and a rule elects a winning label, which
+ * becomes the result's holistic label; the winner's cells are labelled exemplars, the rest exceptions.
  */
 public class LabelDistributionTest {
 
-    /** A scheme labeling each value by lookup over an ordered domain. */
     private static LabelingScheme lookupScheme(List<String> domainLabels, Map<Double, String> labelByValue) {
         return new LabelingScheme() {
             @Override public String name() { return "stub"; }
@@ -52,9 +44,7 @@ public class LabelDistributionTest {
 
     private static Cell[] cells(int count) {
         Cell[] cells = new Cell[count];
-        for (int i = 0; i < count; i++) {
-            cells[i] = new Cell(new String[]{"r" + i, "100", "1"}, 1);
-        }
+        for (int i = 0; i < count; i++) cells[i] = new Cell(new String[]{"r" + i, "100", "1"}, 1);
         return cells;
     }
 
@@ -68,7 +58,12 @@ public class LabelDistributionTest {
         CubeQuery query = new CubeQuery(queryName);
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
-        return new LabeledResult(query, data, labelings);
+        List<Synthema> models = new ArrayList<>();
+        for (Labeling labeling : labelings) {
+            models.add(new Synthema(labeling.schemeName(), true, labeling,
+                    Collections.<ParameterInstantiation>emptyList()));
+        }
+        return new LabeledResult(query, data, models);
     }
 
     private static Map<Double, String> rankLabels(String... labels) {
@@ -77,19 +72,20 @@ public class LabelDistributionTest {
         return byValue;
     }
 
-    private static ElementaryHighlightRole labeledCellRole() {
-        return new ElementaryHighlightRole(
-                "LabeledCell",
-                Collections.singletonList(new CharacterRole("LabeledCell")),
-                new MeasureRole("LabeledMeasure"),
-                Collections.<ScoreType>singletonList(LabelDistributionAlgorithm.MAGNITUDE));
+    private static List<ModelResult> predominance(LabeledResult operatorResult, ElectionSpec election) {
+        return new LabelDistributionAlgorithm(election).run(operatorResult);
+    }
+
+    private static Labeling consensusOf(LabeledResult operatorResult) {
+        for (Labeling labeling : operatorResult.labelings()) {
+            if (labeling.schemeName().startsWith("Consensus")) return labeling;
+        }
+        return null;
     }
 
     @Test
     public void predominantLabelHoldsAndSurfacesSalientCells() {
         Cell[] cells = cells(4);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> deltas = new LinkedHashMap<>();
         deltas.put(cells[0], 10.0);
         deltas.put(cells[1], 5.0);
@@ -100,32 +96,22 @@ public class LabelDistributionTest {
         labelByDelta.put(5.0, "high");
         labelByDelta.put(8.0, "high");
         labelByDelta.put(-3.0, "low");
-        Labeling labeling =
-                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByDelta), deltas);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByDelta), deltas);
 
-        LabeledResult operatorResult = operatorResult(
-                "labelTest", data, Collections.singletonList(labeling));
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
+        LabeledResult operatorResult = operatorResult("labelTest", resultOf(cells),
+                Collections.singletonList(labeling));
+        ModelResult result = predominance(operatorResult, ElectionSpec.DEFAULT).get(0);
 
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        assertEquals(1, highlights.size());
-
-        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
-        assertTrue("high predominates (3 of 4)", holistic.execution.result.verdict());
-        assertTrue("dominant label is reported", holistic.getScores().stream()
-                .anyMatch(s -> "high".equals(s.label)));
-        assertFalse("salient cells surfaced", holistic.elementary().isEmpty());
-        assertTrue("a salient cell carries the labeled quantity as magnitude", holistic.elementary().stream()
-                .flatMap(e -> e.getScores().stream())
-                .anyMatch(s -> s.type == LabelDistributionAlgorithm.MAGNITUDE));
+        assertTrue("high predominates (3 of 4)", result.verdict());
+        assertEquals("dominant label is reported", "high", result.holisticLabel());
+        assertFalse("cells are labelled", result.labelling().assignment().isEmpty());
+        assertTrue("an exemplar carries the labeled quantity as magnitude",
+                !Double.isNaN(result.labelling().magnitudeOf(cells[0])));
     }
 
     @Test
-    public void oneHolisticPerLabeling() {
+    public void oneResultPerLabeling() {
         Cell[] cells = cells(4);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> assessment = new LinkedHashMap<>();
         assessment.put(cells[0], 2.0);
         assessment.put(cells[1], 2.0);
@@ -138,53 +124,36 @@ public class LabelDistributionTest {
         outlierness.put(cells[3], 1.0);
 
         List<Labeling> labelings = Arrays.asList(
-                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
-                        rankLabels("low", "mid", "high")), assessment),
-                new Labeling(lookupScheme(Arrays.asList("non-outlier", "outlier"),
-                        rankLabels("non-outlier", "outlier")), outlierness));
+                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), rankLabels("low", "mid", "high")), assessment),
+                new Labeling(lookupScheme(Arrays.asList("non-outlier", "outlier"), rankLabels("non-outlier", "outlier")), outlierness));
 
-        LabeledResult operatorResult = operatorResult(
-                "twoLabelings", data, labelings);
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
-
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        assertEquals("one holistic per labeling, not just the first", 2, highlights.size());
+        LabeledResult operatorResult = operatorResult("twoLabelings", resultOf(cells), labelings);
+        assertEquals("one result per labeling", 2, predominance(operatorResult, ElectionSpec.DEFAULT).size());
     }
 
     @Test
-    public void sharedDomainLabelingsGainAConsensusHolistic() {
+    public void sharedDomainLabelingsGainAConsensus() {
         Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
         List<Labeling> labelings = Arrays.asList(
                 labelingOf(cells, "s1", 0, 1, 1, 1, 2),
                 labelingOf(cells, "s2", 0, 0, 1, 2, 2),
                 labelingOf(cells, "s3", 0, 0, 1, 1, 2));
 
-        LabeledResult operatorResult = operatorResult("consensusTest", data, labelings);
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
-
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        assertEquals("one holistic per labeling plus the consensus", 4, highlights.size());
-        assertTrue("the consensus holistic names its group", highlights.highlights().stream()
-                .map(h -> ((HolisticHighlight) h).labeling.schemeName())
-                .anyMatch("Consensus(s1,s2,s3)"::equals));
+        LabeledResult operatorResult = operatorResult("consensusTest", resultOf(cells), labelings);
+        assertEquals("the consensus names its group", "Consensus(s1,s2,s3)",
+                consensusOf(operatorResult).schemeName());
+        assertEquals("one result per labeling plus the consensus", 4,
+                predominance(operatorResult, ElectionSpec.DEFAULT).size());
     }
 
     private static Labeling labelingOf(Cell[] cells, String schemeName, double... ranks) {
         Map<Cell, Double> rankByCell = new LinkedHashMap<>();
-        for (int i = 0; i < cells.length; i++) {
-            rankByCell.put(cells[i], ranks[i]);
-        }
+        for (int i = 0; i < cells.length; i++) rankByCell.put(cells[i], ranks[i]);
         Map<Double, String> labelByRank = rankLabels("low", "mid", "high");
         LabelingScheme scheme = new LabelingScheme() {
             @Override public String name() { return schemeName; }
             @Override public String applyLabels(double value) { return labelByRank.get(value); }
-            @Override public LabelDomain domain() {
-                return new LabelDomain(Arrays.asList("low", "mid", "high"), true);
-            }
+            @Override public LabelDomain domain() { return new LabelDomain(Arrays.asList("low", "mid", "high"), true); }
         };
         return new Labeling(scheme, rankByCell);
     }
@@ -192,57 +161,38 @@ public class LabelDistributionTest {
     @Test
     public void medianVoterElectsTheCenterWithoutAPlurality() {
         Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> ranks = new LinkedHashMap<>();
         ranks.put(cells[0], 0.0);
         ranks.put(cells[1], 0.0);
         ranks.put(cells[2], 1.0);
         ranks.put(cells[3], 2.0);
         ranks.put(cells[4], 2.0);
-        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
-                rankLabels("low", "mid", "high")), ranks);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), rankLabels("low", "mid", "high")), ranks);
 
-        LabeledResult operatorResult = operatorResult(
-                "medianTest", data, Collections.singletonList(labeling));
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
-
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
-        assertTrue("the median voter elects a winner", holistic.execution.result.verdict());
-        assertTrue("the center label wins although low and high out-poll it", holistic.getScores().stream()
-                .anyMatch(s -> "mid".equals(s.label)));
+        ModelResult result = predominance(operatorResult("medianTest", resultOf(cells),
+                Collections.singletonList(labeling)), ElectionSpec.DEFAULT).get(0);
+        assertTrue("the median voter elects a winner", result.verdict());
+        assertEquals("the center label wins", "mid", result.holisticLabel());
     }
 
     @Test
     public void knifeEdgeVoteDoesNotHold() {
         Cell[] cells = cells(4);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> ranks = new LinkedHashMap<>();
         ranks.put(cells[0], 0.0);
         ranks.put(cells[1], 0.0);
         ranks.put(cells[2], 2.0);
         ranks.put(cells[3], 2.0);
-        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
-                rankLabels("low", "mid", "high")), ranks);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), rankLabels("low", "mid", "high")), ranks);
 
-        LabeledResult operatorResult = operatorResult(
-                "knifeEdgeTest", data, Collections.singletonList(labeling));
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
-
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
-        assertFalse("an even split across two labels elects no one", holistic.execution.result.verdict());
+        ModelResult result = predominance(operatorResult("knifeEdgeTest", resultOf(cells),
+                Collections.singletonList(labeling)), ElectionSpec.DEFAULT).get(0);
+        assertFalse("an even split across two labels elects no one", result.verdict());
     }
 
     @Test
     public void magnitudeWeightingShiftsTheWinner() {
         Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> quantity = new LinkedHashMap<>();
         quantity.put(cells[0], 8.0);
         quantity.put(cells[1], 3.0);
@@ -255,28 +205,22 @@ public class LabelDistributionTest {
         labelByValue.put(0.0, "mid");
         labelByValue.put(2.0, "high");
         labelByValue.put(7.0, "high");
-        Labeling labeling =
-                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
 
-        LabeledResult operatorResult = operatorResult(
-                "weightingTest", data, Collections.singletonList(labeling));
-        ElementaryHighlightRole role = labeledCellRole();
+        LabeledResult operatorResult = operatorResult("weightingTest", resultOf(cells),
+                Collections.singletonList(labeling));
+        ModelResult byCount = predominance(operatorResult, ElectionSpec.DEFAULT).get(0);
+        ModelResult byVolume = predominance(operatorResult,
+                new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).get(0);
 
-        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, labeling);
-        AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
-                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).run(operatorResult, labeling);
-
-        assertTrue("counted ballots elect the center label", byCount.holisticScores.stream()
-                .anyMatch(s -> "mid".equals(s.label)));
-        assertTrue("volume-weighted ballots elect the label holding the barycenter",
-                byVolume.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
+        assertEquals("counted ballots elect the center label", "mid", byCount.holisticLabel());
+        assertEquals("volume-weighted ballots elect the label holding the barycenter", "low",
+                byVolume.holisticLabel());
     }
 
     @Test
     public void referenceWeightingFollowsTheExpectedVolume() {
         Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> ranks = new LinkedHashMap<>();
         ranks.put(cells[0], 0.0);
         ranks.put(cells[1], 0.0);
@@ -289,25 +233,18 @@ public class LabelDistributionTest {
         references.put(cells[2], 1.0);
         references.put(cells[3], 2.0);
         references.put(cells[4], 2.0);
-        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"),
-                rankLabels("low", "mid", "high")), ranks, 0, references);
+        Labeling labeling = new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), rankLabels("low", "mid", "high")), ranks, 0, references);
 
-        LabeledResult operatorResult = operatorResult(
-                "referenceTest", data, Collections.singletonList(labeling));
-        ElementaryHighlightRole role = labeledCellRole();
-
-        AlgorithmExecution byReference = new LabelDistributionAlgorithm(
-                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.REFERENCE)).run(operatorResult, labeling);
-
-        assertTrue("ballots weighted by the judged-against values elect the label expected to carry the volume",
-                byReference.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
+        ModelResult byReference = predominance(operatorResult("referenceTest", resultOf(cells),
+                Collections.singletonList(labeling)),
+                new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.REFERENCE)).get(0);
+        assertEquals("ballots weighted by the judged-against values elect the expected label", "low",
+                byReference.holisticLabel());
     }
 
     @Test
     public void magnitudeWeightedElectionOverConsensusReadsInheritedVolume() {
         Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
         Map<Cell, Double> quantity = new LinkedHashMap<>();
         quantity.put(cells[0], 8.0);
         quantity.put(cells[1], 3.0);
@@ -322,60 +259,22 @@ public class LabelDistributionTest {
         labelByValue.put(7.0, "high");
         List<String> domain = Arrays.asList("low", "mid", "high");
 
-        // Two schemes over the same ordered domain, so the result derives a consensus of them.
         List<Labeling> labelings = Arrays.asList(
                 new Labeling(lookupScheme(domain, labelByValue), quantity),
                 new Labeling(lookupScheme(domain, labelByValue), quantity));
-        LabeledResult operatorResult = operatorResult("consensusElection", data, labelings);
-        assertEquals("a consensus is derived from the two labelings", 1, operatorResult.consensuses().size());
-
-        Labeling consensus = operatorResult.consensuses().get(0);
+        LabeledResult operatorResult = operatorResult("consensusElection", resultOf(cells), labelings);
+        Labeling consensus = consensusOf(operatorResult);
         assertEquals("the consensus inherits the group's magnitude, not the bucket rank", 8.0,
                 consensus.magnitudeOf(cells[0]), 1e-9);
 
-        ElementaryHighlightRole role = labeledCellRole();
-        AlgorithmExecution byCount = new LabelDistributionAlgorithm(role).run(operatorResult, consensus);
-        AlgorithmExecution byVolume = new LabelDistributionAlgorithm(
-                role, new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).run(operatorResult, consensus);
+        LabeledResult overConsensus = operatorResult("consensusElection", resultOf(cells),
+                Collections.singletonList(consensus));
+        ModelResult byCount = predominance(overConsensus, ElectionSpec.DEFAULT).get(0);
+        ModelResult byVolume = predominance(overConsensus,
+                new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE)).get(0);
 
-        assertTrue("counted ballots over the consensus elect the center label", byCount.holisticScores.stream()
-                .anyMatch(s -> "mid".equals(s.label)));
-        assertTrue("magnitude-weighted ballots over the consensus follow the inherited volume, not ranks",
-                byVolume.holisticScores.stream().anyMatch(s -> "low".equals(s.label)));
-    }
-
-    @Test
-    public void electionSpecPropagatesThroughTheArchetypeToTheExtractor() {
-        Cell[] cells = cells(5);
-        Result data = resultOf(cells);
-
-        Map<Cell, Double> quantity = new LinkedHashMap<>();
-        quantity.put(cells[0], 8.0);
-        quantity.put(cells[1], 3.0);
-        quantity.put(cells[2], 0.0);
-        quantity.put(cells[3], 2.0);
-        quantity.put(cells[4], 7.0);
-        Map<Double, String> labelByValue = new LinkedHashMap<>();
-        labelByValue.put(8.0, "low");
-        labelByValue.put(3.0, "low");
-        labelByValue.put(0.0, "mid");
-        labelByValue.put(2.0, "high");
-        labelByValue.put(7.0, "high");
-        Labeling labeling =
-                new Labeling(lookupScheme(Arrays.asList("low", "mid", "high"), labelByValue), quantity);
-
-        LabeledResult operatorResult = operatorResult("propagation", data, Collections.singletonList(labeling));
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-
-        HolisticHighlight byDefault = (HolisticHighlight) new HighlightExtractor().extract(operatorResult,
-                Collections.singletonList(LabelPredominanceArchetype.create()), schema).highlights().get(0);
-        HolisticHighlight byVolume = (HolisticHighlight) new HighlightExtractor().extract(operatorResult,
-                Collections.singletonList(LabelPredominanceArchetype.create(
-                        new ElectionSpec(VotingRule.MEDIAN_VOTER, Weighting.MAGNITUDE))), schema).highlights().get(0);
-
-        assertTrue("the default archetype counts ballots and elects the center label",
-                byDefault.getScores().stream().anyMatch(s -> "mid".equals(s.label)));
-        assertTrue("the archetype built with a magnitude-weighted spec carries it into the election",
-                byVolume.getScores().stream().anyMatch(s -> "low".equals(s.label)));
+        assertEquals("counted ballots over the consensus elect the center label", "mid", byCount.holisticLabel());
+        assertEquals("magnitude-weighted ballots over the consensus follow the inherited volume", "low",
+                byVolume.holisticLabel());
     }
 }

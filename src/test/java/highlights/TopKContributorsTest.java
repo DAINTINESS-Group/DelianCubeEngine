@@ -4,30 +4,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
-import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.HighlightExtractor;
-import highlights.HighlightSet;
-import highlights.archetypes.topk.TopKContributorsArchetype;
-import highlights.instance.ElementaryHighlight;
-import highlights.instance.HolisticHighlight;
-import highlights.metamodel.ArchetypeProperty;
+import intentional.labeling.Labeling;
+import intentional.model.ModelResult;
+import intentional.model.archetypes.DefaultArchetypes;
+import intentional.model.archetypes.topk.TopKContributionAlgorithm;
 import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 
 /**
- * Top-k surfaces the k largest contributors of a breakdown dimension, ranked by value: with default k=3
- * over five members it reports the three biggest in descending order and omits the two smallest.
+ * Top-k labels the k largest contributors of a breakdown dimension {@code topContributor}: with default k=3
+ * over five members it labels the three biggest and leaves the two smallest {@code other}.
  */
 public class TopKContributorsTest {
 
-    // member -> contribution; deliberately out of order in the result to prove the algorithm ranks.
     private static final String[] MEMBERS = {"c", "a", "e", "b", "d"};
     private static final double[] VALUES  = {100, 500,  10, 300,  50};
 
@@ -43,18 +39,20 @@ public class TopKContributorsTest {
         query.addQueryMeasure("sum", "amount", "amount");
 
         LabeledResult operatorResult = new LabeledResult(query, data, null);
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(TopKContributorsArchetype.create());
+        List<ModelResult> results = HighlightTestSupport.models(
+                operatorResult, DefaultArchetypes.subset("TopKContributors"));
+        assertEquals("one top-k result for the single measure", 1, results.size());
 
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        assertEquals("one top-k holistic for the single measure", 1, highlights.size());
-
-        HolisticHighlight holistic = (HolisticHighlight) highlights.highlights().get(0);
+        Labeling labelling = results.get(0).labelling();
         List<Double> reported = new ArrayList<>();
-        for (ElementaryHighlight e : holistic.elementary()) reported.add(e.measureValue.value);
+        for (Map.Entry<Cell, String> e : labelling.assignment().entrySet()) {
+            if (TopKContributionAlgorithm.TOP_CONTRIBUTOR.equals(e.getValue())) {
+                reported.add(e.getKey().toDouble(0));
+            }
+        }
 
-        // Exactly the three largest, in descending value order.
-        assertEquals("k largest contributors", java.util.Arrays.asList(500.0, 300.0, 100.0), reported);
+        assertEquals("k largest contributors, in descending value order",
+                java.util.Arrays.asList(500.0, 300.0, 100.0), reported);
         assertFalse("50 is below the cut", reported.contains(50.0));
         assertFalse("10 is below the cut", reported.contains(10.0));
     }

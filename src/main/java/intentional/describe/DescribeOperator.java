@@ -8,7 +8,7 @@ import org.antlr.runtime.RecognitionException;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import intentional.describe.syntax.DescribeParserManager;
-import intentional.labeling.Labeling;
+import intentional.model.ModelResult;
 import intentional.operator.IntentionalOperator;
 import intentional.result.LabeledResult;
 import result.Result;
@@ -64,7 +64,7 @@ public class DescribeOperator implements IntentionalOperator {
         this.describeQuery.setDescribeQueryResult(result);
 
         return Collections.singletonList(
-                new LabeledResult(cubeQuery, result, Collections.<Labeling>emptyList()));
+                new LabeledResult(cubeQuery, result, Collections.<ModelResult>emptyList()));
     }
 
     public DescribeQuery getDescribeQuery() {

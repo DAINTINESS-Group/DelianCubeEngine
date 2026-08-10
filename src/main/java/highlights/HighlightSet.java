@@ -96,7 +96,7 @@ public final class HighlightSet {
             String id = String.valueOf(i);
             if (h instanceof HolisticHighlight) {
                 HolisticHighlight hh = (HolisticHighlight) h;
-                rows.add(new String[]{ id, "HOLISTIC", hh.archetype.name, "",
+                rows.add(new String[]{ id, "HOLISTIC", hh.archetypeName, "",
                         hh.mainMeasure == null ? "" : hh.mainMeasure.getName(), "", datasetRef(h) });
             } else {
                 ElementaryHighlight eh = (ElementaryHighlight) h;

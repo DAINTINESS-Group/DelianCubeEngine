@@ -6,9 +6,9 @@ import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
-import highlights.archetypes.labelpredominance.ElectionSpec;
-import highlights.archetypes.labelpredominance.VotingRule;
-import highlights.archetypes.labelpredominance.Weighting;
+import intentional.model.archetypes.labelpredominance.ElectionSpec;
+import intentional.model.archetypes.labelpredominance.VotingRule;
+import intentional.model.archetypes.labelpredominance.Weighting;
 
 /**
  * The election spec's rule resolution: an unset rule defers to the labeling's default, an imposed one holds

@@ -11,8 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cubemanager.CubeManager;
-import cubemanager.CubeSchemaResolver;
-import highlights.HighlightExtractor;
+import highlights.HighlightTestSupport;
 import highlights.HighlightSet;
 import highlights.instance.HolisticHighlight;
 import intentional.result.LabeledResult;
@@ -50,8 +49,8 @@ public class DescribeHighlightsTest {
         assertNotNull("DESCRIBE should produce an operator result", operatorResult);
         assertTrue("DESCRIBE carries no labelings", operatorResult.labelings().isEmpty());
 
-        HighlightSet highlights = new HighlightExtractor().extract(
-                operatorResult, IntentionalProfile.DESCRIBE.archetypes(), CubeSchemaResolver.from(testCubeManager));
+        HighlightSet highlights = HighlightTestSupport.highlights(
+                operatorResult, IntentionalProfile.DESCRIBE.archetypes(), testCubeManager);
         assertFalse("DESCRIBE should produce highlights", highlights.isEmpty());
 
         HolisticHighlight outlier = holisticFor(highlights, "Outlier");

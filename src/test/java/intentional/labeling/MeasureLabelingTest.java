@@ -1,7 +1,7 @@
 package intentional.labeling;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -12,22 +12,20 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import cubemanager.CubeSchemaResolver;
 import cubemanager.cubebase.CubeQuery;
-import highlights.HighlightExtractor;
-import highlights.HighlightSet;
-import highlights.archetypes.labelpredominance.LabelPredominanceArchetype;
-import highlights.instance.HolisticHighlight;
-import highlights.metamodel.ArchetypeProperty;
+import highlights.HighlightTestSupport;
 import intentional.labeling.schemes.KMeansScheme;
 import intentional.labeling.schemes.MedianDistanceScheme;
+import intentional.model.ModelResult;
+import intentional.model.ParameterInstantiation;
+import intentional.model.Synthema;
 import intentional.result.LabeledResult;
 import result.Cell;
 import result.Result;
 
 /**
- * A measure labeled under any scheme: the labeling is built from the measure's values, and the
- * label-predominance archetype consumes it regardless of which scheme produced it.
+ * A measure labeled under any scheme: the labeling is built from the measure's values, and label-predominance
+ * consumes it regardless of which scheme produced it.
  */
 public class MeasureLabelingTest {
 
@@ -45,19 +43,18 @@ public class MeasureLabelingTest {
         return new Labeling(scheme, valueByCell, 0);
     }
 
-    private static HolisticHighlight extractSingle(Result data, Labeling labeling) {
+    private static ModelResult predominanceOf(Result data, Labeling labeling) {
         CubeQuery query = new CubeQuery("measureLabelingTest");
         query.setGammaExpressions(new ArrayList<String[]>());
         query.addQueryMeasure("sum", "amount", "amount");
 
-        LabeledResult operatorResult =
-                new LabeledResult(query, data, Collections.singletonList(labeling));
-        CubeSchemaResolver schema = new CubeSchemaResolver(new ArrayList<>(), new ArrayList<>());
-        List<ArchetypeProperty> candidates = Collections.singletonList(LabelPredominanceArchetype.create());
-
-        HighlightSet highlights = new HighlightExtractor().extract(operatorResult, candidates, schema);
-        assertEquals(1, highlights.size());
-        return (HolisticHighlight) highlights.highlights().get(0);
+        LabeledResult operatorResult = new LabeledResult(query, data, Collections.singletonList(
+                new Synthema(labeling.schemeName(), true, labeling,
+                        Collections.<ParameterInstantiation>emptyList())));
+        List<ModelResult> results = HighlightTestSupport.models(
+                operatorResult, intentional.model.archetypes.DefaultArchetypes.subset("LabelPredominance"));
+        assertEquals(1, results.size());
+        return results.get(0);
     }
 
     @Test
@@ -66,11 +63,9 @@ public class MeasureLabelingTest {
         Labeling labeling = labelMeasure(data, new MedianDistanceScheme());
         assertEquals(MedianDistanceScheme.NAME, labeling.schemeName());
 
-        HolisticHighlight holistic = extractSingle(data, labeling);
-        assertTrue("OK predominates (4 of 6)", holistic.execution.result.verdict());
-        assertTrue("dominant label OK is reported", holistic.getScores().stream()
-                .anyMatch(s -> "OK".equals(s.label)));
-        assertFalse("salient cells surfaced", holistic.elementary().isEmpty());
+        ModelResult m = predominanceOf(data, labeling);
+        assertTrue("OK predominates (4 of 6)", m.verdict());
+        assertEquals("dominant label OK is reported", "OK", m.holisticLabel());
     }
 
     @Test
@@ -79,11 +74,9 @@ public class MeasureLabelingTest {
         Labeling labeling = labelMeasure(data, new KMeansScheme());
         assertEquals(KMeansScheme.NAME, labeling.schemeName());
 
-        HolisticHighlight holistic = extractSingle(data, labeling);
-        assertTrue("the four low-valued cells form a predominant cluster (4 of 6)",
-                holistic.execution.result.verdict());
-        assertTrue("dominant cluster label is reported", holistic.getScores().stream()
-                .anyMatch(s -> s.label != null && s.label.startsWith("Cluster")));
-        assertFalse("salient cells surfaced", holistic.elementary().isEmpty());
+        ModelResult m = predominanceOf(data, labeling);
+        assertTrue("the four low-valued cells form a predominant cluster (4 of 6)", m.verdict());
+        assertNotNull("dominant cluster label is reported", m.holisticLabel());
+        assertTrue("dominant cluster label is reported", m.holisticLabel().startsWith("Cluster"));
     }
 }

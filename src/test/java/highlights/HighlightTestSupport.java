@@ -1,32 +1,50 @@
 package highlights;
 
-import highlights.HighlightSet;
+import java.util.List;
+
+import cubemanager.CubeManager;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
-import highlights.instance.Score;
+import intentional.model.ArchetypeProperty;
+import intentional.model.ModelExtraction;
+import intentional.model.ModelResult;
+import intentional.result.LabeledResult;
 
 /**
- * Shared lookups for highlight-extraction tests: locate a holistic by its archetype name and read a score
- * value off it by score-type name.
+ * Shared runs for archetype tests: run the model-extraction operator over an operator result, and, for the
+ * integration tests, extract highlights with a real cube.
  */
 public final class HighlightTestSupport {
 
     private HighlightTestSupport() {}
 
-    public static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {
-        for (Highlight h : highlights.highlights()) {
-            if (h instanceof HolisticHighlight
-                    && ((HolisticHighlight) h).archetype.name.equals(archetypeName)) {
-                return (HolisticHighlight) h;
-            }
+    /** The model results a set of archetypes produces over an operator result. */
+    public static List<ModelResult> models(LabeledResult result, List<ArchetypeProperty> archetypes) {
+        return new ModelExtraction().run(result, archetypes);
+    }
+
+    /** The model result of the model with the given name, or {@code null}. */
+    public static ModelResult resultNamed(List<ModelResult> results, String modelName) {
+        for (ModelResult result : results) {
+            if (modelName.equals(result.modelName())) return result;
         }
         return null;
     }
 
-    public static double scoreOf(HolisticHighlight highlight, String scoreType) {
-        for (Score score : highlight.getScores()) {
-            if (score.type.name().equals(scoreType)) return score.value;
+    /** Runs the model-extraction operator and the highlight extractor over an operator result with a cube. */
+    public static HighlightSet highlights(LabeledResult result, List<ArchetypeProperty> archetypes,
+                                          CubeManager cubeManager) {
+        return new HighlightExtractor().extract(result.data, result.query,
+                models(result, archetypes), HighlightRecipes.defaults(), cubeManager);
+    }
+
+    public static HolisticHighlight holisticFor(HighlightSet highlights, String archetypeName) {
+        for (Highlight h : highlights.highlights()) {
+            if (h instanceof HolisticHighlight
+                    && ((HolisticHighlight) h).archetypeName.equals(archetypeName)) {
+                return (HolisticHighlight) h;
+            }
         }
-        return Double.NaN;
+        return null;
     }
 }
