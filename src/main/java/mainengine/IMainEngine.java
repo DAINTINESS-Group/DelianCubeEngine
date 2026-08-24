@@ -236,6 +236,8 @@ public interface IMainEngine extends IServer {
 	 */
 	ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException;
 	
+	ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception;
+	
 	
 	/**
 	 * 

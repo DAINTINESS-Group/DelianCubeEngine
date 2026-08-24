@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -132,7 +132,7 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 	public final void testAnalyzeQueryExecution() throws IOException {
 		String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
 		
-		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
+		List<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
 		
 		String testResultString = "";
 		
@@ -144,7 +144,7 @@ public class AnalyzeUpdatedQueriesTranslationAndExecutionTest {
 			expectedResultString = getFileContents("src/test/resources/OutputFiles/foodmart_reduced/AnalyzeQueryExecutionResults.csv");
 		}
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-		AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
+		AnalyzeOperatorMinMQO testAnalyzeOperator = new AnalyzeOperatorMinMQO(testCubeManager,testAnalyzeTranslationManager);
 
 		testAnalyzeOperator.execute(incomingExpression);
 		

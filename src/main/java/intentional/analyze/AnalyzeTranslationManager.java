@@ -58,10 +58,6 @@ public class AnalyzeTranslationManager {
 	
 	// A hashmap with the dimension each sigma and gamma expression belongs
 	private HashMap<String,String> dimensions;
-	
-	public HashMap<String, String> getDimensions() {
-		return dimensions;
-	}
 
 	// A hashmap that maps each sigma and gamma level to its child level
 	private HashMap<String,String> childToLevelById;
@@ -72,20 +68,12 @@ public class AnalyzeTranslationManager {
 	private HashMap<String,String> parentToLevelById;
 	
 	private HashMap<String,String> parentToLevelByName;
-	
-	public HashMap<String, String> getParentToLevelByName() {
-		return parentToLevelByName;
-	}
 
 	// A hashmap that maps each sigma and gamma level to its table name in the relational schema
 	private HashMap<String,String> expressionToTableName;
 	
 	// A hashmap that maps each sigma and gamma level to its description
 	private HashMap<String,String> currentLevelToDescriptions;
-	
-	public HashMap<String, String> getCurrentLevelToDescriptions() {
-		return currentLevelToDescriptions;
-	}
 
 	//A hashmap that maps each sigma and gamma level to its position in hierarchy
 	private HashMap<String,Integer> expressionToPositionInHierarchy;
@@ -93,12 +81,18 @@ public class AnalyzeTranslationManager {
 	// Boolean variable that checks if there was errors during the Cube Queries translation
 	private boolean cubeQueryGenerationStatus = true;
 	
+	private ArrayList<AnalyzeQuery> analyzeMINMQOQueries;
+	
+	private ArrayList<AnalyzeQuery> analyzeMIDMQOQueries;
+	
+	private ArrayList<AnalyzeQuery> analyzeMAXMQOQueries;
+	
 	/**
 	 * Constructor method that initializes the AnalyzeTranslationManager fields
 	 * @param incomingExpression
 	 * @param cubeManager
 	 */
-	public AnalyzeTranslationManager(String incomingExpression,CubeManager cubeManager, String schemaName, String connectionType) {
+	public AnalyzeTranslationManager(String incomingExpression, CubeManager cubeManager, String schemaName, String connectionType) {
 		this.incomingExpression = incomingExpression;
 		this.cubeManager = cubeManager;
 		this.schemaName = schemaName;
@@ -126,22 +120,6 @@ public class AnalyzeTranslationManager {
 		System.out.println(this.incomingExpression);
 		this.gammaExpressions = analyzeParserManager.getGammaExpressions();
 		this.queryAlias = analyzeParserManager.getQueryAlias();
-	}
-	
-	public ArrayList<String> getSigmaExpressions(){
-		return this.sigmaExpressions;
-	}
-	
-	public HashMap<String, String> getSigmaExpressionsToValues(){
-		return this.sigmaExpressionsToValues;
-	}
-	
-	public String getAggrFunc() {
-		return this.aggrFunc;
-	}
-	
-	public HashMap<String,Integer> getExpressionToPositionInHierarchy(){
-		return expressionToPositionInHierarchy;
 	}
 	
 	/**
@@ -204,6 +182,50 @@ public class AnalyzeTranslationManager {
 			}
 		}
 	}	
+	
+	
+	public HashMap<String, String> getDimensions() {
+		return dimensions;
+	}
+	
+	
+	
+	public ArrayList<AnalyzeQuery> getAnalyzeMINMQOQueries() {
+		return analyzeMINMQOQueries;
+	}
+
+	public ArrayList<AnalyzeQuery> getAnalyzeMIDMQOQueries() {
+		return analyzeMIDMQOQueries;
+	}
+
+	public ArrayList<AnalyzeQuery> getAnalyzeMAXMQOQueries() {
+		return analyzeMAXMQOQueries;
+	}
+
+	public HashMap<String, String> getCurrentLevelToDescriptions() {
+		return currentLevelToDescriptions;
+	}
+	
+	public HashMap<String, String> getParentToLevelByName() {
+		return parentToLevelByName;
+	}
+	
+	public ArrayList<String> getSigmaExpressions(){
+		return this.sigmaExpressions;
+	}
+	
+	public HashMap<String, String> getSigmaExpressionsToValues(){
+		return this.sigmaExpressionsToValues;
+	}
+	
+	public String getAggrFunc() {
+		return this.aggrFunc;
+	}
+	
+	public HashMap<String,Integer> getExpressionToPositionInHierarchy(){
+		return expressionToPositionInHierarchy;
+	}
+	
 	
 	public void setUpTranslation() {
 		getAnalyzeQueryInfo();
@@ -318,6 +340,8 @@ public class AnalyzeTranslationManager {
 		}
 		analyzeQueries.addAll(cinecubesDrillDownQueries);
 		*/
+		
+		this.analyzeMINMQOQueries = analyzeQueries;
 		return analyzeQueries;
 	}
 	
@@ -335,6 +359,7 @@ public class AnalyzeTranslationManager {
 			cubeQueryGenerationStatus = false;
 		}
 		
+		this.analyzeMAXMQOQueries = analyzeQueries;
 		return analyzeQueries;
 	}
 
@@ -362,7 +387,7 @@ public class AnalyzeTranslationManager {
 		}
 		analyzeQueries.addAll(siblingQueries);
 
-		
+		this.analyzeMIDMQOQueries = analyzeQueries;
 		return analyzeQueries;
 	}
 	

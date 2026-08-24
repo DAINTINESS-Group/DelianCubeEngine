@@ -25,11 +25,15 @@ import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
+import cubemanager.statistics.SelectivityStatistics;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
+import intentional.analyze.optimizer.selectivityestimation.CustomKey;
 import result.Result;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +46,26 @@ public class CubeManager {
 	private List<BasicStoredCube> registeredCubesList;
 	private List<Dimension> registeredDimensionsList;
 	
+	private String schemaName;
+	
+	private String typeOfConnection;
+	
+	private double SAMPLE_PERCENTAGE = 0.05;
+	
+	private int factTableSize;
+	
+	private int sampleSize;
+	
+	private HashMap<CustomKey, Integer> selectivity = new HashMap<CustomKey,Integer>();
+	
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
 		cubeBase = new CubeBase(typeOfConnection, userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
 		registeredCubesList = new ArrayList<BasicStoredCube>();
 		registeredDimensionsList = new ArrayList<Dimension>();
+		this.schemaName = userInputList.get("schemaName");
+		this.typeOfConnection = typeOfConnection;
 	}
 
 	public ICubeQueryTranslator setCubeQueryTranslator() {
@@ -338,5 +356,41 @@ public class CubeManager {
 		}		
 		return cubeQueryTranslator.produceExtractionMethod(cubeQuery);
 	}//end method produceExtractionMethod(CubeQuery)
+	
+	public void setUpSelectivityStatistics(String inputFolder, String cubeName) throws SQLException {
+		SelectivityStatistics selectivityStatistics = new SelectivityStatistics(inputFolder, cubeName);
+		try {
+			System.out.println(cubeBase.getRegisteredCubeList());
+			selectivityStatistics.buildSelectivitySample(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE, false,false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		this.selectivity = selectivityStatistics.calculateSelectivityFromFile();
+		this.factTableSize = selectivityStatistics.getStoredFactTableSize();
+		this.sampleSize = selectivityStatistics.getSampleSize();
+	}
+	
+	public HashMap<CustomKey, Integer> getSelectivity(){
+		return selectivity;
+	}
+
+	public int getSampleSize() {
+		return sampleSize;
+	}
+
+	public int getFactTableSize() {
+		return factTableSize;
+	}
+
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public String getTypeOfConnection() {
+		return typeOfConnection;
+	}
+	
+	
 
 }//end class CubeManager

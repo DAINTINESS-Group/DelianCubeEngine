@@ -35,9 +35,11 @@ import chartRequestManagement.ChartRequest;
 import cubemanager.cubebase.CubeQuery;
 import decisiontree.labeling.RuleSet;
 import intentional.operator.IntentionalStrategy;
+import intentional.analyze.AnalyzeOperatorOptimizer.AnalyzeStrategy;
 import intentional.operator.IntentionalOperatorType;
 import mainengine.managers.Director;
 import mainengine.managers.ManagerType;
+import mainengine.managers.OptimizationProfile;
 import mainengine.managers.RequestCTO;
 import mainengine.managers.ResponseDTO;
 import mainengine.managers.SessionContext;
@@ -92,6 +94,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public InputStream getInputStream(File f) throws IOException {
 	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
 	}//end method
+	
+	public SessionContext getSessionContext() {
+		return this.context;
+	}
 
 
 	/*
@@ -329,6 +335,29 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
     @Override
     public ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException {
         return dispatchAnalyze(IntentionalStrategy.MID_MQO.alias, incomingExpression);
+    }
+    
+    @Override
+    public ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception{
+    	ResponseDTO dto = delegateOptimizer(ManagerType.OPTIMIZATION, OptimizationProfile.ANALYZE.alias, incomingExpression);
+    	AnalyzeStrategy analyzeStrategy = (AnalyzeStrategy) dto.getPayload();
+    	switch(analyzeStrategy) {
+    		case MIN_MQO:
+    			return this.analyzeWithMinMQO(incomingExpression);
+    		case MID_MQO:
+    			return this.analyzeWithMidMQO(incomingExpression);
+    		case MAX_MQO:
+    			return this.analyzeWithMaxMQO(incomingExpression);
+    		default:
+    			return this.analyzeWithMidMQO(incomingExpression);
+    	}
+    }
+    
+    private ResponseDTO delegateOptimizer(ManagerType managerType, String commandAlias, String input) throws Exception {
+    	RequestCTO cto = new RequestCTO(managerType, commandAlias, input, context.getCubeManager());
+    	ResponseDTO dto = director.serve(cto);
+    	
+    	return dto;
     }
 
 	@Override

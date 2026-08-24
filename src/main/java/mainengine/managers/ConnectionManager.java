@@ -6,6 +6,7 @@ import java.util.Map;
 import chartManagement.ChartManager;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.QueryHistoryManager;
+import intentional.analyze.AnalyzeTranslationManager;
 import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
@@ -20,6 +21,7 @@ public class ConnectionManager implements IBuilder {
         CubeManager cubeManager = new CubeManager(typeOfConnection, userInputList);
         Session session = new Session(cubeManager);
         String sessionId = session.initialize(typeOfConnection, userInputList);
+        cubeManager.setUpSelectivityStatistics(userInputList.get("inputFolder"), userInputList.get("cubeName"));
         QueryHistoryManager queryHistoryMng = new QueryHistoryManager(sessionId);
 
         SessionContext context = new SessionContext();

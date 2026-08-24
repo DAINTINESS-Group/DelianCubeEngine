@@ -3,9 +3,10 @@ package intentional.operator;
 import java.util.Map;
 
 import intentional.analyze.AnalyzeOperatorByIakovidis;
-import intentional.analyze.AnalyzeOperatorMaxMultiQueryOptimizer;
-import intentional.analyze.AnalyzeOperatorMidMultiQueryOptimizer;
-import intentional.analyze.AnalyzeOperatorMinMultiQueryOptimizer;
+import intentional.analyze.AnalyzeOperatorMaxMQO;
+import intentional.analyze.AnalyzeOperatorMidMQO;
+import intentional.analyze.AnalyzeOperatorMinMQO;
+import intentional.analyze.AnalyzeOperatorOptimizer;
 import intentional.analyze.AnalyzeTranslationManager;
 import intentional.assess.AssessOperator;
 import cubemanager.CubeManager;
@@ -42,11 +43,11 @@ public class IntentionalOperatorFactory {
             case IAKOVIDIS:
                 return new AnalyzeOperatorByIakovidis(cubeManager, translation);
             case MIN_MQO:
-                return new AnalyzeOperatorMinMultiQueryOptimizer(cubeManager, translation);
+                return new AnalyzeOperatorMinMQO(cubeManager, translation);
             case MAX_MQO:
-                return new AnalyzeOperatorMaxMultiQueryOptimizer(cubeManager, translation);
+                return new AnalyzeOperatorMaxMQO(cubeManager, translation);
             case MID_MQO:
-                return new AnalyzeOperatorMidMultiQueryOptimizer(cubeManager, translation);
+                return new AnalyzeOperatorMidMQO(cubeManager, translation);
             default:
                 throw new IllegalArgumentException("Unknown analyze strategy: " + strategy);
         }

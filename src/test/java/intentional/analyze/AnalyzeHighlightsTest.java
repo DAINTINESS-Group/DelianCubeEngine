@@ -50,7 +50,7 @@ public class AnalyzeHighlightsTest {
                 "                    AS 3rd_working_example";
 
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-        AnalyzeOperatorMinMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMinMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
+        AnalyzeOperatorMinMQO testAnalyzeOperator = new AnalyzeOperatorMinMQO(testCubeManager, testAnalyzeTranslationManager);
 
         List<LabeledResult> minMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 
@@ -127,7 +127,7 @@ public class AnalyzeHighlightsTest {
                 "                    AS 3rd_working_example";
 
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-        AnalyzeOperatorMidMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMidMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
+        AnalyzeOperatorMidMQO testAnalyzeOperator = new AnalyzeOperatorMidMQO(testCubeManager, testAnalyzeTranslationManager);
 
         List<LabeledResult> midMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 
@@ -182,7 +182,7 @@ public class AnalyzeHighlightsTest {
                 "                    AS 3rd_working_example";
 
         AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
-        AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager, testAnalyzeTranslationManager);
+        AnalyzeOperatorMaxMQO testAnalyzeOperator = new AnalyzeOperatorMaxMQO(testCubeManager, testAnalyzeTranslationManager);
 
         List<LabeledResult> maxMQOQueries = testAnalyzeOperator.execute(incomingExpression);
 

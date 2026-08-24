@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	public final void testAnalyzeQueryExecutionWithMQOBeforeResultMapping() throws IOException {
 		String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
 		
-		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
+		List<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
 		
 		String testResultString = "";
 		
@@ -94,7 +94,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
 
-		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
+		AnalyzeOperatorMaxMQO testAnalyzeOperator = new AnalyzeOperatorMaxMQO(testCubeManager,testAnalyzeTranslationManager);
 		
 		testAnalyzeOperator.execute(incomingExpression);
 		
@@ -129,7 +129,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	public final void testAnalyzeQueryExecutionWithMQOAfterResultMapping() throws IOException {
 		String incomingExpression = "ANALYZE sum(store_sales) FROM sales FOR quarter='1997-Q3' AND state='CA' AND media='Daily Paper' GROUP BY month, region AS 3rd_working_example";
 		
-		ArrayList<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
+		List<AnalyzeQuery> testAnalyzeQueries = new ArrayList<AnalyzeQuery>();
 		
 		String testResultString = "";
 		
@@ -143,7 +143,7 @@ public class AnalyzeOptimizerTranslationAndExecutionTest {
 	
 		AnalyzeTranslationManager testAnalyzeTranslationManager = new AnalyzeTranslationManager(incomingExpression, testCubeManager, testSchemaName, testTypeOfConnection);
 
-		AnalyzeOperatorMaxMultiQueryOptimizer testAnalyzeOperator = new AnalyzeOperatorMaxMultiQueryOptimizer(testCubeManager,testAnalyzeTranslationManager);
+		AnalyzeOperatorMaxMQO testAnalyzeOperator = new AnalyzeOperatorMaxMQO(testCubeManager,testAnalyzeTranslationManager);
 		
 		testAnalyzeOperator.execute(incomingExpression);
 		
