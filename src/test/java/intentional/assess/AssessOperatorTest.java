@@ -108,6 +108,30 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void holisticTransformNormalizesTheComparisonColumn() throws RecognitionException {
+        String query = "with loan for year = '1997' by district_name, year assess sum(amount) " +
+                "against year = '1996'\n" +
+                "using minMaxNorm(difference(amount, benchmark.amount))\n" +
+                "labels {[0, 0.5): low, [0.5, 1]: high}";
+
+        Labeling labeling = assess(query);
+        assertFalse("expected matched cells", labeling.assignment().isEmpty());
+
+        double min = Double.POSITIVE_INFINITY;
+        double max = Double.NEGATIVE_INFINITY;
+        for (Cell cell : labeling.assignment().keySet()) {
+            double magnitude = labeling.magnitudeOf(cell);
+            assertTrue("normalized magnitude outside [0,1]: " + magnitude,
+                    magnitude >= 0.0 && magnitude <= 1.0);
+            assertEquals(magnitude < 0.5 ? "low" : "high", labeling.of(cell));
+            min = Math.min(min, magnitude);
+            max = Math.max(max, magnitude);
+        }
+        assertEquals("the column's smallest difference maps to zero", 0.0, min, 1e-9);
+        assertEquals("the column's largest difference maps to one", 1.0, max, 1e-9);
+    }
+
+    @Test
     public void assessSiblingsWithMissMatchingCells() throws RecognitionException {
         String query = "with loan for region = 'South Moravia', year = '1994'\n" +
                 "by month, region, status assess avg(amount) against region = 'North Moravia'\n" +

@@ -34,6 +34,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	intentional.labeling.schemes.CustomLabelingSchemeTest.class,
 	intentional.assess.AssessQueryParserTest.class,
 	intentional.assess.AssessOperatorTest.class,
+	intentional.assess.deltas.DeltaSchemeTest.class,
 	intentional.assess.utils.DatesHandlerTest.class,
 	chartManagement.ChartQueryEditorControllerTest.class,
 	chartManagement.VisualizationManagerTest.class,
