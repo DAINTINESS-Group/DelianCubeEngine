@@ -103,11 +103,19 @@ public class AssessQueryBuilder {
         this.deltaOperandRefs = new String[]{first, second};
     }
 
+    private static final Pattern TRANSFORMED_OPERAND =
+            Pattern.compile("^([A-Za-z_][A-Za-z0-9_]*)\\((.+)\\)$");
+
     /**
      * Binds an operand reference: a number is a constant, {@code benchmark.X} the benchmark's measure,
-     * a bare name the target's measure — where X must be the measure the result actually carries.
+     * a bare name the target's measure — where X must be the measure the result actually carries. A
+     * {@code transform(X)} wrapper normalizes the bound operand against its own value distribution.
      */
     private DeltaScheme.Operand resolveOperand(String ref) {
+        Matcher wrapped = TRANSFORMED_OPERAND.matcher(ref);
+        if (wrapped.matches()) {
+            return DeltaScheme.Operand.transformed(wrapped.group(1), resolveOperand(wrapped.group(2)));
+        }
         if (ref.matches("[0-9.]+")) {
             return DeltaScheme.Operand.constant(Double.parseDouble(ref));
         }

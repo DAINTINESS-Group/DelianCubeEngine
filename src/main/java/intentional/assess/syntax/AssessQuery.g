@@ -101,11 +101,17 @@ external_benchmark returns [String cube, String measurement]
 comparison_scheme [List<String> comparisonMethods] returns [List<String> updatedComparisonMethods]
     @init{$updatedComparisonMethods = $comparisonMethods;}
     : method_name = ID {$updatedComparisonMethods.add($method_name.text);}
-    '(' (comparison_scheme[$updatedComparisonMethods] | comparison_args) ')';
+    '(' ( (transformed_operand ',')=> comparison_args
+        | comparison_scheme[$updatedComparisonMethods] ) ')';
 
 comparison_args
-    : first = operand_ref ',' second = operand_ref
+    : first = transformed_operand ',' second = transformed_operand
       { if (builder != null) builder.setDeltaOperands($first.ref, $second.ref); }
+    ;
+
+transformed_operand returns [String ref]
+    : (ID '(')=> name = ID '(' inner = operand_ref ')' { $ref = $name.text + "(" + $inner.ref + ")"; }
+    | o = operand_ref { $ref = $o.ref; }
     ;
 
 operand_ref returns [String ref]

@@ -132,6 +132,28 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void operandTransformsNormalizeEachPopulationSeparately() throws RecognitionException {
+        String query = "with loan for year = '1997' by district_name, year assess sum(amount) " +
+                "against year = '1996'\n" +
+                "using difference(zscore(amount), zscore(benchmark.amount))\n" +
+                "labels {[-inf, 0): fell, [0, +inf]: rose}";
+
+        Labeling labeling = assess(query);
+        assertFalse("expected matched cells", labeling.assignment().isEmpty());
+
+        double sum = 0.0;
+        double maxAbsolute = 0.0;
+        for (Cell cell : labeling.assignment().keySet()) {
+            double magnitude = labeling.magnitudeOf(cell);
+            assertEquals(magnitude < 0 ? "fell" : "rose", labeling.of(cell));
+            sum += magnitude;
+            maxAbsolute = Math.max(maxAbsolute, Math.abs(magnitude));
+        }
+        assertEquals("both populations' z-scores each sum to zero", 0.0, sum, 1e-6);
+        assertTrue("expected real spread between the standings", maxAbsolute > 0.0);
+    }
+
+    @Test
     public void assessSiblingsWithMissMatchingCells() throws RecognitionException {
         String query = "with loan for region = 'South Moravia', year = '1994'\n" +
                 "by month, region, status assess avg(amount) against region = 'North Moravia'\n" +

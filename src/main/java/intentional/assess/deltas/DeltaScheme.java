@@ -35,23 +35,44 @@ public class DeltaScheme {
         }
     }
 
-    /** An operand of the comparison: the target cell's value, its benchmark value, or a constant. */
+    /**
+     * An operand of the comparison: the target cell's value, its benchmark value, or a constant — optionally
+     * passed through a holistic transform computed over the operand's own column.
+     */
     public static final class Operand {
-        public static final Operand TARGET = new Operand(Kind.TARGET, 0);
-        public static final Operand BENCHMARK = new Operand(Kind.BENCHMARK, 0);
+        public static final Operand TARGET = new Operand(Kind.TARGET, 0, null);
+        public static final Operand BENCHMARK = new Operand(Kind.BENCHMARK, 0, null);
 
         enum Kind { TARGET, BENCHMARK, CONSTANT }
 
         private final Kind kind;
         private final double constant;
+        private final HolisticTransform transform;
 
-        private Operand(Kind kind, double constant) {
+        private Operand(Kind kind, double constant, HolisticTransform transform) {
             this.kind = kind;
             this.constant = constant;
+            this.transform = transform;
         }
 
         public static Operand constant(double value) {
-            return new Operand(Kind.CONSTANT, value);
+            return new Operand(Kind.CONSTANT, value, null);
+        }
+
+        /** The base operand normalized by the named transform, against its own value distribution. */
+        public static Operand transformed(String transformName, Operand base) {
+            HolisticTransform transform = transformsMap.get(transformName);
+            if (transform == null) {
+                throw new IllegalArgumentException("Unknown operand transform: " + transformName);
+            }
+            if (base.kind == Kind.CONSTANT) {
+                throw new IllegalArgumentException(
+                        "A constant operand has no value distribution to transform");
+            }
+            if (base.transform != null) {
+                throw new IllegalArgumentException("An operand takes a single transform");
+            }
+            return new Operand(base.kind, base.constant, transform);
         }
 
         public boolean needsBenchmark() {
@@ -64,6 +85,15 @@ public class DeltaScheme {
                 case BENCHMARK: return benchmark;
                 default: return constant;
             }
+        }
+
+        /** The operand's values over the matched cells, with its transform applied over that same column. */
+        double[] columnOf(List<Double> targetValues, List<Double> benchmarkValues) {
+            double[] column = new double[targetValues.size()];
+            for (int i = 0; i < column.length; i++) {
+                column[i] = valueOf(targetValues.get(i), benchmarkValues.get(i));
+            }
+            return transform == null ? column : transform.apply(column, column);
         }
     }
 
@@ -167,19 +197,18 @@ public class DeltaScheme {
     private double[] applyChain(List<Double> targetValues, List<Double> benchmarkValues) {
         int size = targetValues.size();
         double[] targetColumn = new double[size];
-        double[] column = new double[size];
         for (int i = 0; i < size; i++) {
             targetColumn[i] = targetValues.get(i);
-            column[i] = left.valueOf(targetValues.get(i), benchmarkValues.get(i));
         }
+        double[] column = left.columnOf(targetValues, benchmarkValues);
+        double[] rightColumn = right.columnOf(targetValues, benchmarkValues);
         for (Step step : steps) {
             if (step.holistic != null) {
                 column = step.holistic.apply(column, targetColumn);
                 continue;
             }
             for (int i = 0; i < size; i++) {
-                column[i] = step.cellWise.compare(column[i],
-                        right.valueOf(targetValues.get(i), benchmarkValues.get(i)));
+                column[i] = step.cellWise.compare(column[i], rightColumn[i]);
             }
         }
         return column;

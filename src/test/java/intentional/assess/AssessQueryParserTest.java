@@ -145,6 +145,18 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
+	public void givenTransformedOperands_whenParsingInput_thenTransformsStayOutOfTheMethods()
+			throws IOException, RecognitionException {
+		String usingStatement = "difference(zscore(storeSales), zscore(benchmark.storeSales))";
+		AssessQueryParser parser = createParser(usingStatement);
+
+		List<String> expected = new ArrayList<>(Arrays.asList("difference"));
+		List<String> actual = parser.comparison_scheme(new ArrayList<>());
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void givenLabelsStatement_whenParsingInput_buildCustomLabelingScheme() throws IOException, RecognitionException {
 		String labelsStatement = "{[-inf, -0.2): bad, [-0.2, 0.2]: ok, (0.2, inf]: awesome}";
 		List<List<String>> expected = new ArrayList<>();

@@ -144,6 +144,56 @@ public class DeltaSchemeTest {
     }
 
     @Test
+    public void operandZscoresNormalizeEachPopulationSeparately() {
+        List<Cell> targetCells = targets(10, 20, 30);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 30, 20, 10);
+        DeltaScheme scheme = new DeltaScheme(new ArrayList<>(Arrays.asList("difference")),
+                DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.TARGET),
+                DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.BENCHMARK));
+
+        double[] values = compare(scheme, targetCells, benchmark);
+
+        assertEquals(-2.0, values[0], EPSILON);
+        assertEquals(0.0, values[1], EPSILON);
+        assertEquals(2.0, values[2], EPSILON);
+    }
+
+    @Test
+    public void operandShareOfTotalDividesByItsOwnPopulationTotal() {
+        List<Cell> targetCells = targets(100, 90, 30);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
+        DeltaScheme scheme = new DeltaScheme(new ArrayList<>(Arrays.asList("ratio")),
+                DeltaScheme.Operand.transformed("percOfTotal", DeltaScheme.Operand.TARGET),
+                DeltaScheme.Operand.transformed("percOfTotal", DeltaScheme.Operand.BENCHMARK));
+
+        double[] values = compare(scheme, targetCells, benchmark);
+
+        assertEquals((100.0 / 220) / (150.0 / 280), values[0], EPSILON);
+        assertEquals((90.0 / 220) / (110.0 / 280), values[1], EPSILON);
+        assertEquals((30.0 / 220) / (20.0 / 280), values[2], EPSILON);
+    }
+
+    @Test
+    public void unknownOperandTransformIsRejected() {
+        try {
+            DeltaScheme.Operand.transformed("nonesuch", DeltaScheme.Operand.TARGET);
+            fail("expected the unknown transform to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("nonesuch"));
+        }
+    }
+
+    @Test
+    public void constantOperandCannotBeTransformed() {
+        try {
+            DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.constant(5));
+            fail("expected the constant operand to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("constant"));
+        }
+    }
+
+    @Test
     public void unknownFunctionNamesFailAtConstruction() {
         try {
             scheme("nonesuch", "difference");
