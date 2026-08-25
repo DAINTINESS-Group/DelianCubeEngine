@@ -24,9 +24,9 @@ public class AssessOperatorClient {
         String query = "WITH loan\n" +
                 "FOR year = '1997'\n" +
                 "BY region, year, status\n" +
-                "ASSESS sum(amount)\n" +
+                "ASSESS sum(amount) AS total\n" +
                 "AGAINST PAST 2\n" +
-                "USING ratio(absolute(amount, benchmark.amount))\n" +
+                "USING ratio(absolute(total, benchmark.total))\n" +
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
                 "       EquiDepth(low, high, ultra),\n" +
                 "       EquiWidth(low, high, ultra)\n" +

@@ -13,6 +13,20 @@ public class BenchmarkFactory {
         this.cubeManagerAdapter = cubeManageradapter;
     }
 
+    /** The benchmark the details describe, under the label identifying it in results and reports. */
+    public NamedBenchmark createNamed(List<String> details) {
+        return new NamedBenchmark(labelFor(details), createBenchmark(details));
+    }
+
+    private static String labelFor(List<String> details) {
+        switch (details.get(0)) {
+            case "Constant": return "constant " + details.get(1);
+            case "Sibling": return details.get(1) + " = '" + details.get(2) + "'";
+            case "Past": return "past " + details.get(1);
+            default: return details.get(0);
+        }
+    }
+
     public AssessBenchmark createBenchmark(List<String> details) {
         if (details.isEmpty()) {
             return null;
@@ -48,12 +62,15 @@ public class BenchmarkFactory {
         if (predicates == null || predicates.get(siblingKey) == null) {
             throw new RuntimeException(siblingKey + " was not defined in original predicates");
         }
+        String originalValue = predicates.get(siblingKey);
         cubeManagerAdapter.updateSelectionPredicate(siblingKey, siblingValue);
-        return new SiblingBenchmark(
+        SiblingBenchmark benchmark = new SiblingBenchmark(
                 cubeManagerAdapter.executeCubeQuery(
                         cubeManagerAdapter.translateToCubeQuery()
                 ), siblingKey
         );
+        cubeManagerAdapter.updateSelectionPredicate(siblingKey, originalValue);
+        return benchmark;
     }
 
     private AssessBenchmark createPastBenchmark(String pastRecordsNumber) {

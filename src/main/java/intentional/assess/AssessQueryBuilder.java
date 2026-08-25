@@ -1,6 +1,5 @@
 package intentional.assess;
 
-import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.benchmarks.BenchmarkFactory;
 import intentional.assess.deltas.DeltaScheme;
 import intentional.labeling.LabelingScheme;
@@ -10,6 +9,7 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,9 +22,20 @@ import java.util.Set;
  */
 public class AssessQueryBuilder {
 
+    /** One AGAINST entry: its benchmark descriptor and the USING chain bound to it. */
+    private static final class BenchmarkSpec {
+        final List<String> details;
+        List<String> deltaFunctions;
+        String[] operandRefs;
+
+        BenchmarkSpec(List<String> details) {
+            this.details = details;
+        }
+    }
+
     private final CubeManagerAdapter queryGenerator;
-    private List<String> benchmarkDetails = new ArrayList<>(); // Default, as it can be empty
-    private List<String> deltaFunctions;
+    private final List<BenchmarkSpec> benchmarkSpecs = new ArrayList<>(); // Empty when there is no AGAINST clause
+    private List<String> deltaFunctions; // The USING chain of a benchmark-less query
     private final List<LabelingScheme> labelers = new ArrayList<>();
     private String outputName = null;
     private String[] deltaOperandRefs;
@@ -85,22 +96,39 @@ public class AssessQueryBuilder {
     }
 
     public AssessQueryBuilder setBenchmarkDetails(List<String> benchmarkDetails) {
-        this.benchmarkDetails = benchmarkDetails;
+        this.benchmarkSpecs.clear();
+        addBenchmarkDetails(benchmarkDetails);
         return this;
     }
 
-    private AssessBenchmark buildBenchmark() {
-        return new BenchmarkFactory(queryGenerator)
-                .createBenchmark(benchmarkDetails);
+    /** Opens one AGAINST clause entry; the USING clause that follows binds to it. */
+    public void addBenchmarkDetails(List<String> details) {
+        if (details != null && !details.isEmpty()) {
+            benchmarkSpecs.add(new BenchmarkSpec(details));
+        }
     }
 
+    /** Binds the parsed USING chain to the entry being parsed, or to the query when it has no AGAINST. */
     public void setDeltaFunctions(List<String> methods) {
-        deltaFunctions = methods;
+        if (benchmarkSpecs.isEmpty()) {
+            deltaFunctions = methods;
+            return;
+        }
+        BenchmarkSpec current = benchmarkSpecs.get(benchmarkSpecs.size() - 1);
+        if (current.deltaFunctions != null) {
+            throw new IllegalArgumentException("A benchmark takes a single USING clause");
+        }
+        current.deltaFunctions = methods;
     }
 
     /** The operand references of the USING clause's innermost call, as written. */
     public void setDeltaOperands(String first, String second) {
-        this.deltaOperandRefs = new String[]{first, second};
+        String[] refs = new String[]{first, second};
+        if (benchmarkSpecs.isEmpty()) {
+            this.deltaOperandRefs = refs;
+            return;
+        }
+        benchmarkSpecs.get(benchmarkSpecs.size() - 1).operandRefs = refs;
     }
 
     private static final Pattern TRANSFORMED_OPERAND =
@@ -111,10 +139,10 @@ public class AssessQueryBuilder {
      * a bare name the target's measure — where X must be the measure the result actually carries. A
      * {@code transform(X)} wrapper normalizes the bound operand against its own value distribution.
      */
-    private DeltaScheme.Operand resolveOperand(String ref) {
+    private DeltaScheme.Operand resolveOperand(String ref, boolean hasBenchmark) {
         Matcher wrapped = TRANSFORMED_OPERAND.matcher(ref);
         if (wrapped.matches()) {
-            return DeltaScheme.Operand.transformed(wrapped.group(1), resolveOperand(wrapped.group(2)));
+            return DeltaScheme.Operand.transformed(wrapped.group(1), resolveOperand(wrapped.group(2), hasBenchmark));
         }
         if (ref.matches("[0-9.]+")) {
             return DeltaScheme.Operand.constant(Double.parseDouble(ref));
@@ -127,19 +155,33 @@ public class AssessQueryBuilder {
                     "The delta operand '%s' does not resolve: the result carries the measure '%s'",
                     ref, carried));
         }
-        if (onBenchmark && benchmarkDetails.isEmpty()) {
+        if (onBenchmark && !hasBenchmark) {
             throw new IllegalArgumentException(
                     "The delta operand '" + ref + "' references the benchmark, but the query has no AGAINST clause");
         }
         return onBenchmark ? DeltaScheme.Operand.BENCHMARK : DeltaScheme.Operand.TARGET;
     }
 
-    private DeltaScheme buildDeltaScheme() {
-        if (deltaOperandRefs == null) {
-            return new DeltaScheme(deltaFunctions);
+    private DeltaScheme buildDeltaScheme(List<String> functions, String[] operandRefs, boolean hasBenchmark) {
+        if (operandRefs == null) {
+            return new DeltaScheme(functions);
         }
-        return new DeltaScheme(deltaFunctions,
-                resolveOperand(deltaOperandRefs[0]), resolveOperand(deltaOperandRefs[1]));
+        return new DeltaScheme(functions,
+                resolveOperand(operandRefs[0], hasBenchmark), resolveOperand(operandRefs[1], hasBenchmark));
+    }
+
+    private List<AssessComparison> buildComparisons() {
+        if (benchmarkSpecs.isEmpty()) {
+            return Collections.singletonList(new AssessComparison(null,
+                    buildDeltaScheme(deltaFunctions, deltaOperandRefs, false)));
+        }
+        BenchmarkFactory factory = new BenchmarkFactory(queryGenerator);
+        List<AssessComparison> comparisons = new ArrayList<>();
+        for (BenchmarkSpec spec : benchmarkSpecs) {
+            comparisons.add(new AssessComparison(factory.createNamed(spec.details),
+                    buildDeltaScheme(spec.deltaFunctions, spec.operandRefs, true)));
+        }
+        return comparisons;
     }
 
     /** Appends a custom rule scheme from the LABELS clause, under the analyst's name when given. */
@@ -167,12 +209,16 @@ public class AssessQueryBuilder {
     }
 
     public AssessQuery build() {
+        if (benchmarkSpecs.size() > 1 && labelers.size() > 1) {
+            throw new IllegalArgumentException(
+                    "Multiple benchmarks assess under a single labeling scheme; got "
+                            + benchmarkSpecs.size() + " benchmarks and " + labelers.size() + " schemes");
+        }
         CubeQuery targetCubeQuery = queryGenerator.translateToCubeQuery();
         return new AssessQuery(
                 targetCubeQuery,
                 queryGenerator.executeCubeQuery(targetCubeQuery),
-                buildBenchmark(),
-                buildDeltaScheme(),
+                buildComparisons(),
                 labelers,
                 outputName);
     }

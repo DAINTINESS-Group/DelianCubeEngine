@@ -31,8 +31,8 @@ public class AssessOperator implements IntentionalOperator {
     }
 
     /**
-     * Parses the query and runs the comparison of the target cube against its benchmark, returning the
-     * operator's product as a single-element list.
+     * Parses the query and runs one comparison of the target cube per benchmark, returning the operator's
+     * product as a single-element list. Without an AGAINST clause a single benchmark-less comparison runs.
      *
      * @param assessQuery The user-provided query for assessment reasons
      */
@@ -42,9 +42,11 @@ public class AssessOperator implements IntentionalOperator {
 
         LabeledResult target = new LabeledResult(parsedQuery.targetCubeQuery, parsedQuery.targetCube,
                 Collections.<ModelResult>emptyList());
-        ComparisonModel comparison = new ComparisonModel(
-                parsedQuery.benchmark, parsedQuery.deltaFunction, parsedQuery.labelingSchemes);
-        return Collections.singletonList(comparison.run(target));
+        for (AssessComparison comparison : parsedQuery.comparisons) {
+            new ComparisonModel(comparison.benchmark, comparison.delta, parsedQuery.labelingSchemes)
+                    .run(target);
+        }
+        return Collections.singletonList(target);
     }
 
     private AssessQuery parseQuery(String assessQuery) {

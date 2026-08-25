@@ -6,6 +6,8 @@ import highlights.HighlightSet;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
 import intentional.labeling.Labeling;
+import intentional.model.ModelOrigin;
+import intentional.model.ModelResult;
 import intentional.result.LabeledResult;
 import mainengine.Session;
 import mainengine.managers.IntentionalProfile;
@@ -15,6 +17,7 @@ import result.Cell;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -250,6 +253,69 @@ public class AssessOperatorTest {
     }
 
     @Test
+    public void multipleBenchmarksAssessUnderOneScheme() throws RecognitionException {
+        String query = "with loan for year = '1997' by district_name, year\n" +
+                "assess sum(amount) AS total\n" +
+                "against year = '1996' using difference(zscore(total), zscore(benchmark.total)),\n" +
+                "        PAST 2 using ratio(total, benchmark.total),\n" +
+                "        500000\n" +
+                "labels EquiDepth(low, mid, high)";
+
+        LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
+
+        List<String> benchmarkTags = new ArrayList<>();
+        for (ModelResult model : result.models()) {
+            if (model.origin() == ModelOrigin.OPERATOR) {
+                benchmarkTags.add(model.parameters().get(0).label);
+            }
+        }
+        assertEquals(Arrays.asList("year = '1996'", "past 2", "constant 500000"), benchmarkTags);
+
+        List<Labeling> labelings = result.labelings();
+        assertEquals("three comparisons and their cross-benchmark consensus", 4, labelings.size());
+        assertEquals(1, consensuses(result).size());
+        assertEquals("Consensus(EquiDepth)", consensuses(result).get(0).schemeName());
+
+        Labeling standingVsSibling = labelings.get(0);
+        Labeling ratioVsPast = labelings.get(1);
+        Labeling rawVsConstant = labelings.get(2);
+        assertFalse(standingVsSibling.assignment().isEmpty());
+        assertFalse(ratioVsPast.assignment().isEmpty());
+        assertFalse(rawVsConstant.assignment().isEmpty());
+
+        double zSum = 0.0;
+        for (Cell cell : standingVsSibling.assignment().keySet()) {
+            zSum += standingVsSibling.magnitudeOf(cell);
+        }
+        assertEquals("each side's z-scores sum to zero over the matched cells", 0.0, zSum, 1e-6);
+
+        for (Cell cell : ratioVsPast.assignment().keySet()) {
+            assertTrue("a ratio against past sums is positive", ratioVsPast.magnitudeOf(cell) > 0.0);
+            assertTrue("the past reference is a real sum", ratioVsPast.referenceOf(cell) > 0.0);
+        }
+
+        for (Cell cell : rawVsConstant.assignment().keySet()) {
+            assertEquals("an entry without USING compares raw values",
+                    cell.toDouble(), rawVsConstant.magnitudeOf(cell), 0.0001);
+            assertEquals("the constant benchmark is every cell's reference",
+                    500000.0, rawVsConstant.referenceOf(cell), 0.0001);
+        }
+    }
+
+    @Test
+    public void multipleBenchmarksRejectMultipleSchemes() {
+        AssessOperator operator = new AssessOperator(cubeManager);
+        String query = "with loan for year = '1997' by district_name, year\n" +
+                "assess sum(amount) AS total\n" +
+                "against year = '1996' using ratio(total, benchmark.total), 500000\n" +
+                "labels EquiDepth(low, high), EquiWidth(low, high)";
+
+        IllegalArgumentException error =
+                assertThrows(IllegalArgumentException.class, () -> operator.execute(query));
+        assertTrue(error.getMessage().contains("single labeling scheme"));
+    }
+
+    @Test
     public void constantDeltaOperandDividesByTheConstant() throws RecognitionException {
         int divisor = 20000;
         String query = "with loan for region = 'central Bohemia' " +
@@ -335,9 +401,9 @@ public class AssessOperatorTest {
         String query = "WITH loan\n" +
                 "FOR year = '1997'\n" +
                 "BY region, year, status\n" +
-                "ASSESS sum(amount)\n" +
+                "ASSESS sum(amount) AS total\n" +
                 "AGAINST PAST 2\n" +
-                "USING ratio(absolute(amount, benchmark.amount))\n" +
+                "USING ratio(absolute(total, benchmark.total))\n" +
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkHighlightsTest";
 

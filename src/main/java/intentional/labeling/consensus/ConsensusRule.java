@@ -214,7 +214,7 @@ public enum ConsensusRule {
     /** Turns consensus bucket ranks back into labels of the shared domain, named after the group. */
     private static LabelingScheme consensusScheme(List<Labeling> labelings, List<String> domainLabels) {
         String name = "Consensus(" + labelings.stream()
-                .map(Labeling::schemeName).collect(Collectors.joining(",")) + ")";
+                .map(Labeling::schemeName).distinct().collect(Collectors.joining(",")) + ")";
         LabelDomain domain = new LabelDomain(domainLabels, true);
         return new LabelingScheme() {
             @Override public String name() { return name; }

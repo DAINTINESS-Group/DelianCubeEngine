@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import intentional.assess.benchmarks.AssessBenchmark;
+import intentional.assess.benchmarks.NamedBenchmark;
 import intentional.assess.deltas.DeltaScheme;
 import intentional.assess.utils.ComparedCell;
 import intentional.labeling.Labeling;
@@ -15,6 +15,7 @@ import intentional.model.Model;
 import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
+import intentional.model.ParameterRole;
 import intentional.model.ModelResultImpl;
 import intentional.result.LabeledResult;
 import result.Cell;
@@ -22,17 +23,22 @@ import result.Cell;
 /**
  * Compares a cube against a benchmark: each cell's delta to its matched benchmark cell, labeled under one or
  * more schemes. One {@link ModelResult} per scheme, over the same deltas, each carrying the delta as
- * magnitude and the matched benchmark value as reference; cells without a benchmark match stay unlabeled.
+ * magnitude, the matched benchmark value as reference, and the benchmark's identity as its parameter; cells
+ * without a benchmark match stay unlabeled.
  */
 public final class ComparisonModel implements Model {
 
     public static final String NAME = "Comparison";
 
-    private final AssessBenchmark benchmark;
+    /** Identifies which benchmark a comparison's results were assessed against. */
+    public static final ParameterRole BENCHMARK_ROLE =
+            new ParameterRole("benchmark", "the benchmark the comparison ran against", 0);
+
+    private final NamedBenchmark benchmark;
     private final DeltaScheme deltaFunction;
     private final List<LabelingScheme> labelingSchemes;
 
-    public ComparisonModel(AssessBenchmark benchmark, DeltaScheme deltaFunction,
+    public ComparisonModel(NamedBenchmark benchmark, DeltaScheme deltaFunction,
                            List<LabelingScheme> labelingSchemes) {
         this.benchmark = benchmark;
         this.deltaFunction = deltaFunction;
@@ -48,8 +54,8 @@ public final class ComparisonModel implements Model {
             throw new RuntimeException("No cells collected from the target cube query");
         }
         List<ComparedCell> comparedCells = new ArrayList<>();
-        Map<Cell, Double> deltas = new LinkedHashMap<>(
-                deltaFunction.compareTargetToBenchmark(targetCells, benchmark, comparedCells));
+        Map<Cell, Double> deltas = new LinkedHashMap<>(deltaFunction.compareTargetToBenchmark(
+                targetCells, benchmark == null ? null : benchmark.matcher, comparedCells));
 
         Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
         for (ComparedCell compared : comparedCells) {
@@ -58,11 +64,14 @@ public final class ComparisonModel implements Model {
             }
         }
 
+        List<ParameterInstantiation> parameters = benchmark == null
+                ? Collections.<ParameterInstantiation>emptyList()
+                : Collections.singletonList(new ParameterInstantiation(BENCHMARK_ROLE, 0, benchmark.label));
         List<ModelResult> produced = new ArrayList<>();
         for (LabelingScheme scheme : labelingSchemes) {
             Labeling labeling = new Labeling(scheme, deltas, 0, benchmarkValues);
-            produced.add(new ModelResultImpl(labeling.schemeName(), true, labeling,
-                    Collections.<ParameterInstantiation>emptyList()).origin(ModelOrigin.OPERATOR));
+            produced.add(new ModelResultImpl(labeling.schemeName(), true, labeling, parameters)
+                    .origin(ModelOrigin.OPERATOR));
         }
         context.addModels(produced);
         return context;

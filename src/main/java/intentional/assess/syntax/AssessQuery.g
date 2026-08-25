@@ -31,11 +31,17 @@ query returns [AssessQuery query]
       BY gammas = group_by_set {builder.setGroupBySet(gammas);}
       ASSESS target_measure
 
-      (AGAINST parsedBenchmark = benchmark
-      {builder.setBenchmarkDetails(parsedBenchmark);})?
-
-      (USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
-      {builder.setDeltaFunctions(updatedComparisonMethods);})?
+      ( AGAINST parsedBenchmark = benchmark
+        {builder.addBenchmarkDetails(parsedBenchmark);}
+        (USING firstMethods = comparison_scheme[new ArrayList<String>()]
+        {builder.setDeltaFunctions(firstMethods);})?
+        (',' extraBenchmark = benchmark
+        {builder.addBenchmarkDetails(extraBenchmark);}
+        (USING extraMethods = comparison_scheme[new ArrayList<String>()]
+        {builder.setDeltaFunctions(extraMethods);})? )*
+      | USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
+        {builder.setDeltaFunctions(updatedComparisonMethods);}
+      )?
 
       // Build the Labeling Schemes Here
       LABELS labeler (',' labeler)*
