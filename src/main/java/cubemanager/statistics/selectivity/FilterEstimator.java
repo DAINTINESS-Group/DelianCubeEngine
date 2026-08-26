@@ -13,7 +13,7 @@ public class FilterEstimator {
 	private int factTableSize;
 	private int sampleSize;
 
-	private HashMap<CustomKey,Integer> selectivities = new HashMap<CustomKey,Integer>();
+	private HashMap<SelectivityCustomKey,Integer> selectivities = new HashMap<SelectivityCustomKey,Integer>();
 	
 
 	public FilterEstimator(CubeManager cubeManager) {
@@ -34,8 +34,10 @@ public class FilterEstimator {
 			if (parsed == null || factTableSize < 0) {
 				continue;
 			}
-			int numOfDetailedTuples = selectivities.get(new CustomKey(parsed.filterCol, sigma[2].substring(1, sigma[2].length() - 1)));			
-			
+			Integer numOfDetailedTuples = selectivities.get(new SelectivityCustomKey(parsed.filterCol, sigma[2].substring(1, sigma[2].length() - 1)));			
+			if(numOfDetailedTuples == null) {
+				numOfDetailedTuples = 0;
+			}
 			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sampleSize, numOfDetailedTuples));
 		}
 

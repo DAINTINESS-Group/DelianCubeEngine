@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Holds the result of a selectivity estimation for one sigma predicate.
- * Selectivity = matchingRows / totalRows
+ * Selectivity = numOfDetailedTuples / totalRows
  * Needs Serializable because of the RMI
  */
 public class SelectivityResult implements Serializable {
@@ -19,20 +19,20 @@ public class SelectivityResult implements Serializable {
 
 	private final int totalRows;
 
-	private final int matchingRows;
+	private final int numOfDetailedTuples;
 
 	private final double selectivity;
 
-	public SelectivityResult(String[] sigmaExpression, String tableName, String columnName, int totalRows, int matchingRows) {
+	public SelectivityResult(String[] sigmaExpression, String tableName, String columnName, int totalRows, int numOfDetailedTuples) {
 		this.sigmaExpression = sigmaExpression;
 		this.tableName = tableName;
 		this.columnName = columnName;
 		this.totalRows = totalRows;
-		this.matchingRows = matchingRows;
+		this.numOfDetailedTuples = numOfDetailedTuples;
 		if (totalRows == 0) {
 			this.selectivity = 0.0;
 		} else {
-			this.selectivity = (double) matchingRows / totalRows;
+			this.selectivity = (double) numOfDetailedTuples / totalRows;
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SelectivityResult implements Serializable {
 	}
 
 	public int getMatchingRows() {
-		return matchingRows;
+		return numOfDetailedTuples;
 	}
 
 	public double getSelectivity() {
@@ -65,6 +65,6 @@ public class SelectivityResult implements Serializable {
 		return String.format(
 				"Sigma Predicate -> [%s %s %s] | Table: %s | Column: %s | Rows: %d / %d | Selectivity: %.4f",
 				sigmaExpression[0], sigmaExpression[1], sigmaExpression[2], tableName, columnName,
-				matchingRows, totalRows, selectivity);
+				numOfDetailedTuples, totalRows, selectivity);
 	}
 }

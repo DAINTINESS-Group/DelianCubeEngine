@@ -36,7 +36,7 @@ public class SelectivityStatistics {
 	
 	private int sampleSize;
 	
-	private HashMap<CustomKey,Integer> sample = new HashMap<CustomKey,Integer>();
+	private HashMap<SelectivityCustomKey,Integer> sample = new HashMap<SelectivityCustomKey,Integer>();
 	
 	public SelectivityStatistics (String inputFolder, String cubeName) {
 		this.inputFolder = inputFolder;
@@ -52,7 +52,7 @@ public class SelectivityStatistics {
 		return sampleSize;
 	}
 	
-	public HashMap<CustomKey,Integer> getSample(){
+	public HashMap<SelectivityCustomKey,Integer> getSample(){
 		return sample;
 	}
 	
@@ -78,7 +78,6 @@ public class SelectivityStatistics {
 	}
 	
 	private String[] buildReservoir(int factTableSize, int reservoirSize, Random random) {
-		long startTime = System.nanoTime();
 		String[] reservoirSample = new String[reservoirSize];
 		
 		for(int i = 1;i<factTableSize+1;i++) {
@@ -92,7 +91,6 @@ public class SelectivityStatistics {
 				}
 			}
 		}
-		long endTime = System.nanoTime();
 		return reservoirSample;
 	}
 	
@@ -100,7 +98,7 @@ public class SelectivityStatistics {
 	 * Parses the .ini file and aggregates the sample to calculate the number of occurrences that is stored in a HashMap.
 	 * @return A HashMaP that connects a selection atom and its value with the number of occurrences in the sample.
 	 */ 
-	private HashMap<CustomKey,Integer> calculateSelectivityFromFile() {
+	private HashMap<SelectivityCustomKey,Integer> calculateSelectivityFromFile() {
 		File sampleFile = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.ini");
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(sampleFile))) {
@@ -125,11 +123,11 @@ public class SelectivityStatistics {
 				String columnName = atomParts[0];
 				String columnValue = atomParts[1];
 
-				if(!sample.containsKey(new CustomKey(columnName,columnValue))) {
-					sample.put(new CustomKey(columnName,columnValue), 1);
+				if(!sample.containsKey(new SelectivityCustomKey(columnName,columnValue))) {
+					sample.put(new SelectivityCustomKey(columnName,columnValue), 1);
 				}else {
-					int currentValue = sample.get(new CustomKey(columnName,columnValue));
-					sample.put(new CustomKey(columnName, columnValue), currentValue  + 1);
+					int currentValue = sample.get(new SelectivityCustomKey(columnName,columnValue));
+					sample.put(new SelectivityCustomKey(columnName, columnValue), currentValue  + 1);
 				}
 			}
 		} catch (IOException e) {
@@ -233,11 +231,11 @@ public class SelectivityStatistics {
 									String columnName = tableName + "." + dimension.getHierarchy().get(0).getLevels().get(k-1).getAttributeName(0);
 									String columnValue = results.getString(k);
 
-									if(!sample.containsKey(new CustomKey(columnName,columnValue))) {
-										sample.put(new CustomKey(columnName,columnValue), 1);
+									if(!sample.containsKey(new SelectivityCustomKey(columnName,columnValue))) {
+										sample.put(new SelectivityCustomKey(columnName,columnValue), 1);
 									}else {
-										int currentValue = sample.get(new CustomKey(columnName,columnValue));
-										sample.put(new CustomKey(columnName, columnValue), currentValue  + 1);
+										int currentValue = sample.get(new SelectivityCustomKey(columnName,columnValue));
+										sample.put(new SelectivityCustomKey(columnName, columnValue), currentValue  + 1);
 									}
 								}
 							}

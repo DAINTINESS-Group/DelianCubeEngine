@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import cubemanager.statistics.selectivity.CustomKey;
+import cubemanager.statistics.selectivity.SelectivityCustomKey;
 import cubemanager.statistics.selectivity.FilterEstimator;
 import cubemanager.statistics.selectivity.SelectivityResult;
 import mainengine.Session;
@@ -54,7 +54,7 @@ public class SelectivityStatisticsTest {
 	
 	@Test
 	public void testSelectivityStats() {
-		HashMap<CustomKey,Integer> selectivities = testCubeManager.getSelectivity();
+		HashMap<SelectivityCustomKey,Integer> selectivities = testCubeManager.getSelectivity();
 		assertEquals(175, selectivities.size());
 	}
 	

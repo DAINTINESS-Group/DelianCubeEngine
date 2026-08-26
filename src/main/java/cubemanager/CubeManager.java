@@ -25,7 +25,7 @@ import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
-import cubemanager.statistics.selectivity.CustomKey;
+import cubemanager.statistics.selectivity.SelectivityCustomKey;
 import cubemanager.statistics.selectivity.SelectivityStatistics;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
@@ -56,7 +56,7 @@ public class CubeManager {
 	
 	private int sampleSize;
 	
-	private HashMap<CustomKey, Integer> selectivity = new HashMap<CustomKey,Integer>();
+	private HashMap<SelectivityCustomKey, Integer> selectivity = new HashMap<SelectivityCustomKey,Integer>();
 	
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
@@ -370,7 +370,7 @@ public class CubeManager {
 		}
 	}
 	
-	public HashMap<CustomKey, Integer> getSelectivity(){
+	public HashMap<SelectivityCustomKey, Integer> getSelectivity(){
 		return selectivity;
 	}
 

@@ -7,12 +7,12 @@ import java.util.Objects;
  * @author mariosjkb
  *
  */
-public class CustomKey {
+public class SelectivityCustomKey {
 
 	private final String columnName;
 	private final String value;
 		
-	public CustomKey(String columnName, String value) {
+	public SelectivityCustomKey(String columnName, String value) {
 		this.columnName = columnName;
 		this.value = value;
 	}
@@ -20,8 +20,8 @@ public class CustomKey {
   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CustomKey)) return false;
-        CustomKey that = (CustomKey) o;
+        if (!(o instanceof SelectivityCustomKey)) return false;
+        SelectivityCustomKey that = (SelectivityCustomKey) o;
         return Objects.equals(columnName, that.columnName)
             && Objects.equals(value, that.value);
     }
