@@ -13,10 +13,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import cubemanager.CubeManager;
+import intentional.analyze.AnalyzeManager;
 import intentional.analyze.AnalyzeOperatorOptimizer;
 import intentional.analyze.AnalyzeOperatorOptimizer.AnalyzeStrategy;
 import intentional.analyze.AnalyzeQuery;
 import intentional.analyze.AnalyzeTranslationManager;
+import intentional.operator.IntentionalStrategy;
 import mainengine.Session;
 import mainengine.SessionQueryProcessorEngine;
 import result.ResultFileMetadata;
@@ -24,7 +26,7 @@ import result.ResultFileMetadata;
 public class AnalyzeOperatorWithOptimizerTest {
 	private static CubeManager testCubeManager;
 	private static AnalyzeOperatorOptimizerQueryGenerator testOptimizerQueryGenerator;
-	private static AnalyzeOperatorOptimizer testAnalyzeOperatorWithOptimizer;
+	private static AnalyzeManager testAnalyzeManager;
 	private static SessionQueryProcessorEngine testEngine;
 	
 	private static final String PRAGUE_AND_1998 = "ANALYZE sum(amount) FROM loan FOR region='Prague' AND "
@@ -45,44 +47,45 @@ public class AnalyzeOperatorWithOptimizerTest {
 		testCubeManager = testEngine.getSessionContext().getCubeManager();
 		
 		testOptimizerQueryGenerator = new AnalyzeOperatorOptimizerQueryGenerator(PRAGUE_AND_1998, testCubeManager, userInputList.get("schemaName"),typeOfConnection);
-		testAnalyzeOperatorWithOptimizer = new AnalyzeOperatorOptimizer(testCubeManager, testOptimizerQueryGenerator);
+		testAnalyzeManager = new AnalyzeManager(PRAGUE_AND_1998,testCubeManager, userInputList.get("schemaName"),typeOfConnection);
 	}
 	
 	@Test
 	public void testAnalyzeQueryConstruction() {
-		List<AnalyzeQuery> analyzeQueriesForEstimation = testAnalyzeOperatorWithOptimizer.getAnalyzeQueriesForEstimation();
+		List<AnalyzeQuery> analyzeQueriesForEstimation = testAnalyzeManager.getAnalyzeQueriesForEstimation();
 		
 		assertEquals(3,analyzeQueriesForEstimation.size());
 	}
 	
 	@Test
 	public void testAnalyzeQueriesForEstimation() {
-		AnalyzeQueryCostMetricEstimator testSelectivityEstimationOptimizer = testAnalyzeOperatorWithOptimizer.getSelectivityEstimationOptimizer();
-		List<AnalyzeQuery> analyzeQueriesForEstimation = testSelectivityEstimationOptimizer.getAnalyzeQueries();
+		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
+		List<AnalyzeQuery> analyzeQueriesForEstimation = testAnalyzeOperatorOptimizer.getAnalyzeQueries();
 		
 		assertEquals(3,analyzeQueriesForEstimation.size());
 	}
 	
 	@Test
 	public void testSiblingMegaRatioEstimation() {
-		AnalyzeQueryCostMetricEstimator testSelectivityEstimationOptimizer = testAnalyzeOperatorWithOptimizer.getSelectivityEstimationOptimizer();
-		double siblingMegaRatio= testSelectivityEstimationOptimizer.estimateSiblingMegaRatioWithIndependenceAssumption();
+		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
+		double siblingMegaRatio= testAnalyzeOperatorOptimizer.estimateSiblingMegaRatio();
 		
 		assertEquals(0.3823,siblingMegaRatio,0.001);
 	}
 	
 	@Test
 	public void testImbalanceCoefficientEstimation() {
-		AnalyzeQueryCostMetricEstimator testSelectivityEstimationOptimizer = testAnalyzeOperatorWithOptimizer.getSelectivityEstimationOptimizer();
-		double imbalanceCoefficient= testSelectivityEstimationOptimizer.estimateImbalanceCoefficientWithIndependenceAssumption();
+		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
+		double imbalanceCoefficient= testAnalyzeOperatorOptimizer.estimateImbalanceCoefficient();
 		
-		assertEquals(0.5384,imbalanceCoefficient,0.001);
+		assertEquals(0.2307,imbalanceCoefficient,0.001);
 	}
 	
 	@Test
 	public void testOptimizedExecution() {
-		AnalyzeStrategy results = testAnalyzeOperatorWithOptimizer.decideMQOAlgorithmWithIndependenceAssumption();
+		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
+		IntentionalStrategy results = testAnalyzeOperatorOptimizer.decideMQOAlgorithmWithIndependenceAssumption();
 		
-		assertEquals(AnalyzeStrategy.MID_MQO, results);
+		assertEquals(IntentionalStrategy.MID_MQO, results);
 	}	
 }

@@ -3,7 +3,7 @@ package intentional.analyze.optimizer;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
-import intentional.analyze.optimizer.selectivityestimation.SigmaParser;
+import cubemanager.statistics.selectivity.SigmaParser;
 import mainengine.Session;
 import org.junit.BeforeClass;
 import org.junit.Test;

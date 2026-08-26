@@ -340,23 +340,12 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
     @Override
     public ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception{
     	ResponseDTO dto = delegateOptimizer(ManagerType.OPTIMIZATION, OptimizationProfile.ANALYZE.alias, incomingExpression);
-    	AnalyzeStrategy analyzeStrategy = (AnalyzeStrategy) dto.getPayload();
-    	switch(analyzeStrategy) {
-    		case MIN_MQO:
-    			return this.analyzeWithMinMQO(incomingExpression);
-    		case MID_MQO:
-    			return this.analyzeWithMidMQO(incomingExpression);
-    		case MAX_MQO:
-    			return this.analyzeWithMaxMQO(incomingExpression);
-    		default:
-    			return this.analyzeWithMidMQO(incomingExpression);
-    	}
+    	return dto.getMetadata();
     }
     
     private ResponseDTO delegateOptimizer(ManagerType managerType, String commandAlias, String input) throws Exception {
     	RequestCTO cto = new RequestCTO(managerType, commandAlias, input, context.getCubeManager());
     	ResponseDTO dto = director.serve(cto);
-    	
     	return dto;
     }
 

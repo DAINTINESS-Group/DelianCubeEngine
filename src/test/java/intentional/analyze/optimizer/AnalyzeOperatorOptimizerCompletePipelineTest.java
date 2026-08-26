@@ -23,11 +23,11 @@ public class AnalyzeOperatorOptimizerCompletePipelineTest {
 	public static void setUpBeforeClass() throws Exception {
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "foodmart_reduced");
+		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
-		userInputList.put("cubeName", "sales");
-		userInputList.put("inputFolder", "foodmart_reduced");
+		userInputList.put("cubeName", "loan");
+		userInputList.put("inputFolder", "pkdd99_star");
 
 		testEngine = new SessionQueryProcessorEngine();
 		testEngine.initializeConnection(typeOfConnection, userInputList);

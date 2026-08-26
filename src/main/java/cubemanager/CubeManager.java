@@ -25,10 +25,10 @@ import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Measure;
-import cubemanager.statistics.SelectivityStatistics;
+import cubemanager.statistics.selectivity.CustomKey;
+import cubemanager.statistics.selectivity.SelectivityStatistics;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
-import intentional.analyze.optimizer.selectivityestimation.CustomKey;
 import result.Result;
 
 import java.io.IOException;
@@ -359,16 +359,15 @@ public class CubeManager {
 	
 	public void setUpSelectivityStatistics(String inputFolder, String cubeName) throws SQLException {
 		SelectivityStatistics selectivityStatistics = new SelectivityStatistics(inputFolder, cubeName);
+		
 		try {
-			System.out.println(cubeBase.getRegisteredCubeList());
-			selectivityStatistics.buildSelectivitySample(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE, false,false);
+			selectivityStatistics.buildSelectivitySample(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE,false,false);
+			this.selectivity = selectivityStatistics.getSample();
+			this.factTableSize = selectivityStatistics.getStoredFactTableSize();
+			this.sampleSize = selectivityStatistics.getSampleSize();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		this.selectivity = selectivityStatistics.calculateSelectivityFromFile();
-		this.factTableSize = selectivityStatistics.getStoredFactTableSize();
-		this.sampleSize = selectivityStatistics.getSampleSize();
 	}
 	
 	public HashMap<CustomKey, Integer> getSelectivity(){

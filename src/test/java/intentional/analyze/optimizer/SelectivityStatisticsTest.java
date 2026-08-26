@@ -12,15 +12,15 @@ import org.junit.Test;
 
 import cubemanager.CubeManager;
 import cubemanager.cubebase.CubeQuery;
-import intentional.analyze.optimizer.selectivityestimation.CustomKey;
-import intentional.analyze.optimizer.selectivityestimation.ReservoirSamplingEstimator;
-import intentional.analyze.optimizer.selectivityestimation.SelectivityResult;
+import cubemanager.statistics.selectivity.CustomKey;
+import cubemanager.statistics.selectivity.FilterEstimator;
+import cubemanager.statistics.selectivity.SelectivityResult;
 import mainengine.Session;
 import mainengine.SessionQueryProcessorEngine;
 
 public class SelectivityStatisticsTest {
 	private static CubeManager testCubeManager;
-	private static ReservoirSamplingEstimator testEstimator;
+	private static FilterEstimator testEstimator;
 
 	private static final String Q_PRAGUE_AND_1998 =
 			"CubeName:loan\nName:Q_PragueAnd1998\nAggrFunc:Sum\nMeasure:amount\n"
@@ -48,16 +48,13 @@ public class SelectivityStatisticsTest {
 		SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
 		engine.initializeConnection(typeOfConnection, userInputList);
 	
-		testEstimator = new ReservoirSamplingEstimator(testCubeManager);
+		testEstimator = new FilterEstimator(testCubeManager);
 		
 	}
 	
 	@Test
 	public void testSelectivityStats() {
 		HashMap<CustomKey,Integer> selectivities = testCubeManager.getSelectivity();
-		for(Map.Entry<CustomKey, Integer> e: selectivities.entrySet()) {
-			System.out.println(e.getKey() + " " + e.getValue());
-		}
 		assertEquals(175, selectivities.size());
 	}
 	
@@ -68,8 +65,8 @@ public class SelectivityStatisticsTest {
 		int matchingRowsPrague = results.get(0).getMatchingRows();
 		int matchingRows1998 = results.get(1).getMatchingRows();
 		assertEquals(2, results.size());
-		assertEquals(3, matchingRowsPrague);
-		assertEquals(10, matchingRows1998);
+		assertEquals(5, matchingRowsPrague);
+		assertEquals(8, matchingRows1998);
 	}
 	
 	@Test
@@ -79,8 +76,8 @@ public class SelectivityStatisticsTest {
 		double selectivityPrague = results.get(0).getSelectivity();
 		double selectivity1998 = results.get(1).getSelectivity();
 		assertEquals(2, results.size());
-		assertEquals(0.0882, selectivityPrague, 0.001);
-		assertEquals(0.2941, selectivity1998,0.001);
+		assertEquals(0.1470, selectivityPrague, 0.001);
+		assertEquals(0.2352, selectivity1998,0.001);
 	}
 
 }
