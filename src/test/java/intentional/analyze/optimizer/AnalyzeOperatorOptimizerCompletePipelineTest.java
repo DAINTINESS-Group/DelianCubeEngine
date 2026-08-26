@@ -23,11 +23,11 @@ public class AnalyzeOperatorOptimizerCompletePipelineTest {
 	public static void setUpBeforeClass() throws Exception {
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99_star");
+		userInputList.put("schemaName", "pkdd99_star_100m");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99_star");
+		userInputList.put("inputFolder", "pkdd99_star_100m");
 
 		testEngine = new SessionQueryProcessorEngine();
 		testEngine.initializeConnection(typeOfConnection, userInputList);
@@ -36,9 +36,10 @@ public class AnalyzeOperatorOptimizerCompletePipelineTest {
 	
 	@Test
 	public void testOptimizedExecutionFromService() throws Exception {
+		boolean testResultFileExists = false;
 		ResultFileMetadata results = testEngine.analyzeWithOptimizer(PRAGUE_AND_1998);
 		File testResultFile = new File("OutputFiles/analyze/TEST-BaseAndDrillDownDuoQueryOptimizer.md");
-		boolean testResultFileExists = testResultFile.exists();
+		testResultFileExists = testResultFile.exists();
 		assertTrue(testResultFileExists);
 	}
 }

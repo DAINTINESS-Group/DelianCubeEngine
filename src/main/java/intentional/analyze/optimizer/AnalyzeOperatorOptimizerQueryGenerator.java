@@ -231,6 +231,7 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 		 * @return
 		 */
 		public ArrayList<AnalyzeQuery> translateToAnalyzeQueries(){
+			long startTime = System.nanoTime();
 			ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
 			CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
 			
@@ -250,7 +251,9 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 			if(analyzeQueries.isEmpty()) {
 				cubeQueryGenerationStatus = false;
 			}
-			
+			long endTime = System.nanoTime();
+			double totalTimeInMs = (double)(endTime - startTime)/1000000;
+			System.out.println("$Facililator Query Generation: " + totalTimeInMs);
 			return analyzeQueries;
 		}
 }

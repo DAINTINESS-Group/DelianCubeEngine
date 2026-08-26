@@ -158,7 +158,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
             ResponseDTO dto = director.serve(cto);
 
             this.context = (SessionContext) dto.getPayload();
-            System.out.println("Initialization Successful via ConnectionManager.");
+            System.out.println("\nInitialization Successful via ConnectionManager.\n");
         } catch (Exception e) {
             e.printStackTrace();
         }

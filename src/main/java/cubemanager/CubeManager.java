@@ -50,7 +50,7 @@ public class CubeManager {
 	
 	private String typeOfConnection;
 	
-	private double SAMPLE_PERCENTAGE = 0.05;
+	private double SAMPLE_PERCENTAGE = 0.01;
 	
 	private int factTableSize;
 	
@@ -358,6 +358,7 @@ public class CubeManager {
 	}//end method produceExtractionMethod(CubeQuery)
 	
 	public void setUpSelectivityStatistics(String inputFolder, String cubeName) throws SQLException {
+		long startTime = System.nanoTime();
 		SelectivityStatistics selectivityStatistics = new SelectivityStatistics(inputFolder, cubeName);
 		
 		try {
@@ -368,6 +369,9 @@ public class CubeManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		long endTime = System.nanoTime();
+		double totalTimeInMs = (double)(endTime - startTime)/1000000;
+		System.out.println("@@Setting up fact table sample using Reservoir Sampling: " + totalTimeInMs);
 	}
 	
 	public HashMap<SelectivityCustomKey, Integer> getSelectivity(){

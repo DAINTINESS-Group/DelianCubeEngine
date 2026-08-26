@@ -37,6 +37,8 @@ public class SelectivityStatistics {
 	private int sampleSize;
 	
 	private HashMap<SelectivityCustomKey,Integer> sample = new HashMap<SelectivityCustomKey,Integer>();
+
+	private double samplePercentage;
 	
 	public SelectivityStatistics (String inputFolder, String cubeName) {
 		this.inputFolder = inputFolder;
@@ -99,7 +101,7 @@ public class SelectivityStatistics {
 	 * @return A HashMaP that connects a selection atom and its value with the number of occurrences in the sample.
 	 */ 
 	private HashMap<SelectivityCustomKey,Integer> calculateSelectivityFromFile() {
-		File sampleFile = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.ini");
+		File sampleFile = new File("InputFiles/" + inputFolder + "/" + cubeName + "_" + samplePercentage + "_samples.ini");
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(sampleFile))) {
 			reader.readLine();
@@ -152,7 +154,8 @@ public class SelectivityStatistics {
 	 * @throws SQLException
 	 */
 	public void buildSelectivitySample(CubeBase cubeBase, String schemaName, String cubeName, double samplePercentage, boolean forceRebuild, boolean sqrtSample) throws IOException, SQLException {
-		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.ini");
+		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_" + samplePercentage + "_samples.ini");
+		this.samplePercentage = samplePercentage;
 		if (file.exists() && !forceRebuild) {
 			calculateSelectivityFromFile();
 			return; 
@@ -195,7 +198,6 @@ public class SelectivityStatistics {
 					for(String id: reservoirSample) {
 						String sql = "SELECT " + dimensionPrimaryKeys + " FROM " + factTable + " WHERE SK_id = " + id; 
 						Result result = new Result();
-						System.out.println(sql);
 						cubeBase.executeQueryToProduceResult(sql, result);
 						String[][] resultArray = result.getResultArray();
 	

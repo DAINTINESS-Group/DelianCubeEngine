@@ -74,9 +74,17 @@ private CubeManager cubeManager;
 		params.put("connectionType", connectionType);
 		
 		IntentionalOperatorFactory intentionalOperatorFactory = new IntentionalOperatorFactory();
+		
+		long startTime = System.nanoTime();
 		IntentionalStrategy intentionalStrategy = this.analyzeOperatorOptimizer.decideMQOAlgorithmWithIndependenceAssumption();
+		long endTime = System.nanoTime();
+		double totalTimeInMs = (double)(endTime - startTime)/1000000;
+    	System.out.println("%%Total Optimizer execution time: " + totalTimeInMs);
+    	
 		IntentionalOperator optimalAnalyzeOperator = intentionalOperatorFactory.build(IntentionalOperatorType.ANALYZE, intentionalStrategy, incomingExpression, cubeManager, params);
 		ResultFileMetadata result = IntentionalPipeline.run(optimalAnalyzeOperator, incomingExpression, IntentionalProfile.forType(IntentionalOperatorType.ANALYZE), cubeManager);
+
+    	
 		return result;
 	}
 }

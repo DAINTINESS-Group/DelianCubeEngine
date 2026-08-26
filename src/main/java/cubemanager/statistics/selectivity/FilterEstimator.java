@@ -40,7 +40,6 @@ public class FilterEstimator {
 			}
 			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sampleSize, numOfDetailedTuples));
 		}
-
 		return results;
 	}
 }

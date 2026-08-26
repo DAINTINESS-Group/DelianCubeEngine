@@ -36,7 +36,7 @@ public class ConnectionManager implements IBuilder {
 
         switch (cto.getCommandAlias()) {
 	        case "initialize":
-	            System.out.println("DONE WITH INIT CENTRAL (Manager)");
+	            System.out.println("\nDONE WITH INIT CENTRAL (Manager)\n");
 	            break;
 	
 	        case "initialize_with_interests":
@@ -55,7 +55,7 @@ public class ConnectionManager implements IBuilder {
 	            
 	            context.setInterestMng(interestMng);
 	            
-	            System.out.println("DONE WITH INIT INTERESTS (Manager)");
+	            System.out.println("\nDONE WITH INIT INTERESTS (Manager)\n");
 	            break;
 	
 	        case "initialize_chart":

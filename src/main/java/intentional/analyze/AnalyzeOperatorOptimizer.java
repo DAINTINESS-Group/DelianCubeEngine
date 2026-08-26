@@ -62,13 +62,14 @@ public class AnalyzeOperatorOptimizer {
     }
     
     private void estimateCostMetricsWithIndependenceAssumption() {
+    	long startTime = System.nanoTime();
     	double sumOfSiblings = 0;
     	double diffOfSiblings = 0;
     	for(AnalyzeQuery aq: analyzeQueries) {
     		if(aq.getType() == TypeOfAnalyzeQuery.UPDATED_SIBLINGS){
     			CubeQuery cq = aq.getAnalyzeCubeQuery();
     			double analyzeQuerySelectivity = estimateCubeQuerySelectivityWithIndependenceAssumption(cq);
-    			System.out.println(analyzeQuerySelectivity/sampleSize);
+    			//System.out.println("&&Sibling Selectivity: " + analyzeQuerySelectivity/sampleSize);
     			sumOfSiblings += analyzeQuerySelectivity;
     			if(diffOfSiblings == 0) {
     				diffOfSiblings = analyzeQuerySelectivity;
@@ -78,24 +79,26 @@ public class AnalyzeOperatorOptimizer {
     		}else if (aq.getType() == TypeOfAnalyzeQuery.SINGLEQUERYOPTIMIZER) {
     			CubeQuery cq = aq.getAnalyzeCubeQuery();
     			double analyzeQuerySelectivity = estimateCubeQuerySelectivityWithIndependenceAssumption(cq);
-    			System.out.println("All-encompasing " + analyzeQuerySelectivity/sampleSize);
+    			//System.out.println("&&All-encompassing Selectivity: " + analyzeQuerySelectivity/sampleSize);
     			this.allEncompassingSelectivity = analyzeQuerySelectivity;
     		}
     	}
     	this.sumOfSiblings = sumOfSiblings;
     	this.diffOfSiblings = Math.abs(diffOfSiblings);
-
+    	long endTime = System.nanoTime();
+    	double totalTimeInMs = (double)(endTime - startTime)/1000000;
+    	System.out.println("##Query Selectivity Estimation with Independence Assumption execution time: " + totalTimeInMs);
     }
     
     public double estimateSiblingMegaRatio() {
     	double siblingMegaRatio = (double) this.sumOfSiblings/this.allEncompassingSelectivity;
-    	System.out.println("Sibling Mega Ratio " + siblingMegaRatio);
+    	System.out.println("**Sibling Mega Ratio: " + siblingMegaRatio);
     	return siblingMegaRatio;
     }
     
     public double estimateImbalanceCoefficient() {
     	double imbalanceCoefficient = (double) this.diffOfSiblings/this.sumOfSiblings;
-    	System.out.println("Imbalance Coefficient " + imbalanceCoefficient);
+    	System.out.println("!!!!Imbalance Coefficient: " + imbalanceCoefficient);
     	return imbalanceCoefficient;
     }
     
