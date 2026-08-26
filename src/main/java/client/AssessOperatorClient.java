@@ -22,15 +22,14 @@ public class AssessOperatorClient {
         CubeManager cubeManager = initCubeMangerB();
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "WITH loan\n" +
-                "FOR year = '1997'\n" +
-                "BY region, year, status\n" +
+                "FOR year = '1997', region = 'south Bohemia'\n" +
+                "BY district_name, year\n" +
                 "ASSESS sum(amount) AS total\n" +
-                "AGAINST PAST 2\n" +
-                "USING ratio(absolute(total, benchmark.total))\n" +
-                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
-                "       EquiDepth(low, high, ultra),\n" +
-                "       EquiWidth(low, high, ultra)\n" +
-                "SAVE AS PastBenchmarkDemo";
+                "AGAINST year = '1996' USING difference(zscore(total), zscore(benchmark.total)),\n" +
+                "        PAST 2 USING ratio(total, benchmark.total),\n" +
+                "        500000\n" +
+                "LABELS EquiDepth(low, mid, high)\n" +
+                "SAVE AS MultiBenchmarkDemo";
 
         long start = System.nanoTime();
         LabeledResult result = operator.execute(query).get(0);

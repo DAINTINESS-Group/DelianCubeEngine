@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import highlights.HighlightSet;
-import intentional.assess.ComparisonModel;
 import intentional.labeling.Labeling;
+import intentional.labeling.consensus.ConsensusRule;
 import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
-import intentional.model.ParameterInstantiation;
 import intentional.result.LabeledResult;
 import result.Cell;
 
@@ -40,11 +39,7 @@ public class AssessReportWriter extends MarkdownReportWriter {
         List<ModelResult> comparisons = comparisonModels(result);
         for (ModelResult comparison : comparisons) {
             Labeling labeling = comparison.labelling();
-            writer.append("## Labeling ").append(labeling.schemeName());
-            String benchmark = benchmarkOf(comparison);
-            if (benchmark != null) {
-                writer.append(" vs ").append(benchmark);
-            }
+            writer.append("## Labeling ").append(result.labelingTag(labeling));
             writer.append(" (").append(Integer.toString(labeling.assignment().size()))
                     .append(" of ").append(Integer.toString(cells.size())).append(" cells labeled)\n");
             for (Cell cell : cells) {
@@ -65,11 +60,27 @@ public class AssessReportWriter extends MarkdownReportWriter {
         }
 
         for (Labeling consensus : consensusesOf(result, comparisons)) {
+            List<Labeling> voters = votersOf(consensus, comparisons);
             writer.append("## ").append(consensus.schemeName()).append(" (")
-                    .append(Integer.toString(consensus.assignment().size())).append(" cells)\n");
-            for (Map.Entry<Cell, String> labeled : consensus.assignment().entrySet()) {
-                writer.append("Cell: ").append(labeled.getKey().toString(", ")).append("\n")
-                        .append("Label: ").append(labeled.getValue()).append("\n\n");
+                    .append(Integer.toString(consensus.assignment().size())).append(" cells)\n")
+                    .append("Consensed via ").append(ConsensusRule.KEMENY.name()).append(" over: ");
+            StringJoiner voterTags = new StringJoiner(", ");
+            for (Labeling voter : voters) {
+                voterTags.add(result.labelingTag(voter));
+            }
+            writer.append(voterTags.toString()).append("\n\n");
+            for (Cell cell : cells) {
+                if (!consensus.covers(cell)) {
+                    continue;
+                }
+                StringJoiner votes = new StringJoiner(", ");
+                for (Labeling voter : voters) {
+                    String vote = voter.of(cell);
+                    votes.add(vote == null ? "-" : vote);
+                }
+                writer.append("Cell: ").append(cell.toString(", ")).append("\n")
+                        .append("Votes: ").append(votes.toString()).append("\n")
+                        .append("Label: ").append(consensus.of(cell)).append("\n\n");
             }
         }
 
@@ -87,14 +98,16 @@ public class AssessReportWriter extends MarkdownReportWriter {
         return out;
     }
 
-    /** The benchmark the comparison ran against, or null when it had none. */
-    private static String benchmarkOf(ModelResult comparison) {
-        for (ParameterInstantiation parameter : comparison.parameters()) {
-            if (ComparisonModel.BENCHMARK_ROLE.name.equals(parameter.role.name)) {
-                return parameter.label;
+    /** The labelings the consensus was derived over: the ordered comparison labelings sharing its domain. */
+    private static List<Labeling> votersOf(Labeling consensus, List<ModelResult> comparisons) {
+        List<Labeling> voters = new ArrayList<>();
+        for (ModelResult comparison : comparisons) {
+            Labeling labeling = comparison.labelling();
+            if (labeling.ordered() && labeling.domain().equals(consensus.domain())) {
+                voters.add(labeling);
             }
         }
-        return null;
+        return voters;
     }
 
     /** The derived consensuses: every labeling of the result that no comparison produced directly. */

@@ -12,6 +12,7 @@ import intentional.labeling.Labeling;
 import intentional.labeling.consensus.ConsensusRule;
 import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
+import intentional.model.ParameterInstantiation;
 import result.Result;
 
 /**
@@ -47,6 +48,41 @@ public final class LabeledResult {
     /** Appends the models produced over this result. */
     public void addModels(List<? extends ModelResult> produced) {
         if (produced != null) models.addAll(produced);
+    }
+
+    /**
+     * The display identity of one of this result's labelings: its scheme name, qualified by the labeled
+     * parameters of the model that produced it — for a comparison, the benchmark it ran against; for a
+     * derived consensus, the labelings it was consensed over.
+     */
+    public String labelingTag(Labeling labeling) {
+        for (ModelResult model : models) {
+            if (model.origin() == ModelOrigin.OPERATOR && model.labelling() == labeling) {
+                StringBuilder tag = new StringBuilder(labeling.schemeName());
+                for (ParameterInstantiation parameter : model.parameters()) {
+                    if (parameter.label != null) {
+                        tag.append(" vs ").append(parameter.label);
+                    }
+                }
+                return tag.toString();
+            }
+        }
+        List<Labeling> voters = new ArrayList<>();
+        for (ModelResult model : models) {
+            Labeling produced = model.origin() == ModelOrigin.OPERATOR ? model.labelling() : null;
+            if (produced != null && produced.ordered() && produced.domain().equals(labeling.domain())) {
+                voters.add(produced);
+            }
+        }
+        if (labeling.ordered() && voters.size() >= 2) {
+            StringBuilder tag = new StringBuilder(labeling.schemeName()).append(" over ");
+            for (int i = 0; i < voters.size(); i++) {
+                if (i > 0) tag.append(" + ");
+                tag.append(labelingTag(voters.get(i)));
+            }
+            return tag.toString();
+        }
+        return labeling.schemeName();
     }
 
     /** Every labelling the operator produced, including the consensuses derived over them. */

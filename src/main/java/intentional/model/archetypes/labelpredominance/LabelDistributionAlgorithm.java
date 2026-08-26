@@ -30,6 +30,8 @@ public final class LabelDistributionAlgorithm implements Model {
     public static final String EXEMPLAR = "exemplar";
     public static final String EXCEPTION = "exception";
 
+    public static final ParameterRole JUDGES = new ParameterRole(
+            "judges", "The labeling whose cells cast the ballots", 0);
     public static final ParameterRole VOTING_RULE = new ParameterRole(
             "votingRule", "The VotingRule that runs the election, by ordinal; -1 for the labeling's default", -1);
     public static final ParameterRole WEIGHTING = new ParameterRole(
@@ -48,18 +50,20 @@ public final class LabelDistributionAlgorithm implements Model {
     @Override public String name() { return NAME; }
 
     @Override public List<ParameterRole> parameterRoles() {
-        return Arrays.asList(VOTING_RULE, WEIGHTING);
+        return Arrays.asList(JUDGES, VOTING_RULE, WEIGHTING);
     }
 
     @Override
     public LabeledResult run(LabeledResult context) {
         List<ModelResult> produced = new ArrayList<>();
-        for (Labeling labeling : context.labelings()) produced.add(runLabeling(labeling));
+        for (Labeling labeling : context.labelings()) {
+            produced.add(runLabeling(labeling, context.labelingTag(labeling)));
+        }
         context.addModels(produced);
         return context;
     }
 
-    private ModelResult runLabeling(Labeling labeling) {
+    private ModelResult runLabeling(Labeling labeling, String judgedTag) {
         Map<Cell, String> labelByCell = labeling.assignment();
 
         Map<String, Double> tallies = new LinkedHashMap<>();
@@ -90,6 +94,7 @@ public final class LabelDistributionAlgorithm implements Model {
 
         Weighting weighting = election.weighting();
         List<ParameterInstantiation> parameters = Arrays.asList(
+                new ParameterInstantiation(JUDGES, 0, judgedTag),
                 new ParameterInstantiation(VOTING_RULE, rule.ordinal(), rule.name()),
                 new ParameterInstantiation(WEIGHTING, weighting.ordinal(), weighting.name()));
 
