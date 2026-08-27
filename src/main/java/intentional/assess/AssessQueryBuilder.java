@@ -1,12 +1,15 @@
 package intentional.assess;
 
-import intentional.assess.benchmarks.BenchmarkFactory;
+import intentional.assess.benchmarks.AssessBenchmark;
+import intentional.assess.benchmarks.BenchmarkKind;
 import intentional.assess.deltas.DeltaScheme;
+import intentional.assess.fetch.AssessFetcher;
+import intentional.assess.fetch.FetchStrategy;
+import intentional.assess.fetch.FetchedCubes;
 import intentional.labeling.LabelingScheme;
 import intentional.labeling.schemes.CustomLabelingScheme;
 import intentional.labeling.schemes.SchemeCatalog;
 import cubemanager.CubeManager;
-import cubemanager.cubebase.CubeQuery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,14 +37,20 @@ public class AssessQueryBuilder {
     }
 
     private final CubeManagerAdapter queryGenerator;
+    private final AssessFetcher fetcher;
     private final List<BenchmarkSpec> benchmarkSpecs = new ArrayList<>(); // Empty when there is no AGAINST clause
     private List<String> deltaFunctions; // The USING chain of a benchmark-less query
-    private final List<LabelingScheme> labelers = new ArrayList<>();
+    private LabelingScheme labeler;
     private String outputName = null;
     private String[] deltaOperandRefs;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
+        this(cubeManager, FetchStrategy.SCAN_PER_SLICE);
+    }
+
+    public AssessQueryBuilder(CubeManager cubeManager, FetchStrategy strategy) {
         queryGenerator = new CubeManagerAdapter(cubeManager);
+        fetcher = strategy.fetcher();
     }
 
     public void setTargetCubeName(String targetCubeName) {
@@ -170,34 +179,51 @@ public class AssessQueryBuilder {
                 resolveOperand(operandRefs[0], hasBenchmark), resolveOperand(operandRefs[1], hasBenchmark));
     }
 
-    private List<AssessComparison> buildComparisons() {
+    private List<AssessComparison> buildComparisons(List<AssessBenchmark> benchmarks) {
         if (benchmarkSpecs.isEmpty()) {
-            return Collections.singletonList(new AssessComparison(null,
+            return Collections.singletonList(new AssessComparison(null, null,
                     buildDeltaScheme(deltaFunctions, deltaOperandRefs, false)));
         }
-        BenchmarkFactory factory = new BenchmarkFactory(queryGenerator);
         List<AssessComparison> comparisons = new ArrayList<>();
-        for (BenchmarkSpec spec : benchmarkSpecs) {
-            comparisons.add(new AssessComparison(factory.createNamed(spec.details),
+        for (int i = 0; i < benchmarkSpecs.size(); i++) {
+            BenchmarkSpec spec = benchmarkSpecs.get(i);
+            comparisons.add(new AssessComparison(benchmarks.get(i), labelOf(spec.details),
                     buildDeltaScheme(spec.deltaFunctions, spec.operandRefs, true)));
         }
         return comparisons;
     }
 
-    /** Appends a custom rule scheme from the LABELS clause, under the analyst's name when given. */
+    /** The label identifying a benchmark descriptor in results and reports. */
+    private static String labelOf(List<String> details) {
+        switch (BenchmarkKind.of(details)) {
+            case CONSTANT: return "constant " + details.get(1);
+            case SIBLING: return details.get(1) + " = '" + details.get(2) + "'";
+            case PAST: return "past " + details.get(1);
+            default: return details.get(0);
+        }
+    }
+
+    /** Sets the LABELS clause's custom rule scheme, under the analyst's name when given. */
     public void addCustomLabeler(List<List<String>> rulesList, String name) {
-        labelers.add(name == null
+        setLabeler(name == null
                 ? new CustomLabelingScheme(rulesList)
                 : new CustomLabelingScheme(rulesList, name));
     }
 
-    /** Appends a ready-made scheme the LABELS clause names, configured by its arguments. */
+    /** Sets the ready-made scheme the LABELS clause names, configured by its arguments. */
     public void addNamedLabeler(String schemeName, List<String> args) {
         LabelingScheme scheme = SchemeCatalog.byName(schemeName, args);
         if (scheme == null) {
             throw new IllegalArgumentException("Unknown labeling scheme: " + schemeName);
         }
-        labelers.add(scheme);
+        setLabeler(scheme);
+    }
+
+    private void setLabeler(LabelingScheme scheme) {
+        if (labeler != null) {
+            throw new IllegalArgumentException("An assess query takes a single labeling scheme");
+        }
+        labeler = scheme;
     }
 
     public void setLabelingRules(List<List<String>> rulesList) {
@@ -209,17 +235,17 @@ public class AssessQueryBuilder {
     }
 
     public AssessQuery build() {
-        if (benchmarkSpecs.size() > 1 && labelers.size() > 1) {
-            throw new IllegalArgumentException(
-                    "Multiple benchmarks assess under a single labeling scheme; got "
-                            + benchmarkSpecs.size() + " benchmarks and " + labelers.size() + " schemes");
+        List<List<String>> benchmarkDetails = new ArrayList<>();
+        for (BenchmarkSpec spec : benchmarkSpecs) {
+            benchmarkDetails.add(spec.details);
         }
-        CubeQuery targetCubeQuery = queryGenerator.translateToCubeQuery();
+        FetchedCubes cubes = fetcher.fetch(queryGenerator, benchmarkDetails);
         return new AssessQuery(
-                targetCubeQuery,
-                queryGenerator.executeCubeQuery(targetCubeQuery),
-                buildComparisons(),
-                labelers,
-                outputName);
+                cubes.targetQuery,
+                cubes.targetCube,
+                buildComparisons(cubes.benchmarks),
+                labeler,
+                outputName,
+                cubes.stats);
     }
 }

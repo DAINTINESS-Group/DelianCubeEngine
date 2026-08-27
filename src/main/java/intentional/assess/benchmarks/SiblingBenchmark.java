@@ -4,19 +4,22 @@ import result.Cell;
 import result.Result;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SiblingBenchmark implements AssessBenchmark {
 
-    private final Result resultingCube;
     private final int keyIndex;
+    private final Map<List<String>, Cell> cellsByDimensions = new HashMap<>();
 
     public SiblingBenchmark(Result cubeResult, String key) {
-        resultingCube = cubeResult;
         keyIndex = locateSiblingField(cubeResult.getColumnLabels(), key);
+        for (Cell benchmarkCell : cubeResult.getCells()) {
+            cellsByDimensions.put(dimensionsWithoutKey(benchmarkCell), benchmarkCell);
+        }
     }
 
     private int locateSiblingField(List<String> dimensions, String key) {
@@ -27,19 +30,14 @@ public class SiblingBenchmark implements AssessBenchmark {
                 .indexOf(key);
     }
 
+    private List<String> dimensionsWithoutKey(Cell cell) {
+        List<String> dimensionValues = new ArrayList<>(cell.getDimensionMembers());
+        dimensionValues.remove(keyIndex);
+        return dimensionValues;
+    }
+
     @Override
     public Optional<Cell> matchCell(Cell targetCell) {
-        List<String> targetDimensionValues = new ArrayList<>(targetCell.getDimensionMembers());
-        targetDimensionValues.remove(keyIndex);
-
-        for (Cell benchmarkCell : resultingCube.getCells()) {
-            List<String> benchmarkDimensionValues = new ArrayList<>(benchmarkCell.getDimensionMembers());
-            benchmarkDimensionValues.remove(keyIndex);
-            if (targetDimensionValues.equals(benchmarkDimensionValues)) {
-                return Optional.of(benchmarkCell);
-            }
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(cellsByDimensions.get(dimensionsWithoutKey(targetCell)));
     }
 }

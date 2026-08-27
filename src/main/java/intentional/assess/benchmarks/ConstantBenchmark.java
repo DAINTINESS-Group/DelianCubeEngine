@@ -2,13 +2,12 @@ package intentional.assess.benchmarks;
 
 import result.Cell;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ConstantBenchmark implements AssessBenchmark{
 	private final double value;
 
-	ConstantBenchmark(double value) {
+	public ConstantBenchmark(double value) {
 		this.value = value;
 	}
 

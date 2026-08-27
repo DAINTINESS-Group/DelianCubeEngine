@@ -5,6 +5,7 @@ import highlights.HighlightTestSupport;
 import highlights.HighlightSet;
 import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
+import intentional.assess.fetch.FetchStrategy;
 import intentional.labeling.Labeling;
 import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
@@ -220,13 +221,12 @@ public class AssessOperatorTest {
     public void benchmarklessAssessLabelsTheRawMeasure() throws RecognitionException {
         String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
                 "assess sum(amount)\n" +
-                "labels {[0, 500000): small, [500000, +inf): big} AS size, EquiDepth(small, big)";
+                "labels {[0, 500000): small, [500000, +inf): big} AS size";
 
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
-        assertEquals("one labeling per scheme", 2, result.labelings().size() - consensuses(result).size());
+        assertEquals("one labeling, no consensus to derive", 1, result.labelings().size());
         assertEquals("size", result.labelings().get(0).schemeName());
-        assertEquals("the shared domain yields one consensus", 1, consensuses(result).size());
 
         Labeling labeling = result.labelings().get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
@@ -238,13 +238,12 @@ public class AssessOperatorTest {
     public void derivedMeasureAssessLabelsTheExpression() throws RecognitionException {
         String query = "with loan for region = 'south Bohemia' by district_name, region\n" +
                 "assess sum(amount) - sum(payments) AS Profit\n" +
-                "labels {[-inf, 100000): thin, [100000, +inf): fat} AS margin, EquiDepth(thin, fat)";
+                "labels {[-inf, 100000): thin, [100000, +inf): fat} AS margin";
 
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
         assertEquals("Profit", result.query.getQueryMeasures().get(0).getAlias());
-        assertEquals("one labeling per scheme", 2, result.labelings().size() - consensuses(result).size());
-        assertEquals(1, consensuses(result).size());
+        assertEquals(1, result.labelings().size());
 
         Labeling labeling = result.labelings().get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
@@ -303,16 +302,68 @@ public class AssessOperatorTest {
     }
 
     @Test
-    public void multipleBenchmarksRejectMultipleSchemes() {
+    public void optimizedFetchesMatchSerialResults() throws RecognitionException {
+        String query = "with loan for year = '1997' by district_name, year\n" +
+                "assess sum(amount) AS total\n" +
+                "against year = '1996' using difference(zscore(total), zscore(benchmark.total)),\n" +
+                "        PAST 2 using ratio(total, benchmark.total),\n" +
+                "        500000\n" +
+                "labels EquiDepth(low, mid, high)";
+
+        AssessOperator serialOperator = new AssessOperator(cubeManager, FetchStrategy.SCAN_PER_SLICE);
+        LabeledResult serial = serialOperator.execute(query).get(0);
+        assertEquals(4, serialOperator.lastFetchStats().scans());
+
+        Map<FetchStrategy, Integer> expectedScans = new HashMap<>();
+        expectedScans.put(FetchStrategy.SCAN_PER_BENCHMARK, 3);
+        expectedScans.put(FetchStrategy.SCAN_PER_QUERY, 1);
+        for (Map.Entry<FetchStrategy, Integer> strategy : expectedScans.entrySet()) {
+            AssessOperator operator = new AssessOperator(cubeManager, strategy.getKey());
+            LabeledResult optimized = operator.execute(query).get(0);
+            assertEquals(strategy.getKey().name(),
+                    strategy.getValue().intValue(), operator.lastFetchStats().scans());
+
+            List<Labeling> serialLabelings = serial.labelings();
+            List<Labeling> optimizedLabelings = optimized.labelings();
+            assertEquals(serialLabelings.size(), optimizedLabelings.size());
+            for (int i = 0; i < serialLabelings.size(); i++) {
+                assertEquals(labelsByCell(serialLabelings.get(i)), labelsByCell(optimizedLabelings.get(i)));
+                assertEquals(magnitudesByCell(serialLabelings.get(i)), magnitudesByCell(optimizedLabelings.get(i)));
+            }
+        }
+    }
+
+    private static Map<String, String> labelsByCell(Labeling labeling) {
+        Map<String, String> byCell = new HashMap<>();
+        for (Map.Entry<Cell, String> labeled : labeling.assignment().entrySet()) {
+            byCell.put(labeled.getKey().toString(", "), labeled.getValue());
+        }
+        return byCell;
+    }
+
+    private static Map<String, Double> magnitudesByCell(Labeling labeling) {
+        Map<String, Double> byCell = new HashMap<>();
+        for (Cell cell : labeling.assignment().keySet()) {
+            byCell.put(cell.toString(", "), labeling.magnitudeOf(cell));
+        }
+        return byCell;
+    }
+
+    @Test
+    public void onlyTheSingleLabelingSchemeIsAccepted() throws RecognitionException {
         AssessOperator operator = new AssessOperator(cubeManager);
         String query = "with loan for year = '1997' by district_name, year\n" +
                 "assess sum(amount) AS total\n" +
                 "against year = '1996' using ratio(total, benchmark.total), 500000\n" +
                 "labels EquiDepth(low, high), EquiWidth(low, high)";
 
-        IllegalArgumentException error =
-                assertThrows(IllegalArgumentException.class, () -> operator.execute(query));
-        assertTrue(error.getMessage().contains("single labeling scheme"));
+        LabeledResult result = operator.execute(query).get(0);
+
+        List<Labeling> labelings = result.labelings();
+        assertEquals("two comparisons under the one scheme, and their consensus", 3, labelings.size());
+        assertEquals("EquiDepth", labelings.get(0).schemeName());
+        assertEquals("EquiDepth", labelings.get(1).schemeName());
+        assertEquals("Consensus(EquiDepth)", labelings.get(2).schemeName());
     }
 
     @Test
@@ -370,29 +421,6 @@ public class AssessOperatorTest {
         Cell first = labeling.assignment().keySet().iterator().next();
         assertFalse("a matched benchmark value rides as the reference",
                 Double.isNaN(labeling.referenceOf(first)));
-    }
-
-    @Test
-    public void multiSchemeLabelsProduceLabelingsAndAConsensus() throws RecognitionException {
-        AssessOperator operator = new AssessOperator(cubeManager);
-        String query = "WITH loan\n" +
-                "FOR year = '1997'\n" +
-                "BY region, year, status\n" +
-                "ASSESS sum(amount)\n" +
-                "AGAINST PAST 2\n" +
-                "USING ratio(absolute(amount, benchmark.amount))\n" +
-                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
-                "       EquiDepth(low, high, ultra),\n" +
-                "       EquiWidth(low, high, ultra)";
-
-        LabeledResult result = operator.execute(query).get(0);
-
-        assertEquals("one labeling per scheme", 3, result.labelings().size() - consensuses(result).size());
-        assertEquals("analyst", result.labelings().get(0).schemeName());
-        assertEquals("EquiDepth", result.labelings().get(1).schemeName());
-        assertEquals("EquiWidth", result.labelings().get(2).schemeName());
-        assertEquals("the shared domain yields one consensus", 1, consensuses(result).size());
-        assertEquals("Consensus(analyst,EquiDepth,EquiWidth)", consensuses(result).get(0).schemeName());
     }
 
     @Test

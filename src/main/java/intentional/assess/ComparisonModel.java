@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import intentional.assess.benchmarks.NamedBenchmark;
+import intentional.assess.benchmarks.AssessBenchmark;
 import intentional.assess.deltas.DeltaScheme;
 import intentional.assess.utils.ComparedCell;
 import intentional.labeling.Labeling;
@@ -21,10 +21,10 @@ import intentional.result.LabeledResult;
 import result.Cell;
 
 /**
- * Compares a cube against a benchmark: each cell's delta to its matched benchmark cell, labeled under one or
- * more schemes. One {@link ModelResult} per scheme, over the same deltas, each carrying the delta as
- * magnitude, the matched benchmark value as reference, and the benchmark's identity as its parameter; cells
- * without a benchmark match stay unlabeled.
+ * Compares a cube against a benchmark: each cell's delta to its matched benchmark cell, labeled under the
+ * query's scheme. One {@link ModelResult}, carrying the deltas as magnitudes, the matched benchmark values
+ * as references, and the benchmark's identity as its parameter; cells without a benchmark match stay
+ * unlabeled.
  */
 public final class ComparisonModel implements Model {
 
@@ -34,15 +34,17 @@ public final class ComparisonModel implements Model {
     public static final ParameterRole BENCHMARK_ROLE =
             new ParameterRole("benchmark", "the benchmark the comparison ran against", 0);
 
-    private final NamedBenchmark benchmark;
+    private final AssessBenchmark benchmark;
+    private final String benchmarkLabel;
     private final DeltaScheme deltaFunction;
-    private final List<LabelingScheme> labelingSchemes;
+    private final LabelingScheme labelingScheme;
 
-    public ComparisonModel(NamedBenchmark benchmark, DeltaScheme deltaFunction,
-                           List<LabelingScheme> labelingSchemes) {
+    public ComparisonModel(AssessBenchmark benchmark, String benchmarkLabel, DeltaScheme deltaFunction,
+                           LabelingScheme labelingScheme) {
         this.benchmark = benchmark;
+        this.benchmarkLabel = benchmarkLabel;
         this.deltaFunction = deltaFunction;
-        this.labelingSchemes = labelingSchemes;
+        this.labelingScheme = labelingScheme;
     }
 
     @Override public String name() { return NAME; }
@@ -54,8 +56,8 @@ public final class ComparisonModel implements Model {
             throw new RuntimeException("No cells collected from the target cube query");
         }
         List<ComparedCell> comparedCells = new ArrayList<>();
-        Map<Cell, Double> deltas = new LinkedHashMap<>(deltaFunction.compareTargetToBenchmark(
-                targetCells, benchmark == null ? null : benchmark.matcher, comparedCells));
+        Map<Cell, Double> deltas = new LinkedHashMap<>(
+                deltaFunction.compareTargetToBenchmark(targetCells, benchmark, comparedCells));
 
         Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
         for (ComparedCell compared : comparedCells) {
@@ -64,16 +66,13 @@ public final class ComparisonModel implements Model {
             }
         }
 
-        List<ParameterInstantiation> parameters = benchmark == null
+        List<ParameterInstantiation> parameters = benchmarkLabel == null
                 ? Collections.<ParameterInstantiation>emptyList()
-                : Collections.singletonList(new ParameterInstantiation(BENCHMARK_ROLE, 0, benchmark.label));
-        List<ModelResult> produced = new ArrayList<>();
-        for (LabelingScheme scheme : labelingSchemes) {
-            Labeling labeling = new Labeling(scheme, deltas, 0, benchmarkValues);
-            produced.add(new ModelResultImpl(labeling.schemeName(), true, labeling, parameters)
-                    .origin(ModelOrigin.OPERATOR));
-        }
-        context.addModels(produced);
+                : Collections.singletonList(new ParameterInstantiation(BENCHMARK_ROLE, 0, benchmarkLabel));
+        Labeling labeling = new Labeling(labelingScheme, deltas, 0, benchmarkValues);
+        context.addModels(Collections.singletonList(
+                new ModelResultImpl(labeling.schemeName(), true, labeling, parameters)
+                        .origin(ModelOrigin.OPERATOR)));
         return context;
     }
 }

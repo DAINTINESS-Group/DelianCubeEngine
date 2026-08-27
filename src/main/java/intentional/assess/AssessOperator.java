@@ -12,6 +12,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
 import cubemanager.CubeManager;
+import intentional.assess.fetch.FetchStats;
+import intentional.assess.fetch.FetchStrategy;
 import intentional.assess.syntax.AssessQueryLexer;
 import intentional.assess.syntax.AssessQueryParser;
 import intentional.model.ModelResult;
@@ -25,9 +27,21 @@ import intentional.result.LabeledResult;
  */
 public class AssessOperator implements IntentionalOperator {
     private final CubeManager cubeManager;
+    private final FetchStrategy fetchStrategy;
+    private FetchStats lastFetchStats;
 
     public AssessOperator(CubeManager cubeManager) {
+        this(cubeManager, FetchStrategy.SCAN_PER_SLICE);
+    }
+
+    public AssessOperator(CubeManager cubeManager, FetchStrategy fetchStrategy) {
         this.cubeManager = cubeManager;
+        this.fetchStrategy = fetchStrategy;
+    }
+
+    /** The scans the last executed query's cubes cost. */
+    public FetchStats lastFetchStats() {
+        return lastFetchStats;
     }
 
     /**
@@ -39,12 +53,13 @@ public class AssessOperator implements IntentionalOperator {
     @Override
     public List<LabeledResult> execute(String assessQuery) {
         AssessQuery parsedQuery = parseQuery(assessQuery);
+        lastFetchStats = parsedQuery.fetchStats;
 
         LabeledResult target = new LabeledResult(parsedQuery.targetCubeQuery, parsedQuery.targetCube,
                 Collections.<ModelResult>emptyList());
         for (AssessComparison comparison : parsedQuery.comparisons) {
-            new ComparisonModel(comparison.benchmark, comparison.delta, parsedQuery.labelingSchemes)
-                    .run(target);
+            new ComparisonModel(comparison.benchmark, comparison.benchmarkLabel, comparison.delta,
+                    parsedQuery.labelingScheme).run(target);
         }
         return Collections.singletonList(target);
     }
@@ -52,7 +67,7 @@ public class AssessOperator implements IntentionalOperator {
     private AssessQuery parseQuery(String assessQuery) {
         AssessQueryParser parser = createParser(assessQuery);
         try {
-            return parser.parse(new AssessQueryBuilder(cubeManager));
+            return parser.parse(new AssessQueryBuilder(cubeManager, fetchStrategy));
         } catch (RecognitionException e) {
             e.printStackTrace();
             return null;

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class PastBenchmark implements AssessBenchmark {
     private final List<PastEntry> pastEntries = new ArrayList<>();
+    private final Map<List<String>, PastEntry> entriesByDimensions = new HashMap<>();
     private final int keyIndex;
 
     private static class PastEntry {
@@ -58,6 +59,7 @@ public class PastBenchmark implements AssessBenchmark {
             }
         }
         pastEntries.forEach(pastEntry -> pastEntry.measurement = pastEntry.measurement / pastEntry.resultsAdded);
+        pastEntries.forEach(pastEntry -> entriesByDimensions.put(pastEntry.dimensions, pastEntry));
     }
 
     // Assuming all results have the same order of columns
@@ -74,17 +76,15 @@ public class PastBenchmark implements AssessBenchmark {
         List<String> targetDimensionValues = new ArrayList<>(targetCell.getDimensionMembers());
         targetDimensionValues.remove(keyIndex);
 
-        for (PastEntry pastEntry : pastEntries) {
-            if (pastEntry.matches(targetDimensionValues)) {
-                return Optional.of(new Cell( new String[]
-                        {"Average of " + pastEntry.resultsAdded + " entries\n" +
-                                "Benchmark dimensions: " + String.join(", ", pastEntry.dimensions) + "\nValues:",
-                                String.valueOf(pastEntry.measurement),
-                                Integer.toString(pastEntry.resultsAdded)
-                        }));
-            }
+        PastEntry pastEntry = entriesByDimensions.get(targetDimensionValues);
+        if (pastEntry == null) {
+            return Optional.empty();
         }
-
-        return Optional.empty();
+        return Optional.of(new Cell(new String[]
+                {"Average of " + pastEntry.resultsAdded + " entries\n" +
+                        "Benchmark dimensions: " + String.join(", ", pastEntry.dimensions) + "\nValues:",
+                        String.valueOf(pastEntry.measurement),
+                        Integer.toString(pastEntry.resultsAdded)
+                }));
     }
 }

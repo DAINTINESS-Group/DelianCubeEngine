@@ -43,8 +43,8 @@ query returns [AssessQuery query]
         {builder.setDeltaFunctions(updatedComparisonMethods);}
       )?
 
-      // Build the Labeling Schemes Here
-      LABELS labeler (',' labeler)*
+      // Build the Labeling Scheme Here
+      LABELS labeler
       (SAVE AS output_name = ID {builder.setOutputName($output_name.text);})?
       {$query = builder.build();}
     ;

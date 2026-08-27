@@ -61,10 +61,6 @@ public class CubeManagerAdapter {
         return selectionPredicates;
     }
 
-    public void updateSelectionPredicate(String key, String value) {
-        selectionPredicates.put(key, value);
-    }
-
     public void setAggregationFunction(String aggregationFunction) {
         this.aggregationFunction = aggregationFunction;
     }
@@ -96,8 +92,13 @@ public class CubeManagerAdapter {
     }
 
     public CubeQuery translateToCubeQuery() {
+        return translateFor(selectionPredicates);
+    }
+
+    /** Translates the query template under the given predicates, leaving this adapter's own untouched. */
+    public CubeQuery translateFor(Map<String, String> predicates) {
         try {
-            CubeQuery query = cubeManager.createCubeQueryFromString(generateQuery(), new HashMap<>());
+            CubeQuery query = cubeManager.createCubeQueryFromString(generateQuery(predicates), new HashMap<>());
             if (measureExpression != null) {
                 QueryMeasure derived = new QueryMeasure(measureAlias == null
                         ? measureExpression
@@ -121,26 +122,26 @@ public class CubeManagerAdapter {
      *
      * @return the formatted query
      */
-    private String generateQuery() {
+    private String generateQuery(Map<String, String> predicates) {
         return new StringJoiner("\n")
                 .add("CubeName:" + targetCubeName)
                 .add("Name:" + targetCubeName + "_" + measurement)
                 .add("AggrFunc:" + aggregationFunction)
                 .add("Measure:" + measurement)
                 .add("Gamma:" + collectGammaLevels(targetCubeName + "_cube"))
-                .add("Sigma:" + collectSigmaLevels(targetCubeName + "_cube"))
+                .add("Sigma:" + collectSigmaLevels(targetCubeName + "_cube", predicates))
                 .toString();
     }
 
-    private String collectSigmaLevels(String targetCubeName) {
+    private String collectSigmaLevels(String targetCubeName, Map<String, String> predicates) {
         // Early return when there are no selection predicates
-        if (selectionPredicates == null) {
+        if (predicates == null) {
             return "";
         }
 
         Cube targetCube = cubeManager.getCubeByName(targetCubeName);
         StringJoiner stringJoiner = new StringJoiner(",");
-        selectionPredicates.forEach((key, value) -> {
+        predicates.forEach((key, value) -> {
             String result = targetCube.findLevelByName(key);
             if (datesHandler.keyIsDate(key)) {
                 value = DatesHandler.formatDates(value);
@@ -159,6 +160,11 @@ public class CubeManagerAdapter {
         return stringJoiner.toString();
     }
 
+    /** Whether the key is a level of the date dimension. */
+    public boolean isDateLevel(String key) {
+        return datesHandler.keyIsDate(key);
+    }
+
     public String getDateSelectionPredicate() {
         return selectionPredicates
                 .keySet()
@@ -169,21 +175,4 @@ public class CubeManagerAdapter {
                         "A date was not defined in the selection predicates"));
     }
 
-    public List<Result> collectPastRecords(int pastRecordsNumber) {
-        if (pastRecordsNumber <= 0) {
-            throw new RuntimeException("Did not provide a valid number of past Records");
-        }
-        String dateLevel = getDateSelectionPredicate();
-        String currentDate = selectionPredicates.get(dateLevel);
-        List<String> pastDates = DatesHandler.decrementDate(currentDate, dateLevel, pastRecordsNumber);
-        List<Result> pastRecords = new ArrayList<>();
-
-        for (String date : pastDates) {
-            updateSelectionPredicate(dateLevel, date);
-            Result queryResult = executeCubeQuery(translateToCubeQuery());
-            if (!queryResult.getCells().isEmpty()) // If the result is not empty
-                pastRecords.add(queryResult);
-        }
-        return pastRecords;
-    }
 }
