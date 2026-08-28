@@ -36,6 +36,20 @@ public interface ModelResult {
     /** The parameter values the run executed with. */
     default List<ParameterInstantiation> parameters() { return Collections.emptyList(); }
 
+    /**
+     * How this result announces itself: its labeling's scheme — the model's name when it has none —
+     * qualified by its labeled parameters.
+     */
+    default String tag() {
+        StringBuilder tag = new StringBuilder(labelling() != null ? labelling().schemeName() : modelName());
+        for (ParameterInstantiation parameter : parameters()) {
+            if (parameter.label != null) {
+                tag.append(" vs ").append(parameter.label);
+            }
+        }
+        return tag.toString();
+    }
+
     /** The auxiliary metrics behind the verdict. */
     default Map<String, Double> metrics() { return Collections.emptyMap(); }
 }

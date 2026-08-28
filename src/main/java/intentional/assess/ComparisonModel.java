@@ -71,8 +71,7 @@ public final class ComparisonModel implements Model {
                 : Collections.singletonList(new ParameterInstantiation(BENCHMARK_ROLE, 0, benchmarkLabel));
         Labeling labeling = new Labeling(labelingScheme, deltas, 0, benchmarkValues);
         context.addModels(Collections.singletonList(
-                new ModelResultImpl(labeling.schemeName(), true, labeling, parameters)
-                        .origin(ModelOrigin.OPERATOR)));
+                new ModelResultImpl(NAME, true, labeling, parameters).origin(ModelOrigin.OPERATOR)));
         return context;
     }
 }

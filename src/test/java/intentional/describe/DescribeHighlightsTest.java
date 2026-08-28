@@ -47,7 +47,7 @@ public class DescribeHighlightsTest {
         DescribeOperator operator = new DescribeOperator(testCubeManager);
         LabeledResult operatorResult = operator.execute(incomingExpression).get(0);
         assertNotNull("DESCRIBE should produce an operator result", operatorResult);
-        assertTrue("DESCRIBE carries no labelings", operatorResult.labelings().isEmpty());
+        assertTrue("DESCRIBE carries no models", operatorResult.models().isEmpty());
 
         HighlightSet highlights = HighlightTestSupport.highlights(
                 operatorResult, IntentionalProfile.DESCRIBE.archetypes(), testCubeManager);

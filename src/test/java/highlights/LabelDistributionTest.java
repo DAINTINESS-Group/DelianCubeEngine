@@ -14,7 +14,9 @@ import java.util.Map;
 import org.junit.Test;
 
 import cubemanager.cubebase.CubeQuery;
+import intentional.assess.ConsensusModel;
 import intentional.labeling.LabelDomain;
+import intentional.labeling.consensus.ConsensusRule;
 import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
 import intentional.model.ModelOrigin;
@@ -79,8 +81,9 @@ public class LabelDistributionTest {
     }
 
     private static Labeling consensusOf(LabeledResult operatorResult) {
-        for (Labeling labeling : operatorResult.labelings()) {
-            if (labeling.schemeName().startsWith("Consensus")) return labeling;
+        new ConsensusModel(ConsensusRule.KEMENY).run(operatorResult);
+        for (ModelResult model : operatorResult.models()) {
+            if (model.modelName().equals(ConsensusModel.NAME)) return model.labelling();
         }
         return null;
     }

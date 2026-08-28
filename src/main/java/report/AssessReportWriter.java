@@ -3,17 +3,15 @@ package report;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.StringJoiner;
 
 import highlights.HighlightSet;
+import intentional.assess.ConsensusModel;
 import intentional.labeling.Labeling;
-import intentional.labeling.consensus.ConsensusRule;
 import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
+import intentional.model.ParameterInstantiation;
 import intentional.result.LabeledResult;
 import result.Cell;
 
@@ -36,10 +34,22 @@ public class AssessReportWriter extends MarkdownReportWriter {
         writer.append("## Query\n").append(query).append("\n\n");
         appendResults(writer, result);
 
-        List<ModelResult> comparisons = comparisonModels(result);
+        List<ModelResult> comparisons = new ArrayList<>();
+        List<ModelResult> consensuses = new ArrayList<>();
+        for (ModelResult model : result.models()) {
+            if (model.origin() != ModelOrigin.OPERATOR || model.labelling() == null) {
+                continue;
+            }
+            if (model.modelName().equals(ConsensusModel.NAME)) {
+                consensuses.add(model);
+            } else {
+                comparisons.add(model);
+            }
+        }
+
         for (ModelResult comparison : comparisons) {
             Labeling labeling = comparison.labelling();
-            writer.append("## Labeling ").append(result.labelingTag(labeling));
+            writer.append("## Labeling ").append(comparison.tag());
             writer.append(" (").append(Integer.toString(labeling.assignment().size()))
                     .append(" of ").append(Integer.toString(cells.size())).append(" cells labeled)\n");
             for (Cell cell : cells) {
@@ -59,14 +69,15 @@ public class AssessReportWriter extends MarkdownReportWriter {
             }
         }
 
-        for (Labeling consensus : consensusesOf(result, comparisons)) {
-            List<Labeling> voters = votersOf(consensus, comparisons);
+        for (ModelResult consensusResult : consensuses) {
+            Labeling consensus = consensusResult.labelling();
+            List<ModelResult> voters = votersOf(consensus, comparisons);
             writer.append("## ").append(consensus.schemeName()).append(" (")
                     .append(Integer.toString(consensus.assignment().size())).append(" cells)\n")
-                    .append("Consensed via ").append(ConsensusRule.KEMENY.name()).append(" over: ");
+                    .append("Consensed via ").append(ruleOf(consensusResult)).append(" over: ");
             StringJoiner voterTags = new StringJoiner(", ");
-            for (Labeling voter : voters) {
-                voterTags.add(result.labelingTag(voter));
+            for (ModelResult voter : voters) {
+                voterTags.add(voter.tag());
             }
             writer.append(voterTags.toString()).append("\n\n");
             for (Cell cell : cells) {
@@ -74,8 +85,8 @@ public class AssessReportWriter extends MarkdownReportWriter {
                     continue;
                 }
                 StringJoiner votes = new StringJoiner(", ");
-                for (Labeling voter : voters) {
-                    String vote = voter.of(cell);
+                for (ModelResult voter : voters) {
+                    String vote = voter.labelling().of(cell);
                     votes.add(vote == null ? "-" : vote);
                 }
                 writer.append("Cell: ").append(cell.toString(", ")).append("\n")
@@ -87,41 +98,25 @@ public class AssessReportWriter extends MarkdownReportWriter {
         appendHighlights(writer, highlights);
     }
 
-    /** The operator's comparison results, in production order. */
-    private static List<ModelResult> comparisonModels(LabeledResult result) {
-        List<ModelResult> out = new ArrayList<>();
-        for (ModelResult model : result.models()) {
-            if (model.origin() == ModelOrigin.OPERATOR && model.labelling() != null) {
-                out.add(model);
-            }
-        }
-        return out;
-    }
-
-    /** The labelings the consensus was derived over: the ordered comparison labelings sharing its domain. */
-    private static List<Labeling> votersOf(Labeling consensus, List<ModelResult> comparisons) {
-        List<Labeling> voters = new ArrayList<>();
+    /** The comparisons the consensus was derived over: those whose ordered labeling shares its domain. */
+    private static List<ModelResult> votersOf(Labeling consensus, List<ModelResult> comparisons) {
+        List<ModelResult> voters = new ArrayList<>();
         for (ModelResult comparison : comparisons) {
             Labeling labeling = comparison.labelling();
             if (labeling.ordered() && labeling.domain().equals(consensus.domain())) {
-                voters.add(labeling);
+                voters.add(comparison);
             }
         }
         return voters;
     }
 
-    /** The derived consensuses: every labeling of the result that no comparison produced directly. */
-    private static List<Labeling> consensusesOf(LabeledResult result, List<ModelResult> comparisons) {
-        Set<Labeling> direct = Collections.newSetFromMap(new IdentityHashMap<Labeling, Boolean>());
-        for (ModelResult comparison : comparisons) {
-            direct.add(comparison.labelling());
-        }
-        List<Labeling> out = new ArrayList<>();
-        for (Labeling labeling : result.labelings()) {
-            if (!direct.contains(labeling)) {
-                out.add(labeling);
+    /** The rule the consensus result carries as its parameter. */
+    private static String ruleOf(ModelResult consensus) {
+        for (ParameterInstantiation parameter : consensus.parameters()) {
+            if (ConsensusModel.RULE.name.equals(parameter.role.name)) {
+                return parameter.label;
             }
         }
-        return out;
+        return "";
     }
 }

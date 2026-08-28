@@ -7,7 +7,6 @@ import highlights.instance.Highlight;
 import highlights.instance.HolisticHighlight;
 import intentional.assess.fetch.FetchStrategy;
 import intentional.labeling.Labeling;
-import intentional.model.ModelOrigin;
 import intentional.model.ModelResult;
 import intentional.result.LabeledResult;
 import mainengine.Session;
@@ -54,7 +53,18 @@ public class AssessOperatorTest {
 
     /** The assessment labeling of the query's result. */
     private Labeling assess(String query) throws RecognitionException {
-        return new AssessOperator(cubeManager).execute(query).get(0).labelings().get(0);
+        return labelings(new AssessOperator(cubeManager).execute(query).get(0)).get(0);
+    }
+
+    /** The operator's labelings — its comparisons and consensuses — unwrapped from its models. */
+    private static List<Labeling> labelings(LabeledResult result) {
+        List<Labeling> labelings = new ArrayList<>();
+        for (ModelResult model : result.models()) {
+            if (model.labelling() != null) {
+                labelings.add(model.labelling());
+            }
+        }
+        return labelings;
     }
 
     @Test
@@ -225,10 +235,10 @@ public class AssessOperatorTest {
 
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
-        assertEquals("one labeling, no consensus to derive", 1, result.labelings().size());
-        assertEquals("size", result.labelings().get(0).schemeName());
+        assertEquals("one labeling, no consensus to derive", 1, labelings(result).size());
+        assertEquals("size", labelings(result).get(0).schemeName());
 
-        Labeling labeling = result.labelings().get(0);
+        Labeling labeling = labelings(result).get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
         assertEquals("with no benchmark, the labeled quantity is the raw measure",
                 first.toDouble(), labeling.magnitudeOf(first), 0.0001);
@@ -243,9 +253,9 @@ public class AssessOperatorTest {
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
         assertEquals("Profit", result.query.getQueryMeasures().get(0).getAlias());
-        assertEquals(1, result.labelings().size());
+        assertEquals(1, labelings(result).size());
 
-        Labeling labeling = result.labelings().get(0);
+        Labeling labeling = labelings(result).get(0);
         Cell first = labeling.assignment().keySet().iterator().next();
         assertEquals("the labeled quantity is the derived measure",
                 first.toDouble(), labeling.magnitudeOf(first), 0.0001);
@@ -263,14 +273,18 @@ public class AssessOperatorTest {
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
         List<String> benchmarkTags = new ArrayList<>();
+        String consensusRule = null;
         for (ModelResult model : result.models()) {
-            if (model.origin() == ModelOrigin.OPERATOR) {
+            if (ComparisonModel.NAME.equals(model.modelName())) {
                 benchmarkTags.add(model.parameters().get(0).label);
+            } else if (model.modelName().equals(ConsensusModel.NAME)) {
+                consensusRule = model.parameters().get(0).label;
             }
         }
         assertEquals(Arrays.asList("year = '1996'", "past 2", "constant 500000"), benchmarkTags);
+        assertEquals("the consensus result carries its rule", "KEMENY", consensusRule);
 
-        List<Labeling> labelings = result.labelings();
+        List<Labeling> labelings = labelings(result);
         assertEquals("three comparisons and their cross-benchmark consensus", 4, labelings.size());
         assertEquals(1, consensuses(result).size());
         assertEquals("Consensus(EquiDepth)", consensuses(result).get(0).schemeName());
@@ -323,8 +337,8 @@ public class AssessOperatorTest {
             assertEquals(strategy.getKey().name(),
                     strategy.getValue().intValue(), operator.lastFetchStats().scans());
 
-            List<Labeling> serialLabelings = serial.labelings();
-            List<Labeling> optimizedLabelings = optimized.labelings();
+            List<Labeling> serialLabelings = labelings(serial);
+            List<Labeling> optimizedLabelings = labelings(optimized);
             assertEquals(serialLabelings.size(), optimizedLabelings.size());
             for (int i = 0; i < serialLabelings.size(); i++) {
                 assertEquals(labelsByCell(serialLabelings.get(i)), labelsByCell(optimizedLabelings.get(i)));
@@ -359,7 +373,7 @@ public class AssessOperatorTest {
 
         LabeledResult result = operator.execute(query).get(0);
 
-        List<Labeling> labelings = result.labelings();
+        List<Labeling> labelings = labelings(result);
         assertEquals("two comparisons under the one scheme, and their consensus", 3, labelings.size());
         assertEquals("EquiDepth", labelings.get(0).schemeName());
         assertEquals("EquiDepth", labelings.get(1).schemeName());
@@ -405,7 +419,7 @@ public class AssessOperatorTest {
         LabeledResult result = new AssessOperator(cubeManager).execute(query).get(0);
 
         assertEquals("ProfitK", result.query.getQueryMeasures().get(0).getAlias());
-        Labeling labeling = result.labelings().get(0);
+        Labeling labeling = labelings(result).get(0);
         assertFalse(labeling.assignment().isEmpty());
     }
 
@@ -464,8 +478,8 @@ public class AssessOperatorTest {
 
     private static List<Labeling> consensuses(LabeledResult result) {
         List<Labeling> out = new ArrayList<>();
-        for (Labeling labeling : result.labelings()) {
-            if (labeling.schemeName().startsWith("Consensus")) out.add(labeling);
+        for (ModelResult model : result.models()) {
+            if (model.modelName().equals(ConsensusModel.NAME)) out.add(model.labelling());
         }
         return out;
     }

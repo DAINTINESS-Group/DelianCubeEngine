@@ -14,6 +14,7 @@ import org.antlr.runtime.RecognitionException;
 import cubemanager.CubeManager;
 import intentional.assess.fetch.FetchStats;
 import intentional.assess.fetch.FetchStrategy;
+import intentional.labeling.consensus.ConsensusRule;
 import intentional.assess.syntax.AssessQueryLexer;
 import intentional.assess.syntax.AssessQueryParser;
 import intentional.model.ModelResult;
@@ -61,6 +62,7 @@ public class AssessOperator implements IntentionalOperator {
             new ComparisonModel(comparison.benchmark, comparison.benchmarkLabel, comparison.delta,
                     parsedQuery.labelingScheme).run(target);
         }
+        new ConsensusModel(ConsensusRule.KEMENY).run(target);
         return Collections.singletonList(target);
     }
 

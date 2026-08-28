@@ -11,6 +11,7 @@ import intentional.labeling.LabelDomain;
 import intentional.labeling.Labeling;
 import intentional.labeling.LabelingScheme;
 import intentional.model.Model;
+import intentional.model.ModelOrigin;
 import intentional.result.LabeledResult;
 import intentional.model.ModelResult;
 import intentional.model.ParameterInstantiation;
@@ -56,8 +57,10 @@ public final class LabelDistributionAlgorithm implements Model {
     @Override
     public LabeledResult run(LabeledResult context) {
         List<ModelResult> produced = new ArrayList<>();
-        for (Labeling labeling : context.labelings()) {
-            produced.add(runLabeling(labeling, context.labelingTag(labeling)));
+        for (ModelResult model : context.models()) {
+            if (model.origin() != ModelOrigin.ARCHETYPE && model.labelling() != null) {
+                produced.add(runLabeling(model.labelling(), model.tag()));
+            }
         }
         context.addModels(produced);
         return context;
