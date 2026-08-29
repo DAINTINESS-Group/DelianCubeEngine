@@ -12,30 +12,25 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
-
+import cubemanager.queryoptimizer.selectivityestimation.SigmaParser.ParsedSigma;
 
 /**
- * Reservoir sampling-based selectivity estimator.
- <p>
- At construction, loads a pre-built CSV file of sampled dimension level column values
- and inserts them into a MySQL MEMORY table named {@smpl_{cubeName}}, with columns {@code (col_name, values)}.
- </p>
- <p>
- At query time, fires a {@code COUNT} SQL query against the MEMORY table to count how many sampled values statisfy the
- sigma predicate, then scales the result back to the full table size
- </p>
+ * A class that: (i) loads a pre-built sample of fact table rows into a MySQL InnoDB table,
+ * (ii) estimates the selectivity of each sigma predicate by joining that sample to the dimension tables
+ * and scaling the result back to the full fact table size
  */
 public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
-	private final String memoryTableName;
+	private final String sampleTableName;
 	private int storedFactTableSize = -1;
 	private int sampleSize;
 	private final CubeBase cubeBase;
 
 	public ReservoirSamplingEstimator(String inputFolder, String cubeName, CubeBase cubeBase) {
-		this.memoryTableName = "smpl_" + cubeName;
+		this.sampleTableName = "smpl_" + cubeName;
 		this.sampleSize = 0;
 		this.cubeBase = cubeBase;
 		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.csv");
@@ -48,11 +43,8 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 	}
 
 	/**
-	 * Estimates selectivity for each sigma predicate
-	 * Returns an empty list for sigmas that cannot be parsed
-	 * @param query
-	 * @param factTableSize
-	 * @return
+	 * Estimates the selectivity of each sigma predicate in the query.
+	 * Sigmas that cannot be resolved to a physical column are skipped
 	 */
 	@Override
 	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
@@ -64,12 +56,12 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 		List<String> dimRefFields = referCube.getDimensionRefFieldList();
 
 		for (String[] sigma : query.getSigmaExpressions()) {
-			SigmaParser.ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
+			ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
 			if (parsed == null || factTableSize < 0) {
 				continue;
 			}
 
-			int matchingInSample = countFromMemoryTable(parsed.filterCol, sigma[1], sigma[2]);
+			int matchingInSample = countFromSampleTable(parsed, sigma[1], sigma[2]);
 			if (matchingInSample < 0) {
 				continue;
 			}
@@ -87,61 +79,71 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 	}
 
 	/**
-	 * Loads sample data from a pre-built CSV file into a single MySQL MEMORY table.
-	 * Expected format:
-	 * <pre>
-	 * columnName|value1,value2,value3,...
-	 * factTableSize = N
-	 * </pre>
+	 * Loads the sampled fact rows from {cubeName}_samples.csv into a MySQL InnoDB table
+	 * whose columns are the fact table's fk's
 	 */
 	private void loadFromFile(File file) {
+		List<String> fkColumns = new ArrayList<>();
+		List<String[]> rows = new ArrayList<>();
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			reader.readLine();
 			String line;
-
-			Connection conn = ((Database) cubeBase.getDataSourceDescription()).getConnection();
-
-			conn.createStatement().executeUpdate("DROP TABLE IF EXISTS " + memoryTableName);
-			conn.createStatement().executeUpdate(
-				"CREATE TABLE " + memoryTableName + " (col_name VARCHAR(255), val VARCHAR(255)) ENGINE=MEMORY"
-			);
 
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("factTableSize = ")) {
 					try {
 						storedFactTableSize = Integer.parseInt(line.substring("factTableSize = ".length()).trim());
-					} catch (NumberFormatException ignore) {}
+					} catch (NumberFormatException ignored) {}
 					continue;
 				}
 
-				String[] parts = line.split("\\|");
-				if (parts.length != 2) continue;
-
-				String columnName = parts[0];
-				String[] values = parts[1].split(",");
-
-				StringBuilder sb = new StringBuilder("INSERT INTO " + memoryTableName + " VALUES ");
-				for (int i = 0; i < values.length; i++) {
-					sb.append("('").append(columnName.replace("'", "\\'")).append("','")
-					  .append(values[i].replace("'", "\\'")).append("')");
-					if (i < values.length - 1) {
-						sb.append(",");
-					}
+				if (fkColumns.isEmpty()) {
+					fkColumns = Arrays.asList(line.split("\\|"));
+					continue;
 				}
-				conn.createStatement().executeUpdate(sb.toString());
 
-				if (sampleSize == 0) {
-					sampleSize = values.length;
+				String[] values = line.split("\\|", -1);
+				if (values.length == fkColumns.size()) {
+					rows.add(values);
 				}
 			}
+			sampleSize = rows.size();
+
+			Connection conn = ((Database) cubeBase.getDataSourceDescription()).getConnection();
+
+			List<String> columnDefs = new ArrayList<>();
+			List<String> placeholders = new ArrayList<>();
+			for (String column : fkColumns) {
+				columnDefs.add(column + " VARCHAR(255)");
+				placeholders.add("?");
+			}
+
+			conn.createStatement().executeUpdate("DROP TABLE IF EXISTS " + sampleTableName);
+			conn.createStatement().executeUpdate("CREATE TABLE  " + sampleTableName
+				+ " (" + String.join(", ", columnDefs) + ") ENGINE = InnoDB");
+
+
+			PreparedStatement insert = conn.prepareStatement("INSERT INTO " + sampleTableName
+			 + " VALUES (" + String.join(", ", placeholders) + ")");
+
+			for (String[] row : rows) {
+				for (int i = 0; i < row.length; i++) {
+					insert.setString(i + 1, row[i]);
+				}
+
+				insert.addBatch();
+			}
+			insert.executeBatch();
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private int countFromMemoryTable(String columnName, String operator, String value) {
-		String sql = "SELECT COUNT(*) FROM " + memoryTableName
-				+ " WHERE col_name = '" + columnName + "' AND val " + operator + " " + value;
+	private int countFromSampleTable(ParsedSigma parsed, String operator, String value) {
+		String fkColumn = parsed.factFK.substring(parsed.factFK.indexOf('.') + 1);
+		String sql = "SELECT COUNT(*) FROM " + sampleTableName
+				+ " JOIN " + parsed.dimTable + " ON " + sampleTableName + "." + fkColumn + " = " + parsed.dimPK
+				+ " WHERE " + parsed.filterCol + " " + operator + " " + value;
 		return runCountQuery(sql);
 	}
 
