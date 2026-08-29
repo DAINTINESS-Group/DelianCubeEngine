@@ -37,6 +37,8 @@ public class SessionContext {
 	private String queryOptimizerMethod;
 	private String inputFolder;
 	private String cubeName;
+	private String samplingAlgorithm;
+	private double sampleFraction;
 	//	private String currentQueryName;
 	//	private ITranslatorFactory translatorFactory;
 	//	private ArrayList<String> cubeNames;
@@ -150,4 +152,12 @@ public class SessionContext {
 	public void setCubeName(String cubeName) {
 		this.cubeName = cubeName;
 	}
+
+	public String getSamplingAlgorithm() {return samplingAlgorithm;}
+
+	public double getSampleFraction() {return sampleFraction;}
+
+	public void setSamplingAlgorithm(String samplingAlgorithm) {this.samplingAlgorithm = samplingAlgorithm;}
+
+	public void setSampleFraction(double sampleFraction) {this.sampleFraction = sampleFraction;}
 }

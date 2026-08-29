@@ -33,6 +33,8 @@ public class ConnectionManager implements IBuilder {
         context.setRegisteredCubesList(cubeManager.getCubes());
 		context.setInputFolder(userInputList.get("inputFolder"));
 		context.setCubeName(userInputList.get("cubeName"));
+		context.setSamplingAlgorithm(userInputList.getOrDefault("samplingAlgorithm", "R"));
+		context.setSampleFraction(Double.parseDouble(userInputList.getOrDefault("sampleFraction", "0.01")));
 
         switch (cto.getCommandAlias()) {
 	        case "initialize":

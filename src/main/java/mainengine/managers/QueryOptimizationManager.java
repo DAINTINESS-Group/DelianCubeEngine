@@ -24,6 +24,10 @@ public class QueryOptimizationManager implements IBuilder{
 
 		Object result = queryOptimizer.optimize(query);
 
+		if (result == null) {
+			return ResponseDTO.error("Optimizer returned no result for query: " + queryString);
+		}
+
 		ResponseDTO response = new ResponseDTO(true);
 		response.setPayload(result);
 		return response;
