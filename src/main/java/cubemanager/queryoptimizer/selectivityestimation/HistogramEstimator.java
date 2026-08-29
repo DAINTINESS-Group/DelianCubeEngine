@@ -146,7 +146,7 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 				return true;
 			}
 			case "BETWEEN": {
-				String[] bounds = cleanValue.split("AND");
+				String[] bounds = cleanValue.split("(?i)\\s+AND\\s+");
 				if (bounds.length != 2) return false;
 				return compareValues(colValue, bounds[0].trim()) >= 0
 						&& compareValues(colValue, bounds[1].trim()) <= 0;
