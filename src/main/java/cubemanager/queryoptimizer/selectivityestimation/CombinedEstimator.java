@@ -3,14 +3,12 @@ package cubemanager.queryoptimizer.selectivityestimation;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Combined selectivity estimator that weights histogram and reservoir sampling estimates.
- * The final estimate is: HISTOGRAM_WEIGHT * histogramMatching + SAMPLING_WEIGHT * samplingMatching
+ * The final estimate is: HISTOGRAM_WEIGHT * histogramMatching + SAMPLING_WEIGHT * samplingMatching.
+ * A predicate is included only if both estimators produced a result for it.
  */
 public class CombinedEstimator implements ISelectivityEstimator {
 
@@ -36,13 +34,13 @@ public class CombinedEstimator implements ISelectivityEstimator {
 		List<SelectivityResult> sampResults = samplingEstimator.estimate(query, factTableSize);
 
 		Map<String, SelectivityResult> histMap = new HashMap<>();
-		for (SelectivityResult r : histResults) {
-			histMap.put(r.getColumnName(), r);
+		for (SelectivityResult result : histResults) {
+			histMap.put(Arrays.toString(result.getSigmaExpression()), result);
 		}
 
 		List<SelectivityResult> combined = new ArrayList<>();
 		for (SelectivityResult sampResult : sampResults) {
-			SelectivityResult histResult = histMap.get(sampResult.getColumnName());
+			SelectivityResult histResult = histMap.get(Arrays.toString(sampResult.getSigmaExpression()));
 			if (histResult == null) continue;
 
 			int combinedMatching = (int) Math.round(

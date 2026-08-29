@@ -340,7 +340,8 @@ public interface IMainEngine extends IServer {
 	 *
 	 * @param queryString A string with a query
 	 * @param method The method of the estimation
-	 * @return A list with one SelectivityResult per sigma predicate in the query
+	 * @return one SelectivityResult per sigma predicate that could be resolved. The list may be shorter than query's sigma list, since
+	 * unresolved predicates are skipped
 	 * @throws RemoteException
 	 */
 	List<SelectivityResult> estimateSelectivity(String queryString, String method) throws RemoteException;
@@ -357,16 +358,17 @@ public interface IMainEngine extends IServer {
 	boolean buildHistograms(String inputFolder, String cubeName, boolean forceRebuild) throws RemoteException;
 
 	/**
-	 * Builds reservoir samples for all dimension level columns and saves them to a file.
-	 * You can rebuild though the {@code forceRebuild} parameter
+	 * Builds reservoir sample of the fact table rows using the given sampling algorithm and saves it to a file.
+	 * Only the foreign key columns are stored, dimension level values are resolved by joining the sample to the dim tables at estimation time
 	 *
 	 * @param inputFolder The folder  where the cube description is
 	 * @param cubeName The name of the cube
 	 * @param sampleSize Fraction of the fact table to sample
 	 * @param forceRebuild True if we want to rebuild the samples
+	 * @param algorithm The sampling algorithm, either {@code R} or {@code L} for now
 	 * @throws RemoteException
 	 */
-	boolean buildSamples(String inputFolder, String cubeName, double sampleSize, boolean forceRebuild) throws RemoteException;
+	boolean buildSamples(String inputFolder, String cubeName, double sampleSize, boolean forceRebuild, String algorithm) throws RemoteException;
     /**
      * 
      * @param chartRequest
