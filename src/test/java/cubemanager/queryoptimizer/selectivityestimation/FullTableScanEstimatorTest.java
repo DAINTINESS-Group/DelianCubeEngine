@@ -24,28 +24,28 @@ public class FullTableScanEstimatorTest {
 	// A query with a sigma that will not match anything in the db
 	private static final String Q_ATLANTIS =
 			"CubeName:loan\nName:Q_Atlantis\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='Atlantis'";
+					+ "Gamma:account_dim.district_name\nSigma:account_dim.region='Atlantis'";
 
 	// A single sigma query
 	private static final String Q_NORTH_MORAVIA =
 			"CubeName:loan\nName:Q_NorthMoravia\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='north Moravia'";
+					+ "Gamma:account_dim.district_name\nSigma:account_dim.region='north Moravia'";
 
 	// A two sigmas query
 	private static final String Q_PRAGUE_AND_1998 =
 			"CubeName:loan\nName:Q_PragueAnd1998\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1,date_dim.lvl3\n"
-					+ "Sigma:account_dim.lvl2='Prague',date_dim.lvl3='1998'";
+					+ "Gamma:account_dim.district_name,date_dim.year\n"
+					+ "Sigma:account_dim.region='Prague',date_dim.year='1998'";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99");
+		userInputList.put("inputFolder", "pkdd99_star");
 
 		testCubeManager = new CubeManager(typeOfConnection, userInputList);
 		Session testSession = new Session(testCubeManager);

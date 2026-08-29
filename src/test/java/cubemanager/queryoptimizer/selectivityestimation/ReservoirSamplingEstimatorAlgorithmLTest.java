@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,9 +16,9 @@ import org.junit.Test;
 import mainengine.SessionQueryProcessorEngine;
 
 /**
- * A test class for the reservoir sampling estimator
+ * A test class for the reservoir sampling estimator with samples built with L algorithm
  */
-public class ReservoirSamplingEstimatorTest {
+public class ReservoirSamplingEstimatorAlgorithmLTest {
 
 	private static CubeManager testCubeManager;
 	private static ReservoirSamplingEstimator testEstimator;
@@ -29,26 +28,26 @@ public class ReservoirSamplingEstimatorTest {
 
 	private static final String Q_ATLANTIS =
 			"CubeName:loan\nName:Q_Atlantis\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='Atlantis'";
+					+ "Gamma:account_dim.district_name\nSigma:account_dim.region='Atlantis'";
 
 	private static final String Q_NORTH_MORAVIA =
 			"CubeName:loan\nName:Q_NorthMoravia\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='north Moravia'";
+					+ "Gamma:account_dim.district_name\nSigma:account_dim.region='north Moravia'";
 
 	private static final String Q_PRAGUE_AND_1998 =
 			"CubeName:loan\nName:Q_PragueAnd1998\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1,date_dim.lvl3\n"
-					+ "Sigma:account_dim.lvl2='Prague',date_dim.lvl3='1998'";
+					+ "Gamma:account_dim.district_name,date_dim.year\n"
+					+ "Sigma:account_dim.region='Prague',date_dim.year='1998'";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99");
+		userInputList.put("inputFolder", "pkdd99_star");
 
 		testCubeManager = new CubeManager(typeOfConnection, userInputList);
 		Session testSession = new Session(testCubeManager);
@@ -56,9 +55,9 @@ public class ReservoirSamplingEstimatorTest {
 
 		SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
 		engine.initializeConnection(typeOfConnection, userInputList);
-		engine.buildSamples("pkdd99", "loan", SAMPLE_SIZE, true);
+		engine.buildSamples("pkdd99_star", "loan", SAMPLE_SIZE, true, "L");
 
-		testEstimator = new ReservoirSamplingEstimator("pkdd99", "loan", testCubeManager.getCubeBase());
+		testEstimator = new ReservoirSamplingEstimator("pkdd99_star", "loan", testCubeManager.getCubeBase());
 	}
 
 	@Test

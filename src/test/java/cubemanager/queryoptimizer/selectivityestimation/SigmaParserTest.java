@@ -24,17 +24,17 @@ public class SigmaParserTest {
 
 	private static final String Q_NORTH_MORAVIA =
 			"CubeName:loan\nName:Q_NorthMoravia\nAggrFunc:Sum\nMeasure:amount\n"
-					+ "Gamma:account_dim.lvl1\nSigma:account_dim.lvl2='north Moravia'";
+					+ "Gamma:account_dim.district_name\nSigma:account_dim.region='north Moravia'";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String> userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99");
+		userInputList.put("schemaName", "pkdd99_star");
 		userInputList.put("username", "CinecubesUser");
 		userInputList.put("password", "Cinecubes");
 		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99");
+		userInputList.put("inputFolder", "pkdd99_star");
 
 		testCubeManager = new CubeManager(typeOfConnection, userInputList);
 		Session testSession = new Session(testCubeManager);
@@ -49,20 +49,20 @@ public class SigmaParserTest {
 	// Test the "=" parsing
 	@Test
 	public void testEqualsParsingResolvesCorrectly() {
-		String[] sigma = {"account_dim.lvl2", "=", "north Moravia"};
+		String[] sigma = {"account_dim.region", "=", "north Moravia"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
 		assertEquals("account.region", result.filterCol);
 		assertEquals("account", result.dimTable);
-		assertEquals("loan.account_id", result.factFK);
+		assertEquals("loan.l_account_id", result.factFK);
 		assertEquals("account.account_id", result.dimPK);
 	}
 
 	// Test the ">" parsing
 	@Test
 	public void testGTresolvesCorrectly() {
-		String[] sigma = {"date_dim.lvl3", ">", "1997"};
+		String[] sigma = {"date_dim.year", ">", "1997"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
@@ -72,7 +72,7 @@ public class SigmaParserTest {
 	// Test the ">=" parsing
 	@Test
 	public void testGTorEqualsResolvesCorrectly() {
-		String[] sigma = {"date_dim.lvl3", ">=", "1997"};
+		String[] sigma = {"date_dim.year", ">=", "1997"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
@@ -82,7 +82,7 @@ public class SigmaParserTest {
 	// Test the "IN" parsing
 	@Test
 	public void testINresolvesCorrectly() {
-		String[] sigma = {"account_dim.lvl2", "IN", "('Prague','Brno')"};
+		String[] sigma = {"account_dim.region", "IN", "('Prague','Brno')"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
@@ -92,7 +92,7 @@ public class SigmaParserTest {
 	// Test the "NOT IN" parsing
 	@Test
 	public void testNOTINresolvesCorrectly() {
-		String[] sigma = {"account_dim.lvl2", "NOT IN", "('Prague','Brno')"};
+		String[] sigma = {"account_dim.region", "NOT IN", "('Prague','Brno')"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
@@ -102,13 +102,13 @@ public class SigmaParserTest {
 	// Test the "BETWEEN" parsing
 	@Test
 	public void testBETWEENresolvesCorrectly() {
-		String[] sigma = {"date_dim.lvl3", "BETWEEN", "1997 AND 1999"};
+		String[] sigma = {"date_dim.year", "BETWEEN", "1997 AND 1999"};
 		SigmaParser.ParsedSigma result = SigmaParser.parse(sigma, dimensions, dimRefFields);
 
 		assertNotNull(result);
-		assertEquals("date.Year",   result.filterCol);
-		assertEquals("date",        result.dimTable);
-		assertEquals("loan.date",   result.factFK);
+		assertEquals("date.Year", result.filterCol);
+		assertEquals("date", result.dimTable);
+		assertEquals("loan.date", result.factFK);
 		assertEquals("date.SK_Day", result.dimPK);
 	}
 
@@ -133,7 +133,7 @@ public class SigmaParserTest {
 
 	@Test
 	public void testUnknownDimensionReturnsNull() {
-		String[] sigma = {"unknown_dim.lvl2", "=", "'Prague'"};
+		String[] sigma = {"unknown_dim.region", "=", "'Prague'"};
 		assertNull(SigmaParser.parse(sigma, dimensions, dimRefFields));
 	}
 
