@@ -29,7 +29,7 @@ public class SelectivityResult implements Serializable {
 		this.columnName = columnName;
 		this.totalRows = totalRows;
 		this.matchingRows = matchingRows;
-		if (totalRows == 0) {
+		if (totalRows <= 0) {
 			this.selectivity = 0.0;
 		} else {
 			this.selectivity = (double) matchingRows / totalRows;
