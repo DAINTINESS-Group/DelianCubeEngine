@@ -10,9 +10,9 @@ import java.util.List;
  * Parses a sigma predicate (e.g. "account_dim.lvl2 = 'Prague'") into the physical
  * database column and join info needed to query it.
  */
-class SigmaParser {
+public class SigmaParser {
 
-	static class ParsedSigma {
+	public static class ParsedSigma {
 		final String filterCol;
 		final String dimTable;
 		final String factFK;
