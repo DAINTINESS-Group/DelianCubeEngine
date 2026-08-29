@@ -7,6 +7,5 @@ public enum ManagerType {
 	NL,
 	EXECUTION,
 	VISUALIZATION,
-	OPTIMIZER,
-	STATISTICS
+	OPTIMIZER
 }
