@@ -10,8 +10,8 @@ public interface IQueryOptimization {
 
 	/**
 	 * Performs the optimization operation
-	 * @param query, the cube query to optimize
-	 * @return the result, specific to each implementation
+	 * @param query the cube query to optimize
+	 * @return the result, specific to each implementation - {@code List<SelectivityResult>} for selectivity estimation
 	 */
     Object optimize(CubeQuery query);
 }
