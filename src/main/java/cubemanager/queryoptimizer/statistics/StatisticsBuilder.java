@@ -55,7 +55,6 @@ public class StatisticsBuilder {
 		if (file.exists() && !forceRebuild) return false; // Skip building if file already exists
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-			writer.println("columnName|value|count");
 
 			for (BasicStoredCube cube : cubeBase.getRegisteredCubeList()) {
 				String factTable = cube.getFactTable().getTableName();
@@ -64,6 +63,7 @@ public class StatisticsBuilder {
 
 				int factTableSize = computeFactTableSize(factTable, cubeBase);
 				writer.println("factTableSize = " + factTableSize);
+				writer.println("columnName|value|count");
 
 				for (int i = 0; i < dimensions.size(); i++) {
 					Dimension dimension = dimensions.get(i);
