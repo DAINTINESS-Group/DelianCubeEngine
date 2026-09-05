@@ -51,7 +51,7 @@ public class HistogramEstimatorTest {
 
 		SessionQueryProcessorEngine engine = new SessionQueryProcessorEngine();
 		engine.initializeConnection(typeOfConnection, userInputList);
-		engine.buildHistograms("pkdd99_star", "loan", false);
+		engine.buildHistograms("pkdd99_star", "loan", true);
 
 		testEstimator = new HistogramEstimator("pkdd99_star", "loan");
 	}
