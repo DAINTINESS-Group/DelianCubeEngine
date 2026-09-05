@@ -12,14 +12,19 @@ import result.Result;
 /**
  * The ground truth selectivity estimator. For each sigma predicate it fires one
  * COUNT query against the database and computes the exact selectivity.
- * The total row count of the fact table is computed in {@link cubemanager.queryoptimizer.SelectivityEstimationOptimizer}
- * and is getting passed as {@code factTableSize}
+ * The total row count of the fact table is computed here on first use and reused afterwards.
  */
 public class FullTableScanEstimator implements ISelectivityEstimator {
 
 	private final CubeBase cubeBase;
+	private int storedFactTableSize = -1;
 
 	public FullTableScanEstimator(CubeBase cubeBase) {this.cubeBase = cubeBase;}
+
+	@Override
+	public int getFactTableSize() {
+		return storedFactTableSize;
+	}
 
 	@Override
 	public List<SelectivityResult> estimate(CubeQuery query, int factTableSize) {
@@ -30,6 +35,13 @@ public class FullTableScanEstimator implements ISelectivityEstimator {
 
 		List<Dimension> dimensions = referCube.getDimensionsList();
 		List<String> dimRefFields = referCube.getDimensionRefFieldList();
+
+		int totalRows;
+		if (factTableSize >= 0) {
+			totalRows = factTableSize;
+		} else {
+			totalRows = countFactTable(factTable);
+		}
 
 		for (String[] sigma : query.getSigmaExpressions()) {
 			SigmaParser.ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
@@ -42,7 +54,7 @@ public class FullTableScanEstimator implements ISelectivityEstimator {
 					parsed.dimPK, parsed.filterCol, sigma[1], sigma[2]);
 			if (matchingRows < 0) continue;
 
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize, matchingRows));
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, totalRows, matchingRows));
 		}
 
 		return results;
@@ -71,5 +83,12 @@ public class FullTableScanEstimator implements ISelectivityEstimator {
 		} catch (Exception e) {
 			return -1;
 		}
+	}
+
+	private int countFactTable(String factTable) {
+		if (storedFactTableSize < 0) {
+			storedFactTableSize = runCountQuery("SELECT COUNT(*) FROM " + factTable);
+		}
+		return storedFactTableSize;
 	}
 }
