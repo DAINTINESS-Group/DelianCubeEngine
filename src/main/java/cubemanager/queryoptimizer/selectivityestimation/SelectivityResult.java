@@ -1,6 +1,7 @@
 package cubemanager.queryoptimizer.selectivityestimation;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Holds the result of a selectivity estimation for one sigma predicate.
@@ -66,5 +67,24 @@ public class SelectivityResult implements Serializable {
 				"Sigma Predicate -> [%s %s %s] | Table: %s | Column: %s | Rows: %d / %d | Selectivity: %.4f",
 				sigmaExpression[0], sigmaExpression[1], sigmaExpression[2], tableName, columnName,
 				matchingRows, totalRows, selectivity);
+	}
+
+	/**
+	 * Estimates the selectivity of a conjunction of predicates as the product of the individual selectivities,
+	 * under the attribute value independence assumption.
+	 * @param results the per-predicate results of a single query as returned by an estimator
+	 * @return the estimated selectivity of the conjunction, or 0.0 if no results available
+	 */
+	public double conjunctiveCubeQuerySelectivity(List<SelectivityResult> results) {
+		if (results == null || results.isEmpty()) {
+			return 0.0;
+		}
+
+		double product = 1.0;
+		for (SelectivityResult result : results) {
+			product *= result.getSelectivity();
+		}
+
+		return product;
 	}
 }
