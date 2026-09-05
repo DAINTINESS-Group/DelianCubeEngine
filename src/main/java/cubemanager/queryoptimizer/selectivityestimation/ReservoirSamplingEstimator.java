@@ -19,8 +19,9 @@ import cubemanager.queryoptimizer.selectivityestimation.SigmaParser.ParsedSigma;
 
 /**
  * A class that: (i) loads a pre-built sample of fact table rows into a MySQL InnoDB table,
- * (ii) estimates the selectivity of each sigma predicate by joining that sample to the dimension tables
- * and scaling the result back to the full fact table size
+ * (ii) estimates the selectivity of each sigma predicate by counting the rows of that sample
+ * which satisfy it, joined to the dimension tables.
+ * Selectivity is measured inside the sample, matchingInSample / sampleSize.
  */
 public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
@@ -57,7 +58,7 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 
 		for (String[] sigma : query.getSigmaExpressions()) {
 			ParsedSigma parsed = SigmaParser.parse(sigma, dimensions, dimRefFields);
-			if (parsed == null || factTableSize < 0) {
+			if (parsed == null || sampleSize <= 0) {
 				continue;
 			}
 
@@ -66,13 +67,7 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 				continue;
 			}
 
-			int estimatedMatching;
-			if (sampleSize == 0) {
-				estimatedMatching = 0;
-			} else {
-				estimatedMatching = (int) Math.round((double) matchingInSample / sampleSize * factTableSize);
-			}
-			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, factTableSize, estimatedMatching));
+			results.add(new SelectivityResult(sigma, factTable, parsed.filterCol, sampleSize, matchingInSample));
 		}
 
 		return results;
