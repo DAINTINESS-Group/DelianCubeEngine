@@ -12,8 +12,6 @@ public class SelectivityEstimatorFactory {
 				return new ReservoirSamplingEstimator(inputFolder, cubeName, cubeBase);
 			case "HISTOGRAM":
 				return new HistogramEstimator(inputFolder, cubeName);
-			case "COMBINED":
-				return new CombinedEstimator(inputFolder, cubeName, cubeBase);
 			default:
 				throw new IllegalArgumentException("Unknown estimation method: " + method);
 		}
