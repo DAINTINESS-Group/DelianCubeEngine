@@ -80,7 +80,6 @@ public class HistogramEstimator implements  ISelectivityEstimator{
 	 */
 	private void loadFromFile(File file) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			reader.readLine();
 			String line;
 
 			while ((line = reader.readLine()) != null) {
