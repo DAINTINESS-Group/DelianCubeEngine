@@ -77,6 +77,7 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `loan` ;
 
 CREATE TABLE IF NOT EXISTS `loan` (
+  `SK_id` INT AUTO_INCREMENT,
   `loan_id` INT(11) NOT NULL,
   `l_account_id` INT(11) NOT NULL,
   `date` INT(11) NOT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `loan` (
   `amount` INT(11) NOT NULL,
   `duration` INT(11) NOT NULL,
   `payments` DOUBLE NOT NULL,
-  PRIMARY KEY (`loan_id`),
+  PRIMARY KEY (`SK_id`, `loan_id`),
   CONSTRAINT `account_fk`
     FOREIGN KEY (`l_account_id`)
     REFERENCES `account` (`account_id`)
