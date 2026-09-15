@@ -75,7 +75,7 @@ public class SelectivityResult implements Serializable {
 	 * @param results the per-predicate results of a single query as returned by an estimator
 	 * @return the estimated selectivity of the conjunction, or 0.0 if no results available
 	 */
-	public double conjunctiveCubeQuerySelectivity(List<SelectivityResult> results) {
+	public static double conjunctiveCubeQuerySelectivity(List<SelectivityResult> results) {
 		if (results == null || results.isEmpty()) {
 			return 0.0;
 		}
