@@ -49,8 +49,8 @@ public class StatisticsBuilder {
 	 * to {cubeName}_histograms.csv in the inputFolder directory.
 	 * Format :
 	 * <pre>
-	 * columnName|value|count
 	 * factTableSize = N
+	 * columnName|value|count
 	 * ...
 	 * </pre>
 	 */
@@ -66,6 +66,12 @@ public class StatisticsBuilder {
 				List<String> dimRefFields = cube.getDimensionRefFieldList();
 
 				int factTableSize = computeFactTableSize(factTable, cubeBase);
+
+				if (factTableSize <= 0) {
+					throw new IllegalStateException("Could not build histogram of " + factTable +
+							": factTableSize = " + factTableSize);
+				}
+
 				writer.println("factTableSize = " + factTableSize);
 				writer.println("columnName|value|count");
 
@@ -96,6 +102,9 @@ public class StatisticsBuilder {
 					}
 				}
 			}
+		} catch (Exception e) {
+			file.delete();
+			throw e;
 		}
 		return true;
 	}
@@ -131,7 +140,10 @@ public class StatisticsBuilder {
 				int factTableSize = computeFactTableSize(factTable, cubeBase);
 				int reservoirSize = (int) (sampleSize * factTableSize);
 
-				if (factTableSize <= 0 || reservoirSize <= 0) continue;
+				if (factTableSize <= 0 || reservoirSize <= 0) {
+					throw new IllegalStateException("Could not build a sample of " + factTable +
+						": factTableSize = " + factTableSize + ", reservoirSize = " + reservoirSize);
+				}
 
 				int[] keys = sampler.sample(factTableSize, reservoirSize, random);
 				Arrays.sort(keys);
@@ -141,6 +153,9 @@ public class StatisticsBuilder {
 
 				writeSampledRows(writer, db, factTable, fkColumns, keys);
 			}
+		} catch (Exception e) {
+			file.delete();
+			throw e;
 		}
 		return true;
 	}
