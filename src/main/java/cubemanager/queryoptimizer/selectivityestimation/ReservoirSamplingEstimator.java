@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import cubemanager.queryoptimizer.selectivityestimation.SigmaParser.ParsedSigma;
 
@@ -113,22 +114,34 @@ public class ReservoirSamplingEstimator implements ISelectivityEstimator {
 				placeholders.add("?");
 			}
 
-			conn.createStatement().executeUpdate("DROP TABLE IF EXISTS " + sampleTableName);
-			conn.createStatement().executeUpdate("CREATE TABLE  " + sampleTableName
+			boolean autoCommit = conn.getAutoCommit();
+
+			try (Statement statement = conn.createStatement()) {
+				statement.executeUpdate("DROP TABLE IF EXISTS " + sampleTableName);
+				statement.executeUpdate("CREATE TABLE " + sampleTableName
 				+ " (" + String.join(", ", columnDefs) + ") ENGINE = InnoDB");
-
-
-			PreparedStatement insert = conn.prepareStatement("INSERT INTO " + sampleTableName
-			 + " VALUES (" + String.join(", ", placeholders) + ")");
-
-			for (String[] row : rows) {
-				for (int i = 0; i < row.length; i++) {
-					insert.setString(i + 1, row[i]);
-				}
-
-				insert.addBatch();
 			}
-			insert.executeBatch();
+
+			conn.setAutoCommit(false);
+
+			try (PreparedStatement insert = conn.prepareStatement("INSERT INTO " + sampleTableName
+			 + " VALUES (" + String.join(", ", placeholders) + ")")) {
+
+				for (String[] row : rows) {
+					for (int i = 0; i < row.length; i++) {
+						insert.setString(i + 1, row[i]);
+					}
+
+					insert.addBatch();
+				}
+				insert.executeBatch();
+				conn.commit();
+			} catch (SQLException e) {
+				conn.rollback();
+				throw e;
+			} finally {
+				conn.setAutoCommit(autoCommit);
+			}
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
