@@ -12,18 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Experiment 1 : the effect of the dataset size on the execution time (efficiency) of the algorithms.
- * Measures build from scratch and load from file in ms, for both Histograms and Sampling algorithms,
- * at a sample size of sqrt(n), over ten queries.
- * Takes the dataset as its only argument and writes OutputFiles/experiment1_{dataset}.txt.
+ * Experiment 3 : the effect of the sample size on the execution time (efficiency) of the reservoir sampling algorithms.
+ * Sweeps sqrt(n), 0.1%, 1%, 2% and 5% on one dataset and measures build from scratch and load from file in ms
+ * for both Sampling Algorithms, over ten queries.
+ * Takes the dataset as its only argument and writes OutputFiles/experiment3_{dataset}.txt.
  */
-public class DatasetSizeVsAlgorithmEfficiencyExperiment {
+public class SampleSizeVsAlgorithmEfficiencyExperiment {
 	private static final String HOST = "localhost";
 	private static final int PORT = 2020;
 	private static final int RUNS = 5;
 	private static final String CUBE = "store_sales";
 
-	private static final String[][] ANTAGONISTS = { { "HISTOGRAM", "-" }, { "SAMPLING", "R" }, { "SAMPLING", "L" } };
+	private static final String[] ALGORITHMS = { "R", "L" };
 
 	private static final String[] QUERIES = {
 			"CubeName:store_sales\nName:Q1\nAggrFunc:Sum\nMeasure:ss_quantity\nGamma:item_dim.product_name\nSigma:item_dim.product_name='eingeingn stcally'",
@@ -38,11 +38,12 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 			"CubeName:store_sales\nName:Q10\nAggrFunc:Sum\nMeasure:ss_quantity\nGamma:item_dim.category\nSigma:item_dim.category='Music'"
 	};
 
-	public static void main(String[] args) throws Exception {
-		if(args.length < 1) {
-			System.err.println("Usage : DatasetSizeVsAlgorithmEfficiencyExperiment tpc_ds_2M | tpc_ds_10M | tpc_ds_100M");
+	public static void main(String[] args) throws Exception{
+		if (args.length < 1) {
+			System.err.println("Usage : SampleSizeVsAlgorithmEfficiencyExperiment tpc_ds_10M");
 			return;
 		}
+
 		String dataset = args[0];
 
 		// --------------------------------------------- CONNECTION ---------------------------------------------
@@ -61,7 +62,6 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 		service.initializeConnection(typeOfConnection, userInputList);
 		// ----------------------------------------------------------------------------------------------------
 
-
 		// ----------------------------------------- FACT TABLE SIZE ------------------------------------------
 		// NOT A MEASUREMENT, JUST TO GET THE FACT TABLE SIZE
 		List<SelectivityResult> sizing = service.estimateSelectivity(QUERIES[0], "FULL_TABLE_SCAN");
@@ -71,64 +71,70 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 		}
 
 		int factTableSize = sizing.get(0).getTotalRows();
-		double sampleFraction = 1.0 / Math.sqrt(factTableSize);
-		int reservoirSize = (int) (sampleFraction * factTableSize);
-		userInputList.put("sampleFraction", String.format("%.8f", sampleFraction));
+		// ----------------------------------------------------------------------------------------------------
 
-		System.out.println(dataset + " : " + factTableSize + " rows, reservoir of " + reservoirSize + "\n");
+		// ------------------------------------------- SAMPLE SIZES -------------------------------------------
+		String[] labels = { "sqrt(n)", "0.1%", "1%", "2%", "5%" };
+		double[] fractions = { 1.0 / Math.sqrt(factTableSize), 0.001, 0.01, 0.02, 0.05 };
+
+		System.out.println(dataset + " : " + factTableSize + " rows");
+
+		for (int i = 0; i < labels.length; i++) {
+			System.out.printf("%-8s %d rows%n", labels[i], (int) (fractions[i] * factTableSize));
+		}
+		System.out.println();
 		// ----------------------------------------------------------------------------------------------------
 
 
 		// --------------------------------------------- EXPERIMENT ---------------------------------------------
-		File results = new File("OutputFiles/experiment1_" + dataset + ".txt");
-		String prefix = dataset + "\t" + factTableSize + "\t" + reservoirSize + "\t";
+		File results = new File("OutputFiles/experiment3_" + dataset + ".txt");
+		String prefix = dataset + "\t" + factTableSize + "\t";
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(results), true)) {
-
-			writer.println("dataset\tfactTableSize\treservoirSize\tmethod\talgorithm\tphase\tquery\trun\tms");
+			writer.println("dataset\tfactTableSize\tsampleLabel\tsampleSize\talgorithm\tphase\tquery\trun\tms");
 
 			for (int run = 1; run <= RUNS; run++) {
-				for (String[] antagonist : ANTAGONISTS) {
-					String method = antagonist[0];
-					String algorithm = antagonist[1];
+				for (int i = 0; i < fractions.length; i++) {
 
-					long start = System.nanoTime();
-					if (method.equals("HISTOGRAM")) {
-						service.buildHistograms(dataset, CUBE, true);
-					} else {
-						service.buildSamples(dataset, CUBE, sampleFraction, true, algorithm);
-					}
-					double build = ms(start);
+					double fraction = fractions[i];
+					int sampleSize = (int) (fraction * factTableSize);
+					String rows = labels[i] + "\t" + sampleSize + "\t";
+					userInputList.put("sampleFraction", String.format("%.8f", fraction));
 
-					// a fresh context has no cached estimator, so cold pays the load and warm does not
-					service.initializeConnection(typeOfConnection, userInputList);
+					// R and L write the same sample file, so R is finished and then L overwrites it
+					for (String algorithm : ALGORITHMS) {
+						long start = System.nanoTime();
+						service.buildSamples(dataset, CUBE, fraction, true, algorithm);
+						double build = ms(start);
 
-					start = System.nanoTime();
-					service.estimateSelectivity(QUERIES[0], method);
-					double cold = ms(start);
+						service.initializeConnection(typeOfConnection, userInputList);
 
-					start = System.nanoTime();
-					service.estimateSelectivity(QUERIES[0], method);
-					double warm = ms(start);
-
-					double load = cold - warm;
-
-					write(writer, prefix, method, algorithm, "BUILD", "-", run, build);
-					write(writer, prefix, method, algorithm, "LOAD", "-", run, load);
-
-					System.out.printf("run %d  %-10s %-2s  build %11.1f  load %10.1f%n",
-							run, method, algorithm, build, load);
-
-					for (int q = 0; q < QUERIES.length; q++) {
 						start = System.nanoTime();
-						service.estimateSelectivity(QUERIES[q], method);
-						write(writer, prefix, method, algorithm, "ESTIMATE", "Q" + (q + 1), run, ms(start));
+						service.estimateSelectivity(QUERIES[0], "SAMPLING");
+						double cold = ms(start);
+
+						start = System.nanoTime();
+						service.estimateSelectivity(QUERIES[0], "SAMPLING");
+						double warm = ms(start);
+
+						double load = cold - warm;
+
+						write(writer, prefix + rows, algorithm, "BUILD", "-", run, build);
+						write(writer, prefix + rows, algorithm, "LOAD", "-", run, load);
+
+						System.out.printf("run %d  %-8s %8d rows  %-2s  build %11.1f  load %10.1f%n",
+								run, labels[i], sampleSize, algorithm, build, load);
+
+						for (int q = 0; q < QUERIES.length; q++) {
+							start = System.nanoTime();
+							service.estimateSelectivity(QUERIES[q], "SAMPLING");
+							write(writer, prefix + rows, algorithm, "ESTIMATE", "Q" + (q + 1), run, ms(start));
+						}
 					}
 				}
 			}
 		}
 		// ----------------------------------------------------------------------------------------------------
-
 		System.out.println("Experiment ended. Results written to " + results.getPath() + " !!!!");
 	}
 
@@ -136,7 +142,7 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 		return (System.nanoTime() - start) / 1000000.0;
 	}
 
-	private static void write(PrintWriter writer, String prefix, String method, String algorithm, String phase, String query, int run, double ms) {
-		writer.println(prefix + method + "\t" + algorithm + "\t" + phase + "\t" + query + "\t" + run + "\t" + ms);
+	private static void write(PrintWriter writer, String prefix, String algorithm, String phase, String query, int run, double ms) {
+		writer.println(prefix + algorithm + "\t" + phase + "\t" + query + "\t" + run + "\t" + ms);
 	}
 }

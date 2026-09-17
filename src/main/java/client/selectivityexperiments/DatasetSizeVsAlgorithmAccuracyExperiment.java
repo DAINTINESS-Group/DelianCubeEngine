@@ -12,18 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Experiment 1 : the effect of the dataset size on the execution time (efficiency) of the algorithms.
- * Measures build from scratch and load from file in ms, for both Histograms and Sampling algorithms,
- * at a sample size of sqrt(n), over ten queries.
- * Takes the dataset as its only argument and writes OutputFiles/experiment1_{dataset}.txt.
+ * Experiment 2 : the effect of the dataset size on the accuracy (effectiveness) of the algorithms.
+ * The Full Table Scan is the ground truth. For every query the estimated selectivity is compared against it, and the RMSE
+ * over the ten queries is the metric. Takes the dataset as its only argument and writes OutputFiles/experiment2_{dataset}.txt.
+ * Full Table Scan and the Histogram are measured once since they are deterministic.
+ * The sample is random so it is redrawn SAMPLES times and each draw gets its own RMSE.
  */
-public class DatasetSizeVsAlgorithmEfficiencyExperiment {
+public class DatasetSizeVsAlgorithmAccuracyExperiment {
 	private static final String HOST = "localhost";
 	private static final int PORT = 2020;
-	private static final int RUNS = 5;
 	private static final String CUBE = "store_sales";
+	private static final int SAMPLES = 5;
 
-	private static final String[][] ANTAGONISTS = { { "HISTOGRAM", "-" }, { "SAMPLING", "R" }, { "SAMPLING", "L" } };
+	private static final String[] ALGORITHMS = { "R", "L" };
 
 	private static final String[] QUERIES = {
 			"CubeName:store_sales\nName:Q1\nAggrFunc:Sum\nMeasure:ss_quantity\nGamma:item_dim.product_name\nSigma:item_dim.product_name='eingeingn stcally'",
@@ -40,9 +41,10 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 
 	public static void main(String[] args) throws Exception {
 		if(args.length < 1) {
-			System.err.println("Usage : DatasetSizeVsAlgorithmEfficiencyExperiment tpc_ds_2M | tpc_ds_10M | tpc_ds_100M");
+			System.err.println("Usage : DatasetSizeVsAlgorithmAccuracyExperiment tpc_ds_2M | tpc_ds_10M | tpc_ds_100M");
 			return;
 		}
+
 		String dataset = args[0];
 
 		// --------------------------------------------- CONNECTION ---------------------------------------------
@@ -61,69 +63,72 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 		service.initializeConnection(typeOfConnection, userInputList);
 		// ----------------------------------------------------------------------------------------------------
 
+		// ------------------------------------------- GROUND TRUTH -------------------------------------------
+		double[] truth = new double[QUERIES.length];
+		int factTableSize = 0;
 
-		// ----------------------------------------- FACT TABLE SIZE ------------------------------------------
-		// NOT A MEASUREMENT, JUST TO GET THE FACT TABLE SIZE
-		List<SelectivityResult> sizing = service.estimateSelectivity(QUERIES[0], "FULL_TABLE_SCAN");
-		if (sizing == null || sizing.isEmpty() || sizing.get(0).getTotalRows() <= 0) {
-			System.err.println("Could not size the fact table");
-			return;
+		for (int q = 0; q < QUERIES.length; q++) {
+			List<SelectivityResult> foundSelectivity = service.estimateSelectivity(QUERIES[q], "FULL_TABLE_SCAN");
+			if (foundSelectivity == null || foundSelectivity.isEmpty()) {
+				System.err.println("Q" + (q + 1) + " did not resolve to any predicate.");
+				return;
+			}
+			factTableSize = foundSelectivity.get(0).getTotalRows();
+			truth[q] = SelectivityResult.conjunctiveCubeQuerySelectivity(foundSelectivity);
 		}
 
-		int factTableSize = sizing.get(0).getTotalRows();
 		double sampleFraction = 1.0 / Math.sqrt(factTableSize);
 		int reservoirSize = (int) (sampleFraction * factTableSize);
 		userInputList.put("sampleFraction", String.format("%.8f", sampleFraction));
 
 		System.out.println(dataset + " : " + factTableSize + " rows, reservoir of " + reservoirSize + "\n");
+
+		for (int q = 0; q < QUERIES.length; q++) {
+			System.out.printf("Q%-3d true selectivity %.8f%n", q + 1, truth[q]);
+		}
+		System.out.println();
 		// ----------------------------------------------------------------------------------------------------
 
 
 		// --------------------------------------------- EXPERIMENT ---------------------------------------------
-		File results = new File("OutputFiles/experiment1_" + dataset + ".txt");
+		File results = new File("OutputFiles/experiment2_" + dataset + ".txt");
 		String prefix = dataset + "\t" + factTableSize + "\t" + reservoirSize + "\t";
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(results), true)) {
 
-			writer.println("dataset\tfactTableSize\treservoirSize\tmethod\talgorithm\tphase\tquery\trun\tms");
+			writer.println("dataset\tfactTableSize\treservoirSize\tmethod\talgorithm\tsample\tquery\ttrueSelectivity\testimatedSelectivity");
 
-			for (int run = 1; run <= RUNS; run++) {
-				for (String[] antagonist : ANTAGONISTS) {
-					String method = antagonist[0];
-					String algorithm = antagonist[1];
+			// the full table scan is the ground truth, so it is exact
+			for (int q = 0; q < QUERIES.length; q++) {
+				write(writer, prefix, "FULL_TABLE_SCAN", "-", 1, "Q" + (q + 1), truth[q], truth[q]);
+			}
+			System.out.printf("%-16s %-2s     RMSE %.8f%n", "FULL_TABLE_SCAN", "-", 0.0);
 
-					long start = System.nanoTime();
-					if (method.equals("HISTOGRAM")) {
-						service.buildHistograms(dataset, CUBE, true);
-					} else {
-						service.buildSamples(dataset, CUBE, sampleFraction, true, algorithm);
-					}
-					double build = ms(start);
+			// the histogram is also deterministic, so only one pass
+			service.buildHistograms(dataset, CUBE, false);
+			service.initializeConnection(typeOfConnection, userInputList);
 
-					// a fresh context has no cached estimator, so cold pays the load and warm does not
+			double squares = 0;
+			for (int q = 0; q < QUERIES.length; q++) {
+				double estimate = getSelectivity(service, QUERIES[q], "HISTOGRAM");
+				squares += (estimate - truth[q]) * (estimate - truth[q]);
+				write(writer, prefix, "HISTOGRAM", "-", 1, "Q" + (q + 1), truth[q], estimate);
+			}
+			System.out.printf("%-16s %-2s     RMSE %.8f%n", "HISTOGRAM", "-", Math.sqrt(squares / QUERIES.length));
+
+			// the sample is random, so it is redrawn and measured again
+			for (String algorithm : ALGORITHMS) {
+				for (int sample = 1; sample <= SAMPLES; sample++) {
+					service.buildSamples(dataset, CUBE, sampleFraction, true, algorithm);
 					service.initializeConnection(typeOfConnection, userInputList);
 
-					start = System.nanoTime();
-					service.estimateSelectivity(QUERIES[0], method);
-					double cold = ms(start);
-
-					start = System.nanoTime();
-					service.estimateSelectivity(QUERIES[0], method);
-					double warm = ms(start);
-
-					double load = cold - warm;
-
-					write(writer, prefix, method, algorithm, "BUILD", "-", run, build);
-					write(writer, prefix, method, algorithm, "LOAD", "-", run, load);
-
-					System.out.printf("run %d  %-10s %-2s  build %11.1f  load %10.1f%n",
-							run, method, algorithm, build, load);
-
+					squares = 0;
 					for (int q = 0; q < QUERIES.length; q++) {
-						start = System.nanoTime();
-						service.estimateSelectivity(QUERIES[q], method);
-						write(writer, prefix, method, algorithm, "ESTIMATE", "Q" + (q + 1), run, ms(start));
+						double estimate = getSelectivity(service, QUERIES[q], "SAMPLING");
+						squares += (estimate - truth[q]) * (estimate - truth[q]);
+						write(writer, prefix, "SAMPLING", algorithm, sample, "Q" + (q + 1), truth[q], estimate);
 					}
+					System.out.printf("%-16s %-2s sample %d  RMSE %.8f%n", "SAMPLING", algorithm, sample, Math.sqrt(squares / QUERIES.length));
 				}
 			}
 		}
@@ -132,11 +137,11 @@ public class DatasetSizeVsAlgorithmEfficiencyExperiment {
 		System.out.println("Experiment ended. Results written to " + results.getPath() + " !!!!");
 	}
 
-	private static double ms(long start) {
-		return (System.nanoTime() - start) / 1000000.0;
+	private static double getSelectivity(IMainEngine service, String query, String method) throws Exception {
+		return SelectivityResult.conjunctiveCubeQuerySelectivity(service.estimateSelectivity(query, method));
 	}
 
-	private static void write(PrintWriter writer, String prefix, String method, String algorithm, String phase, String query, int run, double ms) {
-		writer.println(prefix + method + "\t" + algorithm + "\t" + phase + "\t" + query + "\t" + run + "\t" + ms);
+	private static void write(PrintWriter writer, String prefix, String method, String algorithm, int sample, String query, double truth, double estimate) {
+		writer.println(prefix + method + "\t" + algorithm + "\t" + sample + "\t" + query + "\t" + truth + "\t" + estimate);
 	}
 }
