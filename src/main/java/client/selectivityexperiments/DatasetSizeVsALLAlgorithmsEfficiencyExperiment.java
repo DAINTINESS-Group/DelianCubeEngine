@@ -92,7 +92,7 @@ public class DatasetSizeVsALLAlgorithmsEfficiencyExperiment {
 					String method = antagonist[0];
 					String algorithm = antagonist[1];
 
-					// the FTS has nothing to build and load, only queries
+					// the FTS has nothing to build and load, but counts the fact table once
 					if (!method.equals("FULL_TABLE_SCAN")) {
 						long start = System.nanoTime();
 						if (method.equals("HISTOGRAM")) {
@@ -120,6 +120,21 @@ public class DatasetSizeVsALLAlgorithmsEfficiencyExperiment {
 
 						System.out.printf("run %d  %-10s %-2s  build %11.1f  load %10.1f%n",
 								run, method, algorithm, build, load);
+					} else {
+						service.initializeConnection(typeOfConnection, userInputList);
+
+						long start = System.nanoTime();
+						service.estimateSelectivity(QUERIES[0], method);
+						double cold = ms(start);
+
+						start = System.nanoTime();
+						service.estimateSelectivity(QUERIES[0], method);
+						double warm = ms(start);
+
+						write(writer, prefix, method, algorithm, "SETUP", "-", run, cold - warm);
+
+						System.out.printf("run %d  %-16s %-2s  setup %11.1f%n",
+								run, method, algorithm, cold - warm);
 					}
 					for (int q = 0; q < QUERIES.length; q++) {
 						long start = System.nanoTime();
