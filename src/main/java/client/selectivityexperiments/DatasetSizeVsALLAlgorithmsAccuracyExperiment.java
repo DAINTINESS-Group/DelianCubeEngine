@@ -59,13 +59,13 @@ public class DatasetSizeVsALLAlgorithmsAccuracyExperiment {
 			"CubeName:loan\nName:Q1\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.account\nSigma:account_dim.account='1'",
 			"CubeName:loan\nName:Q2\nAggrFunc:Sum\nMeasure:amount\nGamma:date_dim.day\nSigma:date_dim.day='1993-01-01'",
 			"CubeName:loan\nName:Q3\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Jihlava'",
-			"CubeName:loan\nName:Q4\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Usti nad Labem'",
+			"CubeName:loan\nName:Q4\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Trebic'",
 			"CubeName:loan\nName:Q5\nAggrFunc:Sum\nMeasure:amount\nGamma:date_dim.month\nSigma:date_dim.month='1993-01'",
 			"CubeName:loan\nName:Q6\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Zlin'",
 			"CubeName:loan\nName:Q7\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Karvina'",
-			"CubeName:loan\nName:Q8\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='south Bohemia'",
-			"CubeName:loan\nName:Q9\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Hl.m. Praha'",
-			"CubeName:loan\nName:Q10\nAggrFunc:Sum\nMeasure:amount\nGamma:status_dim.status\nSigma:status_dim.status='Running Contract/OK'"
+			"CubeName:loan\nName:Q8\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='\"south Bohemia\"'",
+			"CubeName:loan\nName:Q9\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='Prague'",
+			"CubeName:loan\nName:Q10\nAggrFunc:Sum\nMeasure:amount\nGamma:status_dim.status\nSigma:status_dim.status='\"Running Contract/OK\"'"
 	};
 
 	public static void main(String[] args) throws Exception {
