@@ -12,16 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Experiment 5 : the effect of the dataset size on the execution time (efficiency) of the algorithms.
- * Measures build from scratch and load from file in ms, for both Histograms and Sampling algorithms,
- * at a sample size of sqrt(n), over ten queries.
- * Takes the dataset as its only argument and writes OutputFiles/experiment5_{dataset}.txt.
+ * Experiment 5 : the execution time (efficiency) of every estimation algorithm, on every dataset.
+ * Measures build from scratch and load from file in ms for the Histogram and both Sampling algorithms, at a sample of sqrt(n).
+ * The Full Table Scan has nothing to build or load, so its SETUP is recorded instead : the one-off COUNT(*) of the fact table.
+ * Every method also has its per query estimation cost recorded over the ten queries.
+ * Takes the datasets as its arguments, or runs all five if given none, and writes one
+ * OutputFiles/experiment5_{dataset}.txt per dataset.
  */
 public class DatasetSizeVsALLAlgorithmsEfficiencyExperiment {
 	private static final String HOST = "localhost";
 	private static final int PORT = 2020;
 	private static final int RUNS = 5;
-	private static final String CUBE = "store_sales";
 
 	private static final String[] ALL_DATASETS = { "tpc_ds_2M", "tpc_ds_10M", "tpc_ds_100M", "foodmart_reduced", "pkdd99_star_100M" };
 
@@ -57,13 +58,13 @@ public class DatasetSizeVsALLAlgorithmsEfficiencyExperiment {
 			"CubeName:loan\nName:Q1\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.account\nSigma:account_dim.account='1'",
 			"CubeName:loan\nName:Q2\nAggrFunc:Sum\nMeasure:amount\nGamma:date_dim.day\nSigma:date_dim.day='1993-01-01'",
 			"CubeName:loan\nName:Q3\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Jihlava'",
-			"CubeName:loan\nName:Q4\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Usti nad Labem'",
+			"CubeName:loan\nName:Q4\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Trebic'",
 			"CubeName:loan\nName:Q5\nAggrFunc:Sum\nMeasure:amount\nGamma:date_dim.month\nSigma:date_dim.month='1993-01'",
 			"CubeName:loan\nName:Q6\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Zlin'",
 			"CubeName:loan\nName:Q7\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Karvina'",
-			"CubeName:loan\nName:Q8\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='south Bohemia'",
-			"CubeName:loan\nName:Q9\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.district_name\nSigma:account_dim.district_name='Hl.m. Praha'",
-			"CubeName:loan\nName:Q10\nAggrFunc:Sum\nMeasure:amount\nGamma:status_dim.status\nSigma:status_dim.status='Running Contract/OK'"
+			"CubeName:loan\nName:Q8\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='\"south Bohemia\"'",
+			"CubeName:loan\nName:Q9\nAggrFunc:Sum\nMeasure:amount\nGamma:account_dim.region\nSigma:account_dim.region='Prague'",
+			"CubeName:loan\nName:Q10\nAggrFunc:Sum\nMeasure:amount\nGamma:status_dim.status\nSigma:status_dim.status='\"Running Contract/OK\"'"
 	};
 
 
