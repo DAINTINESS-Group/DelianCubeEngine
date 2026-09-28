@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class CubeManager {
 
@@ -50,13 +51,15 @@ public class CubeManager {
 	
 	private String typeOfConnection;
 	
-	private double SAMPLE_PERCENTAGE = 0.01;
+	private double SAMPLE_PERCENTAGE;
+	
+	private boolean sqrtSample;
 	
 	private int factTableSize;
 	
 	private int sampleSize;
 	
-	private HashMap<SelectivityCustomKey, Integer> selectivity = new HashMap<SelectivityCustomKey,Integer>();
+	private HashMap<String,HashMap<String,Integer>> valueCardinalityProfile = new HashMap<String,HashMap<String,Integer>>();
 	
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
@@ -357,25 +360,28 @@ public class CubeManager {
 		return cubeQueryTranslator.produceExtractionMethod(cubeQuery);
 	}//end method produceExtractionMethod(CubeQuery)
 	
+	/**
+	 * Generate the VCP and store it in file. 
+	 * If an VCP file exists, load the file into the VCP
+	 * @param inputFolder
+	 * @param cubeName
+	 * @throws SQLException
+	 */
 	public void setUpSelectivityStatistics(String inputFolder, String cubeName) throws SQLException {
-		long startTime = System.nanoTime();
 		SelectivityStatistics selectivityStatistics = new SelectivityStatistics(inputFolder, cubeName);
 		
 		try {
-			selectivityStatistics.buildSelectivitySample(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE,false,false);
-			this.selectivity = selectivityStatistics.getSample();
+			selectivityStatistics.buildSelectivitySampleWithBatches(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE,false,sqrtSample);
+			this.valueCardinalityProfile = selectivityStatistics.getValueCardinalityProfile();
 			this.factTableSize = selectivityStatistics.getStoredFactTableSize();
 			this.sampleSize = selectivityStatistics.getSampleSize();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		long endTime = System.nanoTime();
-		double totalTimeInMs = (double)(endTime - startTime)/1000000;
-		System.out.println("@@Setting up fact table sample using Reservoir Sampling: " + totalTimeInMs);
 	}
 	
-	public HashMap<SelectivityCustomKey, Integer> getSelectivity(){
-		return selectivity;
+	public HashMap<String,HashMap<String,Integer>> getValueCardinalityProfile(){
+		return valueCardinalityProfile;
 	}
 
 	public int getSampleSize() {
@@ -392,6 +398,14 @@ public class CubeManager {
 
 	public String getTypeOfConnection() {
 		return typeOfConnection;
+	}
+	
+	public void setSamplePercentage(double samplePercentage) {
+		this.SAMPLE_PERCENTAGE = samplePercentage;
+	}
+	
+	public void setSqrtSample(boolean sqrtSample) {
+		this.sqrtSample = sqrtSample;
 	}
 	
 	

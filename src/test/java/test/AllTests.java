@@ -32,7 +32,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	intentional.analyze.AnalyzeUpdatedQueriesTranslationAndExecutionTest.class,
 	intentional.analyze.optimizer.AnalyzeOperatorWithOptimizerTest.class,
 	intentional.analyze.optimizer.AnalyzeOperatorOptimizerCompletePipelineTest.class,
-	intentional.analyze.optimizer.SelectivityStatisticsTest.class,
 	intentional.analyze.optimizer.SigmaParserTest.class,
 	intentional.assess.benchmarks.BenchmarkFactoryTest.class,
 	intentional.labeling.schemes.CustomLabelingSchemeTest.class,

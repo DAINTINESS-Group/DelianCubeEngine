@@ -13,8 +13,8 @@ import intentional.analyze.cubeQueryGenerator.CubeQueryGeneratorFactory.Generato
 import intentional.analyze.syntax.AnalyzeParserManager;
 
 /**
- * A simplyfied version of AnalyzeTranslationManager to construct only the facilitator
- * queries necessary for the Analyze Optimizer Decision Rule.
+ * A simplified version of AnalyzeTranslationManager to construct only the facilitator
+ * queries necessary for the Estimated MQO Decision Rule.
  * @author mariosjkb
  *
  */
@@ -196,7 +196,6 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 		public HashMap<String, String> getSigmaExpressionsToValues(){
 			return this.sigmaExpressionsToValues;
 		}
-		
 
 		public void setUpTranslation() {
 			getAnalyzeQueryInfo();
@@ -212,11 +211,7 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 			
 			// parse the incoming expression and find the number of syntax errors
 			try {
-				long startTime = System.nanoTime();
 				numOfErrors = analyzeParserManager.parse(incomingExpression);
-				long endTime = System.nanoTime();
-				double parsingTime = endTime - startTime;
-				System.out.println("$$ Incoming Expression Parsing Time \t\t\t" + Double.toString(parsingTime/1000000));// + " ms");
 			} catch (RecognitionException e) {
 				e.printStackTrace();
 			}
@@ -227,11 +222,10 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 		}
 		
 		/**
-		 * Produce the Siblings and the all-encompassing facilitator queries
+		 * Produce the Original, Siblings and the all-encompassing queries
 		 * @return
 		 */
 		public ArrayList<AnalyzeQuery> translateToAnalyzeQueries(){
-			long startTime = System.nanoTime();
 			ArrayList<AnalyzeQuery> analyzeQueries = new ArrayList<AnalyzeQuery>();
 			CubeQueryGeneratorFactory cubeQueryGeneratorFactory = new CubeQueryGeneratorFactory();
 			
@@ -239,7 +233,14 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 			//set up variables for translation
 			setUpTranslation();
 			
-			CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.UPDATEDSIBLINGS, cubeManager);
+			CubeQueryGenerator queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.BASE, cubeManager);
+			ArrayList<AnalyzeQuery> baseQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
+			if(baseQueries.isEmpty()) {
+				cubeQueryGenerationStatus = false;
+			}
+			analyzeQueries.addAll(baseQueries);
+			
+			queryGenerator = cubeQueryGeneratorFactory.getCubeQueryGenerator(GeneratorType.UPDATEDSIBLINGS, cubeManager);
 			ArrayList<AnalyzeQuery> siblingQueries = queryGenerator.generateCubeQueries(aggrFunc, measure,cubeName,sigmaExpressions,sigmaExpressionsToValues,gammaExpressions,queryAlias,dimensions,childToLevelById,childToLevelByName,parentToLevelById,parentToLevelByName,expressionToTableName,currentLevelToDescriptions,schemaName,connectionType);
 			if(siblingQueries.isEmpty()) {
 				cubeQueryGenerationStatus = false;
@@ -251,9 +252,7 @@ public class AnalyzeOperatorOptimizerQueryGenerator {
 			if(analyzeQueries.isEmpty()) {
 				cubeQueryGenerationStatus = false;
 			}
-			long endTime = System.nanoTime();
-			double totalTimeInMs = (double)(endTime - startTime)/1000000;
-			System.out.println("$Facililator Query Generation: " + totalTimeInMs);
+		
 			return analyzeQueries;
 		}
 }

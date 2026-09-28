@@ -54,7 +54,7 @@ public class AnalyzeOperatorWithOptimizerTest {
 	public void testAnalyzeQueryConstruction() {
 		List<AnalyzeQuery> analyzeQueriesForEstimation = testAnalyzeManager.getAnalyzeQueriesForEstimation();
 		
-		assertEquals(3,analyzeQueriesForEstimation.size());
+		assertEquals(4,analyzeQueriesForEstimation.size());
 	}
 	
 	@Test
@@ -62,23 +62,23 @@ public class AnalyzeOperatorWithOptimizerTest {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
 		List<AnalyzeQuery> analyzeQueriesForEstimation = testAnalyzeOperatorOptimizer.getAnalyzeQueries();
 		
-		assertEquals(3,analyzeQueriesForEstimation.size());
+		assertEquals(4,analyzeQueriesForEstimation.size());
 	}
 	
 	@Test
 	public void testSiblingMegaRatioEstimation() {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
-		double siblingMegaRatio= testAnalyzeOperatorOptimizer.estimateSiblingMegaRatio();
+		double siblingMegaRatio= testAnalyzeOperatorOptimizer.getSiblingMegaRatio();
 		
-		assertEquals(0.3823,siblingMegaRatio,0.001);
+		assertEquals(0.23076,siblingMegaRatio,0.001);
 	}
 	
 	@Test
 	public void testImbalanceCoefficientEstimation() {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
-		double imbalanceCoefficient= testAnalyzeOperatorOptimizer.estimateImbalanceCoefficient();
+		double imbalanceCoefficient= testAnalyzeOperatorOptimizer.getSiblingImbalanceCoefficient();
 		
-		assertEquals(0.2307,imbalanceCoefficient,0.001);
+		assertEquals(0.33333,imbalanceCoefficient,0.001);
 	}
 	
 	@Test

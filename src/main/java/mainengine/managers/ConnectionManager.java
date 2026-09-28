@@ -11,6 +11,10 @@ import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
 public class ConnectionManager implements IBuilder {
+	
+	private double SAMPLE_PERCENTAGE = 0.001;
+	
+	private boolean sqrtSample = true;
 
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
@@ -21,6 +25,8 @@ public class ConnectionManager implements IBuilder {
         CubeManager cubeManager = new CubeManager(typeOfConnection, userInputList);
         Session session = new Session(cubeManager);
         String sessionId = session.initialize(typeOfConnection, userInputList);
+        cubeManager.setSamplePercentage(SAMPLE_PERCENTAGE);
+        cubeManager.setSqrtSample(sqrtSample);
         cubeManager.setUpSelectivityStatistics(userInputList.get("inputFolder"), userInputList.get("cubeName"));
         QueryHistoryManager queryHistoryMng = new QueryHistoryManager(sessionId);
 

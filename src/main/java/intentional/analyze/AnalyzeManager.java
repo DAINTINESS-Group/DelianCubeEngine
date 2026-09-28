@@ -16,6 +16,11 @@ import mainengine.managers.IntentionalPipeline;
 import mainengine.managers.IntentionalProfile;
 import result.ResultFileMetadata;
 
+/**
+ * Manager of the estimation-based optimizer 
+ * @author mariosjkb
+ *
+ */
 public class AnalyzeManager {
 	
 private CubeManager cubeManager;
@@ -29,6 +34,8 @@ private CubeManager cubeManager;
 	private AnalyzeOperatorOptimizer analyzeOperatorOptimizer;
 	
 	private List<AnalyzeQuery> analyzeQueriesForEstimation;
+	
+	private HashMap<String,Integer> positionInHierarchyPerAtom;
 			
 	private AnalyzeOperatorOptimizerQueryGenerator analyzeOperatorOptimizerQueryGenerator;
 	
@@ -51,7 +58,6 @@ private CubeManager cubeManager;
 	
 	private boolean constructQueries() {
 		boolean incomingExpressionIsValid;
-
 		incomingExpressionIsValid = this.analyzeOperatorOptimizerQueryGenerator.validateIncomingExpression();
 		if(incomingExpressionIsValid) {
 			analyzeQueriesForEstimation = analyzeOperatorOptimizerQueryGenerator.translateToAnalyzeQueries();
@@ -63,28 +69,29 @@ private CubeManager cubeManager;
 	}
 	
 	private AnalyzeOperatorOptimizer setupAnalyzeOperatorOptimizer() {
-		constructQueries();
-		AnalyzeOperatorOptimizer analyzeOperatorOptimizer = new AnalyzeOperatorOptimizer(cubeManager, analyzeQueriesForEstimation);
-		return analyzeOperatorOptimizer;
+		if(constructQueries()) {
+			AnalyzeOperatorOptimizer analyzeOperatorOptimizer = new AnalyzeOperatorOptimizer(cubeManager, analyzeQueriesForEstimation);
+			return analyzeOperatorOptimizer;
+		}else {
+			return null;
+		}
 	}
 	
+	/**
+	 * Execute the ANALYZE Operator, using the estimation-based optimizer to decide
+	 * which MQO strategy to deploy. The method utilizes the highlight production pipeline
+	 * @return
+	 */
 	public ResultFileMetadata optimize() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("schemaName", schemaName);
 		params.put("connectionType", connectionType);
 		
-		IntentionalOperatorFactory intentionalOperatorFactory = new IntentionalOperatorFactory();
-		
-		long startTime = System.nanoTime();
+		IntentionalOperatorFactory intentionalOperatorFactory = new IntentionalOperatorFactory();		
 		IntentionalStrategy intentionalStrategy = this.analyzeOperatorOptimizer.decideMQOAlgorithmWithIndependenceAssumption();
-		long endTime = System.nanoTime();
-		double totalTimeInMs = (double)(endTime - startTime)/1000000;
-    	System.out.println("%%Total Optimizer execution time: " + totalTimeInMs);
-    	
-		IntentionalOperator optimalAnalyzeOperator = intentionalOperatorFactory.build(IntentionalOperatorType.ANALYZE, intentionalStrategy, incomingExpression, cubeManager, params);
+    	    	
+		IntentionalOperator optimalAnalyzeOperator = intentionalOperatorFactory.build(IntentionalOperatorType.ANALYZE, IntentionalStrategy.MAX_MQO, incomingExpression, cubeManager, params);
 		ResultFileMetadata result = IntentionalPipeline.run(optimalAnalyzeOperator, incomingExpression, IntentionalProfile.forType(IntentionalOperatorType.ANALYZE), cubeManager);
-
-    	
 		return result;
 	}
 }

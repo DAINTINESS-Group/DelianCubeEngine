@@ -236,6 +236,13 @@ public interface IMainEngine extends IServer {
 	 */
 	ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException;
 	
+	/**
+	 * Optimize the execution of ANALYZE using the estimation-based selectivity optimizer
+	 * that selects the MQO strategy to be applied.
+	 * @param incomingExpression
+	 * @return
+	 * @throws Exception
+	 */
 	ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception;
 	
 	
