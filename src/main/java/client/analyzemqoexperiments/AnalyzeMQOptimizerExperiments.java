@@ -12,6 +12,17 @@ public class AnalyzeMQOptimizerExperiments {
 	private static final int PORT = 2020;
 	private static Registry registry;
 	
+	private static String[] loadStressTestQueries()
+	{
+		String queryWorkload [] = {
+				"ANALYZE sum(ss_quantity) FROM store_sales FOR customer_state = 'NY' AND store_state = 'TN' GROUP BY customer_state,store_state AS 10%",
+				"ANALYZE sum(ss_quantity) FROM store_sales FOR customer_country = 'United States' AND store_state = 'TN' GROUP BY customer_state,store_state AS 50%",
+				"ANALYZE sum(ss_quantity) FROM store_sales FOR customer_country = 'United States' AND store_country = 'United States' GROUP BY customer_state,store_state AS 90&"
+		};
+		return queryWorkload;
+	}
+	
+	
 	private static String[] loadPkddQueries() {
 		String queryWorkload [] = {
 				"ANALYZE sum(amount) FROM loan FOR district_name = 'Hl.m. Praha' AND day = '1995-01-05' GROUP BY district_name,day AS Q1",
@@ -85,21 +96,21 @@ public class AnalyzeMQOptimizerExperiments {
 		// connection to datasets
 		String typeOfConnection = "RDBMS";
 		HashMap<String, String>userInputList = new HashMap<>();
-		userInputList.put("schemaName", "pkdd99_star_100m");
+		userInputList.put("schemaName", "tpc_ds_cube_100m");
 		userInputList.put("username", "CinecubesUser"); 
 		userInputList.put("password", "Cinecubes"); 
-		userInputList.put("cubeName", "loan");
-		userInputList.put("inputFolder", "pkdd99_star_100m");
+		userInputList.put("cubeName", "store_sales");
+		userInputList.put("inputFolder", "tpc_ds_100m");
 		
 		service.initializeConnection(typeOfConnection, userInputList);
 		System.out.println("Connection is successful.");
 		
-		String queryWorkload [] = loadPkddQueries();
+		String queryWorkload [] = loadStressTestQueries();
 		
 		for(int i = 0;i<queryWorkload.length;i++) {
 			String incomingExpression = queryWorkload[i];
-			for(int j = 0;j < 5;j++) {
-				ResultFileMetadata operatorResult = service.analyzeWithOptimizer(incomingExpression);
+			for(int j = 0;j < 1;j++) {
+				ResultFileMetadata operatorResult = service.analyzeWithMidMQO(incomingExpression);
 			}
 		}
 		
