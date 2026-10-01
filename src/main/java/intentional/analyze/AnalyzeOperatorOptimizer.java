@@ -45,15 +45,15 @@ public class AnalyzeOperatorOptimizer {
 	
 	private double normalizedSiblingSum;
 	
-	private double normalizedSiblingImbalance;
+	private double normalizedSiblingDifference;
 	
 	private double normalizedMaxSib;
 	
 	private double normalizedMinSib;
 	
-	private double normalizedUselessSpace;
+	private double normalizedNCA;
 	
-	private double normalizedUselessSpaceIncludingQOrg;
+	private double normalizedNGCA;
 	
 	private double siblingMegaRatio;
 	
@@ -104,7 +104,7 @@ public class AnalyzeOperatorOptimizer {
 	}
 
 	public double getNormalizedSiblingImbalance() {
-		return normalizedSiblingImbalance;
+		return normalizedSiblingDifference;
 	}
 
 	public double getNormalizedMaxSib() {
@@ -116,11 +116,11 @@ public class AnalyzeOperatorOptimizer {
 	}
 
 	public double getNormalizedUselessSpace() {
-		return normalizedUselessSpace;
+		return normalizedNCA;
 	}
 
 	public double getNormalizedUselessSpaceIncludingQOrg() {
-		return normalizedUselessSpaceIncludingQOrg;
+		return normalizedNGCA;
 	}
 
 	public double getSiblingMegaRatio() {
@@ -196,13 +196,13 @@ public class AnalyzeOperatorOptimizer {
     	
     	// CALCULATE COST METRICS
     	normalizedSiblingSum = normalizedQSib1Selectivity + normalizedQSib2Selectivity;
-    	normalizedSiblingImbalance = Math.abs(normalizedQSib1Selectivity - normalizedQSib2Selectivity);
+    	normalizedSiblingDifference = Math.abs(normalizedQSib1Selectivity - normalizedQSib2Selectivity);
     	normalizedMaxSib = Math.max(normalizedQSib1Selectivity, normalizedQSib2Selectivity);
     	normalizedMinSib = Math.min(normalizedQSib1Selectivity, normalizedQSib2Selectivity);
-    	normalizedUselessSpace = normalizedQAllSelectivity - normalizedSiblingSum;
-    	normalizedUselessSpaceIncludingQOrg = normalizedQAllSelectivity - normalizedSiblingSum + normalizedQOrgSelectivity; 
+    	normalizedNCA = normalizedQAllSelectivity - normalizedSiblingSum;
+    	normalizedNGCA = normalizedQAllSelectivity - normalizedSiblingSum + normalizedQOrgSelectivity; 
     	siblingMegaRatio = normalizedSiblingSum/normalizedQAllSelectivity;
-    	siblingImbalanceCoefficient = normalizedSiblingImbalance/normalizedSiblingSum;
+    	siblingImbalanceCoefficient = normalizedSiblingDifference/normalizedSiblingSum;
     	
     	// FILL UP DIAGNOSTIC STRING
     	diagnosticString.append("$$Normalized |Qorg| with IA: " + normalizedQOrgSelectivity + "\n" +
@@ -210,11 +210,11 @@ public class AnalyzeOperatorOptimizer {
     	"##Normalized |Qsib2| with IA: " + normalizedQSib2Selectivity + "\n" +
     	"%%Normalized |Qall| with IA: " + normalizedQAllSelectivity + "\n" +
     	"^^Normalized SiblingSum with IA: " + normalizedSiblingSum + "\n" +
-    	"&&Normalized Sibling Imbalance with IA: " + normalizedSiblingImbalance + "\n" +
+    	"&&Normalized Sibling Difference with IA: " + normalizedSiblingDifference + "\n" +
     	"**Normalized |maxSib| with IA: " + normalizedMaxSib + "\n" +
     	"\\Normalized |minSib| with IA: " + normalizedMinSib + "\n" +
-    	"<<Useless space with IA: " + normalizedUselessSpace + "\n" +
-    	"~~Useless space including Qorg with IA: " + normalizedUselessSpaceIncludingQOrg + "\n" +
+    	"<<Normalized Cost-Area Residual with IA: " + normalizedNCA + "\n" +
+    	"~~Normalized Geometric Non-contributing Area with IA: " + normalizedNGCA + "\n" +
     	"//Sibling Mega Ratio with IA: " + siblingMegaRatio + "\n" +
     	"++Sibling Imbalance Coefficient with IA: " + siblingImbalanceCoefficient);
     }  
