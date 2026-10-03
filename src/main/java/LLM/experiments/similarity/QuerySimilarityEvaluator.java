@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import LLM.experiments.ExpectedCubeQuery;
-import LLM.experiments.ParsedCubeQuery;
+import LLM.query.ParsedCubeQuery;
 import LLM.experiments.QueryComponentWeights;
 
 public class QuerySimilarityEvaluator {

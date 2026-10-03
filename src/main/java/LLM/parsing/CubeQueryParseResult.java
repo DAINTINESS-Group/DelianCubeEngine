@@ -1,4 +1,4 @@
-package LLM.experiments.parsing;
+package LLM.parsing;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import LLM.experiments.ParsedCubeQuery;
+import LLM.query.ParsedCubeQuery;
 
 public class CubeQueryParseResult {
 
@@ -25,15 +25,7 @@ public class CubeQueryParseResult {
      * - gamma and sigma are arrays of strings
      */
     private final boolean formatValid;
-
-    /*
-     * JSON field names found in the response.
-     */
     private final Set<String> fieldNames;
-
-    /*
-     * Parsing / format errors.
-     */
     private final List<String> errors;
 
     public CubeQueryParseResult(

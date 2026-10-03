@@ -2,136 +2,72 @@ package LLM.experiments.runner;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
 import java.util.List;
 
+import LLM.client.LLMCallResult;
+import LLM.client.LLMModelConfig;
+import LLM.client.OllamaLLMClient;
 import LLM.experiments.CubeQueryValidator;
 import LLM.experiments.ExpectedCubeQuery;
 import LLM.experiments.LLMExperimentCase;
 import LLM.experiments.ValidationResult;
 
-import LLM.experiments.parsing.CubeQueryJsonParser;
-import LLM.experiments.parsing.CubeQueryParseResult;
+import LLM.normalization.CubeQueryNormalizer;
+import LLM.normalization.CubeQueryNormalizer.NormalizationResult;
 
 import LLM.experiments.similarity.HierarchyMetadataIndex;
 import LLM.experiments.similarity.QuerySimilarityEvaluator;
 import LLM.experiments.similarity.QuerySimilarityResult;
 
-import LLM.prompts.PromptBuilder;
-import LLM.prompts.PromptTechnique;
-import LLM.prompts.PromptTechniqueCombinationGenerator;
-
 import LLM.experiments.results.ExperimentResult;
 import LLM.experiments.results.ExperimentResultsWriter;
 import LLM.experiments.results.ValidationLogWriter;
 
+import LLM.prompts.PromptBuilder;
+import LLM.prompts.PromptTechnique;
+import LLM.prompts.PromptTechniqueCombinationGenerator;
+
 import LLM.schema.CubeSchema;
+import LLM.validation.CubeFieldValidator;
 
 public class LLMExperimentRunner {
 
-    /*
-     * ==========================================================
-     * EXPERIMENT ORDER SEED
-     * ==========================================================
-     *
-     * The paired structured/natural workload is randomized
-     * exactly once using this fixed seed.
-     *
-     * The SAME resulting order is then reused for every:
-     *
-     * - LLM
-     * - prompt combination
-     *
-     * This makes the experiment reproducible and prevents
-     * different models from receiving different execution orders.
-     * ==========================================================
-     */
-
-    private static final long EXPERIMENT_ORDER_SEED =
-            42L;
-
-
-    /*
-     * ==========================================================
-     * WARM-UP QUESTION
-     * ==========================================================
-     *
-     * This question is NOT one of the measured experiment cases.
-     *
-     * It is used only to warm up each:
-     *
-     * Model x Prompt Combination
-     *
-     * before the measured runs begin.
-     *
-     * The normal PromptBuilder is used so that the warm-up
-     * passes through the same prompt construction path as the
-     * real experiments.
-     * ==========================================================
-     */
-
-    private static final String WARM_UP_QUESTION =
-            "What are the total store sales?";
-
+    private static final long EXPERIMENT_ORDER_SEED = 42L;
 
     private final OllamaLLMClient llmClient;
     private final PromptBuilder promptBuilder;
 
     private int runCounter;
 
-
-    /*
-     * ==========================================================
-     * CONSTRUCTORS
-     * ==========================================================
-     */
-
     public LLMExperimentRunner(
             OllamaLLMClient llmClient
     ) {
-
         this(
                 llmClient,
                 new PromptBuilder()
         );
     }
 
-
     public LLMExperimentRunner(
             OllamaLLMClient llmClient,
             PromptBuilder promptBuilder
     ) {
-
         if (llmClient == null) {
-
             throw new IllegalArgumentException(
                     "llmClient cannot be null."
             );
         }
 
         if (promptBuilder == null) {
-
             throw new IllegalArgumentException(
                     "promptBuilder cannot be null."
             );
         }
 
-        this.llmClient =
-                llmClient;
-
-        this.promptBuilder =
-                promptBuilder;
-
-        this.runCounter =
-                0;
+        this.llmClient = llmClient;
+        this.promptBuilder = promptBuilder;
+        this.runCounter = 0;
     }
-
-
-    /*
-     * ==========================================================
-     * RUN COMPLETE EXPERIMENT BATCH
-     * ==========================================================
-     */
 
     public void runExperiments(
             CubeSchema cubeSchema,
@@ -151,28 +87,8 @@ public class LLMExperimentRunner {
                 validationLogWriter
         );
 
-
-        /*
-         * ======================================================
-         * BUILD DETERMINISTIC PAIRED ORDER ONCE
-         * ======================================================
-         *
-         * IMPORTANT:
-         *
-         * ExperimentCaseOrderer:
-         *
-         * - groups cases by pairId
-         * - verifies one structured + one natural case
-         * - verifies that both use the same ExpectedCubeQuery
-         * - shuffles the 15 semantic pairs
-         * - balances structured-first / natural-first
-         *
-         * This method is called ONCE.
-         *
-         * Therefore every model and every prompt combination
-         * receives the exact same sequence of 30 cases.
-         * ======================================================
-         */
+        CubeFieldValidator cubeFieldValidator =
+                new CubeFieldValidator(cubeSchema);
 
         List<LLMExperimentCase> orderedExperimentCases =
                 ExperimentCaseOrderer.createPairedOrder(
@@ -180,45 +96,18 @@ public class LLMExperimentRunner {
                         EXPERIMENT_ORDER_SEED
                 );
 
-
-        /*
-         * ======================================================
-         * BUILD SIMILARITY METADATA ONCE
-         * ======================================================
-         *
-         * The hierarchy metadata depends only on the cube schema.
-         *
-         * It is therefore created once for the complete
-         * experiment batch and reused for all models, prompt
-         * combinations and test cases.
-         * ======================================================
-         */
-
         HierarchyMetadataIndex hierarchyMetadataIndex =
-                new HierarchyMetadataIndex(
-                        cubeSchema
-                );
+                new HierarchyMetadataIndex(cubeSchema);
 
         QuerySimilarityEvaluator querySimilarityEvaluator =
                 new QuerySimilarityEvaluator(
                         hierarchyMetadataIndex
                 );
 
-
-        /*
-         * ======================================================
-         * TOTAL MEASURED RUNS
-         * ======================================================
-         *
-         * Warm-up calls are NOT included.
-         * ======================================================
-         */
-
         int totalRuns =
                 modelConfigs.size()
                         * promptCombinations.size()
                         * orderedExperimentCases.size();
-
 
         printExperimentOverview(
                 modelConfigs,
@@ -227,50 +116,23 @@ public class LLMExperimentRunner {
                 totalRuns
         );
 
-
         printExperimentOrder(
                 orderedExperimentCases
         );
 
-
-        /*
-         * ======================================================
-         * EXPERIMENT LOOP
-         *
-         * Model
-         *   -> Prompt Combination
-         *       -> Warm-up
-         *       -> Ordered Test Cases
-         *
-         * Warm-up calls:
-         *
-         * - do NOT receive a run ID
-         * - do NOT increase runCounter
-         * - do NOT enter the TSV
-         * - do NOT enter the validation log
-         *
-         * ======================================================
-         */
-
-        for (LLMModelConfig modelConfig
-                : modelConfigs) {
+        for (LLMModelConfig modelConfig : modelConfigs) {
 
             System.out.println();
             System.out.println(
                     "========================================"
             );
-
             System.out.println(
-                    "MODEL: "
-                            + modelConfig.getModelName()
+                    "MODEL: " + modelConfig.getModelName()
             );
-
             System.out.println(
                     "========================================"
             );
-
             System.out.println();
-
 
             for (List<PromptTechnique> promptCombination
                     : promptCombinations) {
@@ -281,76 +143,57 @@ public class LLMExperimentRunner {
                                         promptCombination
                                 );
 
-
                 System.out.println(
                         "Running combination: "
                                 + combinationName
                 );
 
-
-                /*
-                 * ==================================================
-                 * WARM-UP THIS MODEL x PROMPT COMBINATION
-                 * ==================================================
-                 */
-
-                warmUpCombination(
-                        cubeSchema,
-                        modelConfig,
-                        promptCombination,
-                        combinationName
+                System.out.println(
+                        "No separate warm-up request."
                 );
 
+                System.out.println(
+                        "The first real query is the measured "
+                                + "cache-seeding request."
+                );
 
-                /*
-                 * ==================================================
-                 * MEASURED RUNS
-                 * ==================================================
-                 *
-                 * Always use the same precomputed order.
-                 * ==================================================
-                 */
+                System.out.println();
+
+                int requestIndexInBlock = 0;
 
                 for (LLMExperimentCase experimentCase
                         : orderedExperimentCases) {
 
+                    requestIndexInBlock++;
+
                     ExperimentResult result =
                             runSingleExperiment(
                                     cubeSchema,
+                                    cubeFieldValidator,
                                     modelConfig,
                                     promptCombination,
                                     experimentCase,
                                     querySimilarityEvaluator
                             );
 
-
-                    /*
-                     * Detailed experiment output.
-                     */
                     resultsWriter.writeResult(
                             result
                     );
 
-
-                    /*
-                     * Detailed validation log.
-                     */
                     validationLogWriter.writeResult(
                             result
                     );
 
-
                     printRunSummary(
                             result,
-                            totalRuns
+                            totalRuns,
+                            requestIndexInBlock
                     );
                 }
-
 
                 System.out.println();
             }
         }
-
 
         System.out.println();
 
@@ -366,26 +209,14 @@ public class LLMExperimentRunner {
         );
     }
 
-
-    /*
-     * ==========================================================
-     * SINGLE EXPERIMENT
-     * ==========================================================
-     */
-
     private ExperimentResult runSingleExperiment(
             CubeSchema cubeSchema,
+            CubeFieldValidator cubeFieldValidator,
             LLMModelConfig modelConfig,
             List<PromptTechnique> promptCombination,
             LLMExperimentCase experimentCase,
             QuerySimilarityEvaluator querySimilarityEvaluator
     ) {
-
-        /*
-         * Only measured runs call nextRunId().
-         *
-         * Warm-up calls therefore never affect the run numbering.
-         */
 
         String runId =
                 nextRunId();
@@ -393,41 +224,18 @@ public class LLMExperimentRunner {
         String timestamp =
                 currentTimestamp();
 
-
         String combinationName =
                 PromptTechniqueCombinationGenerator
                         .getCombinationName(
                                 promptCombination
                         );
 
-
-        String prompt =
-                "";
-
+        String prompt = "";
 
         PromptSizeStats promptSizeStats =
-                PromptSizeStats.fromPrompt(
-                        ""
-                );
-
+                PromptSizeStats.fromPrompt("");
 
         try {
-
-            /*
-             * ==================================================
-             * 1. BUILD FINAL PROMPT
-             *
-             * Mandatory:
-             *
-             * - Cube schema
-             * - User question
-             * - JSON output contract
-             *
-             * Optional:
-             *
-             * - selected prompt techniques
-             * ==================================================
-             */
 
             prompt =
                     promptBuilder.buildPrompt(
@@ -436,27 +244,10 @@ public class LLMExperimentRunner {
                             promptCombination
                     );
 
-
-            /*
-             * ==================================================
-             * 2. PROMPT SIZE METRICS
-             * ==================================================
-             */
-
             promptSizeStats =
                     PromptSizeStats.fromPrompt(
                             prompt
                     );
-
-
-            /*
-             * ==================================================
-             * 3. CALL LLM
-             *
-             * Only ONE LLM request is performed for each
-             * measured experiment.
-             * ==================================================
-             */
 
             LLMCallResult llmCallResult =
                     llmClient.generate(
@@ -464,124 +255,40 @@ public class LLMExperimentRunner {
                             prompt
                     );
 
-
             String actualAnswer =
                     llmCallResult.getAnswer();
 
-
-            /*
-             * ==================================================
-             * 4. PARSE LLM RESPONSE
-             *
-             * IMPORTANT:
-             *
-             * The response is parsed exactly ONCE.
-             *
-             * The same parsed result is reused by:
-             *
-             * - strict validation
-             * - structural validation
-             * - similarity evaluation
-             * ==================================================
-             */
-
-            CubeQueryParseResult parseResult =
-                    CubeQueryJsonParser.parse(
+            NormalizationResult normalizationResult =
+                    CubeQueryNormalizer.normalize(
                             actualAnswer
                     );
 
-
-            /*
-             * ==================================================
-             * 5. STRICT VALIDATION
-             *
-             * Checks:
-             *
-             * - JSON / output format
-             * - cube
-             * - aggregation
-             * - measure
-             * - gamma
-             * - sigma fields
-             * - sigma values
-             * ==================================================
-             */
-
             ValidationResult strictValidationResult =
                     CubeQueryValidator.validate(
-                            parseResult,
+                            normalizationResult,
                             experimentCase.getExpectedQuery(),
-                            cubeSchema
+                            cubeFieldValidator
                     );
-
-
-            /*
-             * ==================================================
-             * 6. STRUCTURAL VALIDATION
-             *
-             * Same validation, but differences in sigma values
-             * are ignored.
-             *
-             * Example:
-             *
-             * Expected:
-             *
-             * marital_status='M'
-             *
-             * Actual:
-             *
-             * marital_status='Married'
-             *
-             * Structural validation can still consider the
-             * selected sigma field correct.
-             * ==================================================
-             */
 
             ValidationResult structuralValidationResult =
                     CubeQueryValidator
                             .validateIgnoringSigmaValues(
-                                    parseResult,
+                                    normalizationResult,
                                     experimentCase.getExpectedQuery(),
-                                    cubeSchema
+                                    cubeFieldValidator
                             );
-
-
-            /*
-             * ==================================================
-             * 7. QUERY SIMILARITY
-             *
-             * Similarity is complementary to exact validation.
-             *
-             * It is calculated only when:
-             *
-             * - the LLM request completed successfully
-             * - the response is syntactically valid JSON
-             *
-             * The JSON does NOT need to satisfy the complete
-             * output contract.
-             *
-             * Example:
-             *
-             * Missing queryName:
-             *
-             * formatValid = false
-             *
-             * but semantic similarity can still be calculated.
-             * ==================================================
-             */
 
             QuerySimilarityResult querySimilarityResult;
 
-
             if (llmCallResult.isSuccess()
-                    && parseResult.isValidJson()) {
+                    && normalizationResult.isSuccess()
+                    && normalizationResult.getParsedQuery() != null) {
 
                 querySimilarityResult =
                         querySimilarityEvaluator.evaluate(
                                 experimentCase
                                         .getExpectedQuery(),
-
-                                parseResult
+                                normalizationResult
                                         .getParsedQuery()
                         );
 
@@ -591,24 +298,6 @@ public class LLMExperimentRunner {
                         QuerySimilarityResult
                                 .unavailable();
             }
-
-
-            /*
-             * ==================================================
-             * 8. CREATE FINAL EXPERIMENT RESULT
-             * ==================================================
-             *
-             * ExperimentResult.from(...) also copies:
-             *
-             * - testId
-             * - pairId
-             * - wordingType
-             * - difficulty
-             * - category
-             *
-             * from LLMExperimentCase.
-             * ==================================================
-             */
 
             return ExperimentResult.from(
                     runId,
@@ -624,26 +313,12 @@ public class LLMExperimentRunner {
                     llmCallResult
             );
 
-
         } catch (Exception e) {
-
-            /*
-             * Any unexpected runner-side failure:
-             *
-             * - Prompt building
-             * - Parsing
-             * - Validation
-             * - Similarity evaluation
-             * - unexpected runtime exception
-             *
-             * The experiment is still recorded instead of
-             * terminating the complete experiment batch.
-             */
 
             return createFailedExperimentResult(
                     runId,
                     timestamp,
-                    cubeSchema,
+                    cubeFieldValidator,
                     modelConfig,
                     combinationName,
                     experimentCase,
@@ -653,17 +328,10 @@ public class LLMExperimentRunner {
         }
     }
 
-
-    /*
-     * ==========================================================
-     * FAILED EXPERIMENT
-     * ==========================================================
-     */
-
     private ExperimentResult createFailedExperimentResult(
             String runId,
             String timestamp,
-            CubeSchema cubeSchema,
+            CubeFieldValidator cubeFieldValidator,
             LLMModelConfig modelConfig,
             String combinationName,
             LLMExperimentCase experimentCase,
@@ -685,18 +353,14 @@ public class LLMExperimentRunner {
                         ""
                 );
 
-
         ExpectedCubeQuery expectedQuery =
                 experimentCase == null
                         ? null
                         : experimentCase
                         .getExpectedQuery();
 
-
         ValidationResult strictValidationResult;
-
         ValidationResult structuralValidationResult;
-
 
         if (expectedQuery == null) {
 
@@ -714,54 +378,28 @@ public class LLMExperimentRunner {
 
         } else {
 
-            /*
-             * Parse the failed/empty answer once.
-             *
-             * The resulting validation metrics correctly
-             * represent a failed experiment.
-             */
-
-            CubeQueryParseResult failedParseResult =
-                    CubeQueryJsonParser.parse(
-                            ""
-                    );
-
+            NormalizationResult failedNormalizationResult =
+                    CubeQueryNormalizer.normalize("");
 
             strictValidationResult =
                     CubeQueryValidator.validate(
-                            failedParseResult,
+                            failedNormalizationResult,
                             expectedQuery,
-                            cubeSchema
+                            cubeFieldValidator
                     );
-
 
             structuralValidationResult =
                     CubeQueryValidator
                             .validateIgnoringSigmaValues(
-                                    failedParseResult,
+                                    failedNormalizationResult,
                                     expectedQuery,
-                                    cubeSchema
+                                    cubeFieldValidator
                             );
         }
-
-
-        /*
-         * Similarity is deliberately unavailable for a
-         * runner-side failure.
-         *
-         * We must not confuse:
-         *
-         * similarity = 0
-         *
-         * with:
-         *
-         * similarity was not calculated.
-         */
 
         QuerySimilarityResult querySimilarityResult =
                 QuerySimilarityResult
                         .unavailable();
-
 
         return ExperimentResult.from(
                 runId,
@@ -777,176 +415,6 @@ public class LLMExperimentRunner {
                 failedCallResult
         );
     }
-
-
-    /*
-     * ==========================================================
-     * MODEL x PROMPT COMBINATION WARM-UP
-     * ==========================================================
-     *
-     * A warm-up is executed before EVERY prompt-combination
-     * block for every model.
-     *
-     * Example:
-     *
-     * Gemma + baseline
-     *     -> warm-up
-     *     -> 30 measured runs
-     *
-     * Gemma + examples
-     *     -> warm-up
-     *     -> 30 measured runs
-     *
-     * Qwen + baseline
-     *     -> warm-up
-     *     -> 30 measured runs
-     *
-     * ...
-     *
-     * Warm-up calls are intentionally excluded from all
-     * experimental outputs.
-     * ==========================================================
-     */
-
-    private void warmUpCombination(
-            CubeSchema cubeSchema,
-            LLMModelConfig modelConfig,
-            List<PromptTechnique> promptCombination,
-            String combinationName
-    ) {
-
-        if (cubeSchema == null
-                || modelConfig == null
-                || promptCombination == null) {
-
-            return;
-        }
-
-
-        System.out.println(
-                "Warm-up: "
-                        + modelConfig.getModelName()
-                        + " | "
-                        + combinationName
-        );
-
-
-        try {
-
-            /*
-             * Build a normal experiment prompt using:
-             *
-             * - the real cube schema
-             * - the current prompt combination
-             * - the normal JSON output contract
-             *
-             * Only the question itself is a dummy warm-up
-             * question.
-             */
-
-            String warmUpPrompt =
-                    promptBuilder.buildPrompt(
-                            cubeSchema,
-                            WARM_UP_QUESTION,
-                            promptCombination
-                    );
-
-
-            /*
-             * Use the same model configuration as the real runs.
-             *
-             * This means the warm-up uses the same:
-             *
-             * - num_ctx
-             * - num_predict
-             * - temperature
-             * - top_k
-             * - top_p
-             * - seed/configuration behavior
-             * - keep_alive
-             * - streaming configuration
-             *
-             * depending on the values stored in modelConfig.
-             */
-
-            LLMCallResult warmUpResult =
-                    llmClient.generate(
-                            modelConfig,
-                            warmUpPrompt
-                    );
-
-
-            if (warmUpResult.isSuccess()) {
-
-                System.out.println(
-                        "Warm-up completed"
-                                + " | llm="
-                                + modelConfig.getModelName()
-                                + " | combination="
-                                + combinationName
-                                + " | timeMs="
-                                + warmUpResult
-                                .getResponseTimeMs()
-                );
-
-            } else {
-
-                System.out.println(
-                        "Warm-up failed"
-                                + " | llm="
-                                + modelConfig.getModelName()
-                                + " | combination="
-                                + combinationName
-                                + " | error="
-                                + warmUpResult
-                                .getErrorType()
-                                + " | message="
-                                + warmUpResult
-                                .getErrorMessage()
-                );
-
-                System.out.println(
-                        "Continuing with measured runs."
-                );
-            }
-
-
-        } catch (Exception e) {
-
-            /*
-             * A warm-up failure must never increment the measured
-             * run count or create an ExperimentResult.
-             */
-
-            System.out.println(
-                    "Warm-up exception"
-                            + " | llm="
-                            + modelConfig.getModelName()
-                            + " | combination="
-                            + combinationName
-                            + " | exception="
-                            + e.getClass().getSimpleName()
-                            + ": "
-                            + safe(
-                            e.getMessage()
-                    )
-            );
-
-            System.out.println(
-                    "Continuing with measured runs."
-            );
-        }
-
-
-        System.out.println();
-    }
-
-
-    /*
-     * ==========================================================
-     * CONSOLE OUTPUT
-     * ==========================================================
-     */
 
     private void printExperimentOverview(
             List<LLMModelConfig> modelConfigs,
@@ -1003,24 +471,15 @@ public class LLMExperimentRunner {
         );
 
         System.out.println(
-                "Warm-up calls are excluded from total runs."
+                "Separate warm-up calls: 0"
+        );
+
+        System.out.println(
+                "First real request in each block is measured."
         );
 
         System.out.println();
     }
-
-
-    /*
-     * ==========================================================
-     * PRINT FINAL CASE ORDER
-     * ==========================================================
-     *
-     * Printed once before experiments begin.
-     *
-     * This is useful for reproducibility and allows the exact
-     * randomized ordering to be documented if necessary.
-     * ==========================================================
-     */
 
     private void printExperimentOrder(
             List<LLMExperimentCase> experimentCases
@@ -1043,7 +502,6 @@ public class LLMExperimentRunner {
                 "========================================"
         );
 
-
         for (int i = 0;
              i < experimentCases.size();
              i++) {
@@ -1051,6 +509,10 @@ public class LLMExperimentRunner {
             LLMExperimentCase experimentCase =
                     experimentCases.get(i);
 
+            String phase =
+                    i == 0
+                            ? "FIRST_REQUEST"
+                            : "SUBSEQUENT_REQUEST";
 
             System.out.println(
                     (i + 1)
@@ -1060,23 +522,18 @@ public class LLMExperimentRunner {
                             + experimentCase.getPairId()
                             + " | wording="
                             + experimentCase.getWordingType()
+                            + " | phase="
+                            + phase
             );
         }
-
 
         System.out.println();
     }
 
-
-    /*
-     * ==========================================================
-     * RUN SUMMARY
-     * ==========================================================
-     */
-
     private void printRunSummary(
             ExperimentResult result,
-            int totalRuns
+            int totalRuns,
+            int requestIndexInBlock
     ) {
 
         String similarityText =
@@ -1086,6 +543,31 @@ public class LLMExperimentRunner {
                 )
                         : "N/A";
 
+        String phase =
+                requestIndexInBlock == 1
+                        ? "FIRST_REQUEST"
+                        : "SUBSEQUENT_REQUEST";
+
+        String cachedTokensText =
+                result.getPromptEvalCachedCount() >= 0L
+                        ? String.valueOf(
+                        result.getPromptEvalCachedCount()
+                )
+                        : "N/A";
+
+        String uncachedTokensText =
+                result.getPromptEvalUncachedCount() >= 0L
+                        ? String.valueOf(
+                        result.getPromptEvalUncachedCount()
+                )
+                        : "N/A";
+
+        String cacheHitRatioText =
+                result.getPromptCacheHitRatio() >= 0.0
+                        ? formatPercentage(
+                        result.getPromptCacheHitRatio()
+                )
+                        : "N/A";
 
         System.out.println(
                 "["
@@ -1093,48 +575,48 @@ public class LLMExperimentRunner {
                         + "/"
                         + totalRuns
                         + "] "
-
                         + "llm="
                         + result.getLlmName()
-
                         + " | combination="
                         + result.getPromptCombinationName()
-
+                        + " | requestInBlock="
+                        + requestIndexInBlock
+                        + " | phase="
+                        + phase
                         + " | test="
                         + result.getTestId()
-
                         + " | pair="
                         + result.getPairId()
-
                         + " | wording="
                         + result.getWordingType()
-
-                        + " | strictAccuracy="
-                        + result.getStrictAccuracy()
-
-                        + " | overallSimilarity="
-                        + similarityText
-
                         + " | structuralAccuracy="
                         + result.getStructuralAccuracy()
-
-                        + " | strictValid="
-                        + result.isStrictValid()
-
-                        + " | timeMs="
+                        + " | structuralWeighted="
+                        + result.getStructuralWeightedScore()
+                        + " | overallSimilarity="
+                        + similarityText
+                        + " | promptTokens="
+                        + result.getPromptEvalCount()
+                        + " | cachedTokens="
+                        + cachedTokensText
+                        + " | uncachedTokens="
+                        + uncachedTokensText
+                        + " | cacheHitRatio="
+                        + cacheHitRatioText
+                        + " | promptEvalMs="
+                        + result.getPromptEvalDurationMs()
+                        + " | evalMs="
+                        + result.getEvalDurationMs()
+                        + " | totalMs="
+                        + result.getTotalDurationMs()
+                        + " | loadMs="
+                        + result.getLoadDurationMs()
+                        + " | responseTimeMs="
                         + result.getResponseTimeMs()
-
                         + " | error="
                         + result.getErrorType()
         );
     }
-
-
-    /*
-     * ==========================================================
-     * INPUT VALIDATION
-     * ==========================================================
-     */
 
     private void validateInputs(
             CubeSchema cubeSchema,
@@ -1146,12 +628,10 @@ public class LLMExperimentRunner {
     ) {
 
         if (cubeSchema == null) {
-
             throw new IllegalArgumentException(
                     "cubeSchema cannot be null."
             );
         }
-
 
         if (modelConfigs == null
                 || modelConfigs.isEmpty()) {
@@ -1161,28 +641,15 @@ public class LLMExperimentRunner {
             );
         }
 
-
         for (LLMModelConfig modelConfig
                 : modelConfigs) {
 
             if (modelConfig == null) {
-
                 throw new IllegalArgumentException(
                         "modelConfigs cannot contain null."
                 );
             }
         }
-
-
-        /*
-         * The outer list must not be empty.
-         *
-         * However, an individual combination CAN be empty:
-         *
-         * []
-         *
-         * This represents the baseline experiment.
-         */
 
         if (promptCombinations == null
                 || promptCombinations.isEmpty()) {
@@ -1192,30 +659,25 @@ public class LLMExperimentRunner {
             );
         }
 
-
         for (List<PromptTechnique> combination
                 : promptCombinations) {
 
             if (combination == null) {
-
                 throw new IllegalArgumentException(
                         "promptCombinations cannot contain null combinations."
                 );
             }
 
-
             for (PromptTechnique technique
                     : combination) {
 
                 if (technique == null) {
-
                     throw new IllegalArgumentException(
                             "A prompt combination cannot contain null techniques."
                     );
                 }
             }
         }
-
 
         if (experimentCases == null
                 || experimentCases.isEmpty()) {
@@ -1225,28 +687,22 @@ public class LLMExperimentRunner {
             );
         }
 
-
         for (LLMExperimentCase experimentCase
                 : experimentCases) {
 
             if (experimentCase == null) {
-
                 throw new IllegalArgumentException(
                         "experimentCases cannot contain null."
                 );
             }
 
-
-            if (experimentCase.getExpectedQuery()
-                    == null) {
-
+            if (experimentCase.getExpectedQuery() == null) {
                 throw new IllegalArgumentException(
                         "Experiment case "
                                 + experimentCase.getTestId()
                                 + " has null expectedQuery."
                 );
             }
-
 
             if (experimentCase.getQuestion() == null
                     || experimentCase
@@ -1261,11 +717,6 @@ public class LLMExperimentRunner {
                 );
             }
 
-
-            /*
-             * The new paired workload requires pair metadata.
-             */
-
             if (experimentCase.getPairId() == null
                     || experimentCase
                     .getPairId()
@@ -1278,7 +729,6 @@ public class LLMExperimentRunner {
                                 + " has an empty pairId."
                 );
             }
-
 
             if (experimentCase.getWordingType() == null
                     || experimentCase
@@ -1293,11 +743,8 @@ public class LLMExperimentRunner {
                 );
             }
 
-
             String wordingType =
-                    experimentCase
-                            .getWordingType();
-
+                    experimentCase.getWordingType();
 
             if (!LLMExperimentCase
                     .WORDING_TYPE_STRUCTURED
@@ -1315,60 +762,37 @@ public class LLMExperimentRunner {
             }
         }
 
-
         if (resultsWriter == null) {
-
             throw new IllegalArgumentException(
                     "resultsWriter cannot be null."
             );
         }
 
-
         if (validationLogWriter == null) {
-
             throw new IllegalArgumentException(
                     "validationLogWriter cannot be null."
             );
         }
     }
 
-
-    /*
-     * ==========================================================
-     * RUN IDENTIFICATION
-     * ==========================================================
-     */
-
     private String nextRunId() {
 
         runCounter++;
 
-
         if (runCounter < 10) {
-
-            return "run_000"
-                    + runCounter;
+            return "run_000" + runCounter;
         }
-
 
         if (runCounter < 100) {
-
-            return "run_00"
-                    + runCounter;
+            return "run_00" + runCounter;
         }
-
 
         if (runCounter < 1000) {
-
-            return "run_0"
-                    + runCounter;
+            return "run_0" + runCounter;
         }
 
-
-        return "run_"
-                + runCounter;
+        return "run_" + runCounter;
     }
-
 
     private String currentTimestamp() {
 
@@ -1377,25 +801,14 @@ public class LLMExperimentRunner {
                         "yyyy-MM-dd HH:mm:ss"
                 );
 
-
         return LocalDateTime
                 .now()
-                .format(
-                        formatter
-                );
+                .format(formatter);
     }
-
-
-    /*
-     * ==========================================================
-     * HELPERS
-     * ==========================================================
-     */
 
     private String safe(
             String value
     ) {
-
         if (value == null) {
             return "";
         }
@@ -1403,15 +816,23 @@ public class LLMExperimentRunner {
         return value.trim();
     }
 
-
     private String formatSimilarity(
             double value
     ) {
-
         return String.format(
                 java.util.Locale.US,
                 "%.2f",
                 value
+        );
+    }
+
+    private String formatPercentage(
+            double ratio
+    ) {
+        return String.format(
+                java.util.Locale.US,
+                "%.2f%%",
+                ratio * 100.0
         );
     }
 }

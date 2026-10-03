@@ -38,10 +38,6 @@ public class PromptBuilder {
         this.outputContract = outputContract;
     }
 
-    /*
-     * Builds the final prompt using any selected combination
-     * of prompt techniques.
-     */
     public String buildPrompt(
             CubeSchema cubeSchema,
             String naturalLanguageQuestion,
@@ -56,60 +52,37 @@ public class PromptBuilder {
         StringBuilder prompt = new StringBuilder();
 
         /*
-         * 1. Add the selected experimental techniques.
-         *
-         * Examples:
-         * - Instructions only
-         * - Prescription only
-         * - Examples only
-         * - Instructions + Examples
-         * - Instructions + Prescription + Examples
+         * Static prompt prefix.
          */
         appendPromptTechniques(
                 prompt,
                 promptTechniques
         );
 
-        /*
-         * 2. Add the cube schema.
-         * This is mandatory in every experiment.
-         */
         appendCubeSchema(
                 prompt,
                 cubeSchema
         );
 
+        appendOutputContract(
+                prompt
+        );
+
         /*
-         * 3. Add the user's natural language question.
-         * This is mandatory in every experiment.
+         * Variable part.
          */
         appendUserQuestion(
                 prompt,
                 naturalLanguageQuestion
         );
 
-        /*
-         * 4. Add the mandatory output contract.
-         *
-         * It is placed near the end so that the expected
-         * response format is explicit immediately before
-         * the model generates the answer.
-         */
-        appendOutputContract(prompt);
-
-        /*
-         * 5. Final marker.
-         */
-        appendFinalAnswerMarker(prompt);
+        appendFinalAnswerMarker(
+                prompt
+        );
 
         return prompt.toString();
     }
 
-    /*
-     * Convenience method for the baseline experiment:
-     * Cube schema + user question + output contract,
-     * without any optional prompt technique.
-     */
     public String buildPrompt(
             CubeSchema cubeSchema,
             String naturalLanguageQuestion
@@ -147,6 +120,15 @@ public class PromptBuilder {
         ensureSectionEnding(prompt);
     }
 
+    private void appendOutputContract(
+            StringBuilder prompt
+    ) {
+        appendSection(
+                prompt,
+                outputContract.getContent()
+        );
+    }
+
     private void appendUserQuestion(
             StringBuilder prompt,
             String naturalLanguageQuestion
@@ -159,15 +141,6 @@ public class PromptBuilder {
         );
 
         prompt.append("\n\n");
-    }
-
-    private void appendOutputContract(
-            StringBuilder prompt
-    ) {
-        appendSection(
-                prompt,
-                outputContract.getContent()
-        );
     }
 
     private void appendFinalAnswerMarker(

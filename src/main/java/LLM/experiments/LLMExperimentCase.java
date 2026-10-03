@@ -30,23 +30,11 @@ public class LLMExperimentCase {
     public static final String DIFFICULTY_COMPLEX =
             "complex";
 
-
-    /*
-     * ==========================================================
-     * WORDING CATEGORIES
-     * ==========================================================
-     *
-     * These values are kept for compatibility with the
-     * original workload.
-     * ==========================================================
-     */
-
     public static final String CATEGORY_STRUCTURED_WORDING =
             "structured_wording";
 
     public static final String CATEGORY_NATURAL_WORDING =
             "natural_wording";
-
 
     /*
      * ==========================================================
@@ -71,13 +59,6 @@ public class LLMExperimentCase {
     public static final String WORDING_TYPE_NATURAL =
             "natural";
 
-
-    /*
-     * ==========================================================
-     * FIELDS
-     * ==========================================================
-     */
-
     private final String testId;
 
     /*
@@ -100,9 +81,6 @@ public class LLMExperimentCase {
 
     private final ExpectedCubeQuery expectedQuery;
 
-    /*
-     * Human-readable description of what this test examines.
-     */
     private final String description;
 
     /*
@@ -124,13 +102,6 @@ public class LLMExperimentCase {
      */
     private final String category;
 
-
-    /*
-     * ==========================================================
-     * LEGACY / SIMPLE CONSTRUCTOR
-     * ==========================================================
-     */
-
     public LLMExperimentCase(
             String testId,
             String question,
@@ -148,90 +119,6 @@ public class LLMExperimentCase {
                 ""
         );
     }
-
-
-    /*
-     * ==========================================================
-     * PREVIOUS CONSTRUCTOR
-     *
-     * Kept for compatibility with older experiments.
-     * ==========================================================
-     */
-
-    public LLMExperimentCase(
-            String testId,
-            String question,
-            ExpectedCubeQuery expectedQuery,
-            String description,
-            String difficulty
-    ) {
-
-        this(
-                testId,
-                question,
-                expectedQuery,
-                description,
-                difficulty,
-                "",
-                "",
-                ""
-        );
-    }
-
-
-    /*
-     * ==========================================================
-     * ORIGINAL FULL CONSTRUCTOR
-     *
-     * Kept for compatibility with the current main workload.
-     *
-     * If category already identifies the wording style,
-     * wordingType is derived automatically.
-     * ==========================================================
-     */
-
-    public LLMExperimentCase(
-            String testId,
-            String question,
-            ExpectedCubeQuery expectedQuery,
-            String description,
-            String difficulty,
-            String category
-    ) {
-
-        this(
-                testId,
-                question,
-                expectedQuery,
-                description,
-                difficulty,
-                category,
-                "",
-                wordingTypeFromCategory(
-                        category
-                )
-        );
-    }
-
-
-    /*
-     * ==========================================================
-     * EXTENDED FULL CONSTRUCTOR
-     *
-     * Used by the new paired structured-vs-natural experiment.
-     *
-     * Example:
-     *
-     * testId:
-     *   pair_01_structured
-     *
-     * pairId:
-     *   pair_01
-     *
-     * wordingType:
-     *   structured
-     * ==========================================================
-     */
 
     public LLMExperimentCase(
             String testId,
@@ -304,13 +191,6 @@ public class LLMExperimentCase {
                 );
     }
 
-
-    /*
-     * ==========================================================
-     * GETTERS
-     * ==========================================================
-     */
-
     public String getTestId() {
         return testId;
     }
@@ -343,13 +223,6 @@ public class LLMExperimentCase {
         return category;
     }
 
-
-    /*
-     * ==========================================================
-     * VALIDATION
-     * ==========================================================
-     */
-
     private static void validateRequiredField(
             String fieldName,
             String value
@@ -365,13 +238,6 @@ public class LLMExperimentCase {
         }
     }
 
-
-    /*
-     * wordingType may be empty for old experiments.
-     *
-     * If present, however, only the two supported values
-     * are accepted.
-     */
     private static void validateWordingType(
             String wordingType
     ) {
@@ -404,50 +270,6 @@ public class LLMExperimentCase {
         }
     }
 
-
-    /*
-     * ==========================================================
-     * CATEGORY -> WORDING TYPE
-     * ==========================================================
-     *
-     * Allows the old workload to continue working without
-     * explicitly supplying wordingType.
-     * ==========================================================
-     */
-
-    private static String wordingTypeFromCategory(
-            String category
-    ) {
-
-        String normalized =
-                safeString(
-                        category
-                );
-
-        if (CATEGORY_STRUCTURED_WORDING.equals(
-                normalized
-        )) {
-
-            return WORDING_TYPE_STRUCTURED;
-        }
-
-        if (CATEGORY_NATURAL_WORDING.equals(
-                normalized
-        )) {
-
-            return WORDING_TYPE_NATURAL;
-        }
-
-        return "";
-    }
-
-
-    /*
-     * ==========================================================
-     * HELPERS
-     * ==========================================================
-     */
-
     private static String safeString(
             String value
     ) {
@@ -458,13 +280,6 @@ public class LLMExperimentCase {
 
         return value.trim();
     }
-
-
-    /*
-     * ==========================================================
-     * TO STRING
-     * ==========================================================
-     */
 
     @Override
     public String toString() {

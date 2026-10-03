@@ -75,12 +75,6 @@ public class ExpectedCubeQuery {
         );
     }
 
-    /*
-     * ==========================================================
-     * VALIDATION
-     * ==========================================================
-     */
-
     private static void validateRequiredField(
             String fieldName,
             String value
@@ -94,12 +88,6 @@ public class ExpectedCubeQuery {
             );
         }
     }
-
-    /*
-     * ==========================================================
-     * HELPERS
-     * ==========================================================
-     */
 
     private static String safeString(
             String value

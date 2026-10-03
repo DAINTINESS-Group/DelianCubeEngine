@@ -1,117 +1,36 @@
 package LLM.experiments.results;
 
+import LLM.client.LLMCallResult;
+import LLM.client.LLMModelConfig;
 import LLM.experiments.ExpectedCubeQuery;
 import LLM.experiments.LLMExperimentCase;
 import LLM.experiments.ValidationResult;
-
-import LLM.experiments.runner.LLMCallResult;
-import LLM.experiments.runner.LLMModelConfig;
 import LLM.experiments.runner.PromptSizeStats;
-
 import LLM.experiments.similarity.QuerySimilarityResult;
 
 public class ExperimentResult {
 
     private final String runId;
     private final String timestamp;
-
     private final String llmName;
-
-    /*
-     * Examples:
-     *
-     * baseline
-     * instructions_for_query_generation
-     * examples
-     * instructions_for_query_generation+examples
-     */
     private final String promptCombinationName;
 
-    /*
-     * ==========================================================
-     * TEST CASE INFORMATION
-     * ==========================================================
-     */
-
     private final String testId;
-
-    /*
-     * Shared identifier between the structured and natural
-     * versions of the same semantic query.
-     *
-     * Example:
-     *
-     * pair_01
-     */
     private final String pairId;
-
-    /*
-     * Wording type:
-     *
-     * structured
-     * natural
-     */
     private final String wordingType;
-
     private final String difficulty;
     private final String category;
     private final String question;
 
-    /*
-     * Ground truth and actual LLM output.
-     */
     private final ExpectedCubeQuery expectedQuery;
     private final String actualAnswer;
 
-    /*
-     * Strict validation:
-     *
-     * - format
-     * - cube
-     * - aggregation
-     * - measure
-     * - gamma
-     * - sigma fields
-     * - sigma values
-     */
     private final ValidationResult strictValidationResult;
-
-    /*
-     * Structural validation:
-     *
-     * Same validation as strict validation,
-     * but sigma value differences are ignored.
-     */
     private final ValidationResult structuralValidationResult;
-
-    /*
-     * OLAP query similarity.
-     *
-     * Complementary metric used to measure how close
-     * the generated query is to the expected query.
-     *
-     * It does NOT replace exact validation.
-     */
     private final QuerySimilarityResult querySimilarityResult;
 
-    /*
-     * Prompt statistics.
-     */
     private final PromptSizeStats promptSizeStats;
-
-    /*
-     * LLM request/result statistics.
-     */
     private final LLMCallResult llmCallResult;
-
-
-    /*
-     * ==========================================================
-     * MAIN CONSTRUCTOR
-     *
-     * Full constructor used by the new paired experiment.
-     * ==========================================================
-     */
 
     public ExperimentResult(
             String runId,
@@ -132,92 +51,30 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
+        this.runId = safeString(runId);
+        this.timestamp = safeString(timestamp);
+        this.llmName = safeString(llmName);
+        this.promptCombinationName = safeString(promptCombinationName);
 
-        this.runId =
-                safeString(
-                        runId
-                );
+        this.testId = safeString(testId);
+        this.pairId = safeString(pairId);
+        this.wordingType = safeString(wordingType);
+        this.difficulty = safeString(difficulty);
+        this.category = safeString(category);
+        this.question = safeString(question);
 
-        this.timestamp =
-                safeString(
-                        timestamp
-                );
+        this.expectedQuery = expectedQuery;
+        this.actualAnswer = safeString(actualAnswer);
 
-        this.llmName =
-                safeString(
-                        llmName
-                );
+        this.strictValidationResult = strictValidationResult;
+        this.structuralValidationResult = structuralValidationResult;
+        this.querySimilarityResult = querySimilarityResult == null
+                ? QuerySimilarityResult.unavailable()
+                : querySimilarityResult;
 
-        this.promptCombinationName =
-                safeString(
-                        promptCombinationName
-                );
-
-        this.testId =
-                safeString(
-                        testId
-                );
-
-        this.pairId =
-                safeString(
-                        pairId
-                );
-
-        this.wordingType =
-                safeString(
-                        wordingType
-                );
-
-        this.difficulty =
-                safeString(
-                        difficulty
-                );
-
-        this.category =
-                safeString(
-                        category
-                );
-
-        this.question =
-                safeString(
-                        question
-                );
-
-        this.expectedQuery =
-                expectedQuery;
-
-        this.actualAnswer =
-                safeString(
-                        actualAnswer
-                );
-
-        this.strictValidationResult =
-                strictValidationResult;
-
-        this.structuralValidationResult =
-                structuralValidationResult;
-
-        this.querySimilarityResult =
-                querySimilarityResult == null
-                        ? QuerySimilarityResult.unavailable()
-                        : querySimilarityResult;
-
-        this.promptSizeStats =
-                promptSizeStats;
-
-        this.llmCallResult =
-                llmCallResult;
+        this.promptSizeStats = promptSizeStats;
+        this.llmCallResult = llmCallResult;
     }
-
-
-    /*
-     * ==========================================================
-     * COMPATIBILITY CONSTRUCTOR WITH SIMILARITY
-     *
-     * Allows older experiment code to continue working
-     * without pair metadata.
-     * ==========================================================
-     */
 
     public ExperimentResult(
             String runId,
@@ -236,17 +93,14 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
-
         this(
                 runId,
                 timestamp,
                 llmName,
                 promptCombinationName,
                 testId,
-
                 "",
                 "",
-
                 difficulty,
                 category,
                 question,
@@ -259,15 +113,6 @@ public class ExperimentResult {
                 llmCallResult
         );
     }
-
-
-    /*
-     * ==========================================================
-     * COMPATIBILITY CONSTRUCTOR WITHOUT SIMILARITY
-     *
-     * Kept for older code.
-     * ==========================================================
-     */
 
     public ExperimentResult(
             String runId,
@@ -285,7 +130,6 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
-
         this(
                 runId,
                 timestamp,
@@ -305,15 +149,6 @@ public class ExperimentResult {
         );
     }
 
-
-    /*
-     * ==========================================================
-     * OPTIONAL FULL CONSTRUCTOR WITHOUT SIMILARITY
-     *
-     * Supports pair metadata while using unavailable similarity.
-     * ==========================================================
-     */
-
     public ExperimentResult(
             String runId,
             String timestamp,
@@ -332,7 +167,6 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
-
         this(
                 runId,
                 timestamp,
@@ -354,13 +188,6 @@ public class ExperimentResult {
         );
     }
 
-
-    /*
-     * ==========================================================
-     * MAIN FACTORY METHOD
-     * ==========================================================
-     */
-
     public static ExperimentResult from(
             String runId,
             String timestamp,
@@ -374,65 +201,26 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
-
         return new ExperimentResult(
                 runId,
                 timestamp,
-
-                modelConfig == null
-                        ? ""
-                        : modelConfig.getModelName(),
-
+                modelConfig == null ? "" : modelConfig.getModelName(),
                 promptCombinationName,
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getTestId(),
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getPairId(),
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getWordingType(),
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getDifficulty(),
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getCategory(),
-
-                experimentCase == null
-                        ? ""
-                        : experimentCase.getQuestion(),
-
-                experimentCase == null
-                        ? null
-                        : experimentCase.getExpectedQuery(),
-
+                experimentCase == null ? "" : experimentCase.getTestId(),
+                experimentCase == null ? "" : experimentCase.getPairId(),
+                experimentCase == null ? "" : experimentCase.getWordingType(),
+                experimentCase == null ? "" : experimentCase.getDifficulty(),
+                experimentCase == null ? "" : experimentCase.getCategory(),
+                experimentCase == null ? "" : experimentCase.getQuestion(),
+                experimentCase == null ? null : experimentCase.getExpectedQuery(),
                 actualAnswer,
-
                 strictValidationResult,
                 structuralValidationResult,
                 querySimilarityResult,
-
                 promptSizeStats,
                 llmCallResult
         );
     }
-
-
-    /*
-     * ==========================================================
-     * COMPATIBILITY FACTORY METHOD
-     *
-     * Existing runner code can continue using this version
-     * until similarity evaluation is connected.
-     * ==========================================================
-     */
 
     public static ExperimentResult from(
             String runId,
@@ -446,7 +234,6 @@ public class ExperimentResult {
             PromptSizeStats promptSizeStats,
             LLMCallResult llmCallResult
     ) {
-
         return from(
                 runId,
                 timestamp,
@@ -461,13 +248,6 @@ public class ExperimentResult {
                 llmCallResult
         );
     }
-
-
-    /*
-     * ==========================================================
-     * BASIC EXPERIMENT INFORMATION
-     * ==========================================================
-     */
 
     public String getRunId() {
         return runId;
@@ -485,22 +265,9 @@ public class ExperimentResult {
         return promptCombinationName;
     }
 
-    /*
-     * Compatibility getter.
-     *
-     * Older writers may still call this method.
-     * It now returns the prompt combination name.
-     */
     public String getPromptTechniqueName() {
         return promptCombinationName;
     }
-
-
-    /*
-     * ==========================================================
-     * TEST CASE INFORMATION
-     * ==========================================================
-     */
 
     public String getTestId() {
         return testId;
@@ -526,13 +293,6 @@ public class ExperimentResult {
         return question;
     }
 
-
-    /*
-     * ==========================================================
-     * EXPECTED / ACTUAL QUERY
-     * ==========================================================
-     */
-
     public ExpectedCubeQuery getExpectedQuery() {
         return expectedQuery;
     }
@@ -540,13 +300,6 @@ public class ExperimentResult {
     public String getActualAnswer() {
         return actualAnswer;
     }
-
-
-    /*
-     * ==========================================================
-     * RAW RESULT OBJECTS
-     * ==========================================================
-     */
 
     public PromptSizeStats getPromptSizeStats() {
         return promptSizeStats;
@@ -560,13 +313,6 @@ public class ExperimentResult {
         return querySimilarityResult;
     }
 
-
-    /*
-     * ==========================================================
-     * VALIDATION RESULTS
-     * ==========================================================
-     */
-
     public ValidationResult getStrictValidationResult() {
         return strictValidationResult;
     }
@@ -575,158 +321,80 @@ public class ExperimentResult {
         return structuralValidationResult;
     }
 
-
-    /*
-     * ==========================================================
-     * STRICT METRICS
-     * ==========================================================
-     */
-
     public boolean isStrictValid() {
-
         return strictValidationResult != null
                 && strictValidationResult.isValid();
     }
 
     public double getStrictAccuracy() {
-
-        if (strictValidationResult == null) {
-            return 0.0;
-        }
-
-        return strictValidationResult
-                .getStrictAccuracy();
+        return strictValidationResult == null
+                ? 0.0
+                : strictValidationResult.getStrictAccuracy();
     }
 
     public double getStrictWeightedScore() {
-
-        if (strictValidationResult == null) {
-            return 0.0;
-        }
-
-        return strictValidationResult
-                .getWeightedScore();
+        return strictValidationResult == null
+                ? 0.0
+                : strictValidationResult.getWeightedScore();
     }
 
-
-    /*
-     * ==========================================================
-     * QUERY SIMILARITY METRICS
-     *
-     * All similarity scores are in [0, 1].
-     *
-     * Strict accuracy remains the primary correctness metric.
-     * Similarity is complementary and describes error severity.
-     * ==========================================================
-     */
-
     public boolean isQuerySimilarityAvailable() {
-
         return querySimilarityResult != null
                 && querySimilarityResult.isAvailable();
     }
 
     public double getOverallSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getOverallSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getOverallSimilarity()
+                : 0.0;
     }
 
     public double getGammaSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getGammaSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getGammaSimilarity()
+                : 0.0;
     }
 
     public double getSigmaSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getSigmaSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getSigmaSimilarity()
+                : 0.0;
     }
 
     public double getMeasureSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getMeasureSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getMeasureSimilarity()
+                : 0.0;
     }
 
     public double getAggregateSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getAggregateSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getAggregateSimilarity()
+                : 0.0;
     }
 
     public double getCubeSimilarity() {
-
-        if (!isQuerySimilarityAvailable()) {
-            return 0.0;
-        }
-
-        return querySimilarityResult
-                .getCubeSimilarity();
+        return isQuerySimilarityAvailable()
+                ? querySimilarityResult.getCubeSimilarity()
+                : 0.0;
     }
 
-
-    /*
-     * ==========================================================
-     * STRUCTURAL METRICS
-     * ==========================================================
-     */
-
     public boolean isStructuralValid() {
-
         return structuralValidationResult != null
                 && structuralValidationResult.isValid();
     }
 
     public double getStructuralAccuracy() {
-
-        if (structuralValidationResult == null) {
-            return 0.0;
-        }
-
-        return structuralValidationResult
-                .getStrictAccuracy();
+        return structuralValidationResult == null
+                ? 0.0
+                : structuralValidationResult.getStrictAccuracy();
     }
 
     public double getStructuralWeightedScore() {
-
-        if (structuralValidationResult == null) {
-            return 0.0;
-        }
-
-        return structuralValidationResult
-                .getWeightedScore();
+        return structuralValidationResult == null
+                ? 0.0
+                : structuralValidationResult.getWeightedScore();
     }
-
-
-    /*
-     * ==========================================================
-     * LEGACY / DEFAULT METRICS
-     *
-     * For compatibility, the default result is the STRICT result.
-     * ==========================================================
-     */
 
     public boolean isValid() {
         return isStrictValid();
@@ -740,399 +408,225 @@ public class ExperimentResult {
         return strictValidationResult;
     }
 
-
-    /*
-     * ==========================================================
-     * DETAILED STRICT VALIDATION METRICS
-     * ==========================================================
-     */
-
     public boolean isFormatValid() {
-
         return strictValidationResult != null
                 && strictValidationResult.isFormatValid();
     }
 
     public boolean isCubeCorrect() {
-
         return strictValidationResult != null
                 && strictValidationResult.isCubeCorrect();
     }
 
     public boolean isAggregateFunctionCorrect() {
-
         return strictValidationResult != null
-                && strictValidationResult
-                .isAggregateFunctionCorrect();
+                && strictValidationResult.isAggregateFunctionCorrect();
     }
 
     public boolean isMeasureCorrect() {
-
         return strictValidationResult != null
                 && strictValidationResult.isMeasureCorrect();
     }
 
     public boolean isGammaCorrect() {
-
         return strictValidationResult != null
                 && strictValidationResult.isGammaCorrect();
     }
 
     public boolean isSigmaCorrect() {
-
         return strictValidationResult != null
                 && strictValidationResult.isSigmaCorrect();
     }
 
     public boolean isStructuralSigmaCorrect() {
-
         return structuralValidationResult != null
                 && structuralValidationResult.isSigmaCorrect();
     }
 
     public int getUnknownFieldsCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getUnknownFieldsCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getUnknownFieldsCount();
     }
 
     public int getMissingGammaCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getMissingGammaCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getMissingGammaCount();
     }
 
     public int getExtraGammaCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getExtraGammaCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getExtraGammaCount();
     }
 
     public int getMissingSigmaCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getMissingSigmaCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getMissingSigmaCount();
     }
 
     public int getExtraSigmaCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getExtraSigmaCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getExtraSigmaCount();
     }
 
     public int getWrongSigmaValueCount() {
-
-        if (strictValidationResult == null) {
-            return 0;
-        }
-
-        return strictValidationResult
-                .getWrongSigmaValueCount();
+        return strictValidationResult == null
+                ? 0
+                : strictValidationResult.getWrongSigmaValueCount();
     }
 
-
-    /*
-     * ==========================================================
-     * LLM CALL STATUS
-     * ==========================================================
-     */
-
     public boolean isLlmCallSuccessful() {
-
         return llmCallResult != null
                 && llmCallResult.isSuccess();
     }
 
     public long getResponseTimeMs() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getResponseTimeMs();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getResponseTimeMs();
     }
 
     public String getErrorType() {
-
-        if (llmCallResult == null) {
-            return "";
-        }
-
-        return llmCallResult
-                .getErrorType();
+        return llmCallResult == null
+                ? ""
+                : llmCallResult.getErrorType();
     }
 
     public String getErrorMessage() {
-
-        if (llmCallResult == null) {
-            return "";
-        }
-
-        return llmCallResult
-                .getErrorMessage();
+        return llmCallResult == null
+                ? ""
+                : llmCallResult.getErrorMessage();
     }
 
-
-    /*
-     * ==========================================================
-     * PROMPT SIZE METRICS
-     * ==========================================================
-     */
-
     public int getPromptCharacterCount() {
-
-        if (promptSizeStats == null) {
-            return 0;
-        }
-
-        return promptSizeStats
-                .getCharacterCount();
+        return promptSizeStats == null
+                ? 0
+                : promptSizeStats.getCharacterCount();
     }
 
     public int getPromptUtf8ByteCount() {
-
-        if (promptSizeStats == null) {
-            return 0;
-        }
-
-        return promptSizeStats
-                .getUtf8ByteCount();
+        return promptSizeStats == null
+                ? 0
+                : promptSizeStats.getUtf8ByteCount();
     }
 
     public long getPromptEstimatedTokensByCharacters() {
-
-        if (promptSizeStats == null) {
-            return 0L;
-        }
-
-        return promptSizeStats
-                .getEstimatedTokensByCharacters();
+        return promptSizeStats == null
+                ? 0L
+                : promptSizeStats.getEstimatedTokensByCharacters();
     }
 
     public long getPromptEstimatedTokensByBytes() {
-
-        if (promptSizeStats == null) {
-            return 0L;
-        }
-
-        return promptSizeStats
-                .getEstimatedTokensByBytes();
+        return promptSizeStats == null
+                ? 0L
+                : promptSizeStats.getEstimatedTokensByBytes();
     }
 
-    /*
-     * Compatibility getter.
-     */
     public long getPromptEstimatedTokens() {
         return getPromptEstimatedTokensByCharacters();
     }
 
-
-    /*
-     * ==========================================================
-     * OLLAMA TOKEN METRICS
-     * ==========================================================
-     */
-
     public long getPromptEvalCount() {
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getPromptEvalCount();
+    }
 
-        if (llmCallResult == null) {
-            return -1L;
-        }
+    public long getPromptEvalCachedCount() {
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getPromptEvalCachedCount();
+    }
 
-        return llmCallResult
-                .getPromptEvalCount();
+    public long getPromptEvalUncachedCount() {
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getPromptEvalUncachedCount();
+    }
+
+    public double getPromptCacheHitRatio() {
+        return llmCallResult == null
+                ? -1.0
+                : llmCallResult.getPromptCacheHitRatio();
     }
 
     public long getEvalCount() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getEvalCount();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getEvalCount();
     }
 
     public long getTotalTokenCount() {
-
-        if (llmCallResult == null) {
-            return 0L;
-        }
-
-        return llmCallResult
-                .getTotalTokenCount();
+        return llmCallResult == null
+                ? 0L
+                : llmCallResult.getTotalTokenCount();
     }
 
-
-    /*
-     * ==========================================================
-     * OLLAMA TIMING METRICS
-     * ==========================================================
-     */
-
     public long getTotalDurationMs() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getTotalDurationMs();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getTotalDurationMs();
     }
 
     public long getLoadDurationMs() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getLoadDurationMs();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getLoadDurationMs();
     }
 
     public long getPromptEvalDurationMs() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getPromptEvalDurationMs();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getPromptEvalDurationMs();
     }
 
     public long getEvalDurationMs() {
-
-        if (llmCallResult == null) {
-            return -1L;
-        }
-
-        return llmCallResult
-                .getEvalDurationMs();
+        return llmCallResult == null
+                ? -1L
+                : llmCallResult.getEvalDurationMs();
     }
 
     public double getPromptTokensPerSecond() {
-
-        if (llmCallResult == null) {
-            return 0.0;
-        }
-
-        return llmCallResult
-                .getPromptTokensPerSecond();
+        return llmCallResult == null
+                ? 0.0
+                : llmCallResult.getPromptTokensPerSecond();
     }
 
     public double getOutputTokensPerSecond() {
-
-        if (llmCallResult == null) {
-            return 0.0;
-        }
-
-        return llmCallResult
-                .getOutputTokensPerSecond();
+        return llmCallResult == null
+                ? 0.0
+                : llmCallResult.getOutputTokensPerSecond();
     }
 
-
-    /*
-     * ==========================================================
-     * HELPERS
-     * ==========================================================
-     */
-
-    private static String safeString(
-            String value
-    ) {
-
-        if (value == null) {
-            return "";
-        }
-
-        return value.trim();
+    private static String safeString(String value) {
+        return value == null ? "" : value.trim();
     }
-
-
-    /*
-     * ==========================================================
-     * DEBUG
-     * ==========================================================
-     */
 
     @Override
     public String toString() {
-
         return "ExperimentResult{" +
-
-                "runId='"
-                + runId
-                + '\'' +
-
-                ", timestamp='"
-                + timestamp
-                + '\'' +
-
-                ", llmName='"
-                + llmName
-                + '\'' +
-
-                ", promptCombinationName='"
-                + promptCombinationName
-                + '\'' +
-
-                ", testId='"
-                + testId
-                + '\'' +
-
-                ", pairId='"
-                + pairId
-                + '\'' +
-
-                ", wordingType='"
-                + wordingType
-                + '\'' +
-
-                ", difficulty='"
-                + difficulty
-                + '\'' +
-
-                ", category='"
-                + category
-                + '\'' +
-
-                ", strictValid="
-                + isStrictValid() +
-
-                ", overallSimilarity="
-                + getOverallSimilarity() +
-
-                ", structuralValid="
-                + isStructuralValid() +
-
-                ", responseTimeMs="
-                + getResponseTimeMs() +
-
-                ", errorType='"
-                + getErrorType()
-                + '\'' +
-
+                "runId='" + runId + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", llmName='" + llmName + '\'' +
+                ", promptCombinationName='" + promptCombinationName + '\'' +
+                ", testId='" + testId + '\'' +
+                ", pairId='" + pairId + '\'' +
+                ", wordingType='" + wordingType + '\'' +
+                ", difficulty='" + difficulty + '\'' +
+                ", category='" + category + '\'' +
+                ", strictValid=" + isStrictValid() +
+                ", overallSimilarity=" + getOverallSimilarity() +
+                ", structuralValid=" + isStructuralValid() +
+                ", responseTimeMs=" + getResponseTimeMs() +
+                ", promptEvalCount=" + getPromptEvalCount() +
+                ", promptEvalCachedCount=" + getPromptEvalCachedCount() +
+                ", promptEvalUncachedCount=" + getPromptEvalUncachedCount() +
+                ", promptCacheHitRatio=" + getPromptCacheHitRatio() +
+                ", errorType='" + getErrorType() + '\'' +
                 '}';
     }
 }

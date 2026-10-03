@@ -1,4 +1,4 @@
-package LLM.experiments.runner;
+package LLM.client;
 
 public class LLMCallResult {
 
@@ -7,29 +7,18 @@ public class LLMCallResult {
     private final String answer;
     private final String rawResponse;
 
-    /*
-     * End-to-end HTTP request time measured by our Java client.
-     */
-    private final long responseTimeMs;
 
-    /*
-     * Ollama token statistics.
-     */
+    private final long responseTimeMs;
     private final long promptEvalCount;
+    private final long promptEvalCachedCount;
+
     private final long evalCount;
 
-    /*
-     * Ollama timing statistics.
-     * Ollama returns these values in nanoseconds.
-     */
     private final long totalDurationNs;
     private final long loadDurationNs;
     private final long promptEvalDurationNs;
     private final long evalDurationNs;
 
-    /*
-     * Error information.
-     */
     private final String errorType;
     private final String errorMessage;
 
@@ -39,6 +28,7 @@ public class LLMCallResult {
             String rawResponse,
             long responseTimeMs,
             long promptEvalCount,
+            long promptEvalCachedCount,
             long evalCount,
             long totalDurationNs,
             long loadDurationNs,
@@ -57,6 +47,9 @@ public class LLMCallResult {
 
         this.promptEvalCount =
                 promptEvalCount;
+
+        this.promptEvalCachedCount =
+                promptEvalCachedCount;
 
         this.evalCount =
                 evalCount;
@@ -80,17 +73,12 @@ public class LLMCallResult {
                 safeString(errorMessage);
     }
 
-    /*
-     * ==========================================================
-     * SUCCESS RESULT
-     * ==========================================================
-     */
-
     public static LLMCallResult success(
             String answer,
             String rawResponse,
             long responseTimeMs,
             long promptEvalCount,
+            long promptEvalCachedCount,
             long evalCount,
             long totalDurationNs,
             long loadDurationNs,
@@ -103,6 +91,7 @@ public class LLMCallResult {
                 rawResponse,
                 responseTimeMs,
                 promptEvalCount,
+                promptEvalCachedCount,
                 evalCount,
                 totalDurationNs,
                 loadDurationNs,
@@ -112,12 +101,6 @@ public class LLMCallResult {
                 ""
         );
     }
-
-    /*
-     * ==========================================================
-     * FAILURE RESULT
-     * ==========================================================
-     */
 
     public static LLMCallResult failure(
             long responseTimeMs,
@@ -133,6 +116,7 @@ public class LLMCallResult {
 
                 -1L,
                 -1L,
+                -1L,
 
                 -1L,
                 -1L,
@@ -143,12 +127,6 @@ public class LLMCallResult {
                 errorMessage
         );
     }
-
-    /*
-     * ==========================================================
-     * BASIC RESULT
-     * ==========================================================
-     */
 
     public boolean isSuccess() {
         return success;
@@ -178,14 +156,12 @@ public class LLMCallResult {
         return errorMessage;
     }
 
-    /*
-     * ==========================================================
-     * TOKEN COUNTS
-     * ==========================================================
-     */
-
     public long getPromptEvalCount() {
         return promptEvalCount;
+    }
+
+    public long getPromptEvalCachedCount() {
+        return promptEvalCachedCount;
     }
 
     public long getEvalCount() {
@@ -196,8 +172,40 @@ public class LLMCallResult {
         return promptEvalCount >= 0;
     }
 
+    public boolean hasPromptEvalCachedCount() {
+        return promptEvalCachedCount >= 0;
+    }
+
     public boolean hasEvalCount() {
         return evalCount >= 0;
+    }
+
+    public long getPromptEvalUncachedCount() {
+
+        if (!hasPromptEvalCount()
+                || !hasPromptEvalCachedCount()) {
+
+            return -1L;
+        }
+
+        return Math.max(
+                0L,
+                promptEvalCount
+                        - promptEvalCachedCount
+        );
+    }
+
+    public double getPromptCacheHitRatio() {
+
+        if (!hasPromptEvalCount()
+                || !hasPromptEvalCachedCount()
+                || promptEvalCount <= 0) {
+
+            return -1.0;
+        }
+
+        return promptEvalCachedCount
+                / (double) promptEvalCount;
     }
 
     public long getTotalTokenCount() {
@@ -218,12 +226,6 @@ public class LLMCallResult {
                 + safeEvalCount;
     }
 
-    /*
-     * ==========================================================
-     * RAW OLLAMA DURATIONS
-     * ==========================================================
-     */
-
     public long getTotalDurationNs() {
         return totalDurationNs;
     }
@@ -239,12 +241,6 @@ public class LLMCallResult {
     public long getEvalDurationNs() {
         return evalDurationNs;
     }
-
-    /*
-     * ==========================================================
-     * OLLAMA DURATIONS IN MILLISECONDS
-     * ==========================================================
-     */
 
     public long getTotalDurationMs() {
 
@@ -273,12 +269,6 @@ public class LLMCallResult {
                 evalDurationNs
         );
     }
-
-    /*
-     * ==========================================================
-     * PERFORMANCE METRICS
-     * ==========================================================
-     */
 
     public double getPromptTokensPerSecond() {
 
@@ -310,12 +300,6 @@ public class LLMCallResult {
         );
     }
 
-    /*
-     * ==========================================================
-     * HELPERS
-     * ==========================================================
-     */
-
     private static long nanosToMillis(
             long nanos
     ) {
@@ -338,12 +322,6 @@ public class LLMCallResult {
         return value.trim();
     }
 
-    /*
-     * ==========================================================
-     * DEBUG
-     * ==========================================================
-     */
-
     @Override
     public String toString() {
 
@@ -356,6 +334,15 @@ public class LLMCallResult {
 
                 ", promptEvalCount="
                 + promptEvalCount +
+
+                ", promptEvalCachedCount="
+                + promptEvalCachedCount +
+
+                ", promptEvalUncachedCount="
+                + getPromptEvalUncachedCount() +
+
+                ", promptCacheHitRatio="
+                + getPromptCacheHitRatio() +
 
                 ", evalCount="
                 + evalCount +

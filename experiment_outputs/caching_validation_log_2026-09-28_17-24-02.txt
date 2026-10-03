@@ -1,0 +1,2883 @@
+============================================================
+Run ID: run_0001
+Timestamp: 2026-09-28 17:24:02
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_11_structured
+Pair ID: pair_11
+Wording Type: structured
+Difficulty: complex
+Category: structured_wording
+
+Question:
+What are the total store sales by month and customer state during 1997 for customers in the USA who purchased products from the Milk subcategory?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month, customer_dim.state_province]
+sigma: [date_dim.the_year='1997', customer_dim.country='USA', product_dim.product_subcategory='Milk']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_and_month","customer_dim.state_province"],"sigma":["date_dim.the_year='1997'","customer_dim.country='USA'","product_dim.product_subcategory='Milk'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8097
+prompt_utf8_bytes: 8097
+prompt_estimated_tokens_chars: 2025
+prompt_estimated_tokens_bytes: 2025
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 3377
+prompt_eval_count: 2021
+eval_count: 79
+total_tokens: 2100
+total_duration_ms: 3347
+load_duration_ms: 3
+adjusted_duration_ms: 3344
+adjusted_duration_s: 3.344
+prompt_eval_duration_ms: 981
+eval_duration_ms: 1182
+prompt_tokens_per_second: 2060.05
+output_tokens_per_second: 66.81
+============================================================
+
+============================================================
+Run ID: run_0002
+Timestamp: 2026-09-28 17:24:06
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_11_natural
+Pair ID: pair_11
+Wording Type: natural
+Difficulty: complex
+Category: natural_wording
+
+Question:
+For customers in the USA who bought Milk products in 1997, how much sales revenue came from each state in each month?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month, customer_dim.state_province]
+sigma: [date_dim.the_year='1997', customer_dim.country='USA', product_dim.product_subcategory='Milk']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["customer_dim.state_province","date_dim.year_and_month"],"sigma":["customer_dim.country='USA'","product_dim.product_name='Milk'","date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 90.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [product_dim.product_subcategory]
+- Extra sigma fields: [product_dim.product_name]
+
+STRUCTURAL VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 90.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [product_dim.product_subcategory]
+- Extra sigma fields: [product_dim.product_name]
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.95
+gamma_similarity: 1.00
+sigma_similarity: 0.83
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8069
+prompt_utf8_bytes: 8069
+prompt_estimated_tokens_chars: 2018
+prompt_estimated_tokens_bytes: 2018
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1774
+prompt_eval_count: 2018
+eval_count: 79
+total_tokens: 2097
+total_duration_ms: 1763
+load_duration_ms: 1
+adjusted_duration_ms: 1762
+adjusted_duration_s: 1.762
+prompt_eval_duration_ms: 574
+eval_duration_ms: 1174
+prompt_tokens_per_second: 3510.99
+output_tokens_per_second: 67.27
+============================================================
+
+============================================================
+Run ID: run_0003
+Timestamp: 2026-09-28 17:24:07
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_14_natural
+Pair ID: pair_14
+Wording Type: natural
+Difficulty: complex
+Category: natural_wording
+
+Question:
+For Food purchases made by customers from Washington in the USA during 1997, how did sales revenue vary across quarters and brands?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_quarter, product_dim.brand_name]
+sigma: [product_dim.product_family='Food', customer_dim.state_province='WA', customer_dim.country='USA', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_quarter","product_dim.brand_name"],"sigma":["product_dim.product_category='Food'","customer_dim.state_province='Washington'","customer_dim.country='USA'","date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [product_dim.product_family]
+- Extra sigma fields: [product_dim.product_category]
+- Wrong sigma values: [customer_dim.state_province]
+
+STRUCTURAL VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 92.50
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [product_dim.product_family]
+- Extra sigma fields: [product_dim.product_category]
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.93
+gamma_similarity: 1.00
+sigma_similarity: 0.76
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8083
+prompt_utf8_bytes: 8083
+prompt_estimated_tokens_chars: 2021
+prompt_estimated_tokens_bytes: 2021
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1903
+prompt_eval_count: 2018
+eval_count: 88
+total_tokens: 2106
+total_duration_ms: 1891
+load_duration_ms: 1
+adjusted_duration_ms: 1890
+adjusted_duration_s: 1.890
+prompt_eval_duration_ms: 568
+eval_duration_ms: 1308
+prompt_tokens_per_second: 3552.49
+output_tokens_per_second: 67.28
+============================================================
+
+============================================================
+Run ID: run_0004
+Timestamp: 2026-09-28 17:24:09
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_14_structured
+Pair ID: pair_14
+Wording Type: structured
+Difficulty: complex
+Category: structured_wording
+
+Question:
+What are the total store sales by quarter and brand during 1997 for products in the Food product family purchased by customers from Washington state in the USA?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_quarter, product_dim.brand_name]
+sigma: [product_dim.product_family='Food', customer_dim.state_province='WA', customer_dim.country='USA', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_quarter","product_dim.brand_name"],"sigma":["date_dim.the_year='1997'","product_dim.product_family='Food'","customer_dim.state_province='Washington'","customer_dim.country='USA'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 92.50
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [customer_dim.state_province]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.99
+gamma_similarity: 1.00
+sigma_similarity: 0.95
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8112
+prompt_utf8_bytes: 8112
+prompt_estimated_tokens_chars: 2028
+prompt_estimated_tokens_bytes: 2028
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1920
+prompt_eval_count: 2023
+eval_count: 88
+total_tokens: 2111
+total_duration_ms: 1910
+load_duration_ms: 1
+adjusted_duration_ms: 1909
+adjusted_duration_s: 1.909
+prompt_eval_duration_ms: 584
+eval_duration_ms: 1309
+prompt_tokens_per_second: 3463.00
+output_tokens_per_second: 67.19
+============================================================
+
+============================================================
+Run ID: run_0005
+Timestamp: 2026-09-28 17:24:11
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_07_natural
+Pair ID: pair_07
+Wording Type: natural
+Difficulty: medium
+Category: natural_wording
+
+Question:
+For stores in the USA in 1997, how did the average store cost compare across product families?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_cost
+gamma: [product_dim.product_family]
+sigma: [store_dim.store_country='USA', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_cost","gamma":["product_dim.product_family"],"sigma":["store_dim.store_country='USA'","date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8046
+prompt_utf8_bytes: 8046
+prompt_estimated_tokens_chars: 2012
+prompt_estimated_tokens_bytes: 2012
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1494
+prompt_eval_count: 2013
+eval_count: 60
+total_tokens: 2073
+total_duration_ms: 1483
+load_duration_ms: 1
+adjusted_duration_ms: 1482
+adjusted_duration_s: 1.482
+prompt_eval_duration_ms: 581
+eval_duration_ms: 890
+prompt_tokens_per_second: 3462.78
+output_tokens_per_second: 67.36
+============================================================
+
+============================================================
+Run ID: run_0006
+Timestamp: 2026-09-28 17:24:13
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_07_structured
+Pair ID: pair_07
+Wording Type: structured
+Difficulty: medium
+Category: structured_wording
+
+Question:
+What is the average store cost by product family for stores in the USA during 1997?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_cost
+gamma: [product_dim.product_family]
+sigma: [store_dim.store_country='USA', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_cost","gamma":["product_dim.product_family"],"sigma":["store_dim.store_country='USA'","date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8035
+prompt_utf8_bytes: 8035
+prompt_estimated_tokens_chars: 2009
+prompt_estimated_tokens_bytes: 2009
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1498
+prompt_eval_count: 2011
+eval_count: 60
+total_tokens: 2071
+total_duration_ms: 1488
+load_duration_ms: 1
+adjusted_duration_ms: 1487
+adjusted_duration_s: 1.487
+prompt_eval_duration_ms: 581
+eval_duration_ms: 891
+prompt_tokens_per_second: 3458.65
+output_tokens_per_second: 67.33
+============================================================
+
+============================================================
+Run ID: run_0007
+Timestamp: 2026-09-28 17:24:14
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_08_natural
+Pair ID: pair_08
+Wording Type: natural
+Difficulty: medium
+Category: natural_wording
+
+Question:
+In 1997, how much sales revenue came from each product category under each type of promotional media?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [promotion_dim.media_type, product_dim.product_category]
+sigma: [date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_category","promotion_dim.media_type"],"sigma":["date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8053
+prompt_utf8_bytes: 8053
+prompt_estimated_tokens_chars: 2014
+prompt_estimated_tokens_bytes: 2014
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1449
+prompt_eval_count: 2013
+eval_count: 57
+total_tokens: 2070
+total_duration_ms: 1438
+load_duration_ms: 1
+adjusted_duration_ms: 1437
+adjusted_duration_s: 1.437
+prompt_eval_duration_ms: 580
+eval_duration_ms: 843
+prompt_tokens_per_second: 3468.91
+output_tokens_per_second: 67.56
+============================================================
+
+============================================================
+Run ID: run_0008
+Timestamp: 2026-09-28 17:24:16
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_08_structured
+Pair ID: pair_08
+Wording Type: structured
+Difficulty: medium
+Category: structured_wording
+
+Question:
+What are the total store sales by promotion media type and product category during 1997?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [promotion_dim.media_type, product_dim.product_category]
+sigma: [date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["promotion_dim.media_type","product_dim.product_category"],"sigma":["date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8040
+prompt_utf8_bytes: 8040
+prompt_estimated_tokens_chars: 2010
+prompt_estimated_tokens_bytes: 2010
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1454
+prompt_eval_count: 2010
+eval_count: 57
+total_tokens: 2067
+total_duration_ms: 1442
+load_duration_ms: 1
+adjusted_duration_ms: 1441
+adjusted_duration_s: 1.441
+prompt_eval_duration_ms: 581
+eval_duration_ms: 845
+prompt_tokens_per_second: 3456.58
+output_tokens_per_second: 67.40
+============================================================
+
+============================================================
+Run ID: run_0009
+Timestamp: 2026-09-28 17:24:17
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_09_structured
+Pair ID: pair_09
+Wording Type: structured
+Difficulty: medium
+Category: structured_wording
+
+Question:
+What are the total unit sales by customer gender for Golden-card customers in the USA?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: unit_sales
+gamma: [customer_dim.gender]
+sigma: [customer_dim.member_card='Golden', customer_dim.country='USA']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"unit_sales","gamma":["customer_dim.gender"],"sigma":["customer_dim.member_card='Golden-card'","customer_dim.country='USA'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [customer_dim.member_card]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.97
+gamma_similarity: 1.00
+sigma_similarity: 0.90
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8038
+prompt_utf8_bytes: 8038
+prompt_estimated_tokens_chars: 2010
+prompt_estimated_tokens_bytes: 2010
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1408
+prompt_eval_count: 2008
+eval_count: 55
+total_tokens: 2063
+total_duration_ms: 1397
+load_duration_ms: 1
+adjusted_duration_ms: 1396
+adjusted_duration_s: 1.396
+prompt_eval_duration_ms: 567
+eval_duration_ms: 814
+prompt_tokens_per_second: 3541.09
+output_tokens_per_second: 67.54
+============================================================
+
+============================================================
+Run ID: run_0010
+Timestamp: 2026-09-28 17:24:19
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_09_natural
+Pair ID: pair_09
+Wording Type: natural
+Difficulty: medium
+Category: natural_wording
+
+Question:
+Among Golden-card customers in the USA, how many units did men and women buy?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: unit_sales
+gamma: [customer_dim.gender]
+sigma: [customer_dim.member_card='Golden', customer_dim.country='USA']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"unit_sales","gamma":["customer_dim.gender"],"sigma":["customer_dim.member_card='Golden-card'","customer_dim.country='USA'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [customer_dim.member_card]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.97
+gamma_similarity: 1.00
+sigma_similarity: 0.90
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8029
+prompt_utf8_bytes: 8029
+prompt_estimated_tokens_chars: 2008
+prompt_estimated_tokens_bytes: 2008
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1436
+prompt_eval_count: 2008
+eval_count: 55
+total_tokens: 2063
+total_duration_ms: 1425
+load_duration_ms: 1
+adjusted_duration_ms: 1424
+adjusted_duration_s: 1.424
+prompt_eval_duration_ms: 596
+eval_duration_ms: 813
+prompt_tokens_per_second: 3364.53
+output_tokens_per_second: 67.64
+============================================================
+
+============================================================
+Run ID: run_0011
+Timestamp: 2026-09-28 17:24:20
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_05_structured
+Pair ID: pair_05
+Wording Type: structured
+Difficulty: simple
+Category: structured_wording
+
+Question:
+What are the total store sales for stores in California during 1998?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: []
+sigma: [store_dim.store_state='CA', date_dim.the_year='1998']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":[],"sigma":["store_dim.store_state='California'","date_dim.the_year='1998'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [store_dim.store_state]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.97
+gamma_similarity: 1.00
+sigma_similarity: 0.90
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8020
+prompt_utf8_bytes: 8020
+prompt_estimated_tokens_chars: 2005
+prompt_estimated_tokens_bytes: 2005
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1390
+prompt_eval_count: 2007
+eval_count: 53
+total_tokens: 2060
+total_duration_ms: 1381
+load_duration_ms: 0
+adjusted_duration_ms: 1381
+adjusted_duration_s: 1.381
+prompt_eval_duration_ms: 582
+eval_duration_ms: 784
+prompt_tokens_per_second: 3444.94
+output_tokens_per_second: 67.59
+============================================================
+
+============================================================
+Run ID: run_0012
+Timestamp: 2026-09-28 17:24:21
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_05_natural
+Pair ID: pair_05
+Wording Type: natural
+Difficulty: simple
+Category: natural_wording
+
+Question:
+How much sales revenue came from stores in California during 1998?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: []
+sigma: [store_dim.store_state='CA', date_dim.the_year='1998']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":[],"sigma":["store_dim.store_state='California'","date_dim.the_year='1998'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [store_dim.store_state]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.97
+gamma_similarity: 1.00
+sigma_similarity: 0.90
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8018
+prompt_utf8_bytes: 8018
+prompt_estimated_tokens_chars: 2005
+prompt_estimated_tokens_bytes: 2005
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1391
+prompt_eval_count: 2006
+eval_count: 53
+total_tokens: 2059
+total_duration_ms: 1380
+load_duration_ms: 0
+adjusted_duration_ms: 1380
+adjusted_duration_s: 1.380
+prompt_eval_duration_ms: 581
+eval_duration_ms: 784
+prompt_tokens_per_second: 3449.00
+output_tokens_per_second: 67.54
+============================================================
+
+============================================================
+Run ID: run_0013
+Timestamp: 2026-09-28 17:24:23
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_15_natural
+Pair ID: pair_15
+Wording Type: natural
+Difficulty: complex
+Category: natural_wording
+
+Question:
+When Daily Paper promotions were used in California during Q3 1997, how did the average sales revenue differ across product categories and store types?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_sales
+gamma: [product_dim.product_category, store_dim.store_type]
+sigma: [promotion_dim.media_type='Daily Paper', store_dim.store_state='CA', date_dim.year_quarter='1997-Q3']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_sales","gamma":["product_dim.product_category","store_dim.store_type"],"sigma":["promotion_dim.promotion_name='Daily Paper'","store_dim.store_state='California'","date_dim.year_quarter='1997 Q3'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 70.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 2
+
+Strict validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [promotion_dim.media_type]
+- Extra sigma fields: [promotion_dim.promotion_name]
+- Wrong sigma values: [store_dim.store_state, date_dim.year_quarter]
+
+STRUCTURAL VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 90.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 2
+
+Structural validation errors:
+- Sigma validation failed.
+- Missing sigma fields: [promotion_dim.media_type]
+- Extra sigma fields: [promotion_dim.promotion_name]
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.89
+gamma_similarity: 1.00
+sigma_similarity: 0.64
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8103
+prompt_utf8_bytes: 8103
+prompt_estimated_tokens_chars: 2026
+prompt_estimated_tokens_bytes: 2026
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1828
+prompt_eval_count: 2021
+eval_count: 82
+total_tokens: 2103
+total_duration_ms: 1816
+load_duration_ms: 0
+adjusted_duration_ms: 1816
+adjusted_duration_s: 1.816
+prompt_eval_duration_ms: 583
+eval_duration_ms: 1217
+prompt_tokens_per_second: 3462.99
+output_tokens_per_second: 67.33
+============================================================
+
+============================================================
+Run ID: run_0014
+Timestamp: 2026-09-28 17:24:25
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_15_structured
+Pair ID: pair_15
+Wording Type: structured
+Difficulty: complex
+Category: structured_wording
+
+Question:
+What is the average store sales by product category and store type in California during Q3 1997 when the promotion media type was Daily Paper?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_sales
+gamma: [product_dim.product_category, store_dim.store_type]
+sigma: [promotion_dim.media_type='Daily Paper', store_dim.store_state='CA', date_dim.year_quarter='1997-Q3']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_sales","gamma":["product_dim.product_category","store_dim.store_type"],"sigma":["store_dim.store_state='California'","date_dim.year_quarter='1997 Q3'","promotion_dim.media_type='Daily Paper'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 80.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 2
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [store_dim.store_state, date_dim.year_quarter]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 2
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.96
+gamma_similarity: 1.00
+sigma_similarity: 0.87
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8094
+prompt_utf8_bytes: 8094
+prompt_estimated_tokens_chars: 2024
+prompt_estimated_tokens_bytes: 2024
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1840
+prompt_eval_count: 2021
+eval_count: 82
+total_tokens: 2103
+total_duration_ms: 1830
+load_duration_ms: 1
+adjusted_duration_ms: 1829
+adjusted_duration_s: 1.829
+prompt_eval_duration_ms: 588
+eval_duration_ms: 1217
+prompt_tokens_per_second: 3433.89
+output_tokens_per_second: 67.37
+============================================================
+
+============================================================
+Run ID: run_0015
+Timestamp: 2026-09-28 17:24:27
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_01_structured
+Pair ID: pair_01
+Wording Type: structured
+Difficulty: simple
+Category: structured_wording
+
+Question:
+What are the total store sales by product category for the year 1997?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_category]
+sigma: [date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_category"],"sigma":["date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8021
+prompt_utf8_bytes: 8021
+prompt_estimated_tokens_chars: 2006
+prompt_estimated_tokens_bytes: 2006
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1326
+prompt_eval_count: 2008
+eval_count: 49
+total_tokens: 2057
+total_duration_ms: 1315
+load_duration_ms: 1
+adjusted_duration_ms: 1314
+adjusted_duration_s: 1.314
+prompt_eval_duration_ms: 578
+eval_duration_ms: 724
+prompt_tokens_per_second: 3470.54
+output_tokens_per_second: 67.61
+============================================================
+
+============================================================
+Run ID: run_0016
+Timestamp: 2026-09-28 17:24:28
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_01_natural
+Pair ID: pair_01
+Wording Type: natural
+Difficulty: simple
+Category: natural_wording
+
+Question:
+In 1997, how much sales revenue did each product category generate?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_category]
+sigma: [date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_category"],"sigma":["date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8019
+prompt_utf8_bytes: 8019
+prompt_estimated_tokens_chars: 2005
+prompt_estimated_tokens_bytes: 2005
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1335
+prompt_eval_count: 2007
+eval_count: 49
+total_tokens: 2056
+total_duration_ms: 1324
+load_duration_ms: 1
+adjusted_duration_ms: 1323
+adjusted_duration_s: 1.323
+prompt_eval_duration_ms: 583
+eval_duration_ms: 725
+prompt_tokens_per_second: 3439.58
+output_tokens_per_second: 67.54
+============================================================
+
+============================================================
+Run ID: run_0017
+Timestamp: 2026-09-28 17:24:29
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_12_structured
+Pair ID: pair_12
+Wording Type: structured
+Difficulty: complex
+Category: structured_wording
+
+Question:
+What are the total store sales by product subcategory and quarter during 1997 for products in the Breakfast Foods category sold by stores in the USA?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_subcategory, date_dim.year_quarter]
+sigma: [date_dim.the_year='1997', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_subcategory","date_dim.year_quarter"],"sigma":["date_dim.the_year='1997'","product_dim.product_category='Breakfast Foods'","store_dim.store_country='USA'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8101
+prompt_utf8_bytes: 8101
+prompt_estimated_tokens_chars: 2026
+prompt_estimated_tokens_bytes: 2026
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1798
+prompt_eval_count: 2022
+eval_count: 80
+total_tokens: 2102
+total_duration_ms: 1788
+load_duration_ms: 1
+adjusted_duration_ms: 1787
+adjusted_duration_s: 1.787
+prompt_eval_duration_ms: 583
+eval_duration_ms: 1189
+prompt_tokens_per_second: 3465.97
+output_tokens_per_second: 67.25
+============================================================
+
+============================================================
+Run ID: run_0018
+Timestamp: 2026-09-28 17:24:31
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_12_natural
+Pair ID: pair_12
+Wording Type: natural
+Difficulty: complex
+Category: natural_wording
+
+Question:
+For Breakfast Foods sold by stores in the USA in 1997, how much sales revenue came from each product subcategory in each quarter?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_subcategory, date_dim.year_quarter]
+sigma: [date_dim.the_year='1997', product_dim.product_category='Breakfast Foods', store_dim.store_country='USA']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_subcategory","date_dim.year_quarter"],"sigma":["product_dim.product_category='Breakfast Foods'","store_dim.store_country='USA'","date_dim.the_year='1997'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8081
+prompt_utf8_bytes: 8081
+prompt_estimated_tokens_chars: 2021
+prompt_estimated_tokens_bytes: 2021
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1805
+prompt_eval_count: 2020
+eval_count: 80
+total_tokens: 2100
+total_duration_ms: 1790
+load_duration_ms: 0
+adjusted_duration_ms: 1790
+adjusted_duration_s: 1.790
+prompt_eval_duration_ms: 582
+eval_duration_ms: 1190
+prompt_tokens_per_second: 3466.81
+output_tokens_per_second: 67.22
+============================================================
+
+============================================================
+Run ID: run_0019
+Timestamp: 2026-09-28 17:24:33
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_02_natural
+Pair ID: pair_02
+Wording Type: natural
+Difficulty: simple
+Category: natural_wording
+
+Question:
+How does the average store cost compare across the different store types?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_cost
+gamma: [store_dim.store_type]
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_cost","gamma":["store_dim.store_type"],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8025
+prompt_utf8_bytes: 8025
+prompt_estimated_tokens_chars: 2007
+prompt_estimated_tokens_bytes: 2007
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1148
+prompt_eval_count: 2003
+eval_count: 36
+total_tokens: 2039
+total_duration_ms: 1137
+load_duration_ms: 1
+adjusted_duration_ms: 1136
+adjusted_duration_s: 1.136
+prompt_eval_duration_ms: 585
+eval_duration_ms: 528
+prompt_tokens_per_second: 3422.90
+output_tokens_per_second: 68.12
+============================================================
+
+============================================================
+Run ID: run_0020
+Timestamp: 2026-09-28 17:24:34
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_02_structured
+Pair ID: pair_02
+Wording Type: structured
+Difficulty: simple
+Category: structured_wording
+
+Question:
+What is the average store cost by store type?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Avg
+measure: store_cost
+gamma: [store_dim.store_type]
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Avg","measure":"store_cost","gamma":["store_dim.store_type"],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 7997
+prompt_utf8_bytes: 7997
+prompt_estimated_tokens_chars: 2000
+prompt_estimated_tokens_bytes: 2000
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1143
+prompt_eval_count: 2000
+eval_count: 36
+total_tokens: 2036
+total_duration_ms: 1133
+load_duration_ms: 1
+adjusted_duration_ms: 1132
+adjusted_duration_s: 1.132
+prompt_eval_duration_ms: 582
+eval_duration_ms: 531
+prompt_tokens_per_second: 3434.39
+output_tokens_per_second: 67.76
+============================================================
+
+============================================================
+Run ID: run_0021
+Timestamp: 2026-09-28 17:24:35
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_03_natural
+Pair ID: pair_03
+Wording Type: natural
+Difficulty: simple
+Category: natural_wording
+
+Question:
+How much sales revenue was generated overall?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: []
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":[],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 7997
+prompt_utf8_bytes: 7997
+prompt_estimated_tokens_chars: 2000
+prompt_estimated_tokens_bytes: 2000
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1035
+prompt_eval_count: 1998
+eval_count: 29
+total_tokens: 2027
+total_duration_ms: 1024
+load_duration_ms: 1
+adjusted_duration_ms: 1023
+adjusted_duration_s: 1.023
+prompt_eval_duration_ms: 580
+eval_duration_ms: 424
+prompt_tokens_per_second: 3444.06
+output_tokens_per_second: 68.38
+============================================================
+
+============================================================
+Run ID: run_0022
+Timestamp: 2026-09-28 17:24:36
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_03_structured
+Pair ID: pair_03
+Wording Type: structured
+Difficulty: simple
+Category: structured_wording
+
+Question:
+What are the total store sales overall?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: []
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":[],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 7991
+prompt_utf8_bytes: 7991
+prompt_estimated_tokens_chars: 1998
+prompt_estimated_tokens_bytes: 1998
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1040
+prompt_eval_count: 1998
+eval_count: 29
+total_tokens: 2027
+total_duration_ms: 1028
+load_duration_ms: 1
+adjusted_duration_ms: 1027
+adjusted_duration_s: 1.027
+prompt_eval_duration_ms: 588
+eval_duration_ms: 425
+prompt_tokens_per_second: 3393.98
+output_tokens_per_second: 68.20
+============================================================
+
+============================================================
+Run ID: run_0023
+Timestamp: 2026-09-28 17:24:37
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_06_natural
+Pair ID: pair_06
+Wording Type: natural
+Difficulty: medium
+Category: natural_wording
+
+Question:
+For stores in the USA in 1998, how many units were sold in each state during each quarter?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: unit_sales
+gamma: [store_dim.store_state, date_dim.year_quarter]
+sigma: [store_dim.store_country='USA', date_dim.the_year='1998']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"unit_sales","gamma":["store_dim.store_state","date_dim.year_quarter"],"sigma":["store_dim.store_country='USA'","date_dim.the_year='1998'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8042
+prompt_utf8_bytes: 8042
+prompt_estimated_tokens_chars: 2011
+prompt_estimated_tokens_bytes: 2011
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1625
+prompt_eval_count: 2014
+eval_count: 68
+total_tokens: 2082
+total_duration_ms: 1613
+load_duration_ms: 1
+adjusted_duration_ms: 1612
+adjusted_duration_s: 1.612
+prompt_eval_duration_ms: 583
+eval_duration_ms: 1013
+prompt_tokens_per_second: 3454.36
+output_tokens_per_second: 67.10
+============================================================
+
+============================================================
+Run ID: run_0024
+Timestamp: 2026-09-28 17:24:39
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_06_structured
+Pair ID: pair_06
+Wording Type: structured
+Difficulty: medium
+Category: structured_wording
+
+Question:
+What are the total unit sales by store state and quarter for stores in the USA during 1998?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: unit_sales
+gamma: [store_dim.store_state, date_dim.year_quarter]
+sigma: [store_dim.store_country='USA', date_dim.the_year='1998']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"unit_sales","gamma":["store_dim.store_state","date_dim.year_quarter"],"sigma":["store_dim.store_country='USA'","date_dim.the_year='1998'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8043
+prompt_utf8_bytes: 8043
+prompt_estimated_tokens_chars: 2011
+prompt_estimated_tokens_bytes: 2011
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1625
+prompt_eval_count: 2013
+eval_count: 68
+total_tokens: 2081
+total_duration_ms: 1614
+load_duration_ms: 0
+adjusted_duration_ms: 1614
+adjusted_duration_s: 1.614
+prompt_eval_duration_ms: 583
+eval_duration_ms: 1011
+prompt_tokens_per_second: 3450.93
+output_tokens_per_second: 67.21
+============================================================
+
+============================================================
+Run ID: run_0025
+Timestamp: 2026-09-28 17:24:40
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_10_natural
+Pair ID: pair_10
+Wording Type: natural
+Difficulty: medium
+Category: natural_wording
+
+Question:
+During 1997, how did the sales revenue from low-fat products change from month to month?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month]
+sigma: [product_dim.low_fat='1', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_and_month"],"sigma":["date_dim.the_year='1997'","product_dim.low_fat='1'"]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8040
+prompt_utf8_bytes: 8040
+prompt_estimated_tokens_chars: 2010
+prompt_estimated_tokens_bytes: 2010
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1528
+prompt_eval_count: 2013
+eval_count: 62
+total_tokens: 2075
+total_duration_ms: 1517
+load_duration_ms: 0
+adjusted_duration_ms: 1517
+adjusted_duration_s: 1.517
+prompt_eval_duration_ms: 581
+eval_duration_ms: 921
+prompt_tokens_per_second: 3463.55
+output_tokens_per_second: 67.25
+============================================================
+
+============================================================
+Run ID: run_0026
+Timestamp: 2026-09-28 17:24:42
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_10_structured
+Pair ID: pair_10
+Wording Type: structured
+Difficulty: medium
+Category: structured_wording
+
+Question:
+What are the total store sales by month during 1997 for low-fat products?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month]
+sigma: [product_dim.low_fat='1', date_dim.the_year='1997']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_and_month"],"sigma":["date_dim.the_year='1997'","product_dim.low_fat='low-fat'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 85.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [product_dim.low_fat]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 1
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.96
+gamma_similarity: 1.00
+sigma_similarity: 0.88
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8025
+prompt_utf8_bytes: 8025
+prompt_estimated_tokens_chars: 2007
+prompt_estimated_tokens_bytes: 2007
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1572
+prompt_eval_count: 2010
+eval_count: 64
+total_tokens: 2074
+total_duration_ms: 1560
+load_duration_ms: 1
+adjusted_duration_ms: 1559
+adjusted_duration_s: 1.559
+prompt_eval_duration_ms: 583
+eval_duration_ms: 951
+prompt_tokens_per_second: 3443.04
+output_tokens_per_second: 67.23
+============================================================
+
+============================================================
+Run ID: run_0027
+Timestamp: 2026-09-28 17:24:44
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_13_structured
+Pair ID: pair_13
+Wording Type: structured
+Difficulty: complex
+Category: structured_wording
+
+Question:
+What are the total store sales by month and customer city during Q3 1997 for customers in California when the promotion media type was Daily Paper?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month, customer_dim.city]
+sigma: [date_dim.year_quarter='1997-Q3', customer_dim.state_province='CA', promotion_dim.media_type='Daily Paper']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["date_dim.year_and_month","customer_dim.city"],"sigma":["date_dim.year_quarter='1997 Q3'","customer_dim.state_province='California'","promotion_dim.media_type='Daily Paper'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 80.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 2
+
+Strict validation errors:
+- Sigma validation failed.
+- Wrong sigma values: [date_dim.year_quarter, customer_dim.state_province]
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 2
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.96
+gamma_similarity: 1.00
+sigma_similarity: 0.87
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8099
+prompt_utf8_bytes: 8099
+prompt_estimated_tokens_chars: 2025
+prompt_estimated_tokens_bytes: 2025
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1826
+prompt_eval_count: 2022
+eval_count: 82
+total_tokens: 2104
+total_duration_ms: 1816
+load_duration_ms: 1
+adjusted_duration_ms: 1815
+adjusted_duration_s: 1.815
+prompt_eval_duration_ms: 571
+eval_duration_ms: 1222
+prompt_tokens_per_second: 3536.55
+output_tokens_per_second: 67.08
+============================================================
+
+============================================================
+Run ID: run_0028
+Timestamp: 2026-09-28 17:24:45
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_13_natural
+Pair ID: pair_13
+Wording Type: natural
+Difficulty: complex
+Category: natural_wording
+
+Question:
+During Q3 1997, when Daily Paper promotions were used for customers in California, how much sales revenue came from each customer city in each month?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [date_dim.year_and_month, customer_dim.city]
+sigma: [date_dim.year_quarter='1997-Q3', customer_dim.state_province='CA', promotion_dim.media_type='Daily Paper']
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["store_dim.store_city","date_dim.year_and_month"],"sigma":["date_dim.year_quarter='1997 Q3'","promotion_dim.promotion_name='Daily Paper'","customer_dim.state_province='California'"]}
+
+STRICT VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 55.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: false
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 1
+extra_gamma_count: 1
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 2
+
+Strict validation errors:
+- Gamma validation failed.
+- Missing gamma fields: [customer_dim.city]
+- Extra gamma fields: [store_dim.store_city]
+- Sigma validation failed.
+- Missing sigma fields: [promotion_dim.media_type]
+- Extra sigma fields: [promotion_dim.promotion_name]
+- Wrong sigma values: [date_dim.year_quarter, customer_dim.state_province]
+
+STRUCTURAL VALIDATION:
+valid: false
+accuracy: 0.00
+weighted_score: 75.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: false
+sigma_correct: false
+unknown_fields_count: 0
+missing_gamma_count: 1
+extra_gamma_count: 1
+missing_sigma_count: 1
+extra_sigma_count: 1
+wrong_sigma_value_count: 2
+
+Structural validation errors:
+- Gamma validation failed.
+- Missing gamma fields: [customer_dim.city]
+- Extra gamma fields: [store_dim.store_city]
+- Sigma validation failed.
+- Missing sigma fields: [promotion_dim.media_type]
+- Extra sigma fields: [promotion_dim.promotion_name]
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 0.74
+gamma_similarity: 0.50
+sigma_similarity: 0.64
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8101
+prompt_utf8_bytes: 8101
+prompt_estimated_tokens_chars: 2026
+prompt_estimated_tokens_bytes: 2026
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1880
+prompt_eval_count: 2023
+eval_count: 84
+total_tokens: 2107
+total_duration_ms: 1870
+load_duration_ms: 1
+adjusted_duration_ms: 1869
+adjusted_duration_s: 1.869
+prompt_eval_duration_ms: 597
+eval_duration_ms: 1254
+prompt_tokens_per_second: 3385.93
+output_tokens_per_second: 66.94
+============================================================
+
+============================================================
+Run ID: run_0029
+Timestamp: 2026-09-28 17:24:47
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_04_structured
+Pair ID: pair_04
+Wording Type: structured
+Difficulty: simple
+Category: structured_wording
+
+Question:
+What are the total store sales by product family?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_family]
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_family"],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8001
+prompt_utf8_bytes: 8001
+prompt_estimated_tokens_chars: 2001
+prompt_estimated_tokens_bytes: 2001
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1156
+prompt_eval_count: 2000
+eval_count: 36
+total_tokens: 2036
+total_duration_ms: 1145
+load_duration_ms: 1
+adjusted_duration_ms: 1144
+adjusted_duration_s: 1.144
+prompt_eval_duration_ms: 591
+eval_duration_ms: 530
+prompt_tokens_per_second: 3383.42
+output_tokens_per_second: 67.91
+============================================================
+
+============================================================
+Run ID: run_0030
+Timestamp: 2026-09-28 17:24:48
+LLM: gemma4:31b
+Prompt combination: instructions_for_query_generation
+Test ID: pair_04_natural
+Pair ID: pair_04
+Wording Type: natural
+Difficulty: simple
+Category: natural_wording
+
+Question:
+How much sales revenue did each product family generate?
+
+Expected query:
+cubeName: sales_cube
+aggregateFunction: Sum
+measure: store_sales
+gamma: [product_dim.product_family]
+sigma: []
+
+Actual LLM answer:
+{"cubeName":"sales_cube","queryName":"","aggregateFunction":"Sum","measure":"store_sales","gamma":["product_dim.product_family"],"sigma":[]}
+
+STRICT VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Strict validation errors:
+- No validation errors.
+
+STRUCTURAL VALIDATION:
+valid: true
+accuracy: 1.00
+weighted_score: 100.00
+format_valid: true
+cube_correct: true
+aggregate_correct: true
+measure_correct: true
+gamma_correct: true
+sigma_correct: true
+unknown_fields_count: 0
+missing_gamma_count: 0
+extra_gamma_count: 0
+missing_sigma_count: 0
+extra_sigma_count: 0
+wrong_sigma_value_count: 0
+
+Structural validation errors:
+- No validation errors.
+
+QUERY SIMILARITY:
+available: true
+overall_similarity: 1.00
+gamma_similarity: 1.00
+sigma_similarity: 1.00
+measure_similarity: 1.00
+aggregate_similarity: 1.00
+cube_similarity: 1.00
+
+Prompt size:
+prompt_chars: 8008
+prompt_utf8_bytes: 8008
+prompt_estimated_tokens_chars: 2002
+prompt_estimated_tokens_bytes: 2002
+
+Timing and LLM stats:
+llm_call_success: true
+response_time_ms: 1144
+prompt_eval_count: 2000
+eval_count: 36
+total_tokens: 2036
+total_duration_ms: 1133
+load_duration_ms: 0
+adjusted_duration_ms: 1133
+adjusted_duration_s: 1.133
+prompt_eval_duration_ms: 582
+eval_duration_ms: 531
+prompt_tokens_per_second: 3433.64
+output_tokens_per_second: 67.76
+============================================================
+
