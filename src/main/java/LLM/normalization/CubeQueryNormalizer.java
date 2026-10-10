@@ -89,7 +89,7 @@ public final class CubeQueryNormalizer {
                         cleanSimpleValue(
                                 parsedQuery.getQueryName()
                         ),
-                        cleanSimpleValue(
+                        normalizeAggregateFunction(
                                 parsedQuery.getAggregateFunction()
                         ),
                         cleanSimpleValue(
@@ -562,6 +562,50 @@ public final class CubeQueryNormalizer {
         result.add(clean);
 
         return result;
+    }
+
+    private static String normalizeAggregateFunction(
+            String value
+    ) {
+
+        String normalized =
+                cleanSimpleValue(value)
+                        .toLowerCase()
+                        .replaceAll("\\s+", " ")
+                        .trim();
+
+        if (normalized.equals("sum")
+                || normalized.equals("total")
+                || normalized.equals("summary")) {
+
+            return "Sum";
+        }
+
+        if (normalized.equals("avg")
+                || normalized.equals("average")
+                || normalized.equals("mean")) {
+
+            return "Avg";
+        }
+
+        if (normalized.equals("count")) {
+
+            return "Count";
+        }
+
+        if (normalized.equals("min")
+                || normalized.equals("minimum")) {
+
+            return "Min";
+        }
+
+        if (normalized.equals("max")
+                || normalized.equals("maximum")) {
+
+            return "Max";
+        }
+
+        return cleanSimpleValue(value);
     }
 
     private static String buildCanonicalQuery(

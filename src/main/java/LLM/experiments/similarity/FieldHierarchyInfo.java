@@ -3,24 +3,10 @@ package LLM.experiments.similarity;
 public class FieldHierarchyInfo {
 
     private final String fieldName;
-
     private final String dimensionName;
     private final String hierarchyName;
     private final String levelName;
-
-    /*
-     * Position of the level inside the hierarchy.
-     *
-     * -1 means that the position could not be determined.
-     */
     private final int levelPosition;
-
-    /*
-     * Number of levels in the hierarchy.
-     *
-     * This may include the synthetic ALL level if it exists
-     * in the schema hierarchy definition.
-     */
     private final int hierarchySize;
 
     public FieldHierarchyInfo(
@@ -29,28 +15,14 @@ public class FieldHierarchyInfo {
             String hierarchyName,
             String levelName,
             int levelPosition,
-            int hierarchySize
-    ) {
-        this.fieldName =
-                safeString(fieldName);
+            int hierarchySize) {
 
-        this.dimensionName =
-                safeString(dimensionName);
-
-        this.hierarchyName =
-                safeString(hierarchyName);
-
-        this.levelName =
-                safeString(levelName);
-
-        this.levelPosition =
-                levelPosition;
-
-        this.hierarchySize =
-                Math.max(
-                        0,
-                        hierarchySize
-                );
+        this.fieldName = safeString(fieldName);
+        this.dimensionName = safeString(dimensionName);
+        this.hierarchyName = safeString(hierarchyName);
+        this.levelName = safeString(levelName);
+        this.levelPosition = levelPosition;
+        this.hierarchySize = Math.max(0, hierarchySize);
     }
 
     public String getFieldName() {
@@ -78,28 +50,19 @@ public class FieldHierarchyInfo {
     }
 
     public boolean hasKnownHierarchyPosition() {
-        return levelPosition >= 0
-                && hierarchySize > 0;
+        return levelPosition >= 0 && hierarchySize > 0;
     }
 
-    public boolean belongsToSameDimension(
-            FieldHierarchyInfo other
-    ) {
+    public boolean belongsToSameDimension(FieldHierarchyInfo other) {
         if (other == null) {
             return false;
         }
 
         return normalize(dimensionName)
-                .equals(
-                        normalize(
-                                other.dimensionName
-                        )
-                );
+                .equals(normalize(other.dimensionName));
     }
 
-    public boolean belongsToSameHierarchy(
-            FieldHierarchyInfo other
-    ) {
+    public boolean belongsToSameHierarchy(FieldHierarchyInfo other) {
         if (other == null) {
             return false;
         }
@@ -109,16 +72,10 @@ public class FieldHierarchyInfo {
         }
 
         return normalize(hierarchyName)
-                .equals(
-                        normalize(
-                                other.hierarchyName
-                        )
-                );
+                .equals(normalize(other.hierarchyName));
     }
 
-    public boolean belongsToSameLevel(
-            FieldHierarchyInfo other
-    ) {
+    public boolean belongsToSameLevel(FieldHierarchyInfo other) {
         if (other == null) {
             return false;
         }
@@ -128,16 +85,10 @@ public class FieldHierarchyInfo {
         }
 
         return normalize(levelName)
-                .equals(
-                        normalize(
-                                other.levelName
-                        )
-                );
+                .equals(normalize(other.levelName));
     }
 
-    public int getLevelDistance(
-            FieldHierarchyInfo other
-    ) {
+    public int getLevelDistance(FieldHierarchyInfo other) {
         if (other == null) {
             return -1;
         }
@@ -148,19 +99,13 @@ public class FieldHierarchyInfo {
 
         if (!hasKnownHierarchyPosition()
                 || !other.hasKnownHierarchyPosition()) {
-
             return -1;
         }
 
-        return Math.abs(
-                levelPosition
-                        - other.levelPosition
-        );
+        return Math.abs(levelPosition - other.levelPosition);
     }
 
-    private static String safeString(
-            String value
-    ) {
+    private static String safeString(String value) {
         if (value == null) {
             return "";
         }
@@ -168,16 +113,12 @@ public class FieldHierarchyInfo {
         return value.trim();
     }
 
-    private static String normalize(
-            String value
-    ) {
-        return safeString(value)
-                .toLowerCase();
+    private static String normalize(String value) {
+        return safeString(value).toLowerCase();
     }
 
     @Override
     public String toString() {
-
         return "FieldHierarchyInfo{" +
                 "fieldName='" + fieldName + '\'' +
                 ", dimensionName='" + dimensionName + '\'' +

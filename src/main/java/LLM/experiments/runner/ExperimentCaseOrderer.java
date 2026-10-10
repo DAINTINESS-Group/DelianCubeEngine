@@ -31,26 +31,8 @@ public final class ExperimentCaseOrderer {
 
     public static final long DEFAULT_SEED = 42L;
 
-
-    /*
-     * ==========================================================
-     * CONSTRUCTOR
-     * ==========================================================
-     *
-     * Utility class.
-     * No instances are needed.
-     * ==========================================================
-     */
-
     private ExperimentCaseOrderer() {
     }
-
-
-    /*
-     * ==========================================================
-     * DEFAULT PAIRED ORDER
-     * ==========================================================
-     */
 
     public static List<LLMExperimentCase> createPairedOrder(
             List<LLMExperimentCase> experimentCases
@@ -61,7 +43,6 @@ public final class ExperimentCaseOrderer {
                 DEFAULT_SEED
         );
     }
-
 
     /*
      * ==========================================================
@@ -105,13 +86,6 @@ public final class ExperimentCaseOrderer {
                 experimentCases
         );
 
-
-        /*
-         * ======================================================
-         * GROUP CASES BY PAIR ID
-         * ======================================================
-         */
-
         Map<String, PairCases> pairsById =
                 new HashMap<String, PairCases>();
 
@@ -126,10 +100,6 @@ public final class ExperimentCaseOrderer {
                     experimentCase
             );
 
-
-            /*
-             * Ensure that test IDs are unique.
-             */
             String testId =
                     experimentCase.getTestId();
 
@@ -140,7 +110,6 @@ public final class ExperimentCaseOrderer {
                                 + testId
                 );
             }
-
 
             String pairId =
                     experimentCase.getPairId();
@@ -162,7 +131,6 @@ public final class ExperimentCaseOrderer {
                         pairCases
                 );
             }
-
 
             String wordingType =
                     experimentCase.getWordingType();
@@ -214,18 +182,10 @@ public final class ExperimentCaseOrderer {
             }
         }
 
-
-        /*
-         * ======================================================
-         * VERIFY EVERY PAIR
-         * ======================================================
-         */
-
         List<PairCases> pairs =
                 new ArrayList<PairCases>(
                         pairsById.values()
                 );
-
 
         for (PairCases pairCases : pairs) {
 
@@ -234,10 +194,6 @@ public final class ExperimentCaseOrderer {
             );
         }
 
-
-        /*
-         * Every semantic query must contain exactly two cases.
-         */
         int expectedCaseCount =
                 pairs.size() * 2;
 
@@ -256,7 +212,6 @@ public final class ExperimentCaseOrderer {
             );
         }
 
-
         /*
          * ======================================================
          * RANDOM GENERATOR
@@ -272,18 +227,10 @@ public final class ExperimentCaseOrderer {
                         seed
                 );
 
-
-        /*
-         * ======================================================
-         * SHUFFLE PAIRS
-         * ======================================================
-         */
-
         Collections.shuffle(
                 pairs,
                 random
         );
-
 
         /*
          * ======================================================
@@ -308,18 +255,10 @@ public final class ExperimentCaseOrderer {
                         random
                 );
 
-
-        /*
-         * ======================================================
-         * BUILD FINAL ORDER
-         * ======================================================
-         */
-
         List<LLMExperimentCase> orderedCases =
                 new ArrayList<LLMExperimentCase>(
                         experimentCases.size()
                 );
-
 
         for (int i = 0;
              i < pairs.size();
@@ -354,16 +293,8 @@ public final class ExperimentCaseOrderer {
             }
         }
 
-
         return orderedCases;
     }
-
-
-    /*
-     * ==========================================================
-     * BALANCED WORDING ORIENTATIONS
-     * ==========================================================
-     */
 
     private static List<Boolean> createBalancedOrientations(
             int pairCount,
@@ -382,13 +313,6 @@ public final class ExperimentCaseOrderer {
         int naturalFirstCount =
                 pairCount / 2;
 
-
-        /*
-         * With an odd number of pairs, one wording type must
-         * necessarily appear first once more than the other.
-         *
-         * Decide this reproducibly using the seeded Random.
-         */
         if (pairCount % 2 != 0) {
 
             boolean extraStructuredFirst =
@@ -404,7 +328,6 @@ public final class ExperimentCaseOrderer {
             }
         }
 
-
         for (int i = 0;
              i < structuredFirstCount;
              i++) {
@@ -413,7 +336,6 @@ public final class ExperimentCaseOrderer {
                     Boolean.TRUE
             );
         }
-
 
         for (int i = 0;
              i < naturalFirstCount;
@@ -424,26 +346,13 @@ public final class ExperimentCaseOrderer {
             );
         }
 
-
-        /*
-         * Randomize which semantic pairs receive which
-         * orientation.
-         */
         Collections.shuffle(
                 orientations,
                 random
         );
 
-
         return orientations;
     }
-
-
-    /*
-     * ==========================================================
-     * INPUT VALIDATION
-     * ==========================================================
-     */
 
     private static void validateInput(
             List<LLMExperimentCase> experimentCases
@@ -464,13 +373,6 @@ public final class ExperimentCaseOrderer {
             );
         }
     }
-
-
-    /*
-     * ==========================================================
-     * CASE VALIDATION
-     * ==========================================================
-     */
 
     private static void validateExperimentCase(
             LLMExperimentCase experimentCase
@@ -513,13 +415,6 @@ public final class ExperimentCaseOrderer {
         }
     }
 
-
-    /*
-     * ==========================================================
-     * COMPLETE PAIR VALIDATION
-     * ==========================================================
-     */
-
     private static void validateCompletePair(
             PairCases pairCases
     ) {
@@ -553,21 +448,6 @@ public final class ExperimentCaseOrderer {
             );
         }
 
-
-        /*
-         * ======================================================
-         * EXPECTED QUERY CONSISTENCY
-         * ======================================================
-         *
-         * We deliberately require the two members of the pair
-         * to reference the SAME ExpectedCubeQuery object.
-         *
-         * This makes accidental differences between the
-         * structured and natural ground truth impossible when
-         * constructing the workload as intended.
-         * ======================================================
-         */
-
         if (pairCases.structuredCase
                 .getExpectedQuery()
                 != pairCases.naturalCase
@@ -582,11 +462,6 @@ public final class ExperimentCaseOrderer {
             );
         }
 
-
-        /*
-         * Difficulty should also be identical because wording
-         * is the only experimental variable that should change.
-         */
         String structuredDifficulty =
                 safeString(
                         pairCases.structuredCase
@@ -616,13 +491,6 @@ public final class ExperimentCaseOrderer {
         }
     }
 
-
-    /*
-     * ==========================================================
-     * REQUIRED STRING VALIDATION
-     * ==========================================================
-     */
-
     private static void validateRequiredString(
             String fieldName,
             String value
@@ -638,13 +506,6 @@ public final class ExperimentCaseOrderer {
         }
     }
 
-
-    /*
-     * ==========================================================
-     * SAFE STRING
-     * ==========================================================
-     */
-
     private static String safeString(
             String value
     ) {
@@ -655,13 +516,6 @@ public final class ExperimentCaseOrderer {
 
         return value.trim();
     }
-
-
-    /*
-     * ==========================================================
-     * INTERNAL PAIR HOLDER
-     * ==========================================================
-     */
 
     private static final class PairCases {
 

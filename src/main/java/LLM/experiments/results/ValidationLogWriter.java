@@ -12,7 +12,7 @@ import java.util.Locale;
 import LLM.experiments.ExpectedCubeQuery;
 import LLM.experiments.ValidationResult;
 import LLM.client.LLMCallResult;
-import LLM.experiments.runner.PromptSizeStats;
+import LLM.experiments.PromptSizeStats;
 import LLM.experiments.similarity.QuerySimilarityResult;
 
 public class ValidationLogWriter implements Closeable {

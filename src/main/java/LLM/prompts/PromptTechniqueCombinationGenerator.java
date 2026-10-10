@@ -69,16 +69,6 @@ public class PromptTechniqueCombinationGenerator {
         return Collections.unmodifiableList(combinations);
     }
 
-    /*
-     * Creates a readable name for a combination.
-     *
-     * Examples:
-     *
-     * baseline
-     * instructions_for_query_generation
-     * prescription_of_result
-     * instructions_for_query_generation+examples
-     */
     public static String getCombinationName(
             List<PromptTechnique> combination
     ) {

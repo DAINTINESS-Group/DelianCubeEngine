@@ -1,5 +1,7 @@
 package client;
 
+import java.io.InputStream;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,46 +11,57 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import LLM.client.LLMModelConfig;
+import LLM.client.OllamaLLMClient;
 
 import LLM.extractor.CubeIniSchemaExtractor;
+
 import LLM.schema.CubeSchema;
 
 import LLM.experiments.LLMBasicExperiments;
 import LLM.experiments.LLMExperimentCase;
 
-import LLM.prompts.PromptTechnique;
-import LLM.prompts.PromptTechniqueFactory;
-import LLM.prompts.PromptTechniqueCombinationGenerator;
-
 import LLM.experiments.runner.LLMExperimentRunner;
-import LLM.client.LLMModelConfig;
-import LLM.client.OllamaLLMClient;
 
 import LLM.experiments.results.ExperimentResultsWriter;
 import LLM.experiments.results.ValidationLogWriter;
 
+import LLM.prompts.PromptTechnique;
+import LLM.prompts.PromptTechniqueCombinationGenerator;
+import LLM.prompts.PromptTechniqueFactory;
+
+
 public class LLMExperimentMainClient {
 
-    private static final String LLM_ENDPOINT =
-            getRequiredEnv("HTTP_GATE");
-
-    private static final String API_KEY =
-            getRequiredEnv("API_KEY");
-
-    private static final String BENCHMARK_MODEL =
-            "gemma4:26b";
-
-    private static final String INSTRUCTIONS_TECHNIQUE =
-            "instructions_for_query_generation";
-
-    private static final String EXAMPLES_TECHNIQUE =
-            "examples";
+    private static final String CONFIG_RESOURCE =
+            "/LLM/llm.properties";
 
 
     public static void main(
             String[] args
     ) throws Exception {
 
+        Properties properties =
+                loadProperties();
+
+
+        String llmHost =
+                getRequiredProperty(
+                        properties,
+                        "llm.host"
+                );
+
+
+        String apiKey =
+                getRequiredProperty(
+                        properties,
+                        "llm.apiKey"
+                );
+
+
+        // Change these values when using another cube.
         String inputFolder =
                 "foodmart_reduced";
 
@@ -66,32 +79,16 @@ public class LLMExperimentMainClient {
 
         if (!Files.exists(iniPath)) {
 
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "INI file not found: "
                             + iniPath.toAbsolutePath()
             );
         }
 
 
-        System.out.println(
-                "===== GEMMA 26B CACHE BENCHMARK ====="
-        );
-
-        System.out.println(
-                "LLM endpoint: "
-                        + LLM_ENDPOINT
-        );
-
-        System.out.println(
-                "INI file: "
-                        + iniPath.toAbsolutePath()
-        );
-
-        System.out.println();
-
-
         CubeIniSchemaExtractor extractor =
                 new CubeIniSchemaExtractor();
+
 
         CubeSchema cubeSchema =
                 extractor.extractFromFile(
@@ -99,23 +96,24 @@ public class LLMExperimentMainClient {
                 );
 
 
-        printCubeSchemaSummary(
-                cubeSchema
-        );
-
-
         List<LLMModelConfig> modelConfigs =
                 buildModelConfigs();
 
 
-        List<PromptTechnique> selectedTechniques =
-                buildSelectedPromptTechniques();
+        /*
+         * All prompt techniques registered in PromptTechniqueFactory
+         * are included in the experiment.
+         */
+        List<PromptTechnique> promptTechniques =
+                PromptTechniqueFactory
+                        .getAllPromptTechniques();
 
 
         List<List<PromptTechnique>> promptCombinations =
-                buildSelectedPromptCombinations(
-                        selectedTechniques
-                );
+                PromptTechniqueCombinationGenerator
+                        .generateAllCombinations(
+                                promptTechniques
+                        );
 
 
         List<LLMExperimentCase> experimentCases =
@@ -129,13 +127,14 @@ public class LLMExperimentMainClient {
                         * experimentCases.size();
 
 
-        if (totalRuns != 30) {
-
-            throw new IllegalStateException(
-                    "Expected 30 runs but calculated "
-                            + totalRuns
-            );
-        }
+        printExperimentPlan(
+                cubeSchema,
+                modelConfigs,
+                promptTechniques,
+                promptCombinations,
+                experimentCases,
+                totalRuns
+        );
 
 
         Path outputDirectory =
@@ -143,65 +142,36 @@ public class LLMExperimentMainClient {
                         "experiment_outputs"
                 );
 
+
         Files.createDirectories(
                 outputDirectory
         );
 
 
-        String timestampForFile =
+        String timestamp =
                 createTimestampForFileName();
 
 
         Path resultsPath =
                 outputDirectory.resolve(
-                        "gemma26_instructions_examples_cache_"
-                                + timestampForFile
+                        "experiment_results_"
+                                + timestamp
                                 + ".tsv"
                 );
 
 
         Path validationLogPath =
                 outputDirectory.resolve(
-                        "gemma26_instructions_examples_validation_"
-                                + timestampForFile
+                        "validation_log_"
+                                + timestamp
                                 + ".txt"
                 );
 
 
-        System.out.println(
-                "Output TSV:"
-        );
-
-        System.out.println(
-                resultsPath.toAbsolutePath()
-        );
-
-        System.out.println();
-
-
-        System.out.println(
-                "Validation log:"
-        );
-
-        System.out.println(
-                validationLogPath.toAbsolutePath()
-        );
-
-        System.out.println();
-
-
-        printExperimentPlan(
-                modelConfigs,
-                selectedTechniques,
-                promptCombinations,
-                experimentCases
-        );
-
-
         OllamaLLMClient llmClient =
                 new OllamaLLMClient(
-                        LLM_ENDPOINT,
-                        API_KEY
+                        llmHost,
+                        apiKey
                 );
 
 
@@ -235,9 +205,8 @@ public class LLMExperimentMainClient {
 
 
         System.out.println();
-
         System.out.println(
-                "Benchmark completed."
+                "Experiments completed."
         );
 
         System.out.println(
@@ -258,13 +227,43 @@ public class LLMExperimentMainClient {
                 new ArrayList<LLMModelConfig>();
 
 
-        modelConfigs.add(
-                LLMModelConfig.createExperimentConfig(
-                        BENCHMARK_MODEL,
-                        4096,
-                        256,
-                        true
-                )
+        /*
+         * Add or remove models here.
+         * Generation parameters are defined in LLMModelConfig.
+         */
+        addModel(
+                modelConfigs,
+                "gemma4:26b"
+        );
+
+        addModel(
+                modelConfigs,
+                "qwen3.5:35b"
+        );
+
+        addModel(
+                modelConfigs,
+                "gpt-oss:20b"
+        );
+
+        addModel(
+                modelConfigs,
+                "devstral-small-2:24b"
+        );
+
+        addModel(
+                modelConfigs,
+                "qwen3-coder:30b"
+        );
+
+        addModel(
+                modelConfigs,
+                "gemma4:31b"
+        );
+
+        addModel(
+                modelConfigs,
+                "qwen3.8:27b"
         );
 
 
@@ -272,139 +271,129 @@ public class LLMExperimentMainClient {
     }
 
 
-    private static List<PromptTechnique>
-    buildSelectedPromptTechniques() {
+    private static void addModel(
+            List<LLMModelConfig> modelConfigs,
+            String modelName
+    ) {
 
-        List<PromptTechnique> allTechniques =
-                PromptTechniqueFactory
-                        .getAllPromptTechniques();
-
-
-        List<PromptTechnique> selectedTechniques =
-                new ArrayList<PromptTechnique>();
-
-
-        for (PromptTechnique technique
-                : allTechniques) {
-
-            if (technique == null) {
-                continue;
-            }
+        modelConfigs.add(
+                LLMModelConfig.createExperimentConfig(
+                        modelName
+                )
+        );
+    }
 
 
-            String name =
-                    technique.getName();
+    private static Properties loadProperties()
+            throws Exception {
+
+        Properties properties =
+                new Properties();
 
 
-            if (INSTRUCTIONS_TECHNIQUE.equals(name)
-                    || EXAMPLES_TECHNIQUE.equals(name)) {
+        try (
+                InputStream inputStream =
+                        LLMExperimentMainClient.class
+                                .getResourceAsStream(
+                                        CONFIG_RESOURCE
+                                )
+        ) {
 
-                selectedTechniques.add(
-                        technique
+            if (inputStream == null) {
+
+                throw new IllegalStateException(
+                        "LLM configuration file not found: "
+                                + CONFIG_RESOURCE
                 );
             }
-        }
 
 
-        if (selectedTechniques.size() != 2) {
-
-            throw new IllegalStateException(
-                    "Expected exactly 2 prompt techniques "
-                            + "(instructions + examples), but found "
-                            + selectedTechniques.size()
+            properties.load(
+                    inputStream
             );
         }
 
 
-        return selectedTechniques;
+        return properties;
     }
 
 
-    private static List<List<PromptTechnique>>
-    buildSelectedPromptCombinations(
-            List<PromptTechnique> selectedTechniques
+    private static String getRequiredProperty(
+            Properties properties,
+            String propertyName
     ) {
 
-        List<PromptTechnique> combination =
-                new ArrayList<PromptTechnique>();
-
-        combination.addAll(
-                selectedTechniques
-        );
+        String value =
+                properties.getProperty(
+                        propertyName
+                );
 
 
-        List<List<PromptTechnique>> combinations =
-                new ArrayList<List<PromptTechnique>>();
+        if (value == null
+                || value.trim().isEmpty()) {
 
-        combinations.add(
-                combination
-        );
-
-
-        return combinations;
-    }
+            throw new IllegalStateException(
+                    "Missing configuration property: "
+                            + propertyName
+            );
+        }
 
 
-    private static void printCubeSchemaSummary(
-            CubeSchema cubeSchema
-    ) {
+        value =
+                value.trim();
 
-        System.out.println(
-                "===== CUBE SCHEMA SUMMARY ====="
-        );
 
-        System.out.println(
-                "Cube Name: "
-                        + cubeSchema.getCubeName()
-        );
+        if (value.startsWith("WRITE_YOUR_")) {
 
-        System.out.println(
-                "Dimensions Count: "
-                        + cubeSchema
-                        .getDimensions()
-                        .size()
-        );
+            throw new IllegalStateException(
+                    "Configuration property has not been configured: "
+                            + propertyName
+            );
+        }
 
-        System.out.println(
-                "Measures Count: "
-                        + cubeSchema
-                        .getMeasures()
-                        .size()
-        );
 
-        System.out.println();
+        return value;
     }
 
 
     private static void printExperimentPlan(
+            CubeSchema cubeSchema,
             List<LLMModelConfig> modelConfigs,
-            List<PromptTechnique> selectedTechniques,
+            List<PromptTechnique> promptTechniques,
             List<List<PromptTechnique>> promptCombinations,
-            List<LLMExperimentCase> experimentCases
+            List<LLMExperimentCase> experimentCases,
+            int totalRuns
     ) {
 
-        int totalRuns =
-                modelConfigs.size()
-                        * promptCombinations.size()
-                        * experimentCases.size();
-
-
         System.out.println(
-                "===== CACHE BENCHMARK PLAN ====="
-        );
-
-        System.out.println(
-                "Model: "
-                        + modelConfigs.get(0).getModelName()
+                "===== LLM EXPERIMENT PLAN ====="
         );
 
 
         System.out.println(
-                "Prompt techniques:"
+                "Cube: "
+                        + cubeSchema.getCubeName()
         );
+
+
+        System.out.println();
+        System.out.println("Models:");
+
+        for (LLMModelConfig modelConfig
+                : modelConfigs) {
+
+            System.out.println(
+                    "- "
+                            + modelConfig.getModelName()
+            );
+        }
+
+
+        System.out.println();
+        System.out.println("Prompt techniques:");
 
         for (PromptTechnique technique
-                : selectedTechniques) {
+                : promptTechniques) {
 
             System.out.println(
                     "- "
@@ -415,56 +404,23 @@ public class LLMExperimentMainClient {
 
         System.out.println();
 
-
         System.out.println(
-                "Prompt combination:"
+                "Prompt configurations: "
+                        + promptCombinations.size()
         );
 
-        System.out.println(
-                PromptTechniqueCombinationGenerator
-                        .getCombinationName(
-                                promptCombinations.get(0)
-                        )
-        );
-
-
-        System.out.println();
 
         System.out.println(
                 "Experiment cases: "
                         + experimentCases.size()
         );
 
+
         System.out.println(
-                "Measured requests: "
+                "Total measured runs: "
                         + totalRuns
         );
 
-        System.out.println(
-                "Separate warm-up calls: 0"
-        );
-
-        System.out.println();
-
-
-        System.out.println(
-                "Request 1:"
-        );
-
-        System.out.println(
-                "First real measured request / cache seed"
-        );
-
-
-        System.out.println();
-
-        System.out.println(
-                "Requests 2-30:"
-        );
-
-        System.out.println(
-                "Real measured requests / cached-prefix behaviour"
-        );
 
         System.out.println();
     }
@@ -477,34 +433,11 @@ public class LLMExperimentMainClient {
                         "yyyy-MM-dd_HH-mm-ss"
                 );
 
+
         return LocalDateTime
                 .now()
                 .format(
                         formatter
                 );
-    }
-
-
-    private static String getRequiredEnv(
-            String name
-    ) {
-
-        String value =
-                System.getenv(
-                        name
-                );
-
-
-        if (value == null
-                || value.trim().isEmpty()) {
-
-            throw new IllegalStateException(
-                    "Missing required environment variable: "
-                            + name
-            );
-        }
-
-
-        return value.trim();
     }
 }

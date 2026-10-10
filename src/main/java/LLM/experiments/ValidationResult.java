@@ -22,9 +22,6 @@ public class ValidationResult {
     private final int extraSigmaCount;
     private final int wrongSigmaValueCount;
 
-    /*
-     * Weighted score from 0 to 100.
-     */
     private final double weightedScore;
 
     private final List<String> errors;

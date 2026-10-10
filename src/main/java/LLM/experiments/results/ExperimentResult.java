@@ -5,7 +5,7 @@ import LLM.client.LLMModelConfig;
 import LLM.experiments.ExpectedCubeQuery;
 import LLM.experiments.LLMExperimentCase;
 import LLM.experiments.ValidationResult;
-import LLM.experiments.runner.PromptSizeStats;
+import LLM.experiments.PromptSizeStats;
 import LLM.experiments.similarity.QuerySimilarityResult;
 
 public class ExperimentResult {

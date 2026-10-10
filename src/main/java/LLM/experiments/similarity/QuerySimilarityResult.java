@@ -3,9 +3,7 @@ package LLM.experiments.similarity;
 public class QuerySimilarityResult {
 
     private final boolean available;
-
     private final double overallSimilarity;
-
     private final double cubeSimilarity;
     private final double aggregateSimilarity;
     private final double measureSimilarity;
@@ -19,47 +17,18 @@ public class QuerySimilarityResult {
             double aggregateSimilarity,
             double measureSimilarity,
             double gammaSimilarity,
-            double sigmaSimilarity
-    ) {
-        this.available =
-                available;
+            double sigmaSimilarity) {
 
-        this.overallSimilarity =
-                normalizeScore(
-                        overallSimilarity
-                );
-
-        this.cubeSimilarity =
-                normalizeScore(
-                        cubeSimilarity
-                );
-
-        this.aggregateSimilarity =
-                normalizeScore(
-                        aggregateSimilarity
-                );
-
-        this.measureSimilarity =
-                normalizeScore(
-                        measureSimilarity
-                );
-
-        this.gammaSimilarity =
-                normalizeScore(
-                        gammaSimilarity
-                );
-
-        this.sigmaSimilarity =
-                normalizeScore(
-                        sigmaSimilarity
-                );
+        this.available = available;
+        this.overallSimilarity = normalizeScore(overallSimilarity);
+        this.cubeSimilarity = normalizeScore(cubeSimilarity);
+        this.aggregateSimilarity = normalizeScore(aggregateSimilarity);
+        this.measureSimilarity = normalizeScore(measureSimilarity);
+        this.gammaSimilarity = normalizeScore(gammaSimilarity);
+        this.sigmaSimilarity = normalizeScore(sigmaSimilarity);
     }
 
-    /*
-     * Result used when similarity cannot be computed.
-     */
     public static QuerySimilarityResult unavailable() {
-
         return new QuerySimilarityResult(
                 false,
                 0.0,
@@ -99,16 +68,8 @@ public class QuerySimilarityResult {
         return sigmaSimilarity;
     }
 
-    /*
-     * All similarities are always kept in [0, 1].
-     */
-    private static double normalizeScore(
-            double value
-    ) {
-
-        if (Double.isNaN(value)
-                || Double.isInfinite(value)) {
-
+    private static double normalizeScore(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
             return 0.0;
         }
 
@@ -125,7 +86,6 @@ public class QuerySimilarityResult {
 
     @Override
     public String toString() {
-
         return "QuerySimilarityResult{" +
                 "available=" + available +
                 ", overallSimilarity=" + overallSimilarity +

@@ -13,138 +13,79 @@ public class HierarchyMetadataIndex {
 
     private final Map<String, FieldHierarchyInfo> fields;
 
-    public HierarchyMetadataIndex(
-            CubeSchema cubeSchema
-    ) {
-        this.fields =
-                new HashMap<String, FieldHierarchyInfo>();
-
-        buildIndex(
-                cubeSchema
-        );
+    public HierarchyMetadataIndex(CubeSchema cubeSchema) {
+        this.fields = new HashMap<String, FieldHierarchyInfo>();
+        buildIndex(cubeSchema);
     }
 
-    /*
-     * ==========================================================
-     * PUBLIC LOOKUP
-     * ==========================================================
-     */
-
-    public FieldHierarchyInfo getFieldInfo(
-            String fieldName
-    ) {
-        String normalized =
-                normalizeFieldName(
-                        fieldName
-                );
+    public FieldHierarchyInfo getFieldInfo(String fieldName) {
+        String normalized = normalizeFieldName(fieldName);
 
         if (normalized.isEmpty()) {
             return null;
         }
 
-        return fields.get(
-                normalized
-        );
+        return fields.get(normalized);
     }
 
-    public boolean containsField(
-            String fieldName
-    ) {
-        return getFieldInfo(fieldName)
-                != null;
+    public boolean containsField(String fieldName) {
+        return getFieldInfo(fieldName) != null;
     }
 
     public int size() {
         return fields.size();
     }
 
-    /*
-     * ==========================================================
-     * BUILD INDEX
-     * ==========================================================
-     */
-
-    private void buildIndex(
-            CubeSchema cubeSchema
-    ) {
-        if (cubeSchema == null
-                || cubeSchema.getDimensions() == null) {
-
+    private void buildIndex(CubeSchema cubeSchema) {
+        if (cubeSchema == null || cubeSchema.getDimensions() == null) {
             return;
         }
 
-        for (DimensionSchema dimension
-                : cubeSchema.getDimensions()) {
-
+        for (DimensionSchema dimension : cubeSchema.getDimensions()) {
             if (dimension == null) {
                 continue;
             }
 
-            indexDimension(
-                    dimension
-            );
+            indexDimension(dimension);
         }
     }
 
-    private void indexDimension(
-            DimensionSchema dimension
-    ) {
-        String dimensionName =
-                safeString(
-                        dimension.getName()
-                );
+    private void indexDimension(DimensionSchema dimension) {
+        String dimensionName = safeString(dimension.getName());
 
         if (dimensionName.isEmpty()) {
             return;
         }
 
-        List<LevelSchema> levels =
-                dimension.getLevels();
+        List<LevelSchema> levels = dimension.getLevels();
 
-        if (levels == null
-                || levels.isEmpty()) {
-
+        if (levels == null || levels.isEmpty()) {
             return;
         }
 
-        /*
-         * Current schema representation stores one hierarchy
-         * directly inside DimensionSchema.
-         *
-         * Therefore, for our metadata model, the dimension name
-         * also acts as the hierarchy identifier.
-         */
-        String hierarchyName =
-                dimensionName;
+        String hierarchyName = dimensionName;
 
-        List<String> hierarchy =
-                dimension.getHierarchy();
+        List<String> hierarchy = dimension.getHierarchy();
 
-        int hierarchySize =
-                hierarchy == null
-                        ? 0
-                        : hierarchy.size();
+        int hierarchySize = hierarchy == null
+                ? 0
+                : hierarchy.size();
 
         for (LevelSchema level : levels) {
-
             if (level == null) {
                 continue;
             }
 
-            String levelName =
-                    safeString(
-                            level.getLevelName()
-                    );
+            String levelName = safeString(level.getLevelName());
 
             if (levelName.isEmpty()) {
                 continue;
             }
 
-            int levelPosition =
-                    findLevelPosition(
-                            hierarchy,
-                            levelName
-                    );
+            int levelPosition = findLevelPosition(
+                    hierarchy,
+                    levelName
+            );
 
             List<LevelAttributeSchema> attributes =
                     level.getAttributes();
@@ -153,26 +94,20 @@ public class HierarchyMetadataIndex {
                 continue;
             }
 
-            for (LevelAttributeSchema attribute
-                    : attributes) {
-
+            for (LevelAttributeSchema attribute : attributes) {
                 if (attribute == null) {
                     continue;
                 }
 
                 String attributeName =
-                        safeString(
-                                attribute.getName()
-                        );
+                        safeString(attribute.getName());
 
                 if (attributeName.isEmpty()) {
                     continue;
                 }
 
                 String fullFieldName =
-                        dimensionName
-                                + "."
-                                + attributeName;
+                        dimensionName + "." + attributeName;
 
                 FieldHierarchyInfo info =
                         new FieldHierarchyInfo(
@@ -185,48 +120,28 @@ public class HierarchyMetadataIndex {
                         );
 
                 fields.put(
-                        normalizeFieldName(
-                                fullFieldName
-                        ),
+                        normalizeFieldName(fullFieldName),
                         info
                 );
             }
         }
     }
 
-    /*
-     * ==========================================================
-     * HIERARCHY POSITION
-     * ==========================================================
-     */
-
     private static int findLevelPosition(
             List<String> hierarchy,
-            String levelName
-    ) {
-        if (hierarchy == null
-                || hierarchy.isEmpty()) {
+            String levelName) {
 
+        if (hierarchy == null || hierarchy.isEmpty()) {
             return -1;
         }
 
-        String normalizedLevelName =
-                normalizeName(
-                        levelName
-                );
+        String normalizedLevelName = normalizeName(levelName);
 
-        for (int i = 0;
-             i < hierarchy.size();
-             i++) {
-
-            String hierarchyLevel =
-                    hierarchy.get(i);
+        for (int i = 0; i < hierarchy.size(); i++) {
+            String hierarchyLevel = hierarchy.get(i);
 
             if (normalizeName(hierarchyLevel)
-                    .equals(
-                            normalizedLevelName
-                    )) {
-
+                    .equals(normalizedLevelName)) {
                 return i;
             }
         }
@@ -234,48 +149,28 @@ public class HierarchyMetadataIndex {
         return -1;
     }
 
-    /*
-     * ==========================================================
-     * NORMALIZATION
-     * ==========================================================
-     */
-
-    private static String normalizeFieldName(
-            String fieldName
-    ) {
+    private static String normalizeFieldName(String fieldName) {
         if (fieldName == null) {
             return "";
         }
 
-        String normalized =
-                fieldName.trim();
+        String normalized = fieldName.trim();
 
         while (normalized.endsWith(";")) {
-
-            normalized =
-                    normalized.substring(
-                            0,
-                            normalized.length() - 1
-                    ).trim();
+            normalized = normalized.substring(
+                    0,
+                    normalized.length() - 1
+            ).trim();
         }
 
-        return normalized
-                .replaceAll(
-                        "\\s+",
-                        ""
-                );
+        return normalized.replaceAll("\\s+", "");
     }
 
-    private static String normalizeName(
-            String value
-    ) {
-        return safeString(value)
-                .toLowerCase();
+    private static String normalizeName(String value) {
+        return safeString(value).toLowerCase();
     }
 
-    private static String safeString(
-            String value
-    ) {
+    private static String safeString(String value) {
         if (value == null) {
             return "";
         }
@@ -285,7 +180,6 @@ public class HierarchyMetadataIndex {
 
     @Override
     public String toString() {
-
         return "HierarchyMetadataIndex{" +
                 "fieldCount=" + fields.size() +
                 '}';
