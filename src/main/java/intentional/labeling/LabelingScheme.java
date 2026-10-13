@@ -28,7 +28,8 @@ public interface LabelingScheme {
 
 	/**
 	 * The domain of labels this scheme can assign. Defines an ordinal domain so
-	 * labeled results can be compared (e.g. by an enumerated score).
+	 * labeled results can be compared (e.g. by an enumerated score). It is fixed when the scheme
+	 * is created; fitting never changes it.
 	 */
 	LabelDomain domain();
 }

@@ -1,19 +1,27 @@
 package intentional.assess.deltas;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import intentional.assess.benchmarks.AssessBenchmark;
+import intentional.assess.syntax.AssessQueryLexer;
+import intentional.assess.syntax.AssessQueryParser;
 import intentional.assess.utils.ComparedCell;
 import result.Cell;
 
@@ -45,13 +53,26 @@ public class DeltaSchemeTest {
         };
     }
 
-    private static DeltaScheme scheme(String... methods) {
-        return new DeltaScheme(new ArrayList<>(Arrays.asList(methods)));
+    /** The expression as a USING clause writes it, over the target measure {@code m}. */
+    private static DeltaScheme scheme(String expression) {
+        try {
+            AssessQueryParser parser = new AssessQueryParser(new CommonTokenStream(new AssessQueryLexer(
+                    new ANTLRInputStream(new ByteArrayInputStream(expression.getBytes(StandardCharsets.UTF_8))))));
+            return new DeltaScheme(parser.comparison_expression(), ref -> {
+                if (ref.matches("[0-9.]+")) return DeltaScheme.Operand.constant(Double.parseDouble(ref));
+                return ref.startsWith("benchmark.") ? DeltaScheme.Operand.BENCHMARK : DeltaScheme.Operand.TARGET;
+            });
+        } catch (IOException | RecognitionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static double[] compare(DeltaScheme scheme, List<Cell> targetCells, AssessBenchmark benchmark) {
-        Map<Cell, Double> comparison =
-                scheme.compareTargetToBenchmark(targetCells, benchmark, new ArrayList<ComparedCell>());
+    private static Map<Cell, Double> compare(DeltaScheme scheme, List<Cell> targetCells, AssessBenchmark benchmark) {
+        return scheme.compareTargetToBenchmark(targetCells, benchmark, new ArrayList<ComparedCell>());
+    }
+
+    private static double[] values(DeltaScheme scheme, List<Cell> targetCells, AssessBenchmark benchmark) {
+        Map<Cell, Double> comparison = compare(scheme, targetCells, benchmark);
         double[] values = new double[targetCells.size()];
         for (int i = 0; i < targetCells.size(); i++) {
             values[i] = comparison.get(targetCells.get(i));
@@ -59,12 +80,21 @@ public class DeltaSchemeTest {
         return values;
     }
 
+    private static void assertRejected(String expression, String messagePart) {
+        try {
+            scheme(expression);
+            fail("expected " + expression + " to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains(messagePart));
+        }
+    }
+
     @Test
     public void percOfTotalScalesTheDifferenceAgainstTheTargetTotal() {
         List<Cell> targetCells = targets(100, 90, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
 
-        double[] values = compare(scheme("percOfTotal", "difference"), targetCells, benchmark);
+        double[] values = values(scheme("percOfTotal(difference(m, benchmark.m))"), targetCells, benchmark);
 
         assertEquals(-50.0 / 220, values[0], EPSILON);
         assertEquals(-20.0 / 220, values[1], EPSILON);
@@ -76,7 +106,7 @@ public class DeltaSchemeTest {
         List<Cell> targetCells = targets(100, 90, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
 
-        double[] values = compare(scheme("minMaxNorm", "difference"), targetCells, benchmark);
+        double[] values = values(scheme("minMaxNorm(difference(m, benchmark.m))"), targetCells, benchmark);
 
         assertEquals(0.0, values[0], EPSILON);
         assertEquals(0.5, values[1], EPSILON);
@@ -88,7 +118,7 @@ public class DeltaSchemeTest {
         List<Cell> targetCells = targets(100, 90, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
 
-        double[] values = compare(scheme("zscore", "difference"), targetCells, benchmark);
+        double[] values = values(scheme("zscore(difference(m, benchmark.m))"), targetCells, benchmark);
 
         assertEquals(-1.0, values[0], EPSILON);
         assertEquals(0.0, values[1], EPSILON);
@@ -100,7 +130,7 @@ public class DeltaSchemeTest {
         List<Cell> targetCells = targets(100, 120, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
 
-        double[] values = compare(scheme("rank", "difference"), targetCells, benchmark);
+        double[] values = values(scheme("rank(difference(m, benchmark.m))"), targetCells, benchmark);
 
         assertEquals(1.0, values[0], EPSILON);
         assertEquals(2.5, values[1], EPSILON);
@@ -112,8 +142,8 @@ public class DeltaSchemeTest {
         List<Cell> targetCells = targets(50, 50);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 40, 40);
 
-        double[] minMax = compare(scheme("minMaxNorm", "difference"), targetCells, benchmark);
-        double[] zscores = compare(scheme("zscore", "difference"), targetCells, benchmark);
+        double[] minMax = values(scheme("minMaxNorm(difference(m, benchmark.m))"), targetCells, benchmark);
+        double[] zscores = values(scheme("zscore(difference(m, benchmark.m))"), targetCells, benchmark);
 
         assertEquals(0.0, minMax[0], EPSILON);
         assertEquals(0.0, minMax[1], EPSILON);
@@ -122,22 +152,22 @@ public class DeltaSchemeTest {
     }
 
     @Test
-    public void cellWiseChainStillRechainsTheRightOperand() {
+    public void everyFunctionNamesItsOwnArguments() {
         List<Cell> targetCells = targets(100);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150);
 
-        double[] values = compare(scheme("ratio", "absolute"), targetCells, benchmark);
+        double overBenchmark = values(scheme("ratio(absolute(m, benchmark.m), benchmark.m)"), targetCells, benchmark)[0];
+        double overTarget = values(scheme("ratio(difference(m, benchmark.m), m)"), targetCells, benchmark)[0];
 
-        assertEquals(50.0 / 150, values[0], EPSILON);
+        assertEquals(50.0 / 150, overBenchmark, EPSILON);
+        assertEquals(-50.0 / 100, overTarget, EPSILON);
     }
 
     @Test
     public void holisticTransformsRunWithoutABenchmark() {
-        DeltaScheme scheme = new DeltaScheme(new ArrayList<>(Arrays.asList("minMaxNorm", "ratio")),
-                DeltaScheme.Operand.TARGET, DeltaScheme.Operand.constant(50));
         List<Cell> targetCells = targets(100, 50);
 
-        double[] values = compare(scheme, targetCells, null);
+        double[] values = values(scheme("minMaxNorm(ratio(m, 50))"), targetCells, null);
 
         assertEquals(1.0, values[0], EPSILON);
         assertEquals(0.0, values[1], EPSILON);
@@ -147,11 +177,8 @@ public class DeltaSchemeTest {
     public void operandZscoresNormalizeEachPopulationSeparately() {
         List<Cell> targetCells = targets(10, 20, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 30, 20, 10);
-        DeltaScheme scheme = new DeltaScheme(new ArrayList<>(Arrays.asList("difference")),
-                DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.TARGET),
-                DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.BENCHMARK));
 
-        double[] values = compare(scheme, targetCells, benchmark);
+        double[] values = values(scheme("difference(zscore(m), zscore(benchmark.m))"), targetCells, benchmark);
 
         assertEquals(-2.0, values[0], EPSILON);
         assertEquals(0.0, values[1], EPSILON);
@@ -159,14 +186,12 @@ public class DeltaSchemeTest {
     }
 
     @Test
-    public void operandShareOfTotalDividesByItsOwnPopulationTotal() {
+    public void percOfTotalDividesByTheColumnItIsGiven() {
         List<Cell> targetCells = targets(100, 90, 30);
         AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 110, 20);
-        DeltaScheme scheme = new DeltaScheme(new ArrayList<>(Arrays.asList("ratio")),
-                DeltaScheme.Operand.transformed("percOfTotal", DeltaScheme.Operand.TARGET),
-                DeltaScheme.Operand.transformed("percOfTotal", DeltaScheme.Operand.BENCHMARK));
 
-        double[] values = compare(scheme, targetCells, benchmark);
+        double[] values = values(scheme("ratio(percOfTotal(m, m), percOfTotal(benchmark.m, benchmark.m))"),
+                targetCells, benchmark);
 
         assertEquals((100.0 / 220) / (150.0 / 280), values[0], EPSILON);
         assertEquals((90.0 / 220) / (110.0 / 280), values[1], EPSILON);
@@ -174,42 +199,89 @@ public class DeltaSchemeTest {
     }
 
     @Test
-    public void unknownOperandTransformIsRejected() {
-        try {
-            DeltaScheme.Operand.transformed("nonesuch", DeltaScheme.Operand.TARGET);
-            fail("expected the unknown transform to be rejected");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("nonesuch"));
-        }
+    public void theDefaultComparisonIsTheDifferenceToTheBenchmark() {
+        List<Cell> targetCells = targets(100, 90);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 150, 80);
+
+        double[] values = values(DeltaScheme.difference(), targetCells, benchmark);
+
+        assertEquals(-50.0, values[0], EPSILON);
+        assertEquals(10.0, values[1], EPSILON);
     }
 
     @Test
-    public void constantOperandCannotBeTransformed() {
+    public void withoutBenchmarkOrUsingEachCellKeepsItsOwnValue() {
+        List<Cell> targetCells = targets(100, 90);
+
+        double[] values = values(DeltaScheme.identity(), targetCells, null);
+
+        assertEquals(100.0, values[0], EPSILON);
+        assertEquals(90.0, values[1], EPSILON);
+    }
+
+    @Test
+    public void aRatioByAZeroBenchmarkLeavesTheCellOut() {
+        List<Cell> targetCells = targets(100, 0, 30);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 0, 0, 20);
+
+        Map<Cell, Double> comparison = compare(scheme("ratio(m, benchmark.m)"), targetCells, benchmark);
+
+        assertFalse("x / 0 is undefined", comparison.containsKey(targetCells.get(0)));
+        assertFalse("0 / 0 is undefined", comparison.containsKey(targetCells.get(1)));
+        assertEquals(1.5, comparison.get(targetCells.get(2)), EPSILON);
+    }
+
+    @Test
+    public void undefinedCellsStayOutOfColumnStatistics() {
+        List<Cell> targetCells = targets(100, 90, 30);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 0, 110, 20);
+
+        Map<Cell, Double> comparison = compare(scheme("zscore(ratio(m, benchmark.m))"), targetCells, benchmark);
+
+        assertEquals(2, comparison.size());
+        assertEquals(-Math.sqrt(0.5), comparison.get(targetCells.get(1)), EPSILON);
+        assertEquals(Math.sqrt(0.5), comparison.get(targetCells.get(2)), EPSILON);
+    }
+
+    @Test
+    public void missingInputValuesLeaveTheCellOut() {
+        List<Cell> targetCells = targets(Double.NaN, 90);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 100, Double.NaN);
+
+        assertTrue(compare(scheme("difference(m, benchmark.m)"), targetCells, benchmark).isEmpty());
+    }
+
+    @Test
+    public void percOfTotalOverAZeroTotalFails() {
+        List<Cell> targetCells = targets(50, -50);
+        AssessBenchmark benchmark = benchmarkOf(targetCells, 10, 10);
+
         try {
-            DeltaScheme.Operand.transformed("zscore", DeltaScheme.Operand.constant(5));
-            fail("expected the constant operand to be rejected");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("constant"));
+            compare(scheme("percOfTotal(difference(m, benchmark.m))"), targetCells, benchmark);
+            fail("expected the zero total to be rejected");
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("zero"));
         }
     }
 
     @Test
     public void unknownFunctionNamesFailAtConstruction() {
-        try {
-            scheme("nonesuch", "difference");
-            fail("expected the unknown function to be rejected");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("nonesuch"));
-        }
+        assertRejected("nonesuch(m, benchmark.m)", "nonesuch");
     }
 
     @Test
-    public void holisticTransformCannotTakeTheOperandPair() {
-        try {
-            scheme("minMaxNorm");
-            fail("expected the innermost holistic transform to be rejected");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("cell-wise"));
-        }
+    public void aCellWiseFunctionTakesTwoArguments() {
+        assertRejected("ratio(absolute(m, benchmark.m))", "two values");
+    }
+
+    @Test
+    public void aHolisticFunctionTakesOneArgument() {
+        assertRejected("zscore(m, benchmark.m)", "one argument");
+        assertRejected("percOfTotal(m, m, m)", "one or two arguments");
+    }
+
+    @Test
+    public void aConstantCannotBeTransformed() {
+        assertRejected("zscore(5)", "constant");
     }
 }

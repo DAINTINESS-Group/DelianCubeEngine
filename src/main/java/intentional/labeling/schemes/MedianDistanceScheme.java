@@ -10,7 +10,7 @@ import intentional.labeling.LabelingScheme;
 
 /**
  * A data-driven {@link LabelingScheme} that labels each value {@code Low}/{@code OK}/{@code High} by its
- * distance from the values' own median. Must be {@link #fit(Collection) fitted} before it labels.
+ * distance from the values' own median, OK within half the median's magnitude. A zero median fails.
  */
 public class MedianDistanceScheme implements LabelingScheme {
 
@@ -28,30 +28,35 @@ public class MedianDistanceScheme implements LabelingScheme {
     /** Ordered so a label's index is its rank: Low &lt; OK &lt; High. */
     private static final LabelDomain DOMAIN = new LabelDomain(Arrays.asList(LOW, OK, HIGH), true);
 
-    private double median;
+    private double lowerBound;
+    private double upperBound;
     private boolean fitted;
 
-    /** Derives the median the distances are taken from. */
     @Override
     public void fit(Collection<Double> values) {
         DescriptiveStatistics stats = new DescriptiveStatistics();
         for (double value : values) stats.addValue(value);
-        this.median = stats.getPercentile(50);
+        double median = stats.getPercentile(50);
+        if (median == 0.0) {
+            throw new IllegalStateException(NAME + " labels relative to the median, which is zero here;"
+                    + " use ZScoreBased or EquiDepth for values centered on zero");
+        }
+        this.lowerBound = median - (1.0 - LOW_MEDIAN_FACTOR) * Math.abs(median);
+        this.upperBound = median + (HIGH_MEDIAN_FACTOR - 1.0) * Math.abs(median);
         this.fitted = true;
     }
 
     @Override
     public String name() { return NAME; }
 
-    /** Low below half the median, High above 1.5x the median, OK in between. */
     @Override
     public String applyLabels(double value) {
         if (!fitted) {
             throw new IllegalStateException(
                     "The scheme labels relative to the value distribution; fit it before labeling");
         }
-        if (value > HIGH_MEDIAN_FACTOR * median) return HIGH;
-        if (value < LOW_MEDIAN_FACTOR * median) return LOW;
+        if (value > upperBound) return HIGH;
+        if (value < lowerBound) return LOW;
         return OK;
     }
 

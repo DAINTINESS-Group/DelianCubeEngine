@@ -54,11 +54,13 @@ public class AssessReportWriter extends MarkdownReportWriter {
                     .append(" of ").append(Integer.toString(cells.size())).append(" cells labeled)\n");
             for (Cell cell : cells) {
                 writer.append("Cell: ").append(cell.toString(", ")).append("\n");
+                double reference = labeling.referenceOf(cell);
                 if (!labeling.covers(cell)) {
-                    writer.append("had no match, thus will not be labeled\n\n");
+                    writer.append(Double.isNaN(reference) && !comparison.parameters().isEmpty()
+                            ? "had no match, thus will not be labeled\n\n"
+                            : "has an undefined comparison value, thus will not be labeled\n\n");
                     continue;
                 }
-                double reference = labeling.referenceOf(cell);
                 if (!Double.isNaN(reference)) {
                     writer.append("was compared against benchmark value ")
                             .append(Double.toString(reference)).append("\n");

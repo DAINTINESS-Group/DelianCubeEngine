@@ -133,27 +133,23 @@ public class AssessQueryParserTest {
 	}
 
 	@Test
-	public void givenUsingStatement_whenParsingInput_thenCollectComparisonMethods()
+	public void givenUsingStatement_whenParsingInput_thenBuildTheExpressionTree()
 			throws IOException, RecognitionException {
-		String usingStatement = "ratio(absolute(storeSales,benchmark.storeSales))";
+		String usingStatement = "ratio(absolute(storeSales, benchmark.storeSales), benchmark.storeSales)";
 		AssessQueryParser parser = createParser(usingStatement);
 
-		List<String> expected = new ArrayList<>(Arrays.asList("ratio", "absolute"));
-		List<String> actual = parser.comparison_scheme(new ArrayList<>());
-
-		assertEquals(expected, actual);
+		assertEquals("ratio(absolute(storeSales, benchmark.storeSales), benchmark.storeSales)",
+				parser.comparison_expression().toString());
 	}
 
 	@Test
-	public void givenTransformedOperands_whenParsingInput_thenTransformsStayOutOfTheMethods()
+	public void givenTransformedOperands_whenParsingInput_thenTransformsAreNodesOfTheTree()
 			throws IOException, RecognitionException {
 		String usingStatement = "difference(zscore(storeSales), zscore(benchmark.storeSales))";
 		AssessQueryParser parser = createParser(usingStatement);
 
-		List<String> expected = new ArrayList<>(Arrays.asList("difference"));
-		List<String> actual = parser.comparison_scheme(new ArrayList<>());
-
-		assertEquals(expected, actual);
+		assertEquals("difference(zscore(storeSales), zscore(benchmark.storeSales))",
+				parser.comparison_expression().toString());
 	}
 
 	@Test

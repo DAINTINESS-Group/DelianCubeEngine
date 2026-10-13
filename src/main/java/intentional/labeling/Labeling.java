@@ -11,8 +11,8 @@ import result.Cell;
  * The record of labeling a result: a per-cell quantity — a measure's values, a delta against a benchmark —
  * labeled under a {@link LabelingScheme}. Constructing the labeling is the act of labeling: the scheme is
  * fitted on the quantity's values and applied to each cell right here, so the labels, the domain and the
- * magnitudes cannot disagree. The scheme itself is not retained; its name and {@link LabelDomain} are
- * snapshot at construction. Cell-keyed by identity over the result's cells.
+ * magnitudes cannot disagree. A scheme's name and domain never change after creation, so the labeling
+ * reads them from the scheme. Cell-keyed by identity over the result's cells.
  *
  * <p>A labeling is about one measure of the result, named by {@link #measureIndex()}. The labeled quantity
  * is readable per cell as its magnitude via {@link #magnitudeOf(Cell)} — e.g. to rank the salient cells —

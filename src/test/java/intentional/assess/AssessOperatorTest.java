@@ -83,7 +83,7 @@ public class AssessOperatorTest {
     public void executeSiblingQuery() throws RecognitionException {
         String query = "with loan for month = '02/1998', region = 'South Moravia'\n" +
                 "by month, region assess avg(amount) against region = 'North Moravia'\n" +
-                "using ratio(absolute(amount, benchmark.amount)\n" +
+                "using ratio(absolute(amount, benchmark.amount), benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
         Labeling labeling = assess(query);
@@ -94,7 +94,7 @@ public class AssessOperatorTest {
     public void assessSiblingsWithMultipleCells() throws RecognitionException {
         String query = "with loan for region = 'South Moravia', year = '1994'\n" +
                 "by status, region assess avg(amount) against region = 'North Moravia'\n" +
-                "using ratio(absolute(amount, benchmark.amount)\n" +
+                "using ratio(absolute(amount, benchmark.amount), benchmark.amount)\n" +
                 "labels {[0.0, 0.3): low_effort, [0.3, 0.6): mid_effort, [0.6, 1]: high}";
 
         Labeling labeling = assess(query);
@@ -291,10 +291,10 @@ public class AssessOperatorTest {
 
         Labeling standingVsSibling = labelings.get(0);
         Labeling ratioVsPast = labelings.get(1);
-        Labeling rawVsConstant = labelings.get(2);
+        Labeling differenceVsConstant = labelings.get(2);
         assertFalse(standingVsSibling.assignment().isEmpty());
         assertFalse(ratioVsPast.assignment().isEmpty());
-        assertFalse(rawVsConstant.assignment().isEmpty());
+        assertFalse(differenceVsConstant.assignment().isEmpty());
 
         double zSum = 0.0;
         for (Cell cell : standingVsSibling.assignment().keySet()) {
@@ -307,11 +307,11 @@ public class AssessOperatorTest {
             assertTrue("the past reference is a real sum", ratioVsPast.referenceOf(cell) > 0.0);
         }
 
-        for (Cell cell : rawVsConstant.assignment().keySet()) {
-            assertEquals("an entry without USING compares raw values",
-                    cell.toDouble(), rawVsConstant.magnitudeOf(cell), 0.0001);
+        for (Cell cell : differenceVsConstant.assignment().keySet()) {
+            assertEquals("an entry without USING compares by difference to the benchmark",
+                    cell.toDouble() - 500000.0, differenceVsConstant.magnitudeOf(cell), 0.0001);
             assertEquals("the constant benchmark is every cell's reference",
-                    500000.0, rawVsConstant.referenceOf(cell), 0.0001);
+                    500000.0, differenceVsConstant.referenceOf(cell), 0.0001);
         }
     }
 
@@ -445,7 +445,7 @@ public class AssessOperatorTest {
                 "BY region, year, status\n" +
                 "ASSESS sum(amount) AS total\n" +
                 "AGAINST PAST 2\n" +
-                "USING ratio(absolute(total, benchmark.total))\n" +
+                "USING ratio(absolute(total, benchmark.total), benchmark.total)\n" +
                 "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
                 "SAVE AS PastBenchmarkHighlightsTest";
 

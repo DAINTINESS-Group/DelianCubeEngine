@@ -51,7 +51,6 @@ public abstract class ExtractionMethod {
     	result = new Result();
     }
 
- 
    public Result getResult() {
 	   return result;
    }

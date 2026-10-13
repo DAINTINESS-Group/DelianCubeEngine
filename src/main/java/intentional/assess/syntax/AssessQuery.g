@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import intentional.assess.AssessQueryBuilder;
+import intentional.assess.deltas.DeltaScheme;
 }
 
 @members {
@@ -23,9 +24,6 @@ parse [AssessQueryBuilder builder] returns [AssessQuery parsedQuery]
     : result=query EOF {parsedQuery = result;};
 
 query returns [AssessQuery query]
-    @init{
-    List<String> comparisonMethods = new ArrayList<String>();
-    }
     : WITH targetCube = ID {builder.setTargetCubeName($targetCube.text);}
       (FOR predicates = selection_predicates {builder.setSelectionPredicates(predicates);})?
       BY gammas = group_by_set {builder.setGroupBySet(gammas);}
@@ -33,14 +31,11 @@ query returns [AssessQuery query]
 
       ( AGAINST parsedBenchmark = benchmark
         {builder.addBenchmarkDetails(parsedBenchmark);}
-        (USING firstMethods = comparison_scheme[new ArrayList<String>()]
-        {builder.setDeltaFunctions(firstMethods);})?
+        (USING first = comparison_expression {builder.setComparison($first.term);})?
         (',' extraBenchmark = benchmark
         {builder.addBenchmarkDetails(extraBenchmark);}
-        (USING extraMethods = comparison_scheme[new ArrayList<String>()]
-        {builder.setDeltaFunctions(extraMethods);})? )*
-      | USING updatedComparisonMethods = comparison_scheme[comparisonMethods]
-        {builder.setDeltaFunctions(updatedComparisonMethods);}
+        (USING extra = comparison_expression {builder.setComparison($extra.term);})? )*
+      | USING standalone = comparison_expression {builder.setComparison($standalone.term);}
       )?
 
       // Build the Labeling Scheme Here
@@ -104,20 +99,13 @@ external_benchmark returns [String cube, String measurement]
     : benchmarkCube = ID {$cube = $benchmarkCube.text;} '.'
     benchmarkMeasurement = ID {$measurement = $benchmarkMeasurement.text;};
 
-comparison_scheme [List<String> comparisonMethods] returns [List<String> updatedComparisonMethods]
-    @init{$updatedComparisonMethods = $comparisonMethods;}
-    : method_name = ID {$updatedComparisonMethods.add($method_name.text);}
-    '(' ( (transformed_operand ',')=> comparison_args
-        | comparison_scheme[$updatedComparisonMethods] ) ')';
-
-comparison_args
-    : first = transformed_operand ',' second = transformed_operand
-      { if (builder != null) builder.setDeltaOperands($first.ref, $second.ref); }
-    ;
-
-transformed_operand returns [String ref]
-    : (ID '(')=> name = ID '(' inner = operand_ref ')' { $ref = $name.text + "(" + $inner.ref + ")"; }
-    | o = operand_ref { $ref = $o.ref; }
+comparison_expression returns [DeltaScheme.Term term]
+    @init { List<DeltaScheme.Term> arguments = new ArrayList<DeltaScheme.Term>(); }
+    : (ID '(')=> name = ID '('
+        first = comparison_expression {arguments.add($first.term);}
+        (',' next = comparison_expression {arguments.add($next.term);})*
+      ')' { $term = DeltaScheme.Term.call($name.text, arguments); }
+    | o = operand_ref { $term = DeltaScheme.Term.ref($o.ref); }
     ;
 
 operand_ref returns [String ref]

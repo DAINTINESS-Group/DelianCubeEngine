@@ -23,8 +23,8 @@ import result.Cell;
 /**
  * Compares a cube against a benchmark: each cell's delta to its matched benchmark cell, labeled under the
  * query's scheme. One {@link ModelResult}, carrying the deltas as magnitudes, the matched benchmark values
- * as references, and the benchmark's identity as its parameter; cells without a benchmark match stay
- * unlabeled.
+ * as references, and the benchmark's identity as its parameter; cells without a benchmark match, or whose
+ * comparison value is undefined, stay unlabeled.
  */
 public final class ComparisonModel implements Model {
 
@@ -58,6 +58,11 @@ public final class ComparisonModel implements Model {
         List<ComparedCell> comparedCells = new ArrayList<>();
         Map<Cell, Double> deltas = new LinkedHashMap<>(
                 deltaFunction.compareTargetToBenchmark(targetCells, benchmark, comparedCells));
+        if (deltas.isEmpty()) {
+            throw new IllegalStateException(benchmarkLabel == null
+                    ? "The assessment has no cell with a defined comparison value"
+                    : "The comparison against " + benchmarkLabel + " has no cell with a defined comparison value");
+        }
 
         Map<Cell, Double> benchmarkValues = new LinkedHashMap<>();
         for (ComparedCell compared : comparedCells) {

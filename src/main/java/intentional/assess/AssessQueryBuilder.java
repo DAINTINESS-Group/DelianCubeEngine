@@ -25,11 +25,10 @@ import java.util.Set;
  */
 public class AssessQueryBuilder {
 
-    /** One AGAINST entry: its benchmark descriptor and the USING chain bound to it. */
+    /** One AGAINST entry: its benchmark descriptor and the USING expression bound to it. */
     private static final class BenchmarkSpec {
         final List<String> details;
-        List<String> deltaFunctions;
-        String[] operandRefs;
+        DeltaScheme.Term comparison;
 
         BenchmarkSpec(List<String> details) {
             this.details = details;
@@ -39,10 +38,9 @@ public class AssessQueryBuilder {
     private final CubeManagerAdapter queryGenerator;
     private final AssessFetcher fetcher;
     private final List<BenchmarkSpec> benchmarkSpecs = new ArrayList<>(); // Empty when there is no AGAINST clause
-    private List<String> deltaFunctions; // The USING chain of a benchmark-less query
+    private DeltaScheme.Term comparison; // The USING expression of a benchmark-less query
     private LabelingScheme labeler;
     private String outputName = null;
-    private String[] deltaOperandRefs;
 
     public AssessQueryBuilder(CubeManager cubeManager) {
         this(cubeManager, FetchStrategy.SCAN_PER_SLICE);
@@ -117,42 +115,24 @@ public class AssessQueryBuilder {
         }
     }
 
-    /** Binds the parsed USING chain to the entry being parsed, or to the query when it has no AGAINST. */
-    public void setDeltaFunctions(List<String> methods) {
+    /** Binds the parsed USING expression to the entry being parsed, or to the query when it has no AGAINST. */
+    public void setComparison(DeltaScheme.Term expression) {
         if (benchmarkSpecs.isEmpty()) {
-            deltaFunctions = methods;
+            comparison = expression;
             return;
         }
         BenchmarkSpec current = benchmarkSpecs.get(benchmarkSpecs.size() - 1);
-        if (current.deltaFunctions != null) {
+        if (current.comparison != null) {
             throw new IllegalArgumentException("A benchmark takes a single USING clause");
         }
-        current.deltaFunctions = methods;
+        current.comparison = expression;
     }
-
-    /** The operand references of the USING clause's innermost call, as written. */
-    public void setDeltaOperands(String first, String second) {
-        String[] refs = new String[]{first, second};
-        if (benchmarkSpecs.isEmpty()) {
-            this.deltaOperandRefs = refs;
-            return;
-        }
-        benchmarkSpecs.get(benchmarkSpecs.size() - 1).operandRefs = refs;
-    }
-
-    private static final Pattern TRANSFORMED_OPERAND =
-            Pattern.compile("^([A-Za-z_][A-Za-z0-9_]*)\\((.+)\\)$");
 
     /**
      * Binds an operand reference: a number is a constant, {@code benchmark.X} the benchmark's measure,
-     * a bare name the target's measure — where X must be the measure the result actually carries. A
-     * {@code transform(X)} wrapper normalizes the bound operand against its own value distribution.
+     * a bare name the target's measure — where X must be the measure the result actually carries.
      */
     private DeltaScheme.Operand resolveOperand(String ref, boolean hasBenchmark) {
-        Matcher wrapped = TRANSFORMED_OPERAND.matcher(ref);
-        if (wrapped.matches()) {
-            return DeltaScheme.Operand.transformed(wrapped.group(1), resolveOperand(wrapped.group(2), hasBenchmark));
-        }
         if (ref.matches("[0-9.]+")) {
             return DeltaScheme.Operand.constant(Double.parseDouble(ref));
         }
@@ -171,24 +151,24 @@ public class AssessQueryBuilder {
         return onBenchmark ? DeltaScheme.Operand.BENCHMARK : DeltaScheme.Operand.TARGET;
     }
 
-    private DeltaScheme buildDeltaScheme(List<String> functions, String[] operandRefs, boolean hasBenchmark) {
-        if (operandRefs == null) {
-            return new DeltaScheme(functions);
+    /** Without USING: the difference to the benchmark, or each cell's own value when there is none. */
+    private DeltaScheme buildDeltaScheme(DeltaScheme.Term expression, boolean hasBenchmark) {
+        if (expression == null) {
+            return hasBenchmark ? DeltaScheme.difference() : DeltaScheme.identity();
         }
-        return new DeltaScheme(functions,
-                resolveOperand(operandRefs[0], hasBenchmark), resolveOperand(operandRefs[1], hasBenchmark));
+        return new DeltaScheme(expression, ref -> resolveOperand(ref, hasBenchmark));
     }
 
     private List<AssessComparison> buildComparisons(List<AssessBenchmark> benchmarks) {
         if (benchmarkSpecs.isEmpty()) {
             return Collections.singletonList(new AssessComparison(null, null,
-                    buildDeltaScheme(deltaFunctions, deltaOperandRefs, false)));
+                    buildDeltaScheme(comparison, false)));
         }
         List<AssessComparison> comparisons = new ArrayList<>();
         for (int i = 0; i < benchmarkSpecs.size(); i++) {
             BenchmarkSpec spec = benchmarkSpecs.get(i);
             comparisons.add(new AssessComparison(benchmarks.get(i), labelOf(spec.details),
-                    buildDeltaScheme(spec.deltaFunctions, spec.operandRefs, true)));
+                    buildDeltaScheme(spec.comparison, true)));
         }
         return comparisons;
     }

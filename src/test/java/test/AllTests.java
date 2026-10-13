@@ -34,6 +34,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	intentional.assess.fetch.BatchedFetcherTest.class,
 	intentional.assess.fetch.SingleScanFetcherTest.class,
 	intentional.labeling.schemes.CustomLabelingSchemeTest.class,
+	intentional.labeling.schemes.KMeansSchemeTest.class,
+	intentional.labeling.schemes.MedianDistanceSchemeTest.class,
 	intentional.assess.AssessQueryParserTest.class,
 	intentional.assess.AssessOperatorTest.class,
 	intentional.assess.deltas.DeltaSchemeTest.class,
