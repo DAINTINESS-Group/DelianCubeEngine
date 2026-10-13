@@ -33,9 +33,13 @@ import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
 
 import cubemanager.cubebase.CubeQuery;
-import model.decisiontree.labeling.RuleSet;
+import decisiontree.labeling.RuleSet;
+import intentional.operator.IntentionalStrategy;
+import intentional.analyze.AnalyzeOperatorOptimizer.AnalyzeStrategy;
+import intentional.operator.IntentionalOperatorType;
 import mainengine.managers.Director;
 import mainengine.managers.ManagerType;
+import mainengine.managers.OptimizationProfile;
 import mainengine.managers.RequestCTO;
 import mainengine.managers.ResponseDTO;
 import mainengine.managers.SessionContext;
@@ -43,7 +47,7 @@ import mainengine.rmiTransfer.RMIInputStream;
 import mainengine.rmiTransfer.RMIInputStreamImpl;
 import mainengine.rmiTransfer.RMIOutputStream;
 import mainengine.rmiTransfer.RMIOutputStreamImpl;
-import model.decisiontree.services.DatasetManager;
+import decisiontree.services.DatasetManager;
 import result.Result;
 import result.ResultFileMetadata;
 
@@ -90,6 +94,10 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	public InputStream getInputStream(File f) throws IOException {
 	    return new RMIInputStream(new RMIInputStreamImpl(new FileInputStream(f)));
 	}//end method
+	
+	public SessionContext getSessionContext() {
+		return this.context;
+	}
 
 
 	/*
@@ -150,7 +158,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
             ResponseDTO dto = director.serve(cto);
 
             this.context = (SessionContext) dto.getPayload();
-            System.out.println("Initialization Successful via ConnectionManager.");
+            System.out.println("\nInitialization Successful via ConnectionManager.\n");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,17 +199,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	}//answerCubeQueryFromStringWithMetadata
 
 
-	@Override
-	public ResultFileMetadata answerCubeQueryFromStringWithModels(String queryRawString, String[] modelsToGenerate)
-			throws RemoteException {
-
-		HashMap<String, Object> params = new HashMap<>();
-        params.put("query", queryRawString);
-        params.put("models", modelsToGenerate);
-        return (ResultFileMetadata) delegateExecution("answer_with_models", params);
-	}//end method answerCubeQueryFromStringWithModels
-	
-	
 	/**
 	 * Helper method to delegate execution requests to the Director
 	 * 
@@ -322,33 +319,45 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	//INTENTIONAL OPERATORS METHODS
 	public ResultFileMetadata analyzeByIakovidis(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_iakovidis", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.IAKOVIDIS.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMinMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_min_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MIN_MQO.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMaxMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_max_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MAX_MQO.alias, incomingExpression);
     }
 
     @Override
     public ResultFileMetadata analyzeWithMidMQO(String incomingExpression) throws RemoteException {
-        return dispatchAnalyze("analyze_mid_mqo", incomingExpression);
+        return dispatchAnalyze(IntentionalStrategy.MID_MQO.alias, incomingExpression);
     }
-	
+    
+    @Override
+    public ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception{
+    	ResponseDTO dto = delegateOptimizer(ManagerType.OPTIMIZATION, OptimizationProfile.ANALYZE.alias, incomingExpression);
+    	return dto.getMetadata();
+    }
+    
+    private ResponseDTO delegateOptimizer(ManagerType managerType, String commandAlias, String input) throws Exception {
+    	RequestCTO cto = new RequestCTO(managerType, commandAlias, input, context.getCubeManager());
+    	ResponseDTO dto = director.serve(cto);
+    	return dto;
+    }
+
 	@Override
 	public ResultFileMetadata assess(String incomingExpression) throws Exception {
-		return dispatch(ManagerType.INTENTIONAL, "assess", incomingExpression);
+		return dispatch(ManagerType.INTENTIONAL, IntentionalOperatorType.ASSESS.alias, incomingExpression);
 	}
-	
+
 	@Override
 	public ResultFileMetadata describe(String incomingExpression) throws Exception{
 		System.out.println("Received Describe request: " + incomingExpression);
-		return dispatch(ManagerType.INTENTIONAL, "describe", incomingExpression);
+		return dispatch(ManagerType.INTENTIONAL, IntentionalOperatorType.DESCRIBE.alias, incomingExpression);
 	}
 	
 	/**

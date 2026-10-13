@@ -38,6 +38,10 @@ public class Director {
 			case VISUALIZATION:
 				manager = new VisualizationManager();
 				break;
+				
+			case OPTIMIZATION:
+				manager = new OptimizationManager();
+				break;
 
 			default:
 				throw new IllegalArgumentException("Unknown or Unimplemented Manager Type: " + cto.getManagerType());

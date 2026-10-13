@@ -24,17 +24,16 @@ import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
 import cubemanager.cubebase.CubeQuery;
 import cubemanager.cubebase.Dimension;
-import cubemanager.cubebase.Hierarchy;
-import cubemanager.cubebase.Level;
-import cubemanager.cubebase.LinearHierarchy;
 import cubemanager.cubebase.Measure;
+import cubemanager.statistics.selectivity.SelectivityCustomKey;
+import cubemanager.statistics.selectivity.SelectivityStatistics;
 import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
 import result.Result;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,12 +47,28 @@ public class CubeManager {
 	private List<BasicStoredCube> registeredCubesList;
 	private List<Dimension> registeredDimensionsList;
 	
+	private String schemaName;
+	
+	private String typeOfConnection;
+	
+	private double SAMPLE_PERCENTAGE;
+	
+	private boolean sqrtSample;
+	
+	private int factTableSize;
+	
+	private int sampleSize;
+	
+	private HashMap<String,HashMap<String,Integer>> valueCardinalityProfile = new HashMap<String,HashMap<String,Integer>>();
+	
 
 	public CubeManager(String typeOfConnection, HashMap<String, String> userInputList) {
 		cubeBase = new CubeBase(typeOfConnection, userInputList);
 		cubeQueryTranslatorFactory = new CubeQueryTranslatorFactory();
 		registeredCubesList = new ArrayList<BasicStoredCube>();
 		registeredDimensionsList = new ArrayList<Dimension>();
+		this.schemaName = userInputList.get("schemaName");
+		this.typeOfConnection = typeOfConnection;
 	}
 
 	public ICubeQueryTranslator setCubeQueryTranslator() {
@@ -205,12 +220,10 @@ public class CubeManager {
 		//TODO: opportunity to wrap all this ping-pong with CubeQuery into a method/constructor
 		CubeQuery cubequery = new CubeQuery(nameCQ);
 		cubequery.setAggregateFunction(aggregateFunction);
-		/* Must Create Measure In Cube Parser->> I Have Done this */
-		/* Search for Measure */
-		Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
-		cubequery.getMeasuresList().add(msrToAdd);
-		//msrname = measureName;
-		/* Need work to done up here */
+		if (measureName != null) {
+			Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
+			cubequery.addQueryMeasure(aggregateFunction, msrToAdd, null);
+		}
 
 		for (int i = 0; i < gamma.length; i++) {
 			cubequery.addGammaExpression(gamma[i][0], gamma[i][1]);
@@ -346,5 +359,55 @@ public class CubeManager {
 		}		
 		return cubeQueryTranslator.produceExtractionMethod(cubeQuery);
 	}//end method produceExtractionMethod(CubeQuery)
+	
+	/**
+	 * Generate the VCP and store it in file. 
+	 * If an VCP file exists, load the file into the VCP
+	 * @param inputFolder
+	 * @param cubeName
+	 * @throws SQLException
+	 */
+	public void setUpSelectivityStatistics(String inputFolder, String cubeName) throws SQLException {
+		SelectivityStatistics selectivityStatistics = new SelectivityStatistics(inputFolder, cubeName);
+		
+		try {
+			selectivityStatistics.buildSelectivitySampleWithBatches(cubeBase, schemaName, cubeName, SAMPLE_PERCENTAGE,false,sqrtSample);
+			this.valueCardinalityProfile = selectivityStatistics.getValueCardinalityProfile();
+			this.factTableSize = selectivityStatistics.getStoredFactTableSize();
+			this.sampleSize = selectivityStatistics.getSampleSize();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public HashMap<String,HashMap<String,Integer>> getValueCardinalityProfile(){
+		return valueCardinalityProfile;
+	}
+
+	public int getSampleSize() {
+		return sampleSize;
+	}
+
+	public int getFactTableSize() {
+		return factTableSize;
+	}
+
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public String getTypeOfConnection() {
+		return typeOfConnection;
+	}
+	
+	public void setSamplePercentage(double samplePercentage) {
+		this.SAMPLE_PERCENTAGE = samplePercentage;
+	}
+	
+	public void setSqrtSample(boolean sqrtSample) {
+		this.sqrtSample = sqrtSample;
+	}
+	
+	
 
 }//end class CubeManager

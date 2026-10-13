@@ -1,43 +1,48 @@
 package client;
 
-import assess.AssessOperator;
+import intentional.assess.AssessOperator;
 import cubemanager.CubeManager;
+import highlights.HighlightExtractor;
+import highlights.HighlightRecipes;
+import highlights.HighlightSet;
+import intentional.model.ModelExtraction;
+import intentional.result.LabeledResult;
 import mainengine.Session;
+import mainengine.managers.IntentionalProfile;
 import org.antlr.runtime.RecognitionException;
-
+import result.ResultFileMetadata;
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class AssessOperatorClient {
 
-    public static void main(String[] args) throws RecognitionException {
+    public static void main(String[] args) throws RecognitionException, IOException {
         CubeManager cubeManager = initCubeMangerB();
         AssessOperator operator = new AssessOperator(cubeManager);
-        long parsingTime = 0;
-        long comparisonTime = 0;
-        long labelingTime = 0;
-        long executionTime = 0;
         String query = "WITH loan\n" +
-                "FOR region = 'South Moravia', day = '08/10/1997'\n" +
-                "BY region, day, status\n" +
-                "ASSESS max(amount)\n" +
-                "AGAINST PAST 5\n" +
+                "FOR year = '1997'\n" +
+                "BY region, year, status\n" +
+                "ASSESS sum(amount)\n" +
+                "AGAINST PAST 2\n" +
                 "USING ratio(absolute(amount, benchmark.amount))\n" +
-                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra}\n" +
+                "LABELS {[0.001, 0.05]: low, (0.05, 0.1]: high, (0.1, +inf): ultra} AS analyst,\n" +
+                "       EquiDepth(low, high, ultra),\n" +
+                "       EquiWidth(low, high, ultra)\n" +
                 "SAVE AS PastBenchmarkDemo";
 
-        for (int i = 0; i < 5; i++) {
-            AssessOperator.AssessResults results = operator.execute(query);
-            parsingTime += results.parseTime;
-            comparisonTime += results.comparisonTime;
-            labelingTime += results.labelingTime;
-            executionTime += results.executionTime;;
-        }
+        long start = System.nanoTime();
+        LabeledResult result = operator.execute(query).get(0);
+        new ModelExtraction().run(result, IntentionalProfile.ASSESS.archetypes());
+        HighlightSet highlights = new HighlightExtractor()
+                .extract(result, HighlightRecipes.defaults(), cubeManager);
+        long ms = (System.nanoTime() - start) / 1_000_000;
 
-        System.out.println("Parsing Time Avg in ms: " + parsingTime/5);
-        System.out.println("Comparison Time Avg in ms: " + comparisonTime/5 * 0.000001);
-        System.out.println("Labeling Time Avg in ms: " + labelingTime/5 * 0.000001);
-        System.out.println("Execution Time Avg in ms: " + executionTime/5);
+        System.out.println("Execution + extraction: " + ms + " ms");
+        ResultFileMetadata report = IntentionalProfile.ASSESS.writer().write(query,
+                Collections.singletonList(result), Collections.singletonList(highlights));
+        ReportPrinter.print(report);
     }
 
     private static CubeManager initCubeMangerA() {

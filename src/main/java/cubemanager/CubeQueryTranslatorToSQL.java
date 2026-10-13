@@ -14,8 +14,7 @@ import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.Hierarchy;
 import cubemanager.cubebase.Level;
 import cubemanager.cubebase.LinearHierarchy;
-import cubemanager.cubebase.Measure;
-import describe.QueryMeasure;
+import cubemanager.cubebase.QueryMeasure;
 import extractionmethod.ExtractionMethod;
 
 /**
@@ -68,7 +67,7 @@ public class CubeQueryTranslatorToSQL implements ICubeQueryTranslator {
 		 */
 		if (measures != null && !measures.isEmpty()) {
             for (QueryMeasure qm : measures) {
-            	extractionMethod.addReturnedFields(qm.getFunction(), qm.getAttribute(), qm.getAlias());
+            	extractionMethod.addReturnedFields(qm.getFunction(), qm.getName(), qm.getAlias());
             }
         } 
         else {

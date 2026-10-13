@@ -6,10 +6,15 @@ import java.util.Map;
 import chartManagement.ChartManager;
 import cubemanager.CubeManager;
 import cubemanager.cubebase.QueryHistoryManager;
+import intentional.analyze.AnalyzeTranslationManager;
 import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
 public class ConnectionManager implements IBuilder {
+	
+	private double SAMPLE_PERCENTAGE = 0.001;
+	
+	private boolean sqrtSample = true;
 
     @Override
     public ResponseDTO execute(RequestCTO cto) throws Exception {
@@ -20,6 +25,9 @@ public class ConnectionManager implements IBuilder {
         CubeManager cubeManager = new CubeManager(typeOfConnection, userInputList);
         Session session = new Session(cubeManager);
         String sessionId = session.initialize(typeOfConnection, userInputList);
+        cubeManager.setSamplePercentage(SAMPLE_PERCENTAGE);
+        cubeManager.setSqrtSample(sqrtSample);
+        cubeManager.setUpSelectivityStatistics(userInputList.get("inputFolder"), userInputList.get("cubeName"));
         QueryHistoryManager queryHistoryMng = new QueryHistoryManager(sessionId);
 
         SessionContext context = new SessionContext();
@@ -34,7 +42,7 @@ public class ConnectionManager implements IBuilder {
 
         switch (cto.getCommandAlias()) {
 	        case "initialize":
-	            System.out.println("DONE WITH INIT CENTRAL (Manager)");
+	            System.out.println("\nDONE WITH INIT CENTRAL (Manager)\n");
 	            break;
 	
 	        case "initialize_with_interests":
@@ -53,7 +61,7 @@ public class ConnectionManager implements IBuilder {
 	            
 	            context.setInterestMng(interestMng);
 	            
-	            System.out.println("DONE WITH INIT INTERESTS (Manager)");
+	            System.out.println("\nDONE WITH INIT INTERESTS (Manager)\n");
 	            break;
 	
 	        case "initialize_chart":

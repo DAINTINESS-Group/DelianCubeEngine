@@ -419,8 +419,7 @@ public class QueryEditorController extends AbstractController {
 		
 		try {
 		
-			String [] modelsToGenerate = {"Rank", "Outlier", "KMeansApache", "KPIMedianBased"};
-			resMetadata = serverEngine.answerCubeQueryFromStringWithModels(queryString, modelsToGenerate);
+			resMetadata = serverEngine.answerCubeQueryFromStringWithMetadata(queryString);
 
 			if(resMetadata != null) {
 				remoteFolder = resMetadata.getLocalFolder();
@@ -429,7 +428,7 @@ public class QueryEditorController extends AbstractController {
 				models = resMetadata.getComponentResultFiles();
 				modelInfos = resMetadata.getComponentResultInfoFiles();
 				
-				System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile + "\nCOMP\t" + models.get(0));
+				System.out.println("\nRES\t" + remoteResultsFile + "\nINFO\t" + remoteInfoFile);
 
 			}
 			else {
@@ -454,7 +453,7 @@ public class QueryEditorController extends AbstractController {
 			localResultsFile = downloadResult(remoteResultsFile, serverEngine);
 			localInfoFile = downloadResult(remoteInfoFile, serverEngine);
 			
-			if(models.size() > 0) {	
+			if(models != null && models.size() > 0) {	
 				for(String model: models){
 					String currentModelFile = downloadResult(model, serverEngine);
 					localModelFiles.add(currentModelFile);

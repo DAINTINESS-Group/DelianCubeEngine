@@ -77,6 +77,7 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `loan` ;
 
 CREATE TABLE IF NOT EXISTS `loan` (
+  `SK_id` INT NOT NULL auto_increment,
   `loan_id` INT(11) NOT NULL,
   `l_account_id` INT(11) NOT NULL,
   `date` INT(11) NOT NULL,
@@ -84,9 +85,9 @@ CREATE TABLE IF NOT EXISTS `loan` (
   `amount` INT(11) NOT NULL,
   `duration` INT(11) NOT NULL,
   `payments` DOUBLE NOT NULL,
-  PRIMARY KEY (`loan_id`),
+  PRIMARY KEY (`SK_id`,`loan_id`),
   CONSTRAINT `account_fk`
-    FOREIGN KEY (`account_id`)
+    FOREIGN KEY (`l_account_id`)
     REFERENCES `account` (`account_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -96,16 +97,16 @@ CREATE TABLE IF NOT EXISTS `loan` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `status_fk`
-    FOREIGN KEY (`status_id`)
+    FOREIGN KEY (`l_status_id`)
     REFERENCES `status` (`SK_status`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-CREATE INDEX `account_loan_fk_idx` ON `loan` (`account_id` ASC);
+CREATE INDEX `account_loan_fk_idx` ON `loan` (`l_account_id` ASC);
 CREATE INDEX `date_loan_fk_idx` ON `loan` (`date` ASC);
-CREATE INDEX `status_loan_fk_idx` ON `loan` (`status_id` ASC);
+CREATE INDEX `status_loan_fk_idx` ON `loan` (`l_status_id` ASC);
 
 
 --  ----

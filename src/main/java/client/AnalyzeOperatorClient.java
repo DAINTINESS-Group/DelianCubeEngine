@@ -1,9 +1,5 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -20,18 +16,6 @@ public class AnalyzeOperatorClient {
 	private static final String HOST = "localhost";
 	private static final int PORT = 2020;
 	private static Registry registry;
-	
-	// Method that reads the report file and prints it to the console line by line
-	public static void fetchData(String localFolder,String resultFile) throws IOException {
-		String str;
-		File reportFile = new File(localFolder + resultFile);
-		
-		BufferedReader br = new BufferedReader(new FileReader(reportFile));
-		while((str = br.readLine()) != null) {
-			System.out.println(str);
-		}
-		br.close();
-	}
 	
 	public static void main(String[] args) throws Exception {
 		registry = LocateRegistry.getRegistry(HOST,PORT);
@@ -61,9 +45,7 @@ public class AnalyzeOperatorClient {
 		String analyzeIntentionalExpression = "ANALYZE min(amount) FROM loan FOR region ='Prague' GROUP BY district_name,month AS first_query";
 		for(int i = 0;i < 5;i++) {
 			ResultFileMetadata resultMetadata = service.analyzeByIakovidis(analyzeIntentionalExpression);
-			String localFolder = resultMetadata.getLocalFolder();
-			String resultFile = resultMetadata.getResultFile();
-			fetchData(localFolder,resultFile);
+			ReportPrinter.print(resultMetadata);
 		}
 	}
 

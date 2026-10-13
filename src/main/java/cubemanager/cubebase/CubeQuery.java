@@ -22,9 +22,9 @@ package cubemanager.cubebase;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 //import java.util.List;
 
-import describe.QueryMeasure;
 import extractionmethod.ExtractionMethod;
 import result.Result;
 
@@ -65,13 +65,12 @@ public class CubeQuery extends Cube {
 		this.queryMeasures = new ArrayList<>();
         if(oldQuery.queryMeasures != null) {
             for(QueryMeasure qm : oldQuery.queryMeasures) {
-                 this.queryMeasures.add(new QueryMeasure(qm.getFunction(), qm.getAttribute(), qm.getAlias()));
+                 this.queryMeasures.add(new QueryMeasure(qm.getFunction(), (Measure) qm, qm.getAlias()));
             }
         }
         this.tempLegacyFunction = oldQuery.tempLegacyFunction;
-        
+
 		this.referCube = oldQuery.referCube;
-		this.cubeMeasuresList = oldQuery.cubeMeasuresList;
 	}
 
 	public ExtractionMethod getExtractionMethod() {
@@ -99,9 +98,19 @@ public class CubeQuery extends Cube {
 	public void addQueryMeasure(String func, String attr, String alias) {
         this.queryMeasures.add(new QueryMeasure(func, attr, alias));
     }
-    
+
+    public void addQueryMeasure(String func, Measure measure, String alias) {
+        this.queryMeasures.add(new QueryMeasure(func, measure, alias));
+    }
+
     public ArrayList<QueryMeasure> getQueryMeasures() {
         return queryMeasures;
+    }
+
+    /** The aggregated measures of this query; each {@link QueryMeasure} is itself a {@link Measure}. */
+    @Override
+    public List<Measure> getMeasuresList() {
+        return new ArrayList<Measure>(queryMeasures);
     }
     
     public void setAggregateFunction(String AggregateFunction){
@@ -195,19 +204,14 @@ public class CubeQuery extends Cube {
 		}
 		ret_value += "\nAggrFunc:" + aggrStr + "\n";
 
-		//Replaced the old cubeMeasuresList check
 		if (!queryMeasures.isEmpty()) {
 			ret_value += "Measure:";
 			for (int i = 0; i < queryMeasures.size(); i++) {
 				if (i > 0) ret_value += ", ";
-				ret_value += queryMeasures.get(i).getAttribute();
+				ret_value += queryMeasures.get(i).getName();
 			}
 			ret_value += "\n";
 		} 
-		else if (this.cubeMeasuresList.size() > 0 && this.cubeMeasuresList.get(0) != null
-				&& this.cubeMeasuresList.get(0).getAttribute() != null) {
-			ret_value += "Measure:" + this.cubeMeasuresList.get(0).getAttribute().getName() + "\n";
-		}
 		
 		ret_value += "Gamma:";
 		for (int i = 0; i < GammaExpressions.size(); i++) {

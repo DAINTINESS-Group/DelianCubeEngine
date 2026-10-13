@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import analyze.AnalyzeQuery;
+import intentional.analyze.AnalyzeQuery;
 import chartManagement.utils.ChartVisModel;
 import chartManagement.utils.DataPoint;
 

@@ -165,6 +165,7 @@ DROP TABLE IF EXISTS `sales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sales` (
+  `SK_id` int NOT NULL auto_increment,  
   `sales_id` int NOT NULL,
   `product_id` int NOT NULL,
   `time_id` int NOT NULL,
@@ -174,7 +175,7 @@ CREATE TABLE `sales` (
   `store_sales` decimal(10,4) NOT NULL,
   `store_cost` decimal(10,4) NOT NULL,
   `unit_sales` decimal(10,4) NOT NULL,
-  PRIMARY KEY (sales_id),
+  PRIMARY KEY (SK_id,sales_id),
   FOREIGN KEY (product_id) REFERENCES product(product_id),
   FOREIGN KEY (time_id) REFERENCES date(time_id),
   FOREIGN KEY (customer_id) REFERENCES customer(customer_id),

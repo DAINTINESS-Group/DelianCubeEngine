@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import chartManagement.utils.ChartVisModel;
-import model.abstracts.AbstractModel;
 
 public class ModalityModel extends ChartModel{
 

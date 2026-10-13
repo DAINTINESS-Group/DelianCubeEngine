@@ -19,7 +19,6 @@
 package result;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The class storing the cells of a cube
@@ -28,6 +27,9 @@ import java.util.Arrays;
  *
  */
 public class Cell {
+
+	/** The OLAP "All" value: a dimension aggregated over rather than bound to a concrete member. */
+	public static final String ALL = "All";
 
 	private ArrayList<String> dimensionMembers = new ArrayList<>();
 	private ArrayList<String> measures = new ArrayList<>();
@@ -69,9 +71,23 @@ public class Cell {
         }
     }
 
-    //Legacy Constructor that defaults to 1 measure 
+    //Legacy Constructor that defaults to 1 measure
     public Cell(String[] values) {
         this(values, 1);
+    }
+
+    /**
+     * An aggregate cell: the given member bound at one dimension and {@link #ALL} at the others, carrying one
+     * measure (the value marginalized over the unbound dimensions).
+     */
+    public static Cell aggregate(int dimensionCount, int boundDimension, String member, double measure) {
+        String[] values = new String[dimensionCount + 2]; // dimensions + one measure + the count
+        for (int i = 0; i < dimensionCount; i++) {
+            values[i] = i == boundDimension ? member : ALL;
+        }
+        values[dimensionCount] = Double.toString(measure);
+        values[dimensionCount + 1] = "1";
+        return new Cell(values, 1);
     }
 
 	public ArrayList<String> getDimensionMembers() {
@@ -124,4 +140,9 @@ public class Cell {
 
 	public Double toDouble() {
 		return Double.valueOf(measures.get(0));}
+
+	/** The i-th measure of this cell as a double. */
+	public Double toDouble(int index) {
+		return Double.valueOf(measures.get(index));
+	}
 }
