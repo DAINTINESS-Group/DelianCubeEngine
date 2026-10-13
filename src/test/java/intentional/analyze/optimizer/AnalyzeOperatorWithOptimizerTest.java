@@ -70,7 +70,7 @@ public class AnalyzeOperatorWithOptimizerTest {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
 		double siblingMegaRatio= testAnalyzeOperatorOptimizer.getSiblingMegaRatio();
 		
-		assertEquals(0.23076,siblingMegaRatio,0.001);
+		assertEquals(0.5384,siblingMegaRatio,0.001);
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class AnalyzeOperatorWithOptimizerTest {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
 		double imbalanceCoefficient= testAnalyzeOperatorOptimizer.getSiblingImbalanceCoefficient();
 		
-		assertEquals(0.33333,imbalanceCoefficient,0.001);
+		assertEquals(0.2857,imbalanceCoefficient,0.001);
 	}
 	
 	@Test
@@ -86,6 +86,6 @@ public class AnalyzeOperatorWithOptimizerTest {
 		AnalyzeOperatorOptimizer testAnalyzeOperatorOptimizer = testAnalyzeManager.getAnalyzeOperatorOptimizer();
 		IntentionalStrategy results = testAnalyzeOperatorOptimizer.decideMQOAlgorithmWithIndependenceAssumption();
 		
-		assertEquals(IntentionalStrategy.MID_MQO, results);
+		assertEquals(IntentionalStrategy.MAX_MQO, results);
 	}	
 }

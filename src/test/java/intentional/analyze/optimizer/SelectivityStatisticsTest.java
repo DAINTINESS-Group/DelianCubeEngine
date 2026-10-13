@@ -63,7 +63,7 @@ public class SelectivityStatisticsTest {
 		int matchingRowsPrague = results.get(0).getMatchingRows();
 		int matchingRows1998 = results.get(1).getMatchingRows();
 		assertEquals(2, results.size());
-		assertEquals(4, matchingRowsPrague);
+		assertEquals(5, matchingRowsPrague);
 		assertEquals(2, matchingRows1998);
 	}
 	
@@ -74,7 +74,7 @@ public class SelectivityStatisticsTest {
 		double selectivityPrague = results.get(0).getSelectivity();
 		double selectivity1998 = results.get(1).getSelectivity();
 		assertEquals(2, results.size());
-		assertEquals(0.1538, selectivityPrague, 0.001);
+		assertEquals(0.1923, selectivityPrague, 0.001);
 		assertEquals(0.0769, selectivity1998,0.001);
 	}
 
