@@ -407,9 +407,7 @@ public class OllamaLLMClient {
 
         json.append("{");
 
-        /*
-         * Model
-         */
+
         json.append("\"model\":\"")
                 .append(
                         escapeJson(
@@ -418,9 +416,7 @@ public class OllamaLLMClient {
                 )
                 .append("\",");
 
-        /*
-         * Prompt
-         */
+
         json.append("\"prompt\":\"")
                 .append(
                         escapeJson(
@@ -429,9 +425,7 @@ public class OllamaLLMClient {
                 )
                 .append("\",");
 
-        /*
-         * Streaming
-         */
+
         json.append("\"stream\":")
                 .append(
                         modelConfig.isStreamEnabled()
@@ -474,9 +468,7 @@ public class OllamaLLMClient {
                 "\"options\":{"
         );
 
-        /*
-         * Context size.
-         */
+
         json.append(
                         "\"num_ctx\":"
                 )
@@ -485,9 +477,7 @@ public class OllamaLLMClient {
                 )
                 .append(",");
 
-        /*
-         * Maximum generated tokens.
-         */
+
         json.append(
                         "\"num_predict\":"
                 )
@@ -504,9 +494,7 @@ public class OllamaLLMClient {
                 )
                 .append(",");
 
-        /*
-         * Fixed random seed.
-         */
+
         json.append(
                         "\"seed\":"
                 )
@@ -515,9 +503,7 @@ public class OllamaLLMClient {
                 )
                 .append(",");
 
-        /*
-         * Sampling parameters.
-         */
+
         json.append(
                         "\"top_k\":"
                 )

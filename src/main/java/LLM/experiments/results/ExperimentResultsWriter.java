@@ -3,304 +3,601 @@ package LLM.experiments.results;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.IOException;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 import java.util.Locale;
 
 import LLM.experiments.ExpectedCubeQuery;
 
+
 public class ExperimentResultsWriter implements Closeable {
+
+    private static final String OUTPUT_DIRECTORY =
+            "test/resources/OutputFiles/LLM";
 
     private final BufferedWriter writer;
     private boolean headerWritten;
 
-    public ExperimentResultsWriter(Path outputPath) throws IOException {
-        if (outputPath == null) {
-            throw new IllegalArgumentException("outputPath cannot be null.");
-        }
 
-        Path parent = outputPath.toAbsolutePath().getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
+    public ExperimentResultsWriter() throws IOException {
+
+        Path outputDirectory =
+                Paths.get(
+                        OUTPUT_DIRECTORY
+                );
+
+        Files.createDirectories(
+                outputDirectory
+        );
+
+        String timestamp =
+                LocalDateTime
+                        .now()
+                        .format(
+                                DateTimeFormatter.ofPattern(
+                                        "yyyy-MM-dd_HH-mm-ss"
+                                )
+                        );
+
+        Path outputPath =
+                outputDirectory.resolve(
+                        "experiment_results_"
+                                + timestamp
+                                + ".tsv"
+                );
 
         writer = Files.newBufferedWriter(
                 outputPath,
                 StandardCharsets.UTF_8
         );
+
         headerWritten = false;
     }
 
-    public void writeHeaderIfNeeded() throws IOException {
+
+    public void writeHeaderIfNeeded()
+            throws IOException {
+
         if (headerWritten) {
             return;
         }
 
-        writer.write(joinTsv(new String[]{
-                "run_id",
-                "llm",
-                "prompt_combination",
-                "test_id",
-                "pair_id",
-                "wording_type",
-                "difficulty",
-                "category",
+        writer.write(
+                joinTsv(new String[]{
+                        "run_id",
+                        "llm",
+                        "prompt_combination",
+                        "test_id",
+                        "pair_id",
+                        "wording_type",
+                        "difficulty",
+                        "category",
 
-                "strict_accuracy",
-                "overall_similarity",
-                "structural_accuracy",
-                "response_time_ms",
-                "similarity_available",
+                        "strict_accuracy",
+                        "overall_similarity",
+                        "structural_accuracy",
+                        "response_time_ms",
+                        "similarity_available",
 
-                "gamma_similarity",
-                "sigma_similarity",
-                "measure_similarity",
-                "aggregate_similarity",
-                "cube_similarity",
+                        "gamma_similarity",
+                        "sigma_similarity",
+                        "measure_similarity",
+                        "aggregate_similarity",
+                        "cube_similarity",
 
-                "strict_valid",
-                "structural_valid",
-                "strict_weighted_score",
-                "structural_weighted_score",
+                        "strict_valid",
+                        "structural_valid",
+                        "strict_weighted_score",
+                        "structural_weighted_score",
 
-                "format_valid",
-                "cube_correct",
-                "aggregate_correct",
-                "measure_correct",
-                "gamma_correct",
-                "sigma_correct",
-                "structural_sigma_correct",
+                        "format_valid",
+                        "cube_correct",
+                        "aggregate_correct",
+                        "measure_correct",
+                        "gamma_correct",
+                        "sigma_correct",
+                        "structural_sigma_correct",
 
-                "unknown_fields_count",
-                "missing_gamma_count",
-                "extra_gamma_count",
-                "missing_sigma_count",
-                "extra_sigma_count",
-                "wrong_sigma_value_count",
+                        "unknown_fields_count",
+                        "missing_gamma_count",
+                        "extra_gamma_count",
+                        "missing_sigma_count",
+                        "extra_sigma_count",
+                        "wrong_sigma_value_count",
 
-                "question",
-                "expected_cube",
-                "expected_aggregate",
-                "expected_measure",
-                "expected_gamma",
-                "expected_sigma",
-                "actual_answer",
+                        "question",
+                        "expected_cube",
+                        "expected_aggregate",
+                        "expected_measure",
+                        "expected_gamma",
+                        "expected_sigma",
+                        "actual_answer",
 
-                "prompt_chars",
-                "prompt_utf8_bytes",
-                "prompt_estimated_tokens_chars",
-                "prompt_estimated_tokens_bytes",
+                        "prompt_chars",
+                        "prompt_utf8_bytes",
+                        "prompt_estimated_tokens_chars",
+                        "prompt_estimated_tokens_bytes",
 
-                "prompt_eval_count",
-                "prompt_eval_cached_count",
-                "prompt_eval_uncached_count",
-                "prompt_cache_hit_ratio",
-                "eval_count",
-                "total_tokens",
+                        "prompt_eval_count",
+                        "prompt_eval_cached_count",
+                        "prompt_eval_uncached_count",
+                        "prompt_cache_hit_ratio",
+                        "eval_count",
+                        "total_tokens",
 
-                "total_duration_ms",
-                "load_duration_ms",
-                "adjusted_duration_ms",
-                "adjusted_duration_s",
-                "prompt_eval_duration_ms",
-                "eval_duration_ms",
+                        "total_duration_ms",
+                        "load_duration_ms",
+                        "adjusted_duration_ms",
+                        "adjusted_duration_s",
+                        "prompt_eval_duration_ms",
+                        "eval_duration_ms",
 
-                "prompt_tokens_per_second",
-                "output_tokens_per_second",
+                        "prompt_tokens_per_second",
+                        "output_tokens_per_second",
 
-                "llm_call_success",
-                "error_type",
-                "error_message",
-                "timestamp"
-        }));
+                        "llm_call_success",
+                        "error_type",
+                        "error_message",
+                        "timestamp"
+                })
+        );
 
         writer.newLine();
         writer.flush();
+
         headerWritten = true;
     }
 
-    public void writeResult(ExperimentResult result) throws IOException {
+
+    public void writeResult(
+            ExperimentResult result
+    ) throws IOException {
+
         if (result == null) {
-            throw new IllegalArgumentException("ExperimentResult cannot be null.");
+            throw new IllegalArgumentException(
+                    "ExperimentResult cannot be null."
+            );
         }
 
         writeHeaderIfNeeded();
 
-        ExpectedCubeQuery expectedQuery = result.getExpectedQuery();
+        ExpectedCubeQuery expectedQuery =
+                result.getExpectedQuery();
 
-        writer.write(joinTsv(new String[]{
-                result.getRunId(),
-                result.getLlmName(),
-                result.getPromptCombinationName(),
-                result.getTestId(),
-                result.getPairId(),
-                result.getWordingType(),
-                result.getDifficulty(),
-                result.getCategory(),
+        writer.write(
+                joinTsv(new String[]{
+                        result.getRunId(),
+                        result.getLlmName(),
+                        result.getPromptCombinationName(),
+                        result.getTestId(),
+                        result.getPairId(),
+                        result.getWordingType(),
+                        result.getDifficulty(),
+                        result.getCategory(),
 
-                formatDouble(result.getStrictAccuracy()),
-                formatSimilarity(result, result.getOverallSimilarity()),
-                formatDouble(result.getStructuralAccuracy()),
-                String.valueOf(result.getResponseTimeMs()),
-                booleanToString(result.isQuerySimilarityAvailable()),
+                        formatDouble(
+                                result.getStrictAccuracy()
+                        ),
 
-                formatSimilarity(result, result.getGammaSimilarity()),
-                formatSimilarity(result, result.getSigmaSimilarity()),
-                formatSimilarity(result, result.getMeasureSimilarity()),
-                formatSimilarity(result, result.getAggregateSimilarity()),
-                formatSimilarity(result, result.getCubeSimilarity()),
+                        formatSimilarity(
+                                result,
+                                result.getOverallSimilarity()
+                        ),
 
-                booleanToString(result.isStrictValid()),
-                booleanToString(result.isStructuralValid()),
-                formatDouble(result.getStrictWeightedScore()),
-                formatDouble(result.getStructuralWeightedScore()),
+                        formatDouble(
+                                result.getStructuralAccuracy()
+                        ),
 
-                booleanToString(result.isFormatValid()),
-                booleanToString(result.isCubeCorrect()),
-                booleanToString(result.isAggregateFunctionCorrect()),
-                booleanToString(result.isMeasureCorrect()),
-                booleanToString(result.isGammaCorrect()),
-                booleanToString(result.isSigmaCorrect()),
-                booleanToString(result.isStructuralSigmaCorrect()),
+                        String.valueOf(
+                                result.getResponseTimeMs()
+                        ),
 
-                String.valueOf(result.getUnknownFieldsCount()),
-                String.valueOf(result.getMissingGammaCount()),
-                String.valueOf(result.getExtraGammaCount()),
-                String.valueOf(result.getMissingSigmaCount()),
-                String.valueOf(result.getExtraSigmaCount()),
-                String.valueOf(result.getWrongSigmaValueCount()),
+                        booleanToString(
+                                result.isQuerySimilarityAvailable()
+                        ),
 
-                result.getQuestion(),
-                getExpectedCube(expectedQuery),
-                getExpectedAggregate(expectedQuery),
-                getExpectedMeasure(expectedQuery),
-                getExpectedGamma(expectedQuery),
-                getExpectedSigma(expectedQuery),
-                result.getActualAnswer(),
+                        formatSimilarity(
+                                result,
+                                result.getGammaSimilarity()
+                        ),
 
-                String.valueOf(result.getPromptCharacterCount()),
-                String.valueOf(result.getPromptUtf8ByteCount()),
-                String.valueOf(result.getPromptEstimatedTokensByCharacters()),
-                String.valueOf(result.getPromptEstimatedTokensByBytes()),
+                        formatSimilarity(
+                                result,
+                                result.getSigmaSimilarity()
+                        ),
 
-                String.valueOf(result.getPromptEvalCount()),
-                formatOptionalLong(result.getPromptEvalCachedCount()),
-                formatOptionalLong(result.getPromptEvalUncachedCount()),
-                formatOptionalRatio(result.getPromptCacheHitRatio()),
-                String.valueOf(result.getEvalCount()),
-                String.valueOf(result.getTotalTokenCount()),
+                        formatSimilarity(
+                                result,
+                                result.getMeasureSimilarity()
+                        ),
 
-                String.valueOf(result.getTotalDurationMs()),
-                String.valueOf(result.getLoadDurationMs()),
-                formatAdjustedDurationMs(result),
-                formatAdjustedDurationSeconds(result),
-                String.valueOf(result.getPromptEvalDurationMs()),
-                String.valueOf(result.getEvalDurationMs()),
+                        formatSimilarity(
+                                result,
+                                result.getAggregateSimilarity()
+                        ),
 
-                formatDouble(result.getPromptTokensPerSecond()),
-                formatDouble(result.getOutputTokensPerSecond()),
+                        formatSimilarity(
+                                result,
+                                result.getCubeSimilarity()
+                        ),
 
-                booleanToString(result.isLlmCallSuccessful()),
-                result.getErrorType(),
-                result.getErrorMessage(),
-                result.getTimestamp()
-        }));
+                        booleanToString(
+                                result.isStrictValid()
+                        ),
+
+                        booleanToString(
+                                result.isStructuralValid()
+                        ),
+
+                        formatDouble(
+                                result.getStrictWeightedScore()
+                        ),
+
+                        formatDouble(
+                                result.getStructuralWeightedScore()
+                        ),
+
+                        booleanToString(
+                                result.isFormatValid()
+                        ),
+
+                        booleanToString(
+                                result.isCubeCorrect()
+                        ),
+
+                        booleanToString(
+                                result.isAggregateFunctionCorrect()
+                        ),
+
+                        booleanToString(
+                                result.isMeasureCorrect()
+                        ),
+
+                        booleanToString(
+                                result.isGammaCorrect()
+                        ),
+
+                        booleanToString(
+                                result.isSigmaCorrect()
+                        ),
+
+                        booleanToString(
+                                result.isStructuralSigmaCorrect()
+                        ),
+
+                        String.valueOf(
+                                result.getUnknownFieldsCount()
+                        ),
+
+                        String.valueOf(
+                                result.getMissingGammaCount()
+                        ),
+
+                        String.valueOf(
+                                result.getExtraGammaCount()
+                        ),
+
+                        String.valueOf(
+                                result.getMissingSigmaCount()
+                        ),
+
+                        String.valueOf(
+                                result.getExtraSigmaCount()
+                        ),
+
+                        String.valueOf(
+                                result.getWrongSigmaValueCount()
+                        ),
+
+                        result.getQuestion(),
+
+                        getExpectedCube(
+                                expectedQuery
+                        ),
+
+                        getExpectedAggregate(
+                                expectedQuery
+                        ),
+
+                        getExpectedMeasure(
+                                expectedQuery
+                        ),
+
+                        getExpectedGamma(
+                                expectedQuery
+                        ),
+
+                        getExpectedSigma(
+                                expectedQuery
+                        ),
+
+                        result.getActualAnswer(),
+
+                        String.valueOf(
+                                result.getPromptCharacterCount()
+                        ),
+
+                        String.valueOf(
+                                result.getPromptUtf8ByteCount()
+                        ),
+
+                        String.valueOf(
+                                result.getPromptEstimatedTokensByCharacters()
+                        ),
+
+                        String.valueOf(
+                                result.getPromptEstimatedTokensByBytes()
+                        ),
+
+                        String.valueOf(
+                                result.getPromptEvalCount()
+                        ),
+
+                        formatOptionalLong(
+                                result.getPromptEvalCachedCount()
+                        ),
+
+                        formatOptionalLong(
+                                result.getPromptEvalUncachedCount()
+                        ),
+
+                        formatOptionalRatio(
+                                result.getPromptCacheHitRatio()
+                        ),
+
+                        String.valueOf(
+                                result.getEvalCount()
+                        ),
+
+                        String.valueOf(
+                                result.getTotalTokenCount()
+                        ),
+
+                        String.valueOf(
+                                result.getTotalDurationMs()
+                        ),
+
+                        String.valueOf(
+                                result.getLoadDurationMs()
+                        ),
+
+                        formatAdjustedDurationMs(
+                                result
+                        ),
+
+                        formatAdjustedDurationSeconds(
+                                result
+                        ),
+
+                        String.valueOf(
+                                result.getPromptEvalDurationMs()
+                        ),
+
+                        String.valueOf(
+                                result.getEvalDurationMs()
+                        ),
+
+                        formatDouble(
+                                result.getPromptTokensPerSecond()
+                        ),
+
+                        formatDouble(
+                                result.getOutputTokensPerSecond()
+                        ),
+
+                        booleanToString(
+                                result.isLlmCallSuccessful()
+                        ),
+
+                        result.getErrorType(),
+
+                        result.getErrorMessage(),
+
+                        result.getTimestamp()
+                })
+        );
 
         writer.newLine();
         writer.flush();
     }
 
-    private static String getExpectedCube(ExpectedCubeQuery expectedQuery) {
+
+    private static String getExpectedCube(
+            ExpectedCubeQuery expectedQuery
+    ) {
+
         if (expectedQuery == null) {
             return "";
         }
-        return safeString(expectedQuery.getCubeName());
+
+        return safeString(
+                expectedQuery.getCubeName()
+        );
     }
 
-    private static String getExpectedAggregate(ExpectedCubeQuery expectedQuery) {
+
+    private static String getExpectedAggregate(
+            ExpectedCubeQuery expectedQuery
+    ) {
+
         if (expectedQuery == null) {
             return "";
         }
-        return safeString(expectedQuery.getAggregateFunction());
+
+        return safeString(
+                expectedQuery.getAggregateFunction()
+        );
     }
 
-    private static String getExpectedMeasure(ExpectedCubeQuery expectedQuery) {
+
+    private static String getExpectedMeasure(
+            ExpectedCubeQuery expectedQuery
+    ) {
+
         if (expectedQuery == null) {
             return "";
         }
-        return safeString(expectedQuery.getMeasure());
+
+        return safeString(
+                expectedQuery.getMeasure()
+        );
     }
 
-    private static String getExpectedGamma(ExpectedCubeQuery expectedQuery) {
+
+    private static String getExpectedGamma(
+            ExpectedCubeQuery expectedQuery
+    ) {
+
         if (expectedQuery == null) {
             return "";
         }
-        return joinList(expectedQuery.getGammaFields());
+
+        return joinList(
+                expectedQuery.getGammaFields()
+        );
     }
 
-    private static String getExpectedSigma(ExpectedCubeQuery expectedQuery) {
+
+    private static String getExpectedSigma(
+            ExpectedCubeQuery expectedQuery
+    ) {
+
         if (expectedQuery == null) {
             return "";
         }
-        return joinList(expectedQuery.getSigmaConditions());
+
+        return joinList(
+                expectedQuery.getSigmaConditions()
+        );
     }
 
-    private static String joinList(List<String> values) {
-        if (values == null || values.isEmpty()) {
+
+    private static String joinList(
+            List<String> values
+    ) {
+
+        if (values == null
+                || values.isEmpty()) {
+
             return "[]";
         }
 
-        StringBuilder builder = new StringBuilder("[");
-        for (int i = 0; i < values.size(); i++) {
+        StringBuilder builder =
+                new StringBuilder("[");
+
+        for (int i = 0;
+             i < values.size();
+             i++) {
+
             if (i > 0) {
                 builder.append(", ");
             }
-            builder.append(safeString(values.get(i)));
+
+            builder.append(
+                    safeString(
+                            values.get(i)
+                    )
+            );
         }
+
         builder.append("]");
 
         return builder.toString();
     }
 
-    private static String formatOptionalLong(long value) {
-        return value < 0L ? "" : String.valueOf(value);
+
+    private static String formatOptionalLong(
+            long value
+    ) {
+
+        return value < 0L
+                ? ""
+                : String.valueOf(value);
     }
 
-    private static String formatOptionalRatio(double value) {
-        if (value < 0.0 || Double.isNaN(value) || Double.isInfinite(value)) {
+
+    private static String formatOptionalRatio(
+            double value
+    ) {
+
+        if (value < 0.0
+                || Double.isNaN(value)
+                || Double.isInfinite(value)) {
+
             return "";
         }
 
-        return String.format(Locale.US, "%.4f", value);
+        return String.format(
+                Locale.US,
+                "%.4f",
+                value
+        );
     }
 
-    private static long calculateAdjustedDurationMs(ExperimentResult result) {
+
+    private static long calculateAdjustedDurationMs(
+            ExperimentResult result
+    ) {
+
         if (result == null) {
             return -1L;
         }
 
-        long totalDurationMs = result.getTotalDurationMs();
-        long loadDurationMs = result.getLoadDurationMs();
+        long totalDurationMs =
+                result.getTotalDurationMs();
 
-        if (totalDurationMs < 0L || loadDurationMs < 0L) {
+        long loadDurationMs =
+                result.getLoadDurationMs();
+
+        if (totalDurationMs < 0L
+                || loadDurationMs < 0L) {
+
             return -1L;
         }
 
-        long adjustedDurationMs = totalDurationMs - loadDurationMs;
-        return adjustedDurationMs < 0L ? -1L : adjustedDurationMs;
+        long adjustedDurationMs =
+                totalDurationMs
+                        - loadDurationMs;
+
+        return adjustedDurationMs < 0L
+                ? -1L
+                : adjustedDurationMs;
     }
 
-    private static String formatAdjustedDurationMs(ExperimentResult result) {
-        long adjustedDurationMs = calculateAdjustedDurationMs(result);
+
+    private static String formatAdjustedDurationMs(
+            ExperimentResult result
+    ) {
+
+        long adjustedDurationMs =
+                calculateAdjustedDurationMs(
+                        result
+                );
+
         return adjustedDurationMs < 0L
                 ? ""
-                : String.valueOf(adjustedDurationMs);
+                : String.valueOf(
+                adjustedDurationMs
+        );
     }
 
-    private static String formatAdjustedDurationSeconds(ExperimentResult result) {
-        long adjustedDurationMs = calculateAdjustedDurationMs(result);
+
+    private static String formatAdjustedDurationSeconds(
+            ExperimentResult result
+    ) {
+
+        long adjustedDurationMs =
+                calculateAdjustedDurationMs(
+                        result
+                );
 
         if (adjustedDurationMs < 0L) {
             return "";
@@ -313,30 +610,54 @@ public class ExperimentResultsWriter implements Closeable {
         );
     }
 
+
     private static String formatSimilarity(
             ExperimentResult result,
             double value
     ) {
-        if (result == null || !result.isQuerySimilarityAvailable()) {
+
+        if (result == null
+                || !result.isQuerySimilarityAvailable()) {
+
             return "";
         }
-        return formatDouble(value);
+
+        return formatDouble(
+                value
+        );
     }
 
-    private static String joinTsv(String[] values) {
-        StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < values.length; i++) {
+    private static String joinTsv(
+            String[] values
+    ) {
+
+        StringBuilder builder =
+                new StringBuilder();
+
+        for (int i = 0;
+             i < values.length;
+             i++) {
+
             if (i > 0) {
                 builder.append('\t');
             }
-            builder.append(escapeTsv(values[i]));
+
+            builder.append(
+                    escapeTsv(
+                            values[i]
+                    )
+            );
         }
 
         return builder.toString();
     }
 
-    private static String escapeTsv(String value) {
+
+    private static String escapeTsv(
+            String value
+    ) {
+
         if (value == null) {
             return "";
         }
@@ -349,20 +670,43 @@ public class ExperimentResultsWriter implements Closeable {
                 .trim();
     }
 
-    private static String booleanToString(boolean value) {
-        return value ? "true" : "false";
+
+    private static String booleanToString(
+            boolean value
+    ) {
+
+        return value
+                ? "true"
+                : "false";
     }
 
-    private static String formatDouble(double value) {
-        return String.format(Locale.US, "%.2f", value);
+
+    private static String formatDouble(
+            double value
+    ) {
+
+        return String.format(
+                Locale.US,
+                "%.2f",
+                value
+        );
     }
 
-    private static String safeString(String value) {
-        return value == null ? "" : value.trim();
+
+    private static String safeString(
+            String value
+    ) {
+
+        return value == null
+                ? ""
+                : value.trim();
     }
+
 
     @Override
-    public void close() throws IOException {
+    public void close()
+            throws IOException {
+
         writer.flush();
         writer.close();
     }

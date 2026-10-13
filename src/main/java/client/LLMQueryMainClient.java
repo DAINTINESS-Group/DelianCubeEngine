@@ -24,12 +24,12 @@ public class LLMQueryMainClient {
             "/LLM/llm.properties";
 
     /*
-     * Change these values when using another cube.
+     * Change these when using another cube.
      */
     private static final String INPUT_FOLDER =
             "foodmart_reduced";
 
-    private static final String CUBE_FILE_NAME =
+    private static final String CUBE_NAME =
             "sales";
 
 
@@ -40,13 +40,11 @@ public class LLMQueryMainClient {
         Properties properties =
                 loadProperties();
 
-
         String llmHost =
                 getRequiredProperty(
                         properties,
                         "llm.host"
                 );
-
 
         String apiKey =
                 getRequiredProperty(
@@ -54,33 +52,27 @@ public class LLMQueryMainClient {
                         "llm.apiKey"
                 );
 
-
         Path iniPath =
                 Paths.get(
                         "InputFiles",
                         INPUT_FOLDER,
-                        CUBE_FILE_NAME + ".ini"
+                        CUBE_NAME + ".ini"
                 );
 
-
         if (!Files.exists(iniPath)) {
-
             throw new IllegalStateException(
                     "INI file not found: "
                             + iniPath.toAbsolutePath()
             );
         }
 
-
         CubeIniSchemaExtractor extractor =
                 new CubeIniSchemaExtractor();
-
 
         CubeSchema cubeSchema =
                 extractor.extractFromFile(
                         iniPath.toString()
                 );
-
 
         OllamaLLMClient llmClient =
                 new OllamaLLMClient(
@@ -88,18 +80,15 @@ public class LLMQueryMainClient {
                         apiKey
                 );
 
-
         LLMQueryGenerationService queryService =
                 new LLMQueryGenerationService(
                         llmClient
                 );
 
-
         String userQuestion =
                 readUserQuestion(
                         args
                 );
-
 
         String generatedQuery =
                 queryService.generateQuery(
@@ -107,10 +96,9 @@ public class LLMQueryMainClient {
                         userQuestion
                 );
 
-
         System.out.println();
         System.out.println(
-                "Generated CineCubes query:"
+                "Generated Cube Query:"
         );
         System.out.println();
 
@@ -146,12 +134,10 @@ public class LLMQueryMainClient {
                     .trim();
         }
 
-
         Scanner scanner =
                 new Scanner(
                         System.in
                 );
-
 
         System.out.println(
                 "Enter a natural-language analytical question:"
@@ -160,7 +146,6 @@ public class LLMQueryMainClient {
         String question =
                 scanner.nextLine();
 
-
         if (question == null
                 || question.trim().isEmpty()) {
 
@@ -168,7 +153,6 @@ public class LLMQueryMainClient {
                     "User question cannot be empty."
             );
         }
-
 
         return question.trim();
     }
@@ -179,7 +163,6 @@ public class LLMQueryMainClient {
 
         Properties properties =
                 new Properties();
-
 
         try (
                 InputStream inputStream =
@@ -197,12 +180,10 @@ public class LLMQueryMainClient {
                 );
             }
 
-
             properties.load(
                     inputStream
             );
         }
-
 
         return properties;
     }
@@ -218,7 +199,6 @@ public class LLMQueryMainClient {
                         propertyName
                 );
 
-
         if (value == null
                 || value.trim().isEmpty()) {
 
@@ -228,10 +208,8 @@ public class LLMQueryMainClient {
             );
         }
 
-
         value =
                 value.trim();
-
 
         if (value.startsWith(
                 "WRITE_YOUR_"
@@ -242,7 +220,6 @@ public class LLMQueryMainClient {
                             + propertyName
             );
         }
-
 
         return value;
     }
