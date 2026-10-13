@@ -43,6 +43,10 @@ public class Director {
 				manager = new OptimizationManager();
 				break;
 
+			case OPTIMIZER:
+				manager = new QueryOptimizationManager();
+				break;
+
 			default:
 				throw new IllegalArgumentException("Unknown or Unimplemented Manager Type: " + cto.getManagerType());
 		}

@@ -27,10 +27,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.spark.sql.AnalysisException;
+
+import cubemanager.queryoptimizer.IQueryOptimization;
+import cubemanager.queryoptimizer.QueryOptimizerFactory;
+import cubemanager.queryoptimizer.selectivityestimation.SelectivityResult;
+import cubemanager.queryoptimizer.statistics.ReservoirSamplerFactory;
+import cubemanager.queryoptimizer.statistics.StatisticsBuilder;
 
 import chartManagement.utils.ChartResponse;
 import chartRequestManagement.ChartRequest;
+import org.apache.spark.sql.AnalysisException;
 
 import cubemanager.cubebase.CubeQuery;
 import decisiontree.labeling.RuleSet;
@@ -87,8 +93,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 
 	@Override
 	public OutputStream getOutputStream(File f) throws IOException {
-	    return new RMIOutputStream(new RMIOutputStreamImpl(new
-	    FileOutputStream(f)));
+	    return new RMIOutputStream(new RMIOutputStreamImpl(new FileOutputStream(f)));
 	}
 	@Override
 	public InputStream getInputStream(File f) throws IOException {
@@ -239,6 +244,121 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
         }
         return null;
     }
+
+
+	@Override
+	public List<SelectivityResult> estimateSelectivity(String queryString, String method) throws RemoteException {
+		boolean rebuilt = ensureStatisticsAvailable(method);
+
+		IQueryOptimization operation = context.getQueryOptimizer();
+
+		if (rebuilt || operation == null || !method.equals(context.getQueryOptimizerMethod())) {
+			operation = QueryOptimizerFactory.create("SELECTIVITY_ESTIMATION", context.getCubeManager().getCubeBase(), method, context.getInputFolder(), context.getCubeName());
+			context.setQueryOptimizer(operation);
+			context.setQueryOptimizerMethod(method);
+		}
+
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("queryString", queryString);
+		params.put("optimizer", operation);
+		return (List<SelectivityResult>) delegateOptimizer("estimate", params);
+	} // end method estimateSelectivity
+
+
+	/**
+	 * Makes sure the pre-computed statistics required by the given estimation method exist, before the optimizer
+	 * is created.
+	 * <p>
+	 *     If the files are missing then they are created. If they exist, they are left as they are. If they need to be updated
+	 *     then we should delete the CSV from the input folder
+	 * </p>
+	 * @param method the estimation method
+	 * @throws RemoteException
+	 */
+	private boolean ensureStatisticsAvailable(String method) throws RemoteException {
+		String inputFolder = context.getInputFolder();
+		String cubeName = context.getCubeName();
+
+		if (inputFolder == null || cubeName == null) {
+			throw new RemoteException("cubename or inputFolder are not set");
+		}
+
+		boolean rebuilt;
+		switch (method.toUpperCase()) {
+			case "HISTOGRAM":
+				rebuilt = buildHistograms(inputFolder, cubeName, false);
+				break;
+			case "SAMPLING":
+				rebuilt = buildSamples(inputFolder, cubeName, context.getSampleFraction(), false, context.getSamplingAlgorithm());
+				break;
+			case "COMBINED":
+				boolean histogramsReady = buildHistograms(inputFolder, cubeName, false);
+				boolean samplesReady = buildSamples(inputFolder, cubeName, context.getSampleFraction(), false, context.getSamplingAlgorithm());
+
+				rebuilt = histogramsReady || samplesReady;
+				break;
+			default:
+				return false; // Full Table Scan does not need any statistics
+		}
+
+		return rebuilt;
+	} // end method ensureStatisticsAvailable
+
+
+	/**
+	 * Helper method to delegate query optimization requests to the Director.
+	 * Creates a RequestCTO with ManagerType.OPTIMIZER and dispatches it via the Director.
+	 *
+	 * @param command, the specific optimization command alias
+	 * @param params, the map of input parameters for the command
+	 * @return the payload from the ResponseDTO
+	 * @throws RemoteException
+	 */
+	private Object delegateOptimizer(String command, Map<String, Object> params) throws RemoteException {
+		try {
+			RequestCTO cto = new RequestCTO(ManagerType.OPTIMIZER, command, params, context.getCubeManager());
+			ResponseDTO dto = director.serve(cto);
+			return dto.getPayload();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean buildHistograms(String inputFolder, String cubeName, boolean forceRebuild) throws RemoteException {
+		boolean result;
+		try {
+			result = new StatisticsBuilder().buildHistograms(context.getCubeManager().getCubeBase(), inputFolder, cubeName, forceRebuild);
+		} catch (Exception e) {
+			throw new RemoteException("Could not build histograms for cube " + cubeName + " in " + inputFolder, e);
+		}
+
+		// Invalidate the old estimator because histograms have changed
+		if (forceRebuild && ("HISTOGRAM".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+			context.setQueryOptimizer(null);
+			context.setQueryOptimizerMethod(null);
+		}
+		return result;
+	} // end method buildHistograms
+
+	@Override
+	public boolean buildSamples(String inputFolder, String cubeName, double sampleSize, boolean forceRebuild, String algorithm) throws RemoteException {
+		boolean result;
+		try {
+			result = new StatisticsBuilder(ReservoirSamplerFactory.create(algorithm)).buildSamples(context.getCubeManager().getCubeBase(), inputFolder, cubeName, sampleSize, forceRebuild);
+		} catch (Exception e) {
+			throw new RemoteException("Could not build samples for cube " + cubeName + " in " + inputFolder + " with algorithm " + algorithm
+			 + " and sample size " + sampleSize, e);
+		}
+
+		// Invalidate the old estimator because samples have changed
+		if (forceRebuild && ("SAMPLING".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+			context.setQueryOptimizer(null);
+			context.setQueryOptimizerMethod(null);
+		}
+		return result;
+	} // end method buildSamples
 	
 	public void produceDecisionTree(String queryName, String path, RuleSet ruleSet) throws RemoteException, AnalysisException {
 		DatasetManager datasetManager = new DatasetManager();

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cubemanager.queryoptimizer.selectivityestimation.SelectivityResult;
 import org.antlr.runtime.RecognitionException;
 import org.apache.spark.sql.AnalysisException;
 
@@ -329,7 +330,40 @@ public interface IMainEngine extends IServer {
 	 */
     String[] answerCubeQueryWithInterestMeasures(String queryString, String queryString1, List<String> measures) throws RemoteException, FileNotFoundException;
 
+	/**
+	 * Estimates the selectivity of a query as prescribed in a String
+	 *
+	 * @param queryString A string with a query
+	 * @param method The method of the estimation
+	 * @return one SelectivityResult per sigma predicate that could be resolved. The list may be shorter than query's sigma list, since
+	 * unresolved predicates are skipped
+	 * @throws RemoteException
+	 */
+	List<SelectivityResult> estimateSelectivity(String queryString, String method) throws RemoteException;
 
+	/**
+	 * Builds histograms for all dimension level columns and saves them to a file.
+	 * You can rebuild though the {@code forceRebuild} parameter
+	 *
+	 * @param inputFolder The folder where the cube description is
+	 * @param cubeName The name of the cube
+	 * @param forceRebuild True if we want to rebuild histograms
+	 * @throws RemoteException
+	 */
+	boolean buildHistograms(String inputFolder, String cubeName, boolean forceRebuild) throws RemoteException;
+
+	/**
+	 * Builds reservoir sample of the fact table rows using the given sampling algorithm and saves it to a file.
+	 * Only the foreign key columns are stored, dimension level values are resolved by joining the sample to the dim tables at estimation time
+	 *
+	 * @param inputFolder The folder  where the cube description is
+	 * @param cubeName The name of the cube
+	 * @param sampleSize Fraction of the fact table to sample
+	 * @param forceRebuild True if we want to rebuild the samples
+	 * @param algorithm The sampling algorithm, either {@code R} or {@code L} for now
+	 * @throws RemoteException
+	 */
+	boolean buildSamples(String inputFolder, String cubeName, double sampleSize, boolean forceRebuild, String algorithm) throws RemoteException;
     /**
      * 
      * @param chartRequest

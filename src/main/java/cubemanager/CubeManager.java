@@ -17,8 +17,15 @@
  *
  */
 
-
 package cubemanager;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Map.Entry;
 
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.CubeBase;
@@ -31,13 +38,6 @@ import extractionmethod.ExtractionMethod;
 import extractionmethod.ExtractionMethodFactory;
 import result.Result;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
 
 public class CubeManager {
 
@@ -72,7 +72,7 @@ public class CubeManager {
 	}
 
 	public ICubeQueryTranslator setCubeQueryTranslator() {
-		ICubeQueryTranslator result = cubeQueryTranslatorFactory.createCubeQueryTranslator("SQL"); 
+		ICubeQueryTranslator result = cubeQueryTranslatorFactory.createCubeQueryTranslator("SQL");
 		if (result == null) {
 			System.err.println("CubeQueryTranslator generation failed. Exiting.");
 			System.exit(-1);
@@ -83,50 +83,48 @@ public class CubeManager {
 
 	/**
 	 * Search for a Cube based on its name. If not found throws exception
+	 * 
 	 * @param name the name of the Cube we want
 	 * @return the requested cube
 	 */
 	public BasicStoredCube getCubeByName(String name) {
-		return registeredCubesList
-				.stream()
-				.filter(cube -> cube.getName().equals(name))
-				.findFirst()
+		return registeredCubesList.stream().filter(cube -> cube.getName().equals(name)).findFirst()
 				.orElseThrow(() -> new RuntimeException("Cube not found: " + name));
 	}
 
 	public void createCubeBase(HashMap<String, String> userInputList) {
 		cubeBase.registerCubeBase(userInputList);
 	}
-	
-	public CubeBase getCubeBase(){
+
+	public CubeBase getCubeBase() {
 		return this.cubeBase;
 	}
-	
-	public List<Dimension> getDimensions(){
+
+	public List<Dimension> getDimensions() {
 		return cubeBase.getDimensions();
 	}
-	
-	public List<BasicStoredCube> getCubes(){
+
+	public List<BasicStoredCube> getCubes() {
 		return this.registeredCubesList;
 	}
-	
-	public List<Dimension> insertDimension(String dimensionName,
-			String dimensionTable, ArrayList<String> originalFieldName,ArrayList<String> customFieldName, 
-			String dimensionType, ArrayList<String> hierachyList, HashMap<String, String> levelID, HashMap<String, String> levelDescription,
-			HashMap<String, ArrayList<String>> levelAttributes, HashMap<String, String> attributeTypes, HashMap<String, String> attributeDatasource) {
+
+	public List<Dimension> insertDimension(String dimensionName, String dimensionTable,
+			ArrayList<String> originalFieldName, ArrayList<String> customFieldName, String dimensionType,
+			ArrayList<String> hierachyList, HashMap<String, String> levelID, HashMap<String, String> levelDescription,
+			HashMap<String, ArrayList<String>> levelAttributes, HashMap<String, String> attributeTypes,
+			HashMap<String, String> attributeDatasource) {
 		cubeBase.addDimension(dimensionName);
 		cubeBase.addDimensionTable(dimensionTable);
 		cubeBase.setDimensionType(dimensionType);
-		cubeBase.setDimensionLevelsAndLinearHierachy(hierachyList, originalFieldName, customFieldName, 
-													 levelID, levelDescription, levelAttributes, attributeTypes, attributeDatasource);
+		cubeBase.setDimensionLevelsAndLinearHierachy(hierachyList, originalFieldName, customFieldName, levelID,
+				levelDescription, levelAttributes, attributeTypes, attributeDatasource);
 		registeredDimensionsList = cubeBase.getDimensions();
-				
+
 		return registeredDimensionsList;
 	}
-	
+
 	public List<BasicStoredCube> insertCube(String creationName, String datasourceTable,
-			ArrayList<String> dimensionList,
-			ArrayList<String> dimemsionRefField, ArrayList<String> measureList,
+			ArrayList<String> dimensionList, ArrayList<String> dimemsionRefField, ArrayList<String> measureList,
 			ArrayList<String> measureRefField) {
 
 		cubeBase.addCube(creationName);
@@ -134,14 +132,14 @@ public class CubeManager {
 		cubeBase.setCubeDimension(dimensionList, dimemsionRefField);
 		cubeBase.setCubeMeasure(measureList, measureRefField);
 		registeredCubesList = cubeBase.getRegisteredCubeList();
-		
+
 		return registeredCubesList;
 	}
 
-
-	//REMOVED: a parameter   String msrname   from the method's signature 
-	//why was the measureName in the signature of this method at the Cinecubes' code?
-	//Probably Dimitris was struggling with sth at the parser...
+	// REMOVED: a parameter String msrname from the method's signature
+	// why was the measureName in the signature of this method at the Cinecubes'
+	// code?
+	// Probably Dimitris was struggling with sth at the parser...
 	//
 	public CubeQuery createCubeQueryFromString(String cubeQstring, HashMap<String, String> queryParams)
 			throws RemoteException {
@@ -169,8 +167,8 @@ public class CubeManager {
 					gamma[j][1] = split_gamma[1];
 				}
 			} else if (temp[0].equals("Sigma")) {
-				
-				if(temp.length==1) {
+
+				if (temp.length == 1) {
 					sigma = new String[1][3];
 					sigma[0][0] = "1";
 					sigma[0][1] = ">";
@@ -185,27 +183,27 @@ public class CubeManager {
 						String[] split_sigma_in = tmp_sigma[j].trim().split("IN");
 						String[] split_sigma_not_in = tmp_sigma[j].trim().split("NOT IN");
 						String[] split_sigma_between = tmp_sigma[j].trim().split("BETWEEN");
-						if(split_sigma_equal.length > 1) {
+						if (split_sigma_equal.length > 1) {
 							sigma[j][0] = split_sigma_equal[0];
 							sigma[j][1] = "=";
 							sigma[j][2] = split_sigma_equal[1];
-						}else if(split_sigma_less.length > 1) {
+						} else if (split_sigma_less.length > 1) {
 							sigma[j][0] = split_sigma_less[0];
 							sigma[j][1] = "<";
 							sigma[j][2] = split_sigma_less[1];
-						}else if(split_sigma_great.length > 1) {
+						} else if (split_sigma_great.length > 1) {
 							sigma[j][0] = split_sigma_great[0];
 							sigma[j][1] = ">";
 							sigma[j][2] = split_sigma_great[1];
-						}else if(split_sigma_in.length > 1) {
+						} else if (split_sigma_in.length > 1) {
 							sigma[j][0] = split_sigma_in[0];
 							sigma[j][1] = "IN";
 							sigma[j][2] = split_sigma_in[1];
-						}else if(split_sigma_not_in.length > 1) {
+						} else if (split_sigma_not_in.length > 1) {
 							sigma[j][0] = split_sigma_not_in[0];
 							sigma[j][1] = "NOT IN";
 							sigma[j][2] = split_sigma_not_in[1];
-						}else if(split_sigma_between.length > 1) {
+						} else if (split_sigma_between.length > 1) {
 							sigma[j][0] = split_sigma_between[0];
 							sigma[j][1] = "BETWEEN";
 							sigma[j][2] = split_sigma_between[1];
@@ -216,14 +214,16 @@ public class CubeManager {
 		}
 		queryParams.put("QueryName", nameCQ);
 
-
-		//TODO: opportunity to wrap all this ping-pong with CubeQuery into a method/constructor
+		// TODO: opportunity to wrap all this ping-pong with CubeQuery into a
+		// method/constructor
 		CubeQuery cubequery = new CubeQuery(nameCQ);
 		cubequery.setAggregateFunction(aggregateFunction);
+
 		if (measureName != null) {
 			Measure msrToAdd = new Measure(1,measureName,cubeBase.getDataSourceDescription().getFieldOfSqlTable(Cbname, measureName));
 			cubequery.addQueryMeasure(aggregateFunction, msrToAdd, null);
 		}
+
 
 		for (int i = 0; i < gamma.length; i++) {
 			cubequery.addGammaExpression(gamma[i][0], gamma[i][1]);
@@ -243,16 +243,18 @@ public class CubeManager {
 	/**
 	 * Returns the {@link Result} of a {@link CubeQuery}.
 	 * <p>
-	 * The <code>CubeQuery</code> object must have been prepared before via invoking <code>createQueryFromString</code> of this object. 
-	 * Then, the execution is passed to <code>CubeBase</code> that actually orchestrates the execution of this query 
+	 * The <code>CubeQuery</code> object must have been prepared before via invoking
+	 * <code>createQueryFromString</code> of this object. Then, the execution is
+	 * passed to <code>CubeBase</code> that actually orchestrates the execution of
+	 * this query
 	 * 
-	 * The method takes a CubeQuery as input and 
-	 * (a) generates an extraction method (currently SQL query only) 
-	 * (b) executes the extraction method
-	 * (c) by simply using the Result object of the extraction method, it also populates a Result object
-	 * (d) converts the resultSet of the query execution to a 2d String array
+	 * The method takes a CubeQuery as input and (a) generates an extraction method
+	 * (currently SQL query only) (b) executes the extraction method (c) by simply
+	 * using the Result object of the extraction method, it also populates a Result
+	 * object (d) converts the resultSet of the query execution to a 2d String array
 	 * 
-	 * @param currentCubeQuery the {@link CubeQuery} that it to be executed (must have been prepared before)
+	 * @param currentCubeQuery the {@link CubeQuery} that it to be executed (must
+	 *                         have been prepared before)
 	 * @return the {@link Result} of the execution
 	 * 
 	 * 
@@ -261,28 +263,28 @@ public class CubeManager {
 	 * @see mainengine.SimpleQueryProcessingEngine#answerCubeQueryFromString(String)
 	 */
 	public Result executeQuery(CubeQuery currentCubeQuery) {
-		//return this.CBase.executeQuery(currentCubeQuery);
+		// return this.CBase.executeQuery(currentCubeQuery);
 
-		//1. Create an ExtractionMethod (for the moment: SQLQuery)
-		ExtractionMethod extractionMethod = ExtractionMethodFactory.createMethod();  
-		currentCubeQuery.setExtractionMethod(extractionMethod);   
+		// 1. Create an ExtractionMethod (for the moment: SQLQuery)
+		ExtractionMethod extractionMethod = ExtractionMethodFactory.createMethod();
+		currentCubeQuery.setExtractionMethod(extractionMethod);
 
-		
-		//OLD setup, where you had the execution at CubeQuery!
-		//Result res = extractionMethod.getResult();
-		//currentCubeQuery.produceExtractionMethod();
-		//String queryString = extractionMethod.toString();	
-		
-		//2. Convert the cubequery to sth that the DBMS can execute, i.e., a query string
+		// OLD setup, where you had the execution at CubeQuery!
+		// Result res = extractionMethod.getResult();
+		// currentCubeQuery.produceExtractionMethod();
+		// String queryString = extractionMethod.toString();
+
+		// 2. Convert the cubequery to sth that the DBMS can execute, i.e., a query
+		// string
 		String queryString = produceExtractionMethod(currentCubeQuery);
-		//	if you DEBUG
-		System.out.println("\n"+queryString);		
+		// if you DEBUG
+		System.out.println("\n" + queryString);
 
-		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
+		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult());
 		if (finalResult == null) {
 			System.err.println("Exiting due to failure to populate the result");
 			System.exit(-100);
-			
+
 		}
 
 // OLD code		
@@ -296,25 +298,25 @@ public class CubeManager {
 //		}
 //		else
 //			System.out.println("\n\n"+ "Result produced"+"\n");
-		
-		
-		
+
 		return finalResult;
 	}
-	
+
 	/**
 	 * Returns the {@link Result} of a {@link CubeQuery}.
 	 * <p>
-	 * The <code>CubeQuery</code> object must have been prepared before via invoking <code>createQueryFromString</code> of this object. 
-	 * Then, the execution is passed to <code>CubeBase</code> that actually orchestrates the execution of this query 
+	 * The <code>CubeQuery</code> object must have been prepared before via invoking
+	 * <code>createQueryFromString</code> of this object. Then, the execution is
+	 * passed to <code>CubeBase</code> that actually orchestrates the execution of
+	 * this query
 	 * 
-	 * The method takes a CubeQuery as input and 
-	 * (a) generates an extraction method (currently SQL query only) 
-	 * (b) executes the extraction method
-	 * (c) by simply using the Result object of the extraction method, it also populates a Result object
-	 * (d) converts the resultSet of the query execution to a 2d String array
+	 * The method takes a CubeQuery as input and (a) generates an extraction method
+	 * (currently SQL query only) (b) executes the extraction method (c) by simply
+	 * using the Result object of the extraction method, it also populates a Result
+	 * object (d) converts the resultSet of the query execution to a 2d String array
 	 * 
-	 * @param currentCubeQuery the {@link CubeQuery} that it to be executed (must have been prepared before)
+	 * @param currentCubeQuery the {@link CubeQuery} that it to be executed (must
+	 *                         have been prepared before)
 	 * @return the {@link Result} of the execution
 	 * 
 	 * 
@@ -323,40 +325,43 @@ public class CubeManager {
 	 * @see mainengine.SimpleQueryProcessingEngine#answerCubeQueryFromString(String)
 	 */
 	public Result executeSimpleSqlQuery(CubeQuery currentCubeQuery) {
-		//return this.CBase.executeQuery(currentCubeQuery);
+		// return this.CBase.executeQuery(currentCubeQuery);
 
-		//1. Create an ExtractionMethod (for this method: SimpleSqlQuery)
-		ExtractionMethod extractionMethod = ExtractionMethodFactory.createSimpleExtractionMethod();  
-		currentCubeQuery.setExtractionMethod(extractionMethod);   	
-		
-		//2. Convert the cubequery to sth that the DBMS can execute, i.e., a query string
+		// 1. Create an ExtractionMethod (for this method: SimpleSqlQuery)
+		ExtractionMethod extractionMethod = ExtractionMethodFactory.createSimpleExtractionMethod();
+		currentCubeQuery.setExtractionMethod(extractionMethod);
+
+		// 2. Convert the cubequery to sth that the DBMS can execute, i.e., a query
+		// string
 		String queryString = produceExtractionMethod(currentCubeQuery);
-		//	if you DEBUG
-		System.out.println("\n"+queryString);		
+		// if you DEBUG
+		System.out.println("\n" + queryString);
 
-		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult()) ;
+		Result finalResult = cubeBase.executeQueryToProduceResult(queryString, extractionMethod.getResult());
 		if (finalResult == null) {
 			System.err.println("Exiting due to failure to populate the result");
 			System.exit(-100);
-			
+
 		}
-	
+
 		return finalResult;
 	}
 
 	/**
 	 * Returns the string of the extraction Method of a CubeQuery
 	 * <p>
-	 * See the simple abstract coupling to translators via the interface {@link ICubeQueryTranslator} and its implementations.
+	 * See the simple abstract coupling to translators via the interface
+	 * {@link ICubeQueryTranslator} and its implementations.
 	 * <p>
-	 * @param cubeQuery  A {@link CubeQuery} that needs to be converted to SQL
+	 * 
+	 * @param cubeQuery A {@link CubeQuery} that needs to be converted to SQL
 	 * @return the string of the (currently) {@link SQLQuery} of a CubeQuery
 	 */
 	public String produceExtractionMethod(CubeQuery cubeQuery) {
 		if (this.cubeQueryTranslator == null) {
 			System.err.println("Unable to locate a logical to physical translator. Exiting.");
 			System.exit(-1);
-		}		
+		}
 		return cubeQueryTranslator.produceExtractionMethod(cubeQuery);
 	}//end method produceExtractionMethod(CubeQuery)
 	
@@ -408,6 +413,4 @@ public class CubeManager {
 		this.sqrtSample = sqrtSample;
 	}
 	
-	
-
-}//end class CubeManager
+}// end class CubeManager

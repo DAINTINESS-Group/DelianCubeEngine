@@ -6,6 +6,7 @@ import cubemanager.CubeManager;
 import cubemanager.cubebase.BasicStoredCube;
 import cubemanager.cubebase.Dimension;
 import cubemanager.cubebase.QueryHistoryManager;
+import cubemanager.queryoptimizer.IQueryOptimization;
 import interestingnessengine.InterestingnessManager;
 import mainengine.Session;
 
@@ -31,6 +32,13 @@ public class SessionContext {
     private ChartManager chartManager;
     private List<Dimension> registeredDimensions;
     private List<BasicStoredCube> registeredCubesList;
+
+	private IQueryOptimization queryOptimizer;
+	private String queryOptimizerMethod;
+	private String inputFolder;
+	private String cubeName;
+	private String samplingAlgorithm;
+	private double sampleFraction;
 	//	private String currentQueryName;
 	//	private ITranslatorFactory translatorFactory;
 	//	private ArrayList<String> cubeNames;
@@ -120,4 +128,36 @@ public class SessionContext {
 	public void setRegisteredCubesList(List<BasicStoredCube> registeredCubesList) {
 		this.registeredCubesList = registeredCubesList;
 	}
+
+	public IQueryOptimization getQueryOptimizer() { return queryOptimizer;}
+
+	public void setQueryOptimizer(IQueryOptimization queryOptimizer) {
+		this.queryOptimizer = queryOptimizer;
+	}
+
+	public String getQueryOptimizerMethod() { return queryOptimizerMethod;}
+
+	public void setQueryOptimizerMethod(String queryOptimizerMethod) {
+		this.queryOptimizerMethod = queryOptimizerMethod;
+	}
+
+	public String getInputFolder() {return inputFolder;}
+
+	public String getCubeName() {return  cubeName;}
+
+	public void setInputFolder(String inputFolder) {
+		this.inputFolder = inputFolder;
+	}
+
+	public void setCubeName(String cubeName) {
+		this.cubeName = cubeName;
+	}
+
+	public String getSamplingAlgorithm() {return samplingAlgorithm;}
+
+	public double getSampleFraction() {return sampleFraction;}
+
+	public void setSamplingAlgorithm(String samplingAlgorithm) {this.samplingAlgorithm = samplingAlgorithm;}
+
+	public void setSampleFraction(double sampleFraction) {this.sampleFraction = sampleFraction;}
 }
