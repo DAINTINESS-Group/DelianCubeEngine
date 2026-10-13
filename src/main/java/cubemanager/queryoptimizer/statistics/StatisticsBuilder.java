@@ -10,7 +10,11 @@ import result.Result;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -45,8 +49,8 @@ public class StatisticsBuilder {
 	 * to {cubeName}_histograms.csv in the inputFolder directory.
 	 * Format :
 	 * <pre>
-	 * columnName|value|count
 	 * factTableSize = N
+	 * columnName|value|count
 	 * ...
 	 * </pre>
 	 */
@@ -62,6 +66,12 @@ public class StatisticsBuilder {
 				List<String> dimRefFields = cube.getDimensionRefFieldList();
 
 				int factTableSize = computeFactTableSize(factTable, cubeBase);
+
+				if (factTableSize <= 0) {
+					throw new IllegalStateException("Could not build histogram of " + factTable +
+							": factTableSize = " + factTableSize);
+				}
+
 				writer.println("factTableSize = " + factTableSize);
 				writer.println("columnName|value|count");
 
@@ -92,13 +102,22 @@ public class StatisticsBuilder {
 					}
 				}
 			}
+		} catch (Exception e) {
+			file.delete();
+			throw e;
 		}
 		return true;
 	}
 
 	/**
-	 * Samples the fact table only, applying Algorithm R to build a reservoir of whole rows
-	 * Dimension level values are resolved by joining the sample to the dimension tables at estimation time
+	 * Samples the fact table only. A reservoir of surrogate keys is drawn without reading the table, and only the selected rows
+	 * are then fetched by key. Dimension level values are resolved by joining the sample to the dimension tables at estimation time.
+	 * The result is written to {cubeName}_samples.csv in the inputFolder directory. The format is:
+	 * <pre>
+	 * 	factTableSize = N
+	 * 	fkColumn1|fkColumn2|fkColumn3
+	 * 	value|value|value
+	 * </pre>
 	 **/
 	public boolean buildSamples(CubeBase cubeBase, String inputFolder, String cubeName, double sampleSize, boolean forceRebuild) throws Exception{
 		File file = new File("InputFiles/" + inputFolder + "/" + cubeName + "_samples.csv");
@@ -121,17 +140,22 @@ public class StatisticsBuilder {
 				int factTableSize = computeFactTableSize(factTable, cubeBase);
 				int reservoirSize = (int) (sampleSize * factTableSize);
 
-				String select = "SELECT " + String.join(", ", fkColumns) + " FROM " + factTable;
+				if (factTableSize <= 0 || reservoirSize <= 0) {
+					throw new IllegalStateException("Could not build a sample of " + factTable +
+						": factTableSize = " + factTableSize + ", reservoirSize = " + reservoirSize);
+				}
 
-				String[][] sample = sampler.sample(select, reservoirSize, db, random);
+				int[] keys = sampler.sample(factTableSize, reservoirSize, random);
+				Arrays.sort(keys);
 
 				writer.println("factTableSize = " + factTableSize);
 				writer.println(String.join("|", fkColumns));
 
-				for (String[] row : sample) {
-					writer.println(String.join("|", row));
-				}
+				writeSampledRows(writer, db, factTable, fkColumns, keys);
 			}
+		} catch (Exception e) {
+			file.delete();
+			throw e;
 		}
 		return true;
 	}
@@ -148,6 +172,46 @@ public class StatisticsBuilder {
 			return Integer.parseInt(resultArray[2][0]);
 		} catch (NumberFormatException e) {
 			return -1;
+		}
+	}
+
+	/**
+	 * Fetches the sampled rows by surrogate key and writes them to the sample file, one row per line.
+	 * The fact table is expected to carry a {@code SK_id} column, which is the column
+	 * the keys returned by {@link IReservoirSampler} refer to.
+	 * @param writer the sample file being written
+	 * @param db the database that holds the fact table
+	 * @param factTable the name of the fact table
+	 * @param fkColumns the foreign key columns to retrieve for each sampled row
+	 * @param keys the sampled surrogate keys
+	 * @throws SQLException
+	 */
+	private void writeSampledRows(PrintWriter writer, Database db, String factTable,
+								  List<String> fkColumns, int[] keys) throws SQLException {
+
+		String columns = String.join(", ", fkColumns);
+		String sql = "SELECT " + columns + " FROM " + factTable + " WHERE SK_id = ?";
+		int columnCount = fkColumns.size();
+
+		try (PreparedStatement statement = db.getConnection().prepareStatement(sql)) {
+			for (int key : keys) {
+				statement.setInt(1, key);
+
+				try (ResultSet resultSet = statement.executeQuery()) {
+					while (resultSet.next()) {
+						String[] row = new String[columnCount];
+						for (int col = 0; col < columnCount; col ++) {
+							String value = resultSet.getString(col + 1);
+							if (value == null) {
+								row[col] = "";
+							} else {
+								row[col] = value;
+							}
+						}
+						writer.println(String.join("|", row));
+					}
+				}
+			}
 		}
 	}
 }

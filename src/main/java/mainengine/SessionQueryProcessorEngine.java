@@ -291,12 +291,6 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 			case "SAMPLING":
 				rebuilt = buildSamples(inputFolder, cubeName, context.getSampleFraction(), false, context.getSamplingAlgorithm());
 				break;
-			case "COMBINED":
-				boolean histogramsReady = buildHistograms(inputFolder, cubeName, false);
-				boolean samplesReady = buildSamples(inputFolder, cubeName, context.getSampleFraction(), false, context.getSamplingAlgorithm());
-
-				rebuilt = histogramsReady || samplesReady;
-				break;
 			default:
 				return false; // Full Table Scan does not need any statistics
 		}
@@ -335,7 +329,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}
 
 		// Invalidate the old estimator because histograms have changed
-		if (forceRebuild && ("HISTOGRAM".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+		if (forceRebuild && "HISTOGRAM".equals(context.getQueryOptimizerMethod())) {
 			context.setQueryOptimizer(null);
 			context.setQueryOptimizerMethod(null);
 		}
@@ -353,7 +347,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 		}
 
 		// Invalidate the old estimator because samples have changed
-		if (forceRebuild && ("SAMPLING".equals(context.getQueryOptimizerMethod()) || ("COMBINED").equals((context.getQueryOptimizerMethod())))) {
+		if (forceRebuild && "SAMPLING".equals(context.getQueryOptimizerMethod())) {
 			context.setQueryOptimizer(null);
 			context.setQueryOptimizerMethod(null);
 		}

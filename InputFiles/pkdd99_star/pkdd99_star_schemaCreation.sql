@@ -77,6 +77,7 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `loan` ;
 
 CREATE TABLE IF NOT EXISTS `loan` (
+<<<<<<< HEAD
   `SK_id` INT NOT NULL auto_increment,
   `loan_id` INT(11) NOT NULL,
   `l_account_id` INT(11) NOT NULL,

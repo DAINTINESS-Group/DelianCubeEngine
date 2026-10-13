@@ -27,7 +27,10 @@ LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/account.csv'
 INTO TABLE account FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES;
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/loan.csv'
-INTO TABLE loan FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES;
+INTO TABLE loan FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
+(
+loan_id, l_account_id, date, l_status_id, amount, duration, payments
+);
 
 LOAD DATA INFILE  'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/orders.csv'
 INTO TABLE orders FIELDS TERMINATED BY ';' LINES TERMINATED BY '\r\n'  IGNORE 1 LINES
