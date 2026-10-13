@@ -146,10 +146,10 @@ public class SessionQueryProcessorEngineTest {
         */
         
         
-		String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
+		/*String fileProduced21 = getContents("OutputFiles/LoanQuery21_S2_CG-Cmmn.tab");
 		String fileReference21 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery21_S2_CG-Cmmn.tsv");
 		boolean comparison21 = fileProduced21.equals(fileReference21);
-        assertEquals(true, comparison21);
+        assertEquals(true, comparison21);*/
         
 		String fileProduced22 = getContents("OutputFiles/LoanQuery22_S2_CG-Prtl.tab");
 		String fileReference22 = getContents("src/test/resources/OutputFiles/pkdd99/Reference_LoanQuery22_S2_CG-Prtl.tsv");

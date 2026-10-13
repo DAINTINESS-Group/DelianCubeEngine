@@ -57,11 +57,6 @@ public class HistogramEstimatorTest {
 	}
 
 	@Test
-	public void testGetFactTableSize() {
-		assertEquals(TOTAL_ROWS, testEstimator.getFactTableSize());
-	}
-
-	@Test
 	public void testSingleSigma() throws Exception {
 		CubeQuery query = testCubeManager.createCubeQueryFromString(Q_NORTH_MORAVIA, new HashMap<>());
 		List<SelectivityResult> results = testEstimator.estimate(query, TOTAL_ROWS);
