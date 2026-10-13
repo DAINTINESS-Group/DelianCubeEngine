@@ -39,11 +39,11 @@ public class Director {
 				manager = new VisualizationManager();
 				break;
 				
-			case OPTIMIZATION:
+			case ANALYZE_OPTIMIZATION:
 				manager = new OptimizationManager();
 				break;
 
-			case OPTIMIZER:
+			case SELECTIVITY_OPTIMIZATION:
 				manager = new QueryOptimizationManager();
 				break;
 

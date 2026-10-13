@@ -316,7 +316,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
 	 */
 	private Object delegateOptimizer(String command, Map<String, Object> params) throws RemoteException {
 		try {
-			RequestCTO cto = new RequestCTO(ManagerType.OPTIMIZER, command, params, context.getCubeManager());
+			RequestCTO cto = new RequestCTO(ManagerType.ANALYZE_OPTIMIZATION, command, params, context.getCubeManager());
 			ResponseDTO dto = director.serve(cto);
 			return dto.getPayload();
 		} catch (Exception e) {
@@ -459,7 +459,7 @@ public class SessionQueryProcessorEngine extends UnicastRemoteObject implements 
     
     @Override
     public ResultFileMetadata analyzeWithOptimizer(String incomingExpression) throws Exception{
-    	ResponseDTO dto = delegateOptimizer(ManagerType.OPTIMIZATION, OptimizationProfile.ANALYZE.alias, incomingExpression);
+    	ResponseDTO dto = delegateOptimizer(ManagerType.ANALYZE_OPTIMIZATION, OptimizationProfile.ANALYZE.alias, incomingExpression);
     	return dto.getMetadata();
     }
     
